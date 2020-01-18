@@ -1,6 +1,6 @@
 from http import HTTPStatus
 
-from flask import Flask, Response, jsonify, make_response
+from flask import Flask, Response, jsonify, make_response, render_template
 
 application = Flask(__name__)
 
@@ -28,7 +28,7 @@ application.url_map.strict_slashes = False
 
 @application.route("/")
 def index():
-    return flask.render_template("index.html")
+    return render_template("index.html")
 
 
 def _register_routes() -> None:

@@ -29,7 +29,7 @@ fix:
 
 .PHONY: run
 run:
-	python application.py
+	python ./ReactAndFlask/flask-backend/application.py
 
 .PHONY: run-local
 run-local:

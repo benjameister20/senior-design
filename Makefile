@@ -17,7 +17,7 @@ install:
 		pip install -r requirements.txt &&\
 		pre-commit install &&\
 		pre-commit autoupdate
-		yarn install
+		cd ReactAndFlask/react-frontend && yarn install
 
 .PHONY: dependencies
 dependencies:

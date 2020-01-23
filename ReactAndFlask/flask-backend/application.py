@@ -36,6 +36,11 @@ def index():
     return render_template("index.html")
 
 
+@application.route("/testing")
+def method():
+    return "Hello World!"
+
+
 def _register_routes() -> None:
     """
     Register routes

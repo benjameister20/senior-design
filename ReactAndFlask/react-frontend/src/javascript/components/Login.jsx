@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Checkbox from '@material-ui/core/Checkbox';
+import axios from 'axios';
 
 
 export default class Login extends React.Component {
@@ -22,6 +23,10 @@ export default class Login extends React.Component {
                     variant="outlined"
                 />);
     }
+
+    componentDidMount() {
+        axios.get('http://localhost:4010/testing').then(response => console.log(response))
+      }
 
     render() {
         return (

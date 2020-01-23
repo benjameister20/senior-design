@@ -1,5 +1,6 @@
 from http import HTTPStatus
 
+from app.data_models.user import User
 from flask import Flask, Response, jsonify, make_response, render_template
 
 application = Flask(__name__)
@@ -28,6 +29,7 @@ application.url_map.strict_slashes = False
 
 @application.route("/")
 def index():
+    user = User(username="", display_name="", email="", password="")
     return render_template("index.html")
 
 

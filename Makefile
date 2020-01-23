@@ -31,7 +31,7 @@ fix:
 .PHONY: run
 run:
 	cd ReactAndFlask/react-frontend && npm run build
-	python ./ReactAndFlask/flask-backend/application.py
+	python ./ReactAndFlask/backend/application.py
 
 .PHONY: run-local
 run-local:

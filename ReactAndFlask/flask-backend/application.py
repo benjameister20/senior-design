@@ -1,10 +1,10 @@
 from http import HTTPStatus
 
-from app.instances.routes_instances import instances
-from app.models.routes_models import models
-from app.racks.routes_racks import racks
-from app.stats.routes_stats import stats
-from app.users.routes_users import users
+# from app.instances.routes_instances import instances
+# from app.models.routes_models import models
+# from app.racks.routes_racks import racks
+# from app.stats.routes_stats import stats
+# from app.users.routes_users import users
 from flask import Flask, Response, jsonify, make_response, render_template
 
 application = Flask(__name__)
@@ -40,11 +40,11 @@ def _register_routes() -> None:
     """
     Register routes
     """
-    application.register_blueprint(users)
-    application.register_blueprint(models)
-    application.register_blueprint(instances)
-    application.register_blueprint(racks)
-    application.register_blueprint(stats)
+    # application.register_blueprint(users)
+    # application.register_blueprint(models)
+    # application.register_blueprint(instances)
+    # application.register_blueprint(racks)
+    # application.register_blueprint(stats)
 
 
 def init() -> None:

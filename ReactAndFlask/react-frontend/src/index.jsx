@@ -4,4 +4,4 @@ import './stylesheets/index.css';
 import App from './javascript/App';
 import Login from './javascript/Login';
 
-ReactDOM.render(<Login />, document.getElementById('root'));
+ReactDOM.render(<App />, document.getElementById('root'));

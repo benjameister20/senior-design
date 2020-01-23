@@ -10,7 +10,7 @@ class Instance:
     A data model for an instance
 
     Attributes:
-        model (Model)
+        model (Model): a reference to a model
         hostname (str)
         rack (Rack)
         rack_u (int)

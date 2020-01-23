@@ -51,7 +51,6 @@ repos:
         language: system
         types: [python]
         args:
-        - ReactAndFlask/flask-backend/
         - --errors-only
         - --output-format=parseable
 

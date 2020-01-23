@@ -2,7 +2,7 @@
   "name": "react-frontend",
   "version": "0.1.0",
   "private": true,
-  "homepage": "/static/react",
+  "homepage": "ReactAndFlask/flask-backend/static/react",
   "engines": {
     "yarn": "^1.21.1"
   },

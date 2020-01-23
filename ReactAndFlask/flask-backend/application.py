@@ -1,10 +1,11 @@
 from http import HTTPStatus
-from flask import Flask, Response, jsonify, make_response, render_template
-from app.users.routes_users import users
+
+from app.instances.routes_instances import instances
 from app.models.routes_models import models
 from app.racks.routes_racks import racks
 from app.stats.routes_stats import stats
-from app.instances.routes_instances import instances
+from app.users.routes_users import users
+from flask import Flask, Response, jsonify, make_response, render_template
 
 application = Flask(__name__)
 

@@ -17,7 +17,7 @@ export default function App() {
         <nav>
           <ul>
             <li>
-              <Link to="/"><Login /></Link>
+              <Link to="/">Login</Link>
             </li>
             <li>
               <Link to="/about">About</Link>
@@ -32,7 +32,7 @@ export default function App() {
             renders the first one that matches the current URL. */}
         <Switch>
           <Route path="/about">
-            <About />
+            <Login />
           </Route>
           <Route path="/users">
             <Users />

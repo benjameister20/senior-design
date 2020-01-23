@@ -1,19 +1,23 @@
 from flask import Blueprint, request
 
-users = Blueprint(
-    "users", __name__, template_folder="templates", static_folder="static"
+models = Blueprint(
+    "models", __name__, template_folder="templates", static_folder="static"
 )
 
 
-@users.route("/users/create", methods=["POST"])
+@models.route("/models/test", methods=["GET"])
+def test():
+    """ route to test user endpoints """
+    return "happy"
+
+
+@models.route("/models/create", methods=["POST"])
 def create():
     """ Route for creating users """
 
-    request.args.get("username")
-    request.args.get("display_name")
-    request.args.get("email")
-    request.args.get("password")
-    request.args.get("privilege")
+    user_data = request.get_json()
+
+    print(user_data)
 
     # TODO: Check if username is taken
     # TODO: Check if email is already associated with another account
@@ -21,10 +25,10 @@ def create():
 
     # use crypto library to securely store user info in db
 
-    return
+    return "happy"
 
 
-@users.route("/users/delete", methods=["POST"])
+@models.route("/models/delete", methods=["POST"])
 def delete():
     """ Route for deleting users """
 
@@ -39,8 +43,3 @@ def delete():
     # store user in db
 
     return
-
-
-@users.route("/users/authenticate", methods=["POST"])
-def authenticate():
-    """ Route for authenticating users """

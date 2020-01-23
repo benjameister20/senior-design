@@ -8,6 +8,7 @@ import {
 import Users from "./functions/Users.jsx";
 import Home from "./functions/Home.jsx";
 import About from "./functions/About.jsx";
+import Login from "./Login.jsx";
 
 export default function App() {
   return (
@@ -16,7 +17,7 @@ export default function App() {
         <nav>
           <ul>
             <li>
-              <Link to="/">Home</Link>
+              <Link to="/"><Login /></Link>
             </li>
             <li>
               <Link to="/about">About</Link>

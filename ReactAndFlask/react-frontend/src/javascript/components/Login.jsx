@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Checkbox from '@material-ui/core/Checkbox';
+import Link from '@material-ui/core/Link';
 import axios from 'axios';
 
 
@@ -24,9 +25,17 @@ export default class Login extends React.Component {
                 />);
     }
 
-    componentDidMount() {
+    encryptedPassword() {
+        return this.state.passwordText;
+    }
+
+    submitCredentials() {
+        axios.post('http://localhost:4010/testing', { "username":"username", "password":"password"} ).then(response => console.log(response))
+    }
+
+    changePages() {
         axios.get('http://localhost:4010/testing').then(response => console.log(response))
-      }
+    }
 
     render() {
         return (
@@ -34,16 +43,21 @@ export default class Login extends React.Component {
                 {this.makeTextField(this.state.usernameText)}
                 {this.makeTextField(this.state.passwordText)}
                 <Checkbox
-                    value="secondary"
+                    value="primary"
                     inputProps={{ 'aria-label': 'secondary checkbox' }}
-                    label="Remember me"
+                    value="Remember me"
                 />
-                <Button>
+                <Button
+                    onClick={this.submitCredentials}
+                    variant="secondary"
+                >
                     Sign In
                 </Button>
-                <div>
+                <Link
+                    onClick={this.changePages}
+                >
                     Forgot Password?
-                </div>
+                </Link>
             </div>
         );
     }

@@ -5,7 +5,7 @@ from app.models.routes_models import models
 from app.racks.routes_racks import racks
 from app.stats.routes_stats import stats
 from app.users.routes_users import users
-from flask import Flask, Response, jsonify, make_response, render_template
+from flask import Flask, Response, jsonify, make_response, render_template, request
 
 application = Flask(__name__)
 
@@ -36,8 +36,11 @@ def index():
     return render_template("index.html")
 
 
-@application.route("/testing")
+@application.route("/testing", methods=["GET", "POST"])
 def method():
+    print(request)
+    if request.method == "POST":
+        return "Success"
     return "Hello World!"
 
 

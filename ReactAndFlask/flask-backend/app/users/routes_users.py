@@ -1,8 +1,11 @@
 from flask import Blueprint, request
+from password_manager import PasswordManager
 
 users = Blueprint(
     "users", __name__, template_folder="templates", static_folder="static"
 )
+
+pwmg = PasswordManager()
 
 
 @users.route("/users/test", methods=["GET"])
@@ -13,38 +16,52 @@ def test():
 
 @users.route("/users/create", methods=["POST"])
 def create():
-    """ Route for creating users """
+    """Route for creating users
+
+    Returns:
+        string: Success or failure, if failure provide message
+    """
 
     user_data = request.get_json()
 
-    print(user_data)
+    # Validate password
+    if not pwmg.validate_pw(user_data["password"]):
+        return "Failure: Invalid password"
 
     # TODO: Check if username is taken
+    # reference database
+    username_taken = False
+    if username_taken:
+        return "Failure: Username is taken"
+
     # TODO: Check if email is already associated with another account
-    # TODO: Check if password is secure enough (uppercase + lowercase, numbers, special chars, length)
+    # reference database
+    email_exists = False
+    if email_exists:
+        return "Failure: Email is already associated with another account"
 
-    # use crypto library to securely store user info in db
-
-    return "happy"
+    return "Success"
 
 
 @users.route("/users/delete", methods=["POST"])
 def delete():
-    """ Route for deleting users """
+    """Route for deleting users
 
-    request.args.get("username")
-    request.args.get("display_name")
-    request.args.get("email")
-    request.args.get("password")
-    request.args.get("privilege")
+    Returns:
+        string: Success or failure, if failure provide message
+    """
 
-    # use crypto library to securely store user info
+    request.get_json()
 
-    # store user in db
+    return "Success"
 
+
+@users.route("/users/edit", methods=["POST"])
+def edit():
     return
 
 
 @users.route("/users/authenticate", methods=["POST"])
 def authenticate():
     """ Route for authenticating users """
+    return

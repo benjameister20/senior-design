@@ -12,7 +12,7 @@ export default function App() {
     <Router>
         <Switch>
           <Route path="/">
-            <Login />
+            <HomePage />
           </Route>
           <Route path="/homepage">
             <HomePage />

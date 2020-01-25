@@ -4,6 +4,12 @@ import TextField from '@material-ui/core/TextField';
 import Checkbox from '@material-ui/core/Checkbox';
 import Link from '@material-ui/core/Link';
 import { makeStyles } from '@material-ui/core/styles';
+import FormLabel from '@material-ui/core/FormLabel';
+import FormControl from '@material-ui/core/FormControl';
+import FormGroup from '@material-ui/core/FormGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormHelperText from '@material-ui/core/FormHelperText';
+
 import axios from 'axios';
 
 
@@ -27,7 +33,6 @@ const useStyles = makeStyles(theme => ({
         backgroundColor: theme.palette.secondary.main,
     },
     form: {
-        width: '100%',
         marginTop: theme.spacing(1),
     },
     submit: {
@@ -43,25 +48,34 @@ export default function Login(props) {
                 id="outlined-basic"
                 label="Email Address"
                 variant="outlined"
+                required="true"
             />
             <TextField
                 id="outlined-basic"
                 label="Password"
                 variant="outlined"
+                required="true"
             />
-            <Checkbox
-                value="primary"
-                inputProps={{ 'aria-label': 'secondary checkbox' }}
-                value="Remember me"
-            />
+            <FormControl className={classes.form}>
+                <FormGroup>
+                    <FormControlLabel
+                        value="end"
+                        control={<Checkbox color="primary" />}
+                        label="End"
+                        labelPlacement="end"
+                    />
+                </FormGroup>
+            </FormControl>
             <Button
                 onClick={submitCredentials()}
-                variant="secondary"
+                variant="contained"
+                color="primary"
+                className={classes.submit}
             >
                 Sign In
             </Button>
             <Link
-                onClick={changePages()}
+                onClick={() => {changePages()}}
             >
                 Forgot Password?
             </Link>

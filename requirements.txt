@@ -29,7 +29,7 @@ six==1.14.0
 toml==0.10.0
 typed-ast==1.4.1
 typing-extensions==3.7.4.1
-uwsgi==2.0.18
+# uwsgi==2.0.18
 virtualenv==16.7.9
 werkzeug==0.16.0
 wrapt==1.11.2

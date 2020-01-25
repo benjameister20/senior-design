@@ -15,6 +15,10 @@ import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import InfiniteScroll from 'react-infinite-scroller';
+import AddItemToBackendModal from "./AddItemToBackendModal";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import TextField from "@material-ui/core/TextField";
+import Input from '@material-ui/core/Input';
 
 const useStyles = makeStyles(theme => ({
     table: {
@@ -40,29 +44,7 @@ const useStyles = makeStyles(theme => ({
       },
   }));
 
-  function createData(name, calories, fat, carbs, protein) {
-    return { name, calories, fat, carbs, protein };
-  }
-
-  const rows = [
-    createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-    createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-    createData('Eclair', 262, 16.0, 24, 6.0),
-    createData('Cupcake', 305, 3.7, 67, 4.3),
-    createData('Gingerbread', 356, 16.0, 49, 3.9),
-  ];
-
-  function loadItems(items) {
-    items.push(rand());
-  }
-
-
-  function rand() {
-    return Math.round(Math.random() * 20) - 10;
-  }
-
   function getModalStyle() {
-
     return {
       top: `50%`,
       left: `50%`,
@@ -71,19 +53,31 @@ const useStyles = makeStyles(theme => ({
   }
 
 export default function TableView(props) {
-
         const classes = useStyles();
         const [modalStyle] = React.useState(getModalStyle);
         const [open, setOpen] = React.useState(false);
+        const [openNew, setOpenNew] = React.useState(false);
+        const [openNew2, setOpenNew2] = React.useState(false);
+
         const handleOpen = () => {
             setOpen(true);
-          };
+        };
+        const handleClose = () => {
+          setOpen(false);
+        };
+        const handleOpenNew = () => {
+          setOpenNew(true);
+        };
+        const handleCloseNew = () => {
+          setOpenNew(false);
+        };
 
-          const handleClose = () => {
-            setOpen(false);
-          };
-
-          var items = [];
+        const handleOpenNew2 = () => {
+          setOpenNew2(true);
+        };
+        const handleCloseNew2 = () => {
+          setOpenNew2(false);
+        };
 
         return (
             <div>
@@ -91,6 +85,7 @@ export default function TableView(props) {
                     variant="contained"
                     color="primary"
                     className={classes.submit}
+                    onClick={handleOpenNew}
                 >
                     Create
                 </Button>
@@ -98,6 +93,7 @@ export default function TableView(props) {
                     variant="contained"
                     color="primary"
                     className={classes.submit}
+                    onClick={handleOpenNew2}
                 >
                     Import
                 </Button>
@@ -114,6 +110,48 @@ export default function TableView(props) {
                     </p>
                     </div>
                 </Modal>
+
+            <Modal
+            aria-labelledby="simple-modal-title"
+            aria-describedby="simple-modal-description"
+            open={openNew}
+            onClose={handleCloseNew}
+            >
+                <div style={modalStyle} className={classes.paper}>
+                    {props.map(input => (
+                        <TextField id="standard-basic" label={input} />
+                    ))}
+                    <Button
+                        onClick={handleCloseNew2}
+                        variant="contained"
+                        color="primary"
+                        className={classes.submit}
+                    >
+                        Create
+                    </Button>
+                    </div>
+            </Modal>
+            <Modal
+            aria-labelledby="simple-modal-title"
+            aria-describedby="simple-modal-description"
+            open={openNew2}
+            onClose={handleCloseNew2}
+            >
+                <div style={modalStyle} className={classes.paper}>
+                    <Input
+                    type='file'>
+                    </Input>
+                    <Button
+                        onClick={handleCloseNew2}
+                        variant="contained"
+                        color="primary"
+                        className={classes.submit}
+                    >
+                        Upload
+                    </Button>
+                  </div>
+            </Modal>
+
         <ExpansionPanel>
         <ExpansionPanelSummary
           expandIcon={<ExpandMoreIcon />}
@@ -139,7 +177,7 @@ export default function TableView(props) {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {rows.map(row => (
+                {/*rows.map(row => (
                   <TableRow key={row.name}  onClick={handleOpen}>
                     <TableCell component="th" scope="row">
                       {row.name}
@@ -149,7 +187,7 @@ export default function TableView(props) {
                     <TableCell align="right">{row.carbs}</TableCell>
                     <TableCell align="right">{row.protein}</TableCell>
                   </TableRow>
-                ))}
+                ))*/}
               </TableBody>
             </Table>
           </TableContainer>

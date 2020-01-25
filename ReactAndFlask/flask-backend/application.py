@@ -33,6 +33,11 @@ def index():
     return render_template("index.html")
 
 
+@application.route("/test")
+def test():
+    return "testing"
+
+
 def _register_routes() -> None:
     """
     Register routes

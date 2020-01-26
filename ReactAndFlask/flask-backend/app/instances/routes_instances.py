@@ -13,33 +13,49 @@ def test():
 
 @instances.route("/instances/create", methods=["POST"])
 def create():
-    """ Route for creating users """
+    """ Route for creating instances """
 
-    user_data = request.get_json()
+    # need model, hostname, rack, rack U
+    # Optional: owner, comment
 
-    print(user_data)
+    instance_data = request.get_json()
 
-    # TODO: Check if username is taken
-    # TODO: Check if email is already associated with another account
-    # TODO: Check if password is secure enough (uppercase + lowercase, numbers, special chars, length)
+    # check rack exists
+    # check instance can fit in rack
 
-    # use crypto library to securely store user info in db
+    print(instance_data)
 
     return "happy"
 
 
 @instances.route("/instances/delete", methods=["POST"])
 def delete():
-    """ Route for deleting users """
+    """ Route for deleting instances """
 
-    request.args.get("username")
-    request.args.get("display_name")
-    request.args.get("email")
-    request.args.get("password")
-    request.args.get("privilege")
+    # must be admin
 
-    # use crypto library to securely store user info
+    # Get primary key of instance (must exist)
+    # Ask for confirmation
+    # remove instance in db
 
-    # store user in db
+    return "happy"
 
-    return
+
+@instances.route("/instances/view", methods=["GET"])
+def view():
+    """ Route for table view of instances """
+
+    # get instances from db
+    # need to paginate and be sortable
+
+    return "happy"
+
+
+@instances.route("/instances/detailview", methods=["POST"])
+def detail_view():
+    """ Route for table view of instances """
+
+    # get instance from db (if exists)
+    # return all details/info to frontend
+
+    return "happy"

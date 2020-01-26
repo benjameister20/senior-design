@@ -16,7 +16,7 @@ install:
 		pip install --upgrade pip &&\
 		pip install -r requirements.txt &&\
 		pre-commit install &&\
-		pre-commit autoupdate
+		pre-commit autoupdate &&\
 		cd ReactAndFlask/react-frontend && yarn install
 
 .PHONY: dependencies
@@ -44,6 +44,14 @@ runfront:
 .PHONY: run-local
 run-local:
 	heroku local
+
+.PHONY: setup-db
+setup-db:
+	. ReactAndFlask/flask-backend/scripts/setup_db.sh
+
+.PHONY: users
+users:
+	python ReactAndFlask/flask-backend/scripts/user_setup.py
 
 .PHONY: test
 test:

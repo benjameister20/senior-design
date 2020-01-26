@@ -16,3 +16,6 @@ class User:
         self.display_name: str = display_name
         self.email: str = email
         self.password: str = password
+
+    def __repr__(self) -> str:
+        return f"Username: {self.username}\nPassword: {self.password}\nDisplay Name: {self.display_name}\nEmail: {self.email}\n"

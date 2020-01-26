@@ -1,6 +1,5 @@
 from typing import Optional
 
-from app.data_models.model import Model
 from app.data_models.rack import Rack
 from app.data_models.user import User
 
@@ -20,14 +19,14 @@ class Instance:
 
     def __init__(
         self,
-        model: Model,
+        model_id: int,
         hostname: str,
         rack: Rack,
         rack_u: int,
         owner: Optional[User],
         comment: Optional[str],
     ) -> None:
-        self.model: Model = model
+        self.model: int = model_id
         self.hostname: str = hostname
         self.rack: Rack = rack
         self.rack_u: int = rack_u

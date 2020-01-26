@@ -1,6 +1,7 @@
 from http import HTTPStatus
 
 from app.data_models.user import User
+from app.users.routes_users import users
 from flask import Flask, Response, jsonify, make_response, render_template
 
 application = Flask(__name__)
@@ -42,7 +43,7 @@ def _register_routes() -> None:
     """
     Register routes
     """
-    # application.register_blueprint(users)
+    application.register_blueprint(users)
     # application.register_blueprint(models)
     # application.register_blueprint(instances)
     # application.register_blueprint(racks)

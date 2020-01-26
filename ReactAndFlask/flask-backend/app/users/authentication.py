@@ -5,34 +5,16 @@ import bcrypt
 
 
 class AuthManager:
-    def __init__(self):
+    """[summary]
+
+    Returns:
+        [type]: [description]
+    """
+
+    def __init__(self) -> None:
         self.TOKEN_SECRET_KEY = os.getenv("TOKEN_SECRET_KEY", "my_precious")
 
-    def validate_pw(self, password):
-        """Ensures password adheres to security guidelines:
-            - Should have at least one number.
-            - Should have at least one uppercase and one lowercase character.
-            - Should have at least one special symbol.
-            - Should be between 8 to 20 characters long.
-
-            src: https://www.geeksforgeeks.org/password-validation-in-python/
-
-        Args:
-            password (string): Password to check
-
-        Returns:
-            Boolean: True if password adheres to guidelines, false if not
-        """
-
-        reg = (
-            r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!#%*?&]{8,20}$"
-        )
-        pattern = re.compile(reg)
-        results = re.search(pattern, password)
-
-        return bool(results)
-
-    def encrypt_pw(self, password):
+    def encrypt_pw(self, password: str) -> str:
         """Encrypts a user password using bcrypt algorithm
 
         src: http://zetcode.com/python/bcrypt/
@@ -50,7 +32,7 @@ class AuthManager:
 
         return hashed
 
-    def compare_pw(self, attempt, actual):
+    def compare_pw(self, attempt: str, actual: str) -> bool:
         """Checks for password matches
 
         src: http://zetcode.com/python/bcrypt/
@@ -67,7 +49,7 @@ class AuthManager:
 
         return bcrypt.checkpw(encoded, actual)
 
-    def assign_token(self):
+    def assign_token(self) -> str:
         pass
 
 

@@ -1,13 +1,13 @@
-import re
-
 from app.users.authentication import AuthManager
+from app.users.validator import Validator
 from flask import Blueprint, request
 
 users = Blueprint(
     "users", __name__, template_folder="templates", static_folder="static"
 )
 
-pwmg = AuthManager()
+auth_manager = AuthManager()
+validator = Validator()
 
 
 @users.route("/users/test", methods=["GET"])
@@ -23,7 +23,8 @@ def create():
     Username Criteria:
     - Between 4 and 20 characters
     - Contains only alphanumeric characters and ".", "_"
-    - Starts with a letter
+    - No "." or "_" at the beginning
+    - No doubles of special characters (".." or "__")
 
     Email Criteria:
     - Valid email address compliant with RCF 5322 standard
@@ -46,21 +47,15 @@ def create():
     request_data["display_name"]
 
     # Validate username
-    reg = "^(?=.{4,20}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$"
-    pattern = re.compile(reg)
-    results = re.search(pattern, username)
-    if not bool(results):
+    if not validator.validate_username(username):
         return "Failure: Invalid username"
 
     # Validate email
-    reg = r"\A[a-z0-9!#$%&'*+/=?^_‘{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_‘{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\Z"
-    pattern = re.compile(reg, re.IGNORECASE)
-    results = re.search(pattern, email)
-    if not bool(results):
+    if not validator.validate_email(email):
         return "Failure: Invalid email address"
 
     # Validate password
-    if not pwmg.validate_pw(password):
+    if not validator.validate_password(password):
         return "Failure: Password too weak"
 
     # TODO: Check if username is taken
@@ -88,7 +83,10 @@ def delete():
         string: Success or failure, if failure provide message
     """
 
-    request.get_json()
+    request_data = request.get_json()
+    request_data["username"]
+
+    # TODO: delete user with username <username> from db
 
     return "Success"
 
@@ -97,6 +95,10 @@ def delete():
 def edit():
 
     request.get_json()
+    request_data = request.get_json()
+    request_data["username"]
+
+    # TODO: delete and replace matching row from db with new values
 
     return "Success"
 
@@ -111,8 +113,8 @@ def authenticate():
     attempted_password = request_data["password"]
 
     # TODO: use username to get password from database
-    db_password = ""
+    db_password = auth_manager.encrypt_pw("aS8!Dk4n#h33@")
 
-    auth_success = pwmg.compare_pw(attempted_password, db_password)
+    auth_success = auth_manager.compare_pw(attempted_password, db_password)
 
     return str(auth_success)

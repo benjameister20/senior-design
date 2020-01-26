@@ -17,7 +17,7 @@ install:
 		pip install -r requirements.txt &&\
 		pre-commit install &&\
 		pre-commit autoupdate
-		yarn install
+		cd ReactAndFlask/react-frontend && yarn install
 
 .PHONY: dependencies
 dependencies:
@@ -28,10 +28,18 @@ dependencies:
 fix:
 	pre-commit run --all-files
 
-.PHONY: run
-run:
-	cd ReactAndFlask/react-frontend && npm run build
+.PHONY: runall
+runall:
+	cd ReactAndFlask/react-frontend && npm run build -dd
 	python ./ReactAndFlask/flask-backend/application.py
+
+.PHONY: runback
+runback:
+	python ./ReactAndFlask/flask-backend/application.py
+
+.PHONY: runfront
+runfront:
+	cd ReactAndFlask/react-frontend && npm build && npm start
 
 .PHONY: run-local
 run-local:

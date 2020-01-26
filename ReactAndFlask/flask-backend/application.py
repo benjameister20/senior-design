@@ -42,6 +42,11 @@ def _register_routes() -> None:
     """
     Register routes
     """
+    # application.register_blueprint(users)
+    # application.register_blueprint(models)
+    # application.register_blueprint(instances)
+    # application.register_blueprint(racks)
+    # application.register_blueprint(stats)
 
 
 def init() -> None:

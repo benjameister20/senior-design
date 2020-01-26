@@ -1,8 +1,12 @@
+from app.models.model_manager import ModelManager
 from flask import Blueprint, request
 
 models = Blueprint(
     "models", __name__, template_folder="templates", static_folder="static"
 )
+
+
+mm = ModelManager()
 
 
 @models.route("/models/test", methods=["GET"])
@@ -15,47 +19,37 @@ def test():
 def create():
     """ Route for creating instances """
 
-    # need model, hostname, rack, rack U
-    # Optional: owner, comment
-
     model_data = request.get_json()
+    result = mm.create_model(model_data)
 
-    # check rack exists
-    # check instance can fit in rack
-
-    print(model_data)
-
-    return "happy"
+    return result
 
 
 @models.route("/models/delete", methods=["POST"])
 def delete():
     """ Route for deleting instances """
 
-    # must be admin
+    # takes vendor and model number
+    model_data = request.get_json()
+    result = mm.delete_model(model_data)
 
-    # Get primary key of instance (must exist)
-    # Ask for confirmation
-    # remove instance in db
-
-    return "happy"
+    return result
 
 
 @models.route("/models/view", methods=["GET"])
 def view():
     """ Route for table view of instances """
 
-    # get instances from db
-    # need to paginate and be sortable
+    result = mm.view()
 
-    return "happy"
+    return result
 
 
 @models.route("/models/detailview", methods=["POST"])
 def detail_view():
     """ Route for table view of instances """
 
-    # get instance from db (if exists)
-    # return all details/info to frontend
+    model_data = request.get_json()
+    result = mm.detail_view(model_data)
 
-    return "happy"
+    return result

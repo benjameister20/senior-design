@@ -32,6 +32,9 @@ def create():
 def delete():
     """ Route for deleting instances """
 
+    # take rack and rack U
+    request.get_json()
+
     # must be admin
 
     # Get primary key of instance (must exist)
@@ -53,7 +56,10 @@ def view():
 
 @instances.route("/instances/detailview", methods=["POST"])
 def detail_view():
-    """ Route for table view of instances """
+    """ Route for detail view of instance """
+
+    # take rack and rack U
+    request.get_json()
 
     # get instance from db (if exists)
     # return all details/info to frontend

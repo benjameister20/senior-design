@@ -1,8 +1,10 @@
 from http import HTTPStatus
 from typing import Optional
 
+from app.dal.instance_table import InstanceTable
 from app.dal.rack_table import RackTable
 from app.dal.user_table import UserTable
+from app.data_models.instance import Instance
 from app.data_models.rack import Rack
 from app.data_models.user import User
 from app.main.types import JSON
@@ -67,10 +69,52 @@ def new_rack():
 
     try:
         row_letter: str = data["row_letter"]
-        row_number: str = data["row_number"]
+        row_number: int = int(data["row_number"])
 
         rack: Rack = Rack(row_letter=row_letter, row_number=row_number)
         rack_table.add_rack(rack=rack)
+    except:
+        return HTTPStatus.BAD_REQUEST
+
+    return HTTPStatus.OK
+
+
+@database.route("/instance/<int:identifier>")
+def instance(identifier: int):
+    """ Get an instance """
+    instance_table: InstanceTable = InstanceTable()
+
+    instance: Optional[Instance] = instance_table.get_instance(identifier=identifier)
+    if instance is None:
+        return HTTPStatus.NOT_FOUND
+
+    return instance.make_json()
+
+
+@database.route("/instance/create", methods=["POST"])
+def new_instance():
+    """ Create a new instance """
+    data: JSON = request.get_json()
+    instance_table: InstanceTable = InstanceTable()
+
+    try:
+        model_id: int = int(data["model_id"])
+        hostname: str = data["hostname"]
+        row_letter: str = data["row_letter"]
+        row_number: int = int(data["row_number"])
+        rack_u: int = int(data["rack_u"])
+        owner: Optional[str] = data.get("owner")
+        comment: Optional[str] = data.get("comment")
+
+        instance: Instance = Instance(
+            model_id=model_id,
+            hostname=hostname,
+            rack=Rack(row_letter=row_letter, row_number=row_number),
+            rack_u=rack_u,
+            owner=owner,
+            comment=comment,
+        )
+        instance_table.add_instance(instance=instance)
     except:
         return HTTPStatus.BAD_REQUEST
 

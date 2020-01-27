@@ -13,12 +13,8 @@ import FormHelperText from '@material-ui/core/FormHelperText';
 import axios from 'axios';
 
 
-function submitCredentials() {
-    axios.post('http://localhost:4010/testing', { "username":"username", "password":"password"} ).then(response => console.log(response))
-}
-
-function changePages() {
-    axios.get('http://localhost:4010/testing').then(response => console.log(response))
+function submitCredentials(username, password) {
+    axios.post('http://localhost:4010/users/authenticate', { "username":username, "password":password} ).then(response => console.log(response))
 }
 
 const useStyles = makeStyles(theme => ({
@@ -46,15 +42,17 @@ export default function Login(props) {
         <div className={classes.paper}>
             <TextField
                 id="outlined-basic"
-                label="Email Address"
+                label="Username"
                 variant="outlined"
                 required="true"
+                ref='username'
             />
             <TextField
                 id="outlined-basic"
                 label="Password"
                 variant="outlined"
                 required="true"
+                ref='password'
             />
             <FormControl className={classes.form}>
                 <FormGroup>
@@ -67,18 +65,13 @@ export default function Login(props) {
                 </FormGroup>
             </FormControl>
             <Button
-                onClick={submitCredentials()}
+                onClick={() => (submitCredentials(this.refs.username.getValue(), this.refs.password.getValue()))}
                 variant="contained"
                 color="primary"
                 className={classes.submit}
             >
                 Sign In
             </Button>
-            <Link
-                onClick={() => {changePages()}}
-            >
-                Forgot Password?
-            </Link>
         </div>
     );
 }

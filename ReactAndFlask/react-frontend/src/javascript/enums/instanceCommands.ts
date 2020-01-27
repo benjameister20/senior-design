@@ -4,4 +4,5 @@ export enum InstanceCommand {
     edit = 'edit/',
     view = 'view/',
     detailView = 'detailView/',
+    search = 'search/'
 }

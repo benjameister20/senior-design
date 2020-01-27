@@ -5,18 +5,13 @@ import { ModelInput } from '../enums/modelInputs.ts'
 import * as Constants from '../Constants';
 import Modal from '@material-ui/core/Modal';
 import Button from '@material-ui/core/Button';
-import ExpansionPanel from '@material-ui/core/ExpansionPanel';
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
-import Typography from '@material-ui/core/Typography';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import TextField from "@material-ui/core/TextField";
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
 import TableView from '../helpers/TableView';
-import Filters from '../helpers/Filters';
 import { CSVLink } from "react-csv";
-import { makeStyles } from '@material-ui/core/styles';
+import SearchIcon from '@material-ui/icons/Search';
+import InputBase from '@material-ui/core/InputBase';
 
 const columns = [
     "Vendor",
@@ -34,38 +29,30 @@ const columns = [
 const modelsMainPath = 'models/';
 const modelDownloadFileName = 'models.csv';
 
-const useStyles = makeStyles(theme => ({
-    table: {
-      minWidth: 650,
-    },
-    paper: {
-        position: 'absolute',
-        width: 400,
-        backgroundColor: theme.palette.background.paper,
-        border: '2px solid #000',
-        boxShadow: theme.shadows[5],
-        padding: theme.spacing(2, 4, 3),
-      },
-    submit: {
-        margin: theme.spacing(3, 2, 2),
-    },
-    root: {
-        width: '100%',
-    },
-    heading: {
-      fontSize: theme.typography.pxToRem(15),
-      fontWeight: theme.typography.fontWeightRegular,
-    },
-  }));
+function getURL(endpoint) {
+    return Constants.serverEndpoint + modelsMainPath + endpoint;
+}
 
-  function getModalStyle() {
-    return {
-      top: `50%`,
-      left: `50%`,
-      transform: `translate(-50%, -50%)`,
-    };
-  }
+function jsonToArr(json) {
+    var models = json.data['models'];
+    const items = [];
 
+    for (const [index, val] of models.entries()) {
+        const row = [];
+        row.push(val[ModelInput.Vendor]);
+        row.push(val[ModelInput.ModelNumber]);
+        row.push(val[ModelInput.Height]);
+        row.push(val[ModelInput.DisplayColor]);
+        row.push(val[ModelInput.EthernetPorts]);
+        row.push(val[ModelInput.PowerPorts]);
+        row.push(val[ModelInput.CPU]);
+        row.push(val[ModelInput.Memory]);
+        row.push(val[ModelInput.Storage]);
+        row.push(val[ModelInput.Comment]);
+        items.push(row);
+    }
+    return items;
+}
 
 export default class ModelsView extends React.Component {
     constructor(props) {
@@ -78,7 +65,7 @@ export default class ModelsView extends React.Component {
             modelToken:"",
             createdModel: {
                 'vendor':'',
-                'model':'',
+                'modelNumber':'',
                 'height':'',
                 'displayColor':'',
                 'ethernetPorts':'',
@@ -86,22 +73,23 @@ export default class ModelsView extends React.Component {
                 'cpu':'',
                 'memory':'',
                 'storage':'',
-                'comment':'',
+                'comments':'',
             },
+            deleteVendor:'',
+            deleteModel:'',
+            viewVendor:'',
+            viewModel:'',
             csvData:[],
+            searchText:"",
         };
-    }
-
-    getURL(endpoint) {
-        return Constants.serverEndpoint + modelsMainPath + endpoint;
     }
 
     createModel() {
         axios.post(
-            this.getURL(ModelCommand.create),
+            getURL(ModelCommand.create),
             {
                 'vendor':this.state.createdModel[ModelInput.Vendor],
-                'model':this.state.createdModel[ModelInput.ModelNumber],
+                'modelNumber':this.state.createdModel[ModelInput.ModelNumber],
                 'height':this.state.createdModel[ModelInput.Height],
                 'displayColor':this.state.createdModel[ModelInput.DisplayColor],
                 'ethernetPorts':this.state.createdModel[ModelInput.EthernetPorts],
@@ -111,37 +99,46 @@ export default class ModelsView extends React.Component {
                 'storage':this.state.createdModel[ModelInput.Storage],
                 'comments':this.state.createdModel[ModelInput.Comment],
             }
-            ).then(response => this.setState({ items:response }));
+            ).then(response => this.setState({ items: jsonToArr(response)}));
     }
 
-    deleteModel(vendor, modelNum) {
+    deleteModel() {
         axios.post(
-            this.getURL(ModelCommand.delete),
+            getURL(ModelCommand.delete),
             {
-                'vendor':vendor,
-                'model':modelNum,
+                'vendor':this.state.deleteVendor,
+                'modelNumber':this.state.deleteModel,
             }
-            ).then(response => console.log(response));
+            ).then(response => this.setState({ items: jsonToArr(response)}));
     }
 
-    detailViewModel(vendor, modelNum) {
+    detailViewModel() {
         axios.post(
-            this.getURL(ModelCommand.detailView),
+            getURL(ModelCommand.detailView),
             {
-                'vendor':vendor,
-                'model':modelNum,
+                'vendor':this.state.viewVendor,
+                'modelNumber':this.state.viewModel,
             }
-            ).then(response => console.log(response));
+            ).then(response => this.setState({ items: jsonToArr(response)}));
     }
 
-    viewModel(vendor, modelNum) {
+    viewModel() {
         axios.post(
-            this.getURL(ModelCommand.view),
+            getURL(ModelCommand.view),
             {
-                'vendor':vendor,
-                'model':modelNum,
+                'vendor':this.state.viewVendor,
+                'modelNumber':this.state.viewModel,
             }
-            ).then(response => console.log(response));
+            ).then(response => this.setState({ items: jsonToArr(response)}));
+    }
+
+    searchModels() {
+        axios.post(
+            getURL(ModelCommand.search),
+            {
+                'filter':this.state.searchText,
+            }
+            ).then(response => this.setState({ items: jsonToArr(response)}));
     }
 
     downloadTable() {
@@ -159,6 +156,10 @@ export default class ModelsView extends React.Component {
     updateModelCreator(event) {
         this.state.createdModel[event.target.name] = event.target.value;
         this.forceUpdate()
+    }
+
+    updateSearchText(event) {
+        this.setState({ searchText: event.target.value})
     }
 
     render() {
@@ -194,6 +195,7 @@ export default class ModelsView extends React.Component {
                     ref={(r) => this.csvLink = r}
                     target="_blank"/>
                 <Modal
+                    style={{top: `50%`,left: `50%`,transform: `translate(-50%, -50%)`,}}
                     aria-labelledby="simple-modal-title"
                     aria-describedby="simple-modal-description"
                     open={this.state.showCreateModal}
@@ -222,6 +224,7 @@ export default class ModelsView extends React.Component {
                     </div>
                 </Modal>
                 <Modal
+                    style={{top: `50%`,left: `50%`,transform: `translate(-50%, -50%)`,}}
                     aria-labelledby="simple-modal-title"
                     aria-describedby="simple-modal-description"
                     open={this.state.showImportModal}
@@ -237,7 +240,21 @@ export default class ModelsView extends React.Component {
                         </Button>
                     </div>
                 </Modal>
-                <Filters filters={columns}/>
+                <div>
+                <div>
+                    <SearchIcon />
+                </div>
+                    <InputBase
+                        placeholder="Search (blank does a search all)"
+                        inputProps={{ 'aria-label': 'search' }}
+                        onChange={this.updateSearchText.bind(this)}
+                    />
+                    <Button
+                        onClick={this.searchModels.bind(this)}
+                    >
+                        Search
+                    </Button>
+                </div>
                 <TableView
                     columns={columns}
                     vals={this.state.items}

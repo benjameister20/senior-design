@@ -4,4 +4,5 @@ export enum ModelCommand {
     edit = 'edit/',
     view = 'view/',
     detailView = 'detailView/',
+    search = 'search/',
 }

@@ -5,17 +5,10 @@ import { UserCommand } from '../enums/userCommands.ts'
 import * as Constants from '../Constants';
 import Modal from '@material-ui/core/Modal';
 import Button from '@material-ui/core/Button';
-import ExpansionPanel from '@material-ui/core/ExpansionPanel';
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
-import Typography from '@material-ui/core/Typography';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import TextField from "@material-ui/core/TextField";
-import CloudUploadIcon from '@material-ui/icons/CloudUpload';
-import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
 import TableView from '../helpers/TableView';
-import Filters from '../helpers/Filters';
-import { CSVLink } from "react-csv";
+import SearchIcon from '@material-ui/icons/Search';
+import InputBase from '@material-ui/core/InputBase';
 
 const columns = [
     "Username",
@@ -24,14 +17,24 @@ const columns = [
 ]
 
 const usersMainPath = 'users/';
-const modelDownloadFileName = 'models.csv';
 
-const csvData = [
-    ["firstname", "lastname", "email"],
-    ["Ahmed", "Tomi", "ah@smthing.co.com"],
-    ["Raed", "Labes", "rl@smthing.co.com"],
-    ["Yezzi", "Min l3b", "ymin@cocococo.com"]
-  ];
+function getURL(endpoint) {
+    return Constants.serverEndpoint + usersMainPath + endpoint;
+}
+
+function jsonToArr(json) {
+    var users = json.data['users'];
+    const items = [];
+
+    for (const [index, val] of users.entries()) {
+        const row = [];
+        row.push(val[UserInput.Username]);
+        row.push(val[UserInput.Email]);
+        row.push(val[UserInput.DisplayName]);
+        items.push(row);
+    }
+    return items;
+}
 
 export default class UsersView extends React.Component {
     constructor(props) {
@@ -49,15 +52,8 @@ export default class UsersView extends React.Component {
             },
             deleteUsername:'',
             viewUsername:'',
+            searchText:"",
         };
-    }
-
-    downloadTable() {
-        this.csvLink.link.click();
-    }
-
-    getURL(endpoint) {
-        return Constants.serverEndpoint + usersMainPath + endpoint;
     }
 
     createUser() {
@@ -98,18 +94,27 @@ export default class UsersView extends React.Component {
             ).then(response => console.log(response));
     }
 
+    searchUsers() {
+        axios.post(
+            getURL(UserCommand.search),
+            {
+                'filter':this.state.searchText,
+            }
+            ).then(response => this.setState({ items: jsonToArr(response)}));
+    }
+
 
     openCreateModal() {
         this.setState({showCreateModal: true});
     }
 
-    openImportModal() {
-        this.setState({showImportModal: true});
-    }
-
     updateUserCreator(event) {
         this.state.createdUser[event.target.name] = event.target.value;
         this.forceUpdate()
+    }
+
+    updateSearchText(event) {
+        this.setState({ searchText: event.target.value})
     }
 
     render() {
@@ -142,34 +147,21 @@ export default class UsersView extends React.Component {
                         </Button>
                     </div>
                 </Modal>
-                <Modal
-                    aria-labelledby="simple-modal-title"
-                    aria-describedby="simple-modal-description"
-                    open={this.state.showImportModal}
-                    onClose={() => (this.setState({showImportModal:false}))}
-                >
-                    <div>
-                        <input type='file' accept=".csv" />
-                        <Button
-                            variant="contained"
-                            color="primary"
-                        >
-                            Upload
-                        </Button>
-                    </div>
-                </Modal>
-                <ExpansionPanel>
-                    <ExpansionPanelSummary
-                        expandIcon={<ExpandMoreIcon />}
-                        aria-controls="panel1a-content"
-                        id="panel1a-header"
+                <div>
+                <div>
+                    <SearchIcon />
+                </div>
+                    <InputBase
+                        placeholder="Search (blank does a search all)"
+                        inputProps={{ 'aria-label': 'search' }}
+                        onChange={this.updateSearchText.bind(this)}
+                    />
+                    <Button
+                        onClick={this.searchUsers.bind(this)}
                     >
-                        <Typography>Filters</Typography>
-                    </ExpansionPanelSummary>
-                    <ExpansionPanelDetails>
-                        <Filters filters={columns}/>
-                    </ExpansionPanelDetails>
-                </ExpansionPanel>
+                        Search
+                    </Button>
+                </div>
                 <TableView
                     columns={columns}
                     vals={this.state.items}

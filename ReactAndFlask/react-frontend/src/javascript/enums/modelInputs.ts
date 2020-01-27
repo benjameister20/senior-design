@@ -4,9 +4,9 @@ export enum ModelInput {
     Height = 'height',
     DisplayColor = 'displayColor',
     EthernetPorts = 'ethernetPorts',
-    PowerPorts = 'PowerPorts',
+    PowerPorts = 'powerPorts',
     CPU = 'cpu',
     Memory = 'memory',
     Storage = 'storage',
-    Comment = 'comment'
+    Comment = 'comments'
 }

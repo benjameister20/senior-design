@@ -4,42 +4,127 @@ models = Blueprint(
     "models", __name__, template_folder="templates", static_folder="static"
 )
 
+modelsArr = []
+
+
+def convertToJson(arr):
+    return {"models": arr}
+
 
 @models.route("/models/test", methods=["GET"])
 def test():
-    """ route to test user endpoints """
-    return "happy"
+    """ route to test model endpoints """
+    return "test"
 
 
 @models.route("/models/create", methods=["POST"])
 def create():
-    """ Route for creating users """
+    """ Route for creating models """
+    global modelsArr
 
-    user_data = request.get_json()
+    model = {
+        "vendor": request.json["vendor"],
+        "modelNumber": request.json["modelNumber"],
+        "height": request.json["height"],
+        "displayColor": request.json["displayColor"],
+        "ethernetPorts": request.json["ethernetPorts"],
+        "powerPorts": request.json["powerPorts"],
+        "cpu": request.json["cpu"],
+        "memory": request.json["memory"],
+        "storage": request.json["storage"],
+        "comments": request.json["comments"],
+    }
 
-    print(user_data)
-
-    # TODO: Check if username is taken
-    # TODO: Check if email is already associated with another account
-    # TODO: Check if password is secure enough (uppercase + lowercase, numbers, special chars, length)
-
-    # use crypto library to securely store user info in db
-
-    return "happy"
+    modelsArr.append(model)
+    return convertToJson(modelsArr)
 
 
 @models.route("/models/delete", methods=["POST"])
 def delete():
-    """ Route for deleting users """
+    """ Route for deleting models """
+    global modelsArr
 
-    request.args.get("username")
-    request.args.get("display_name")
-    request.args.get("email")
-    request.args.get("password")
-    request.args.get("privilege")
+    vendor = (request.json["vendor"],)
+    model = (request.json["model"],)
 
-    # use crypto library to securely store user info
+    for tempModel in modelsArr:
+        if tempModel["vendor"] == vendor and tempModel["model"] == model:
+            del tempModel
+            break
 
-    # store user in db
+    return convertToJson(modelsArr)
 
-    return
+
+def filterInModel(filter, model):
+    if filter in model["vendor"]:
+        return True
+    if filter in model["modelNumber"]:
+        return True
+    if filter in model["height"]:
+        return True
+    if filter in model["displayColor"]:
+        return True
+    if filter in model["ethernetPorts"]:
+        return True
+    if filter in model["powerPorts"]:
+        return True
+    if filter in model["cpu"]:
+        return True
+    if filter in model["memory"]:
+        return True
+    if filter in model["storage"]:
+        return True
+    if filter in model["comments"]:
+        return True
+
+    return False
+
+
+@models.route("/models/search/", methods=["POST"])
+def search():
+    """ Route for searching models """
+    global modelsArr
+
+    filter = request.json["filter"]
+
+    filteredModels = []
+    if filter == "":
+        return convertToJson(modelsArr)
+
+    for model in modelsArr:
+        try:
+            if filterInModel(filter, model):
+                filteredModels.append(model)
+        except:
+            continue
+    print(filteredModels)
+    return convertToJson(filteredModels)
+
+
+@models.route("/models/edit", methods=["POST"])
+def edit():
+    """ Route for editing models """
+    global modelsArr
+
+    model = {
+        "vendor": request.json["vendor"],
+        "modelNumber": request.json["modelNumber"],
+        "height": request.json["height"],
+        "displayColor": request.json["displayColor"],
+        "ethernetPorts": request.json["ethernetPorts"],
+        "powerPorts": request.json["powerPorts"],
+        "cpu": request.json["cpu"],
+        "memory": request.json["memory"],
+        "storage": request.json["storage"],
+        "comments": request.json["comments"],
+    }
+
+    for n, i in enumerate(modelsArr):
+        if (
+            modelsArr[i]["vendor"] == model["vendor"]
+            and modelsArr[i]["modelNumber"] == model["modelNumber"]
+        ):
+            modelsArr[i] = model
+            break
+
+    return convertToJson(modelsArr)

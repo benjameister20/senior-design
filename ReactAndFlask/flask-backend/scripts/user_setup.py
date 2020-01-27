@@ -10,7 +10,7 @@ sys.path.append(
 
 from typing import List, Optional
 
-from app.dal.user_table import add_user, get_all_users, get_user
+from app.dal.user_table import UserTable
 from app.data_models.user import User
 
 
@@ -18,6 +18,9 @@ class InvalidInputException(Exception):
     """
     Raised when the input given is invalid
     """
+
+
+user_table = UserTable()
 
 
 def main():
@@ -65,7 +68,7 @@ def create_user():
         username=username, display_name=display_name, email=email, password=password
     )
 
-    add_user(user=user)
+    user_table.add_user(user=user)
 
 
 def find_user():
@@ -74,7 +77,7 @@ def find_user():
 
     username: str = input("Username: ")
 
-    user: Optional[User] = get_user(username=username)
+    user: Optional[User] = user_table.get_user(username=username)
     if user is not None:
         print()
         print("Result:")
@@ -85,7 +88,7 @@ def find_user():
 
 
 def find_all_users():
-    users: List[User] = get_all_users()
+    users: List[User] = user_table.get_all_users()
 
     print("Result:")
     print()

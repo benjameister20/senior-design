@@ -28,17 +28,17 @@ dependencies:
 fix:
 	pre-commit run --all-files
 
-.PHONY: runall
-runall:
+.PHONY: run-all
+run-all:
 	cd ReactAndFlask/react-frontend && npm run build -dd
 	python ./ReactAndFlask/flask-backend/application.py
 
-.PHONY: runback
-runback:
+.PHONY: run-back
+run-back:
 	python ./ReactAndFlask/flask-backend/application.py
 
-.PHONY: runfront
-runfront:
+.PHONY: run-front
+run-front:
 	cd ReactAndFlask/react-frontend && npm build && npm start
 
 .PHONY: run-local
@@ -63,4 +63,4 @@ clean:
 	rm -rf .mypy_cache/
 	rm -rf __pycache__
 	rm -rf .pytest_cache
-	find app -type f -name '*.py[co]' -delete -o -type d -name __pycache__ -delete
+	find ReactAndFlask/flask-backend/app -type f -name '*.py[co]' -delete -o -type d -name __pycache__ -delete

@@ -6,7 +6,7 @@ The database used in this project is PostgresSQL.
 
 You must install `postgresql` locally.
 
-### MacOS
+### macOS
 
 `brew install postgresql` - installs `postgresql`
 

@@ -1,22 +1,22 @@
 {
   "files": {
-    "main.css": "https://localhost:3000/css/main.5ecd60fb.chunk.css",
-    "main.js": "https://localhost:3000/js/main.62544a08.chunk.js",
-    "main.js.map": "https://localhost:3000/js/main.62544a08.chunk.js.map",
-    "runtime-main.js": "https://localhost:3000/js/runtime-main.1c75314c.js",
-    "runtime-main.js.map": "https://localhost:3000/js/runtime-main.1c75314c.js.map",
-    "js/2.3cd23650.chunk.js": "https://localhost:3000/js/2.3cd23650.chunk.js",
-    "js/2.3cd23650.chunk.js.map": "https://localhost:3000/js/2.3cd23650.chunk.js.map",
-    "../../templates/index.html": "https://localhost:3000/../../templates/index.html",
-    "css/main.5ecd60fb.chunk.css.map": "https://localhost:3000/css/main.5ecd60fb.chunk.css.map",
-    "js/2.3cd23650.chunk.js.LICENSE": "https://localhost:3000/js/2.3cd23650.chunk.js.LICENSE",
-    "precache-manifest.8ad3b77b43727a7841772254de70696f.js": "https://localhost:3000/precache-manifest.8ad3b77b43727a7841772254de70696f.js",
-    "service-worker.js": "https://localhost:3000/service-worker.js"
+    "main.css": "/static/react/css/main.5ecd60fb.chunk.css",
+    "main.js": "/static/react/js/main.a68b8e86.chunk.js",
+    "main.js.map": "/static/react/js/main.a68b8e86.chunk.js.map",
+    "runtime-main.js": "/static/react/js/runtime-main.4e8b2abb.js",
+    "runtime-main.js.map": "/static/react/js/runtime-main.4e8b2abb.js.map",
+    "js/2.8a8ef6d3.chunk.js": "/static/react/js/2.8a8ef6d3.chunk.js",
+    "js/2.8a8ef6d3.chunk.js.map": "/static/react/js/2.8a8ef6d3.chunk.js.map",
+    "../../templates/index.html": "/static/react/../../templates/index.html",
+    "css/main.5ecd60fb.chunk.css.map": "/static/react/css/main.5ecd60fb.chunk.css.map",
+    "js/2.8a8ef6d3.chunk.js.LICENSE": "/static/react/js/2.8a8ef6d3.chunk.js.LICENSE",
+    "precache-manifest.995fd6512ccc2a064430c24f2928a4a9.js": "/static/react/precache-manifest.995fd6512ccc2a064430c24f2928a4a9.js",
+    "service-worker.js": "/static/react/service-worker.js"
   },
   "entrypoints": [
-    "js/runtime-main.1c75314c.js",
-    "js/2.3cd23650.chunk.js",
+    "js/runtime-main.4e8b2abb.js",
+    "js/2.8a8ef6d3.chunk.js",
     "css/main.5ecd60fb.chunk.css",
-    "js/main.62544a08.chunk.js"
+    "js/main.a68b8e86.chunk.js"
   ]
 }

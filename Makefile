@@ -30,7 +30,7 @@ fix:
 
 .PHONY: runall
 runall:
-	cd ReactAndFlask/react-frontend && npm run build -dd
+	cd ReactAndFlask/react-frontend && yarn build
 	python ./ReactAndFlask/flask-backend/application.py
 
 .PHONY: runback

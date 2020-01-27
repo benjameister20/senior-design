@@ -1,1 +1,1 @@
-web: uwsgi uwsgi.ini
+web: uwsgi uwsgi.ini --pythonpath ReactAndFlask/flask-backend

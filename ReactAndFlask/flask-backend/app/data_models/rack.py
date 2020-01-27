@@ -16,3 +16,6 @@ class Rack:
 
     def make_json(self) -> JSON:
         return {"row_letter": self.row_letter, "row_number": self.row_number}
+
+    def __repr__(self) -> str:
+        return f"Rack {self.row_letter}{self.row_number}"

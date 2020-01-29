@@ -2,9 +2,11 @@ from http import HTTPStatus
 from typing import Optional
 
 from app.dal.instance_table import InstanceTable
+from app.dal.model_table import ModelTable
 from app.dal.rack_table import RackTable
 from app.dal.user_table import UserTable
 from app.data_models.instance import Instance
+from app.data_models.model import Model
 from app.data_models.rack import Rack
 from app.data_models.user import User
 from app.main.types import JSON
@@ -115,6 +117,55 @@ def new_instance():
             comment=comment,
         )
         instance_table.add_instance(instance=instance)
+    except:
+        return HTTPStatus.BAD_REQUEST
+
+    return HTTPStatus.OK
+
+
+@database.route("/model/<int:identifier>")
+def model(identifier: int):
+    """ Get a model """
+    model_table: ModelTable = ModelTable()
+
+    model: Optional[Model] = model_table.get_model(identifier=identifier)
+    if model is None:
+        return HTTPStatus.NOT_FOUND
+
+    return model.make_json()
+
+
+@database.route("/model/create", methods=["POST"])
+def new_model():
+    """ Create a new model """
+    data: JSON = request.get_json()
+    model_table: ModelTable = ModelTable()
+
+    try:
+        vendor: str = data["vendor"]
+        model_number: str = data["model_number"]
+        height: int = data["height"]
+        eth_ports: Optional[int] = data.get("eth_ports")
+        power_ports: Optional[int] = data.get("power_ports")
+        cpu: Optional[str] = data.get("cpu")
+        memory: Optional[int] = data.get("memory")
+        storage: Optional[str] = data.get("storage")
+        comment: Optional[str] = data.get("comment")
+        display_color: str = data.get("display_color")
+
+        model: Model = Model(
+            vendor=vendor,
+            model_number=model_number,
+            height=height,
+            eth_ports=eth_ports,
+            power_ports=power_ports,
+            cpu=cpu,
+            memory=memory,
+            storage=storage,
+            comment=comment,
+            display_color=display_color,
+        )
+        model_table.add_model(model=model)
     except:
         return HTTPStatus.BAD_REQUEST
 

@@ -16,7 +16,7 @@ install:
 		pip install --upgrade pip &&\
 		pip install -r requirements.txt &&\
 		pre-commit install &&\
-		pre-commit autoupdate
+		pre-commit autoupdate &&\
 		cd ReactAndFlask/react-frontend && yarn install
 
 .PHONY: dependencies
@@ -33,17 +33,25 @@ runall:
 	cd ReactAndFlask/react-frontend && yarn build
 	python ./ReactAndFlask/flask-backend/application.py
 
-.PHONY: runback
-runback:
+.PHONY: run-back
+run-back:
 	python ./ReactAndFlask/flask-backend/application.py
 
-.PHONY: runfront
-runfront:
+.PHONY: run-front
+run-front:
 	cd ReactAndFlask/react-frontend && npm build && npm start
 
 .PHONY: run-local
 run-local:
 	heroku local
+
+.PHONY: setup-db
+setup-db:
+	. ReactAndFlask/flask-backend/scripts/setup_db.sh
+
+.PHONY: users
+users:
+	python ReactAndFlask/flask-backend/scripts/user_setup.py
 
 .PHONY: test
 test:
@@ -55,4 +63,4 @@ clean:
 	rm -rf .mypy_cache/
 	rm -rf __pycache__
 	rm -rf .pytest_cache
-	find app -type f -name '*.py[co]' -delete -o -type d -name __pycache__ -delete
+	find ReactAndFlask/flask-backend/app -type f -name '*.py[co]' -delete -o -type d -name __pycache__ -delete

@@ -1,5 +1,7 @@
 from typing import Optional
 
+from app.main.types import JSON
+
 
 class Model:
     """
@@ -41,3 +43,20 @@ class Model:
         self.storage: Optional[str] = storage
         self.comment: Optional[str] = comment
         self.display_color: str = display_color
+
+    def make_json(self) -> JSON:
+        return {
+            "vendor": self.vendor,
+            "model_number": self.model_number,
+            "height": self.height,
+            "eth_ports": self.eth_ports,
+            "power_ports": self.power_ports,
+            "cpu": self.cpu,
+            "memory": self.memory,
+            "storage": self.storage,
+            "comment": self.comment,
+            "display_color": self.display_color,
+        }
+
+    def __repr__(self) -> str:
+        return "Model {self.vendor} {self.model_number}"

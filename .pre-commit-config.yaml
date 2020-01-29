@@ -53,6 +53,7 @@ repos:
         args:
         - --errors-only
         - --output-format=parseable
+        - --ignored-classes=SQLAlchemy
 
     -   id: mypy
         name: mypy

@@ -5,8 +5,11 @@ from app.instances.routes_instances import instances
 from app.models.routes_models import models
 from app.users.routes_users import users
 from flask import Flask, Response, jsonify, make_response, render_template
+from flask_heroku import Heroku
 
 application = Flask(__name__)
+heroku = Heroku(app=application)
+application.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 
 class APIResponse(Response):

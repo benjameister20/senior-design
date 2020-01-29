@@ -1,3 +1,4 @@
+from app.models.model_manager import ModelManager
 from flask import Blueprint, request
 
 models = Blueprint(
@@ -5,6 +6,7 @@ models = Blueprint(
 )
 
 modelsArr = []
+mm = ModelManager()
 
 
 def convertToJson(arr):
@@ -36,7 +38,11 @@ def create():
     }
 
     modelsArr.append(model)
-    return convertToJson(modelsArr)
+    model_data = request.get_json()
+    result = mm.create_model(model_data)
+    result = convertToJson(modelsArr)
+
+    return result
 
 
 @models.route("/models/delete", methods=["POST"])
@@ -52,7 +58,13 @@ def delete():
             del tempModel
             break
 
-    return convertToJson(modelsArr)
+    # takes vendor and model number
+    model_data = request.get_json()
+    result = mm.delete_model(model_data)
+
+    result = convertToJson(modelsArr)
+
+    return result
 
 
 def filterInModel(filter, model):
@@ -128,3 +140,22 @@ def edit():
             break
 
     return convertToJson(modelsArr)
+
+
+@models.route("/models/view", methods=["GET"])
+def view():
+    """ Route for table view of instances """
+
+    result = mm.view()
+
+    return result
+
+
+@models.route("/models/detailview", methods=["POST"])
+def detail_view():
+    """ Route for table view of instances """
+
+    model_data = request.get_json()
+    result = mm.detail_view(model_data)
+
+    return result

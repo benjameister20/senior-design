@@ -1,3 +1,4 @@
+from app.instances.instance_manager import InstanceManager
 from flask import Blueprint, request
 
 instances = Blueprint(
@@ -5,6 +6,7 @@ instances = Blueprint(
 )
 
 instancesArr = []
+im = InstanceManager()
 
 
 def convertToJson(arr):
@@ -32,12 +34,20 @@ def create():
     }
 
     instancesArr.append(instance)
-    return convertToJson(instancesArr)
+    instance_data = request.get_json()
+    result = im.create_instance(instance_data)
+    result = convertToJson(instancesArr)
+
+    return result
 
 
 @instances.route("/instances/delete", methods=["POST"])
 def delete():
-    """ Route for deleting models """
+    """ Route for deleting instances """
+
+    instance_data = request.get_json()
+    result = im.delete_instance(instance_data)
+
     global instancesArr
 
     rack = (request.json["rack"],)
@@ -48,7 +58,9 @@ def delete():
             del instancesArr[i]
             break
 
-    return convertToJson(instancesArr)
+    result = convertToJson(instancesArr)
+
+    return result
 
 
 def filterInInstance(filter, instance):
@@ -112,3 +124,22 @@ def edit():
             break
 
     return convertToJson(instancesArr)
+
+
+@instances.route("/instances/view", methods=["GET"])
+def view():
+    """ Route for table view of instances """
+
+    result = im.view()
+
+    return result
+
+
+@instances.route("/instances/detailview", methods=["POST"])
+def detail_view():
+    """ Route for detail view of instance """
+
+    instance_data = request.get_json()
+    result = im.detail_view(instance_data)
+
+    return result

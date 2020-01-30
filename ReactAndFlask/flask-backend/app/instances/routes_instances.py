@@ -1,3 +1,6 @@
+from typing import List
+
+from app.exceptions.InvalidInputsException import InvalidInputsError
 from app.instances.instance_manager import InstanceManager
 from flask import Blueprint, request
 
@@ -5,12 +8,7 @@ instances = Blueprint(
     "instances", __name__, template_folder="templates", static_folder="static"
 )
 
-instancesArr = []
-im = InstanceManager()
-
-
-def convertToJson(arr):
-    return {"instances": arr}
+INSTANCE_MANAGER = InstanceManager()
 
 
 @instances.route("/instances/test", methods=["GET"])
@@ -22,124 +20,87 @@ def test():
 @instances.route("/instances/create", methods=["POST"])
 def create():
     """ Route for creating instances """
-    global instancesArr
 
-    instance = {
-        "model": request.json["model"],
-        "hostname": request.json["hostname"],
-        "rack": request.json["rack"],
-        "rackU": request.json["rackU"],
-        "owner": request.json["owner"],
-        "comment": request.json["comment"],
-    }
+    global INSTANCE_MANAGER
+    returnJSON = createJSON()
 
-    instancesArr.append(instance)
-    instance_data = request.get_json()
-    result = im.create_instance(instance_data)
-    result = convertToJson(instancesArr)
-
-    return result
+    try:
+        instance_data = request.get_json()
+        INSTANCE_MANAGER.create_instance(instance_data)
+        return addMessageToJSON(returnJSON, "success")
+    except InvalidInputsError:
+        return addMessageToJSON(returnJSON, "failure")
 
 
 @instances.route("/instances/delete", methods=["POST"])
 def delete():
     """ Route for deleting instances """
 
-    instance_data = request.get_json()
-    result = im.delete_instance(instance_data)
+    global INSTANCE_MANAGER
+    returnJSON = createJSON()
 
-    global instancesArr
-
-    rack = (request.json["rack"],)
-    rackU = (request.json["rackU"],)
-
-    for n, i in enumerate(instancesArr):
-        if instancesArr[i]["rack"] == rack and instancesArr[i]["rackU"] == rackU:
-            del instancesArr[i]
-            break
-
-    result = convertToJson(instancesArr)
-
-    return result
-
-
-def filterInInstance(filter, instance):
-    if filter in instance["model"]:
-        return True
-    if filter in instance["hostname"]:
-        return True
-    if filter in instance["rack"]:
-        return True
-    if filter in instance["rackU"]:
-        return True
-    if filter in instance["owner"]:
-        return True
-    if filter in instance["comment"]:
-        return True
-
-    return False
+    try:
+        instance_data = request.get_json()
+        INSTANCE_MANAGER.delete_instance(instance_data)
+        return addMessageToJSON(returnJSON, "success")
+    except InvalidInputsError:
+        return addMessageToJSON(returnJSON, "failure")
 
 
 @instances.route("/instances/search/", methods=["POST"])
 def search():
     """ Route for searching instances """
-    global instancesArr
+
+    global INSTANCE_MANAGER
+    returnJSON = createJSON()
 
     filter = request.json["filter"]
+    try:
+        limit = int(request.json["limit"])
+    except:
+        limit = 1000
 
-    filteredInstances = []
-    if filter == "":
-        return convertToJson(instancesArr)
-
-    for instance in instancesArr:
-        try:
-            if filterInInstance(filter, instance):
-                filteredInstances.append(instance)
-        except:
-            continue
-    print(filteredInstances)
-    return convertToJson(filteredInstances)
+    try:
+        INSTANCE_MANAGER.get_instances(filter, limit)
+        return addMessageToJSON(returnJSON, "success")
+    except:
+        return addMessageToJSON(returnJSON, "failure")
 
 
 @instances.route("/instances/edit", methods=["POST"])
 def edit():
-    """ Route for editing models """
-    global instancesArr
+    """ Route for editing instances """
 
-    instance = {
-        "model": request.json["model"],
-        "hostname": request.json["hostname"],
-        "rack": request.json["rack"],
-        "rackU": request.json["rackU"],
-        "owner": request.json["owner"],
-        "comment": request.json["comment"],
-    }
+    global INSTANCE_MANAGER
+    returnJSON = createJSON()
 
-    for n, i in enumerate(instancesArr):
-        if (
-            instancesArr[i]["model"] == instance["model"]
-            and instancesArr[i]["hostname"] == instance["hostname"]
-        ):
-            instancesArr[i] = instance
-            break
-
-    return convertToJson(instancesArr)
-
-
-@instances.route("/instances/view", methods=["GET"])
-def view():
-    """ Route for table view of instances """
-
-    result = im.view()
-
-    return result
+    return addMessageToJSON(returnJSON, "success")
 
 
 @instances.route("/instances/detailview", methods=["POST"])
 def detail_view():
-    """ Route for detail view of instance """
+    """ Route for table view of instances """
+
+    global instancesArr
 
     instance_data = request.get_json()
-    result = im.detail_view(instance_data)
+    instance = INSTANCE_MANAGER.detail_view(instance_data)
 
-    return result
+    returnJSON = createJSON()
+    returnJSON = addInstancesTOJSON(addMessageToJSON(returnJSON, "success"), [instance])
+
+    return returnJSON
+
+
+def createJSON() -> dict:
+    return {"metadata": "none"}
+
+
+def addMessageToJSON(json, message) -> dict:
+    json["message"] = message
+    return json
+
+
+def addInstancesTOJSON(json, instancesArr: List[str]) -> dict:
+    json["instances"] = instancesArr
+    return json

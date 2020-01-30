@@ -1,5 +1,6 @@
 import React from 'react';
 import Button from '@material-ui/core/Button';
+import Modal from '@material-ui/core/Modal';
 
 export default class UploadModal extends React.Component {
     constructor(props) {
@@ -17,7 +18,7 @@ export default class UploadModal extends React.Component {
                 aria-labelledby="simple-modal-title"
                 aria-describedby="simple-modal-description"
                 open={this.props.showImportModal}
-                onClose={() => (this.setState({showImportModal:false}))}
+                onClose={this.props.closeImportModal}
             >
                 <div>
                     <input type='file' accept=".csv" />

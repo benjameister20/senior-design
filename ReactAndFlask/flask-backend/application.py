@@ -1,5 +1,6 @@
 from http import HTTPStatus
 
+from app.dal.database import db
 from app.data_models.user import User
 from app.instances.routes_instances import instances
 from app.models.routes_models import models
@@ -9,7 +10,6 @@ from flask_heroku import Heroku
 
 application = Flask(__name__)
 heroku = Heroku(app=application)
-application.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 
 class APIResponse(Response):
@@ -56,6 +56,10 @@ def _register_routes() -> None:
 
 
 def init() -> None:
+    application.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+    application.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://localhost/test"
+    db.init_app(app=application)
+
     _register_routes()
 
 

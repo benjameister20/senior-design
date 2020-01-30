@@ -7,12 +7,6 @@ import jwt
 
 
 class AuthManager:
-    """[summary]
-
-    Returns:
-        [type]: [description]
-    """
-
     def __init__(self) -> None:
         self.TOKEN_SECRET_KEY = os.getenv("TOKEN_SECRET_KEY", "my_precious")
         self.TOKEN_EXP_DAYS = 0

@@ -67,11 +67,11 @@ class AuthManager:
         try:
             payload = {
                 "exp": datetime.datetime.utcnow()
-                + datetime.timedelta( 
-                    days =      self.TOKEN_EXP_DAYS,
-                    hours =     self.TOKEN_EXP_HOURS, 
-                    minutes =   self.TOKEN_EXP_MINUTES, 
-                    seconds =   self.TOKEN_EXP_SECONDS
+                + datetime.timedelta(
+                    days=self.TOKEN_EXP_DAYS,
+                    hours=self.TOKEN_EXP_HOURS,
+                    minutes=self.TOKEN_EXP_MINUTES,
+                    seconds=self.TOKEN_EXP_SECONDS,
                 ),
                 "iat": datetime.datetime.utcnow(),
                 "sub": username,
@@ -107,7 +107,6 @@ class AuthManager:
             return [False, self.INVALID_TOKEN]
         else:
             return [True, "Token is valid"]
-
 
 
 if __name__ == "__main__":

@@ -72,7 +72,7 @@ def create():
     """
 
     request_data = request.get_json()
-    auth_token = request_data["auth_token"]
+    request_data["auth_token"]
     username = request_data["username"]
     password = request_data["password"]
     email = request_data["email"]

@@ -1,5 +1,6 @@
 import datetime
 import os
+import time
 
 import bcrypt
 import jwt
@@ -14,6 +15,12 @@ class AuthManager:
 
     def __init__(self) -> None:
         self.TOKEN_SECRET_KEY = os.getenv("TOKEN_SECRET_KEY", "my_precious")
+        self.TOKEN_EXP_DAYS = 0
+        self.TOKEN_EXP_HOURS = 0
+        self.TOKEN_EXP_MINUTES = 0
+        self.TOKEN_EXP_SECONDS = 2
+        self.SESSION_EXPIRED = "Session expired. Please log in again."
+        self.INVALID_TOKEN = "Invalid token. Please log in again."
 
     def encrypt_pw(self, password: str) -> str:
         """Encrypts a user password using bcrypt algorithm
@@ -50,7 +57,7 @@ class AuthManager:
 
         return bcrypt.checkpw(encoded, actual)
 
-    def encode_auth_token(self, username):
+    def encode_auth_token(self, username: str):
         """ Generate Auth Token
 
         Returns:
@@ -60,11 +67,17 @@ class AuthManager:
         try:
             payload = {
                 "exp": datetime.datetime.utcnow()
-                + datetime.timedelta(days=0, hours=2, minutes=0, seconds=0),
+                + datetime.timedelta( 
+                    days =      self.TOKEN_EXP_DAYS,
+                    hours =     self.TOKEN_EXP_HOURS, 
+                    minutes =   self.TOKEN_EXP_MINUTES, 
+                    seconds =   self.TOKEN_EXP_SECONDS
+                ),
                 "iat": datetime.datetime.utcnow(),
                 "sub": username,
             }
-            return jwt.encode(payload, self.TOKEN_SECRET_KEY, algorithm="HS256")
+            token = jwt.encode(payload, self.TOKEN_SECRET_KEY, algorithm="HS256")
+            return token
         except Exception as e:
             return e
 
@@ -79,12 +92,22 @@ class AuthManager:
         """
         try:
             payload = jwt.decode(auth_token, self.TOKEN_SECRET_KEY)
-            print(payload)
             return payload["sub"]
         except jwt.ExpiredSignatureError:
-            return "Session expired. Please log in again."
+            return self.SESSION_EXPIRED
         except jwt.InvalidTokenError:
-            return "Invalid token. Please log in again."
+            return self.INVALID_TOKEN
+
+    def validate_auth_token(self, auth_token):
+
+        decoded = self.decode_auth_token(auth_token)
+        if decoded == self.SESSION_EXPIRED:
+            return [False, self.SESSION_EXPIRED]
+        elif decoded == self.INVALID_TOKEN:
+            return [False, self.INVALID_TOKEN]
+        else:
+            return [True, "Token is valid"]
+
 
 
 if __name__ == "__main__":
@@ -102,5 +125,6 @@ if __name__ == "__main__":
     # results = re.search(pattern, s)
     auth = AuthManager()
     token = auth.encode_auth_token("mack")
+    time.sleep(3)
     print(token)
-    print(auth.decode_auth_token(token))
+    print(auth.validate_auth_token(token))

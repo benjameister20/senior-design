@@ -13,7 +13,8 @@ validator = Validator()
 @users.route("/users/test", methods=["GET"])
 def test():
     """ route to test user endpoints """
-
+    print(request.headers)
+    AuthManager.validate_auth_token()
     response = {
         "users": [
             {
@@ -71,6 +72,7 @@ def create():
     """
 
     request_data = request.get_json()
+    auth_token = request_data["auth_token"]
     username = request_data["username"]
     password = request_data["password"]
     email = request_data["email"]

@@ -2,16 +2,29 @@ import React from 'react';
 import axios from 'axios';
 import { ModelCommand } from '../enums/modelCommands.ts'
 import { ModelInput } from '../enums/modelInputs.ts'
-import * as Constants from '../Constants';
 import Modal from '@material-ui/core/Modal';
 import Button from '@material-ui/core/Button';
 import TextField from "@material-ui/core/TextField";
 import TableView from '../helpers/TableView';
 import { CSVLink } from "react-csv";
-import SearchIcon from '@material-ui/icons/Search';
-import InputBase from '@material-ui/core/InputBase';
 import ButtonMenu from '../helpers/ButtonMenu';
 import Filters from '../helpers/Filters';
+import UploadModal from '../helpers/UploadModal';
+import getURL from '../helpers/functions/GetURL';
+import jsonToArr from '../helpers/functions/JSONtoArr';
+
+const inputs = [
+    "Vendor",
+    "Model Number",
+    "Height (U)",
+    "Display Color",
+    "Ethernet Ports",
+    "Power Ports",
+    "CPU",
+    "Memory",
+    "Storage",
+    "Comments",
+]
 
 const columns = [
     "Vendor",
@@ -20,23 +33,6 @@ const columns = [
 
 const modelsMainPath = 'models/';
 const modelDownloadFileName = 'models.csv';
-
-function getURL(endpoint) {
-    return Constants.serverEndpoint + modelsMainPath + endpoint;
-}
-
-function jsonToArr(json) {
-    var models = json.data['models'];
-    const items = [];
-
-    for (const [index, val] of models.entries()) {
-        const row = [];
-        row.push(val[ModelInput.Vendor]);
-        row.push(val[ModelInput.ModelNumber]);
-        items.push(row);
-    }
-    return items;
-}
 
 export default class ModelsView extends React.Component {
     constructor(props) {
@@ -97,11 +93,13 @@ export default class ModelsView extends React.Component {
         this.downloadTable = this.downloadTable.bind(this);
         this.updateSearchText = this.updateSearchText.bind(this);
         this.searchModels = this.searchModels.bind(this);
+        this.closeImportModal = this.closeImportModal.bind(this);
+        this.closeCreateModal = this.closeCreateModal.bind(this);
     }
 
     createModel() {
         axios.post(
-            getURL(ModelCommand.create),
+            getURL(modelsMainPath, ModelCommand.create),
             {
                 'vendor':this.state.createdModel[ModelInput.Vendor],
                 'modelNumber':this.state.createdModel[ModelInput.ModelNumber],
@@ -132,12 +130,12 @@ export default class ModelsView extends React.Component {
 
     deleteModel() {
         axios.post(
-            getURL(ModelCommand.delete),
+            getURL(modelsMainPath, ModelCommand.delete),
             {
                 'vendor':this.state.deleteVendor,
                 'modelNumber':this.state.deleteModel,
             }
-            ).then(response => this.setState({ items: jsonToArr(response)}));
+            ).then(response => console.log(response));
 
         this.setState({
             deleteVendor:'',
@@ -147,12 +145,12 @@ export default class ModelsView extends React.Component {
 
     detailViewModel() {
         axios.post(
-            getURL(ModelCommand.detailView),
+            getURL(modelsMainPath, ModelCommand.detailView),
             {
                 'vendor':this.state.viewVendor,
                 'modelNumber':this.state.viewModel,
             }
-            ).then(response => this.setState({ items: jsonToArr(response)}));
+            ).then(response => console.log(response));
 
         this.setState({
             viewVendor:'',
@@ -162,11 +160,11 @@ export default class ModelsView extends React.Component {
 
     searchModels() {
         axios.post(
-            getURL(ModelCommand.search),
+            getURL(modelsMainPath, ModelCommand.search),
             {
                 'filter':this.state.searchText,
             }
-            ).then(response => this.setState({ items: jsonToArr(response)}));
+            ).then(response => console.log(response));
 
         this.setState({
             searchText:'',
@@ -183,6 +181,14 @@ export default class ModelsView extends React.Component {
 
     openImportModal() {
         this.setState({showImportModal: true});
+    }
+
+    closeCreateModal() {
+        this.setState({showCreateModal: true});
+    }
+
+    closeImportModal() {
+        this.setState({showImportModal: false});
     }
 
     updateModelCreator(event) {
@@ -218,16 +224,16 @@ export default class ModelsView extends React.Component {
                 >
                     <div>
 
-                        <TextField id="standard-basic" name={ModelInput.Vendor} label={columns[0]} onChange={this.updateModelCreator.bind(this)}/>
-                        <TextField id="standard-basic" name={ModelInput.ModelNumber} label={columns[1]} onChange={this.updateModelCreator.bind(this)}/>
-                        <TextField id="standard-basic" name={ModelInput.Height} label={columns[2]} onChange={this.updateModelCreator.bind(this)}/>
-                        <TextField id="standard-basic" name={ModelInput.DisplayColor} label={columns[3]} onChange={this.updateModelCreator.bind(this)}/>
-                        <TextField id="standard-basic" name={ModelInput.EthernetPorts} label={columns[4]} onChange={this.updateModelCreator.bind(this)}/>
-                        <TextField id="standard-basic" name={ModelInput.PowerPorts} label={columns[5]} onChange={this.updateModelCreator.bind(this)}/>
-                        <TextField id="standard-basic" name={ModelInput.CPU} label={columns[6]} onChange={this.updateModelCreator.bind(this)}/>
-                        <TextField id="standard-basic" name={ModelInput.Memory} label={columns[7]} onChange={this.updateModelCreator.bind(this)}/>
-                        <TextField id="standard-basic" name={ModelInput.Storage} label={columns[8]} onChange={this.updateModelCreator.bind(this)}/>
-                        <TextField id="standard-basic" name={ModelInput.Comment} label={columns[9]} onChange={this.updateModelCreator.bind(this)}/>
+                        <TextField id="standard-basic" name={ModelInput.Vendor} label={inputs[0]} onChange={this.updateModelCreator.bind(this)}/>
+                        <TextField id="standard-basic" name={ModelInput.ModelNumber} label={inputs[1]} onChange={this.updateModelCreator.bind(this)}/>
+                        <TextField id="standard-basic" name={ModelInput.Height} label={inputs[2]} onChange={this.updateModelCreator.bind(this)}/>
+                        <TextField id="standard-basic" name={ModelInput.DisplayColor} label={inputs[3]} onChange={this.updateModelCreator.bind(this)}/>
+                        <TextField id="standard-basic" name={ModelInput.EthernetPorts} label={inputs[4]} onChange={this.updateModelCreator.bind(this)}/>
+                        <TextField id="standard-basic" name={ModelInput.PowerPorts} label={inputs[5]} onChange={this.updateModelCreator.bind(this)}/>
+                        <TextField id="standard-basic" name={ModelInput.CPU} label={inputs[6]} onChange={this.updateModelCreator.bind(this)}/>
+                        <TextField id="standard-basic" name={ModelInput.Memory} label={inputs[7]} onChange={this.updateModelCreator.bind(this)}/>
+                        <TextField id="standard-basic" name={ModelInput.Storage} label={inputs[8]} onChange={this.updateModelCreator.bind(this)}/>
+                        <TextField id="standard-basic" name={ModelInput.Comment} label={inputs[9]} onChange={this.updateModelCreator.bind(this)}/>
 
                         <Button
                             variant="contained"
@@ -238,23 +244,10 @@ export default class ModelsView extends React.Component {
                         </Button>
                     </div>
                 </Modal>
-                <Modal
-                    style={{top: `50%`,left: `50%`,transform: `translate(-50%, -50%)`,}}
-                    aria-labelledby="simple-modal-title"
-                    aria-describedby="simple-modal-description"
-                    open={this.state.showImportModal}
-                    onClose={() => (this.setState({showImportModal:false}))}
-                >
-                    <div>
-                        <input type='file' accept=".csv" />
-                        <Button
-                            variant="contained"
-                            color="primary"
-                        >
-                            Upload
-                        </Button>
-                    </div>
-                </Modal>
+                <UploadModal
+                    showImportModal={this.state.showImportModal}
+                    closeImportModal={this.closeImportModal}
+                />
                 <Filters
                     updateSearchText={this.updateSearchText}
                     searchModels={this.searchModels}

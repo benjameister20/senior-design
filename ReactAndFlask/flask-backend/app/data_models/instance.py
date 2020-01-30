@@ -1,6 +1,5 @@
 from typing import Optional
 
-from app.data_models.rack import Rack
 from app.main.types import JSON
 
 
@@ -21,14 +20,14 @@ class Instance:
         self,
         model_id: int,
         hostname: str,
-        rack: Rack,
+        rack: str,
         rack_u: int,
         owner: Optional[str],
         comment: Optional[str],
     ) -> None:
         self.model_id: int = model_id
         self.hostname: str = hostname
-        self.rack: Rack = rack
+        self.rack: str = rack
         self.rack_u: int = rack_u
         self.owner: Optional[str] = owner
         self.comment: Optional[str] = comment
@@ -37,11 +36,11 @@ class Instance:
         return {
             "model_id": self.model_id,
             "hostname": self.hostname,
-            "rack": f"{self.rack.row_letter}{self.rack.row_number}",
+            "rack": self.rack,
             "rack_u": self.rack_u,
             "owner": self.owner,
             "comment": self.comment,
         }
 
     def __repr__(self) -> str:
-        return f"Instance {self.hostname} {self.rack.row_letter}{self.rack.row_number}"
+        return f"Instance {self.hostname} {self.rack}"

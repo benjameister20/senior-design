@@ -12,6 +12,7 @@ import Filters from '../helpers/Filters';
 import UploadModal from '../helpers/UploadModal';
 import getURL from '../helpers/functions/GetURL';
 import jsonToArr from '../helpers/functions/JSONtoArr';
+import DetailedView from '../helpers/DetailedView';
 
 const inputs = [
     "Vendor",
@@ -29,6 +30,7 @@ const inputs = [
 const columns = [
     "Vendor",
     "Model Number",
+    "Height (U)",
 ]
 
 const modelsMainPath = 'models/';
@@ -86,6 +88,21 @@ export default class ModelsView extends React.Component {
 
             // csv data
             csvData:[],
+
+            // detailed view
+            showDetailedView: false,
+            detailedValues : {
+                'vendor':'',
+                'modelNumber':'',
+                'height':'',
+                'displayColor':'',
+                'ethernetPorts':'',
+                'powerPorts':'',
+                'cpu':'',
+                'memory':'',
+                'storage':'',
+                'comments':'',
+            },
         };
 
         this.openCreateModal = this.openCreateModal.bind(this);
@@ -95,6 +112,9 @@ export default class ModelsView extends React.Component {
         this.searchModels = this.searchModels.bind(this);
         this.closeImportModal = this.closeImportModal.bind(this);
         this.closeCreateModal = this.closeCreateModal.bind(this);
+        this.showDetailedView = this.showDetailedView.bind(this);
+        this.editModel = this.editModel.bind(this);
+        this.closeDetailedView = this.closeDetailedView.bind(this);
     }
 
     createModel() {
@@ -164,7 +184,7 @@ export default class ModelsView extends React.Component {
             {
                 'filter':this.state.searchText,
             }
-            ).then(response => console.log(response));
+            ).then(response => this.setState({ items: jsonToArr(response.data['models']) }));
 
         this.setState({
             searchText:'',
@@ -198,6 +218,18 @@ export default class ModelsView extends React.Component {
 
     updateSearchText(event) {
         this.setState({ searchText: event.target.value})
+    }
+
+    showDetailedView() {
+        this.setState({ showDetailedView: true })
+    }
+
+    closeDetailedView() {
+        this.setState({ showDetailedView: false })
+    }
+
+    editModel() {
+
     }
 
     render() {
@@ -255,6 +287,13 @@ export default class ModelsView extends React.Component {
                 <TableView
                     columns={columns}
                     vals={this.state.items}
+                />
+                <DetailedView
+                    show={this.state.showDetailedView}
+                    inputs={inputs}
+                    vals={this.state.detailedValues}
+                    edit={this.editModel}
+                    close={this.closeDetailedView}
                 />
             </div>
     );

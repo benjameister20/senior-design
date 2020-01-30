@@ -1,6 +1,6 @@
 from typing import List
 
-from app.models.InvalidInputsException import InvalidInputsError
+from app.exceptions.InvalidInputsException import InvalidInputsError
 from app.models.model_manager import ModelManager
 from flask import Blueprint, request
 
@@ -79,7 +79,7 @@ def edit():
 
 @models.route("/models/detailview", methods=["POST"])
 def detail_view():
-    """ Route for table view of instances """
+    """ Route for table view of models """
 
     global modelsArr
 

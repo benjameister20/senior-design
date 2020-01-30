@@ -54,7 +54,32 @@ class ModelTable:
             display_color=model.display_color,
         )
 
-    def add_model(self, model: Model) -> None:
+    def get_model_by_vendor_number(self, vendor, modelNumber):
+        model: ModelEntry.query.filter_by(vendor=vendor, model_number=modelNumber)
+        if model is None:
+            return None
+
+        return Model(
+            vendor=model.vendor,
+            model_number=model.model_number,
+            height=model.height,
+            eth_ports=model.eth_ports,
+            power_ports=model.power_ports,
+            cpu=model.cpu,
+            memory=model.memory,
+            storage=model.storage,
+            comment=model.comment,
+            display_color=model.display_color,
+        )
+
+    def get_model_id_by_vendor_number(self, vendor, modelNumber):
+        model: ModelEntry.query.filter_by(vendor=vendor, model_number=modelNumber)
+        if model is None:
+            return None
+
+        return model.identifier
+
+    def edit_model(self, model: Model) -> None:
         """ Updates a model to the database """
 
         model_entry: ModelEntry = ModelEntry(model=model)
@@ -68,7 +93,7 @@ class ModelTable:
                 "Failed to udpate model {model.vendor} {model.model_number}"
             )
 
-    def edit_model(self, model: Model) -> None:
+    def add_model(self, model: Model) -> None:
         """ Adds a model to the database """
         model_entry: ModelEntry = ModelEntry(model=model)
 
@@ -124,8 +149,8 @@ class ModelTable:
     def get_models_with_filter(self, filter: str, limit: int) -> List[Model]:
         """ Get a list of all models containing the given filter """
 
-        #filtered_models: List[ModelEntry] = ModelEntry.query.filter_by(or_(filter)).limit(limit)
-        filtered_models = []
+        # filtered_models: List[ModelEntry] = ModelEntry.query.filter_by(or_(filter)).limit(limit)
+        filtered_models: List[Model] = []
 
         return [
             Model(

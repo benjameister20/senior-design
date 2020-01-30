@@ -6,24 +6,16 @@ import * as Constants from '../Constants';
 import Modal from '@material-ui/core/Modal';
 import Button from '@material-ui/core/Button';
 import TextField from "@material-ui/core/TextField";
-import CloudUploadIcon from '@material-ui/icons/CloudUpload';
-import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
 import TableView from '../helpers/TableView';
 import { CSVLink } from "react-csv";
 import SearchIcon from '@material-ui/icons/Search';
 import InputBase from '@material-ui/core/InputBase';
+import ButtonMenu from '../helpers/ButtonMenu';
+import Filters from '../helpers/Filters';
 
 const columns = [
     "Vendor",
     "Model Number",
-    "Height (U)",
-    "Display Color",
-    "Ethernet Ports",
-    "Power Ports",
-    "CPU",
-    "Memory",
-    "Storage",
-    "Comments",
 ]
 
 const modelsMainPath = 'models/';
@@ -41,14 +33,6 @@ function jsonToArr(json) {
         const row = [];
         row.push(val[ModelInput.Vendor]);
         row.push(val[ModelInput.ModelNumber]);
-        row.push(val[ModelInput.Height]);
-        row.push(val[ModelInput.DisplayColor]);
-        row.push(val[ModelInput.EthernetPorts]);
-        row.push(val[ModelInput.PowerPorts]);
-        row.push(val[ModelInput.CPU]);
-        row.push(val[ModelInput.Memory]);
-        row.push(val[ModelInput.Storage]);
-        row.push(val[ModelInput.Comment]);
         items.push(row);
     }
     return items;
@@ -59,11 +43,18 @@ export default class ModelsView extends React.Component {
         super(props);
 
         this.state = {
+
+            // modals
             showCreateModal:false,
             showImportModal:false,
+
+            // table items
             items:[],
+
             modelToken:"",
-            createdModel: {
+
+            // vals for creating a new model
+            createdModel : {
                 'vendor':'',
                 'modelNumber':'',
                 'height':'',
@@ -75,13 +66,37 @@ export default class ModelsView extends React.Component {
                 'storage':'',
                 'comments':'',
             },
+            createdVendor:'',
+            createdModelNum:'',
+            createdHeight:'',
+            createdDispClr:'',
+            createdEthPorts:'',
+            createdPwrPorts:'',
+            createdCPU:'',
+            createdMem:'',
+            createdStorage:'',
+            createdComments:'',
+
+            // vals for deleting a model
             deleteVendor:'',
             deleteModel:'',
+
+            // vals for viewing a model
             viewVendor:'',
             viewModel:'',
-            csvData:[],
+
+            // searching a model
             searchText:"",
+
+            // csv data
+            csvData:[],
         };
+
+        this.openCreateModal = this.openCreateModal.bind(this);
+        this.openImportModal = this.openImportModal.bind(this);
+        this.downloadTable = this.downloadTable.bind(this);
+        this.updateSearchText = this.updateSearchText.bind(this);
+        this.searchModels = this.searchModels.bind(this);
     }
 
     createModel() {
@@ -99,7 +114,20 @@ export default class ModelsView extends React.Component {
                 'storage':this.state.createdModel[ModelInput.Storage],
                 'comments':this.state.createdModel[ModelInput.Comment],
             }
-            ).then(response => this.setState({ items: jsonToArr(response)}));
+            ).then(response => console.log(response));
+
+        this.setState({
+            createdVendor:'',
+            createdModelNum:'',
+            createdHeight:'',
+            createdDispClr:'',
+            createdEthPorts:'',
+            createdPwrPorts:'',
+            createdCPU:'',
+            createdMem:'',
+            createdStorage:'',
+            createdComments:'',
+        });
     }
 
     deleteModel() {
@@ -110,6 +138,11 @@ export default class ModelsView extends React.Component {
                 'modelNumber':this.state.deleteModel,
             }
             ).then(response => this.setState({ items: jsonToArr(response)}));
+
+        this.setState({
+            deleteVendor:'',
+            deleteModel:'',
+        });
     }
 
     detailViewModel() {
@@ -120,16 +153,11 @@ export default class ModelsView extends React.Component {
                 'modelNumber':this.state.viewModel,
             }
             ).then(response => this.setState({ items: jsonToArr(response)}));
-    }
 
-    viewModel() {
-        axios.post(
-            getURL(ModelCommand.view),
-            {
-                'vendor':this.state.viewVendor,
-                'modelNumber':this.state.viewModel,
-            }
-            ).then(response => this.setState({ items: jsonToArr(response)}));
+        this.setState({
+            viewVendor:'',
+            viewModel:'',
+        });
     }
 
     searchModels() {
@@ -139,6 +167,10 @@ export default class ModelsView extends React.Component {
                 'filter':this.state.searchText,
             }
             ).then(response => this.setState({ items: jsonToArr(response)}));
+
+        this.setState({
+            searchText:'',
+        });
     }
 
     downloadTable() {
@@ -165,35 +197,18 @@ export default class ModelsView extends React.Component {
     render() {
         return (
             <div>
-                <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={this.openCreateModal.bind(this)}
-                >
-                    Create
-                </Button>
-                <Button
-                    variant="contained"
-                    color="primary"
-                    startIcon={<CloudUploadIcon />}
-                    onClick={this.openImportModal.bind(this)}
-                >
-                    Import
-                </Button>
-                <Button
-                    variant="contained"
-                    color="primary"
-                    startIcon={<CloudDownloadIcon />}
-                    onClick={this.downloadTable.bind(this)}
-                >
-                    Export
-                </Button>
+                <ButtonMenu
+                    openCreateModal={this.openCreateModal}
+                    openImportModal={this.openImportModal}
+                    downloadTable={this.downloadTable}
+                />
                 <CSVLink
                     data={this.state.csvData}
                     filename={modelDownloadFileName}
                     className="hidden"
                     ref={(r) => this.csvLink = r}
-                    target="_blank"/>
+                    target="_blank"
+                />
                 <Modal
                     style={{top: `50%`,left: `50%`,transform: `translate(-50%, -50%)`,}}
                     aria-labelledby="simple-modal-title"
@@ -240,21 +255,10 @@ export default class ModelsView extends React.Component {
                         </Button>
                     </div>
                 </Modal>
-                <div>
-                <div>
-                    <SearchIcon />
-                </div>
-                    <InputBase
-                        placeholder="Search (blank does a search all)"
-                        inputProps={{ 'aria-label': 'search' }}
-                        onChange={this.updateSearchText.bind(this)}
-                    />
-                    <Button
-                        onClick={this.searchModels.bind(this)}
-                    >
-                        Search
-                    </Button>
-                </div>
+                <Filters
+                    updateSearchText={this.updateSearchText}
+                    searchModels={this.searchModels}
+                />
                 <TableView
                     columns={columns}
                     vals={this.state.items}

@@ -1,10 +1,15 @@
 from http import HTTPStatus
 
 from app.data_models.user import User
+from app.instances.routes_instances import instances
+from app.models.routes_models import models
 from app.users.routes_users import users
 from flask import Flask, Response, jsonify, make_response, render_template
+from flask_heroku import Heroku
 
 application = Flask(__name__)
+heroku = Heroku(app=application)
+application.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 
 class APIResponse(Response):
@@ -44,8 +49,8 @@ def _register_routes() -> None:
     Register routes
     """
     application.register_blueprint(users)
-    # application.register_blueprint(models)
-    # application.register_blueprint(instances)
+    application.register_blueprint(models)
+    application.register_blueprint(instances)
     # application.register_blueprint(racks)
     # application.register_blueprint(stats)
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './stylesheets/index.css';
-import App from './javascript/App';
+import PageSelector from './javascript/PageSelector';
 
-ReactDOM.render(<App />, document.getElementById('root'));
+ReactDOM.render(<PageSelector />, document.getElementById('root'));

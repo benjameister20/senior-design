@@ -8,3 +8,4 @@ venv/
 .idea/
 .env
 *.log
+ReactAndFlask/react-frontend/node_modules/

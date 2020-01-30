@@ -1,45 +1,106 @@
+from typing import List
+
+from app.models.InvalidInputsException import InvalidInputsError
+from app.models.model_manager import ModelManager
 from flask import Blueprint, request
 
 models = Blueprint(
     "models", __name__, template_folder="templates", static_folder="static"
 )
 
+MODEL_MANAGER = ModelManager()
+
 
 @models.route("/models/test", methods=["GET"])
 def test():
-    """ route to test user endpoints """
-    return "happy"
+    """ route to test model endpoints """
+    return "test"
 
 
 @models.route("/models/create", methods=["POST"])
 def create():
-    """ Route for creating users """
+    """ Route for creating models """
 
-    user_data = request.get_json()
+    global MODEL_MANAGER
+    returnJSON = createJSON()
 
-    print(user_data)
-
-    # TODO: Check if username is taken
-    # TODO: Check if email is already associated with another account
-    # TODO: Check if password is secure enough (uppercase + lowercase, numbers, special chars, length)
-
-    # use crypto library to securely store user info in db
-
-    return "happy"
+    try:
+        model_data = request.get_json()
+        MODEL_MANAGER.create_model(model_data)
+        return addMessageToJSON(returnJSON, "success")
+    except InvalidInputsError:
+        return addMessageToJSON(returnJSON, "failure")
 
 
 @models.route("/models/delete", methods=["POST"])
 def delete():
-    """ Route for deleting users """
+    """ Route for deleting models """
 
-    request.args.get("username")
-    request.args.get("display_name")
-    request.args.get("email")
-    request.args.get("password")
-    request.args.get("privilege")
+    global MODEL_MANAGER
+    returnJSON = createJSON()
 
-    # use crypto library to securely store user info
+    try:
+        model_data = request.get_json()
+        MODEL_MANAGER.delete_model(model_data)
+        return addMessageToJSON(returnJSON, "success")
+    except InvalidInputsError:
+        return addMessageToJSON(returnJSON, "failure")
 
-    # store user in db
 
-    return
+@models.route("/models/search/", methods=["POST"])
+def search():
+    """ Route for searching models """
+
+    global MODEL_MANAGER
+    returnJSON = createJSON()
+
+    filter = request.json["filter"]
+    try:
+        limit = int(request.json["limit"])
+    except:
+        limit = 1000
+
+    try:
+        MODEL_MANAGER.get_models(filter, limit)
+        return addMessageToJSON(returnJSON, "success")
+    except:
+        return addMessageToJSON(returnJSON, "failure")
+
+
+@models.route("/models/edit", methods=["POST"])
+def edit():
+    """ Route for editing models """
+
+    global MODEL_MANAGER
+    returnJSON = createJSON()
+
+    return addMessageToJSON(returnJSON, "success")
+
+
+@models.route("/models/detailview", methods=["POST"])
+def detail_view():
+    """ Route for table view of instances """
+
+    global modelsArr
+
+    model_data = request.get_json()
+    model = MODEL_MANAGER.detail_view(model_data)
+
+    returnJSON = createJSON()
+    returnJSON = addModelsTOJSON(addMessageToJSON(returnJSON, "success"), [model])
+
+    return returnJSON
+
+
+def createJSON() -> dict:
+    return {"metadata": "none"}
+
+
+def addMessageToJSON(json, message) -> dict:
+    json["message"] = message
+    return json
+
+
+def addModelsTOJSON(json, modelsArr: List[str]) -> dict:
+    json["models"] = modelsArr
+    return json

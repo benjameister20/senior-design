@@ -54,6 +54,7 @@ repos:
         - --errors-only
         - --output-format=parseable
         - --ignored-classes=SQLAlchemy
+        - --load-plugins=pylint_flask_sqlalchemy
 
     -   id: mypy
         name: mypy

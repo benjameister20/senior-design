@@ -13,8 +13,10 @@ validator = Validator()
 @users.route("/users/test", methods=["GET"])
 def test():
     """ route to test user endpoints """
-    print(request.headers)
-    AuthManager.validate_auth_token()
+    is_authenticated, message = auth_manager.validate_auth_token(request.headers)
+    if not is_authenticated:
+        return message
+
     response = {
         "users": [
             {
@@ -126,7 +128,7 @@ def authenticate():
 
     request_data = request.get_json()
 
-    request_data["username"]
+    username = request_data["username"]
     attempted_password = request_data["password"]
 
     # TODO: use username to get password from database
@@ -134,4 +136,7 @@ def authenticate():
 
     auth_success = auth_manager.compare_pw(attempted_password, db_password)
 
-    return str(auth_success)
+    if not auth_success:
+        return "Either the username or password doesn't match"
+
+    return auth_manager.encode_auth_token(username)

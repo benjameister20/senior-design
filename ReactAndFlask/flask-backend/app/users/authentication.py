@@ -77,6 +77,7 @@ class AuthManager:
                 "sub": username,
             }
             token = jwt.encode(payload, self.TOKEN_SECRET_KEY, algorithm="HS256")
+            # print(type(token))
             return token
         except Exception as e:
             return e
@@ -98,7 +99,9 @@ class AuthManager:
         except jwt.InvalidTokenError:
             return self.INVALID_TOKEN
 
-    def validate_auth_token(self, auth_token):
+    def validate_auth_token(self, headers):
+
+        auth_token = headers["Authentication"]
 
         decoded = self.decode_auth_token(auth_token)
         if decoded == self.SESSION_EXPIRED:

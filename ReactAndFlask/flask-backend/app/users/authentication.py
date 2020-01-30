@@ -60,7 +60,7 @@ class AuthManager:
         try:
             payload = {
                 "exp": datetime.datetime.utcnow()
-                + datetime.timedelta(days=0, hours=0, minutes=0, seconds=3),
+                + datetime.timedelta(days=0, hours=2, minutes=0, seconds=0),
                 "iat": datetime.datetime.utcnow(),
                 "sub": username,
             }
@@ -82,7 +82,7 @@ class AuthManager:
             print(payload)
             return payload["sub"]
         except jwt.ExpiredSignatureError:
-            return "Signature expired. Please log in again."
+            return "Session expired. Please log in again."
         except jwt.InvalidTokenError:
             return "Invalid token. Please log in again."
 

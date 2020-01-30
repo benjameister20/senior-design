@@ -1,9 +1,15 @@
 import re
 
+# TODO: implement error class to return from validator functions so can provide error messages for each situation
+
 
 class Validator:
     def __init__(self) -> None:
-        pass
+        self.EMAIL_USED_MSG = "Email already associated with another account"
+        self.EMAIL_INVALID_MSG = "Email invalid"
+        self.USERNAME_INVALID_MSG = "Username invalid"
+        self.USERNAME_TAKEN_MSG = "Username already taken"
+        self.PASSWORD_INVALID_MSG = "Password too weak"
 
     def validate_password(self, password: str) -> bool:
         """Ensures password adheres to security guidelines:
@@ -25,12 +31,16 @@ class Validator:
             r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!#%*?&]{8,20}$"
         )
         pattern = re.compile(reg)
-        results = re.search(pattern, password)
+        is_valid = bool(re.search(pattern, password))
 
-        return bool(results)
+        return is_valid
 
     def validate_email(self, email: str) -> bool:
-        """ Validates email address using RFC 5322 Standard
+        """ Validates email address using following criteria
+
+        Email Criteria:
+        - Complies with RFC 5322 Standard
+        - Not already associated with another account
 
         src: https://www.regular-expressions.info/email.html
 
@@ -43,9 +53,14 @@ class Validator:
 
         reg = r"\A[a-z0-9!#$%&'*+/=?^_‘{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_‘{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\Z"
         pattern = re.compile(reg, re.IGNORECASE)
-        results = re.search(pattern, email)
+        is_valid = bool(re.search(pattern, email))
 
-        return bool(results)
+        # TODO: query db for suggested email
+        # selected_rows = list[User]
+        # not_already_used = len(selected_rows) == 0
+        not_already_used = False
+
+        return is_valid and not_already_used
 
     def validate_username(self, username: str) -> bool:
         """ Validates username using following criteria:
@@ -55,6 +70,7 @@ class Validator:
             - Contains only alphanumeric characters and ".", "_"
             - No "." or "_" at the beginning
             - No doubles of special characters (".." or "__")
+            - Not already taken by another user
 
 
         src: https://stackoverflow.com/questions/12018245/regular-expression-to-validate-username/12019115
@@ -68,6 +84,11 @@ class Validator:
 
         reg = "^(?=.{4,20}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$"
         pattern = re.compile(reg)
-        results = re.search(pattern, username)
+        is_valid = bool(re.search(pattern, username))
 
-        return bool(results)
+        # TODO: query db for suggested username
+        # selected_rows = list[User]
+        # not_already_taken = len(selected_rows) == 0
+        not_already_taken = False
+
+        return is_valid and not_already_taken

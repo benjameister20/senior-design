@@ -13,7 +13,35 @@ validator = Validator()
 @users.route("/users/test", methods=["GET"])
 def test():
     """ route to test user endpoints """
-    return "happy"
+
+    response = {
+        "users": [
+            {
+                "username": "jimmi",
+                "display_name": "jimmi",
+                "email": "jim@gmail.com",
+                "password": "aS8!Dk4n#h33@",
+                "privilege": "dsf",
+            },
+            {
+                "username": "jimmi",
+                "display_name": "jimmi",
+                "email": "jim@gmail.com",
+                "password": "aS8!Dk4n#h33@",
+                "privilege": "dsf",
+            },
+        ],
+        "token": 100,  # bookmarked location in database
+    }
+
+    return response
+
+
+@users.route("/users/view", methods=["POST"])
+def view(num_items):
+    # TODO: query db for top <num_items> rows
+
+    return None
 
 
 @users.route("/users/create", methods=["POST"])
@@ -25,9 +53,11 @@ def create():
     - Contains only alphanumeric characters and ".", "_"
     - No "." or "_" at the beginning
     - No doubles of special characters (".." or "__")
+    - Not already taken by another user
 
     Email Criteria:
     - Valid email address compliant with RCF 5322 standard
+    - Not already associated with another account
 
     Password Criteria:
     - Contains at least one number.
@@ -46,29 +76,14 @@ def create():
     email = request_data["email"]
     request_data["display_name"]
 
-    # Validate username
     if not validator.validate_username(username):
         return "Failure: Invalid username"
 
-    # Validate email
     if not validator.validate_email(email):
         return "Failure: Invalid email address"
 
-    # Validate password
     if not validator.validate_password(password):
         return "Failure: Password too weak"
-
-    # TODO: Check if username is taken
-    # reference database
-    username_taken = False
-    if username_taken:
-        return "Failure: Username is taken"
-
-    # TODO: Check if email is already associated with another account
-    # reference database
-    email_exists = False
-    if email_exists:
-        return "Failure: Email is already associated with another account"
 
     # TODO: Store user as row in DB
 

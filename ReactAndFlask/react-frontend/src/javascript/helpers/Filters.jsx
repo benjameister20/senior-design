@@ -13,30 +13,22 @@ export default class Filters extends React.Component {
         };
     }
 
-    searchItems() {
-        this.props.onClick(this.state.searchText);
-    }
-
-    updateSearchText(event) {
-        this.setState({ searchText: event.target.value})
-    }
-
     render() {
         return (
             <div>
                 <div>
                     <SearchIcon />
                 </div>
-                    <InputBase
-                        placeholder="Search (blank does a search all)"
-                        inputProps={{ 'aria-label': 'search' }}
-                        onChange={this.updateSearchText.bind(this)}
-                    />
-                    <Button
-                        onClick={this.searchItems.bind(this)}
-                    >
-                        Search
-                    </Button>
+                <InputBase
+                    placeholder="Search (blank does a search all)"
+                    inputProps={{ 'aria-label': 'search' }}
+                    onChange={this.props.updateSearchText}
+                />
+                <Button
+                    onClick={this.props.searchModels}
+                >
+                    Search
+                </Button>
             </div>
         );
     }

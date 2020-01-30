@@ -3,6 +3,7 @@ from typing import List, Optional
 from app.dal.database import db
 from app.dal.exceptions.ChangeModelDBException import ChangeModelDBException
 from app.data_models.model import Model
+from sqlalchemy import and_
 
 
 class ModelEntry(db.Model):
@@ -146,11 +147,25 @@ class ModelTable:
             for model in all_models
         ]
 
-    def get_models_with_filter(self, filter: str, limit: int) -> List[Model]:
+    def get_models_with_filter(
+        self,
+        vendor: Optional[str],
+        model_number: Optional[str],
+        height: Optional[int],
+        limit: int,
+    ) -> List[Model]:
         """ Get a list of all models containing the given filter """
+        conditions = []
+        if vendor is not None:
+            conditions.append(ModelEntry.vendor == vendor)
+        if model_number is not None:
+            conditions.append(ModelEntry.model_number == model_number)
+        if height is not None:
+            conditions.append(ModelEntry.height == height)
 
-        # filtered_models: List[ModelEntry] = ModelEntry.query.filter_by(or_(filter)).limit(limit)
-        filtered_models: List[Model] = []
+        filtered_models: List[ModelEntry] = ModelEntry.query.filter(
+            and_(*conditions)
+        ).limit(limit)
 
         return [
             Model(

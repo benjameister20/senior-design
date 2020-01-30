@@ -1,3 +1,6 @@
+from typing import List
+
+from app.models.InvalidInputsException import InvalidInputsError
 from app.models.model_manager import ModelManager
 from flask import Blueprint, request
 
@@ -5,12 +8,7 @@ models = Blueprint(
     "models", __name__, template_folder="templates", static_folder="static"
 )
 
-modelsArr = []
-mm = ModelManager()
-
-
-def convertToJson(arr):
-    return {"models": arr}
+MODEL_MANAGER = ModelManager()
 
 
 @models.route("/models/test", methods=["GET"])
@@ -22,140 +20,87 @@ def test():
 @models.route("/models/create", methods=["POST"])
 def create():
     """ Route for creating models """
-    global modelsArr
 
-    model = {
-        "vendor": request.json["vendor"],
-        "modelNumber": request.json["modelNumber"],
-        "height": request.json["height"],
-        "displayColor": request.json["displayColor"],
-        "ethernetPorts": request.json["ethernetPorts"],
-        "powerPorts": request.json["powerPorts"],
-        "cpu": request.json["cpu"],
-        "memory": request.json["memory"],
-        "storage": request.json["storage"],
-        "comments": request.json["comments"],
-    }
+    global MODEL_MANAGER
+    returnJSON = createJSON()
 
-    modelsArr.append(model)
-    model_data = request.get_json()
-    result = mm.create_model(model_data)
-    result = convertToJson(modelsArr)
-
-    return result
+    try:
+        model_data = request.get_json()
+        MODEL_MANAGER.create_model(model_data)
+        return addMessageToJSON(returnJSON, "success")
+    except InvalidInputsError:
+        return addMessageToJSON(returnJSON, "failure")
 
 
 @models.route("/models/delete", methods=["POST"])
 def delete():
     """ Route for deleting models """
-    global modelsArr
 
-    vendor = (request.json["vendor"],)
-    model = (request.json["model"],)
+    global MODEL_MANAGER
+    returnJSON = createJSON()
 
-    for tempModel in modelsArr:
-        if tempModel["vendor"] == vendor and tempModel["model"] == model:
-            del tempModel
-            break
-
-    # takes vendor and model number
-    model_data = request.get_json()
-    result = mm.delete_model(model_data)
-
-    result = convertToJson(modelsArr)
-
-    return result
-
-
-def filterInModel(filter, model):
-    if filter in model["vendor"]:
-        return True
-    if filter in model["modelNumber"]:
-        return True
-    if filter in model["height"]:
-        return True
-    if filter in model["displayColor"]:
-        return True
-    if filter in model["ethernetPorts"]:
-        return True
-    if filter in model["powerPorts"]:
-        return True
-    if filter in model["cpu"]:
-        return True
-    if filter in model["memory"]:
-        return True
-    if filter in model["storage"]:
-        return True
-    if filter in model["comments"]:
-        return True
-
-    return False
+    try:
+        model_data = request.get_json()
+        MODEL_MANAGER.delete_model(model_data)
+        return addMessageToJSON(returnJSON, "success")
+    except InvalidInputsError:
+        return addMessageToJSON(returnJSON, "failure")
 
 
 @models.route("/models/search/", methods=["POST"])
 def search():
     """ Route for searching models """
-    global modelsArr
+
+    global MODEL_MANAGER
+    returnJSON = createJSON()
 
     filter = request.json["filter"]
+    try:
+        limit = int(request.json["limit"])
+    except:
+        limit = 1000
 
-    filteredModels = []
-    if filter == "":
-        return convertToJson(modelsArr)
-
-    for model in modelsArr:
-        try:
-            if filterInModel(filter, model):
-                filteredModels.append(model)
-        except:
-            continue
-    print(filteredModels)
-    return convertToJson(filteredModels)
+    try:
+        MODEL_MANAGER.get_models(filter, limit)
+        return addMessageToJSON(returnJSON, "success")
+    except:
+        return addMessageToJSON(returnJSON, "failure")
 
 
 @models.route("/models/edit", methods=["POST"])
 def edit():
     """ Route for editing models """
-    global modelsArr
 
-    model = {
-        "vendor": request.json["vendor"],
-        "modelNumber": request.json["modelNumber"],
-        "height": request.json["height"],
-        "displayColor": request.json["displayColor"],
-        "ethernetPorts": request.json["ethernetPorts"],
-        "powerPorts": request.json["powerPorts"],
-        "cpu": request.json["cpu"],
-        "memory": request.json["memory"],
-        "storage": request.json["storage"],
-        "comments": request.json["comments"],
-    }
+    global MODEL_MANAGER
+    returnJSON = createJSON()
 
-    for n, i in enumerate(modelsArr):
-        if (
-            modelsArr[i]["vendor"] == model["vendor"]
-            and modelsArr[i]["modelNumber"] == model["modelNumber"]
-        ):
-            modelsArr[i] = model
-            break
-
-    return convertToJson(modelsArr)
-
-
-@models.route("/models/view", methods=["GET"])
-def view():
-    """ Route for table view of instances """
-
-    result = mm.view()
-
-    return result
+    return addMessageToJSON(returnJSON, "success")
 
 
 @models.route("/models/detailview", methods=["POST"])
 def detail_view():
     """ Route for table view of instances """
 
-    model_data = request.get_json()
-    result = mm.detail_view(model_data)
+    global modelsArr
 
-    return result
+    model_data = request.get_json()
+    model = MODEL_MANAGER.detail_view(model_data)
+
+    returnJSON = createJSON()
+    returnJSON = addModelsTOJSON(addMessageToJSON(returnJSON, "success"), [model])
+
+    return returnJSON
+
+
+def createJSON() -> dict:
+    return {"metadata": "none"}
+
+
+def addMessageToJSON(json, message) -> dict:
+    json["message"] = message
+    return json
+
+
+def addModelsTOJSON(json, modelsArr: List[str]) -> dict:
+    json["models"] = modelsArr
+    return json

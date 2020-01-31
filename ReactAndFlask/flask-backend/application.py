@@ -1,9 +1,11 @@
 from http import HTTPStatus
 
 from app.dal.database import db
+from app.dal.routes import database
 from app.data_models.user import User
 from app.instances.routes_instances import instances
 from app.models.routes_models import models
+from app.racks.routes import racks
 from app.users.routes_users import users
 from flask import Flask, Response, jsonify, make_response, render_template
 from flask_heroku import Heroku
@@ -51,13 +53,16 @@ def _register_routes() -> None:
     application.register_blueprint(users)
     application.register_blueprint(models)
     application.register_blueprint(instances)
-    # application.register_blueprint(racks)
+    application.register_blueprint(racks)
+    application.register_blueprint(database)
     # application.register_blueprint(stats)
 
 
 def init() -> None:
     application.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-    application.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://localhost/test"
+    if application.debug:
+        application.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://localhost/test"
+
     db.init_app(app=application)
 
     _register_routes()

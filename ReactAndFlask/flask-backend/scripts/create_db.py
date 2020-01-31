@@ -10,7 +10,6 @@ sys.path.append(
 
 from application import application, init  # isort:skip
 
-application.debug = True  # isort:skip
 init()  # isort:skip
 
 from app.dal.database import db

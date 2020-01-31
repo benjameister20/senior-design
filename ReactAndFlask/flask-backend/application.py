@@ -7,16 +7,12 @@ from app.instances.routes_instances import instances
 from app.models.routes_models import models
 from app.racks.routes import racks
 from app.users.routes_users import users
-from flask import Flask, Response, jsonify, make_response, render_template
+from flask import Flask, jsonify, render_template
 from flask_heroku import Heroku
 
-application = Flask(__name__)
-heroku = Heroku(app=application)
 
-
-class APIResponse(Response):
-    @classmethod
-    def force_type(cls, rv, environ=None):
+class FlaskApp(Flask):
+    def make_response(self, rv):
         if isinstance(rv, dict):
             rv = jsonify(rv)
         elif (
@@ -24,15 +20,16 @@ class APIResponse(Response):
             and isinstance(rv[0], dict)
             and isinstance(rv[1], HTTPStatus)
         ):
-            rv = make_response(jsonify(rv[0]), rv[1])
+            rv = jsonify(rv[0]), rv[1]
         elif isinstance(rv, HTTPStatus):
-            rv = make_response(jsonify({}), rv)
+            rv = jsonify({"status": rv}), rv
 
-        return super(APIResponse, cls).force_type(rv, environ)
+        return super().make_response(rv)
 
 
-application.response_class = APIResponse
+application = FlaskApp(__name__)
 application.url_map.strict_slashes = False
+heroku = Heroku(app=application)
 
 
 @application.route("/")
@@ -43,7 +40,7 @@ def index():
 
 @application.route("/test")
 def test():
-    return "testing"
+    return HTTPStatus.OK
 
 
 def _register_routes() -> None:

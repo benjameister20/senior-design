@@ -1,172 +1,282 @@
 import React from 'react';
 import axios from 'axios';
-import { UserInput } from '../enums/userInputs.ts'
 import { UserCommand } from '../enums/userCommands.ts'
-import * as Constants from '../Constants';
-import Modal from '@material-ui/core/Modal';
-import Button from '@material-ui/core/Button';
-import TextField from "@material-ui/core/TextField";
+import { UserInput } from '../enums/userInputs.ts'
 import TableView from '../helpers/TableView';
-import SearchIcon from '@material-ui/icons/Search';
-import InputBase from '@material-ui/core/InputBase';
+import { CSVLink } from "react-csv";
+import ButtonMenu from '../helpers/ButtonMenu';
+import Filters from '../helpers/Filters';
+import UploadModal from '../helpers/UploadModal';
+import getURL from '../helpers/functions/GetURL';
+import DetailedView from '../helpers/DetailedView';
+import CreateModal from '../helpers/CreateModal';
+import * as Constants from '../Constants';
+
+
+
+const inputs = [
+    'username',
+    'email',
+    'displayName',
+    'privilege',
+    'password',
+]
 
 const columns = [
-    "Username",
-    "Display Name",
-    "Email",
+    'username',
+    'email',
+    'displayName',
+    'privilege',
 ]
 
 const usersMainPath = 'users/';
-
-function getURL(endpoint) {
-    return Constants.serverEndpoint + usersMainPath + endpoint;
-}
-
-function jsonToArr(json) {
-    var users = json.data['users'];
-    const items = [];
-
-    for (const [index, val] of users.entries()) {
-        const row = [];
-        row.push(val[UserInput.Username]);
-        row.push(val[UserInput.Email]);
-        row.push(val[UserInput.DisplayName]);
-        items.push(row);
-    }
-    return items;
-}
+const userDownloadFileName = 'users.csv';
 
 export default class UsersView extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
+
+            // modals
             showCreateModal:false,
             showImportModal:false,
-            items:[],
-            instanceToken:"",
-            createdUser: {
+
+            // table items
+            items:Constants.testUserArray,
+
+            // vals for creating a new user
+            createdUser : {
                 'username':'',
-                'email':'',
+                'password':'',
                 'displayName':'',
+                'email':'',
+                'privilege':'',
             },
+
+            // vals for deleting a user
             deleteUsername:'',
-            viewUsername:'',
-            searchText:"",
+
+            // vals for viewing a user
+            viewUser:'',
+
+            // csv data
+            csvData:[],
+
+            // detailed view
+            showDetailedView: false,
+            detailViewLoading:false,
+            detailedValues : {
+                'username':'',
+                'displayName':'',
+                'email':'',
+                'privilege':'',
+            },
         };
+
+        this.createUser = this.createUser.bind(this);
+        this.editUser = this.editUser.bind(this);
+        this.deleteUser = this.deleteUser.bind(this);
+        this.detailViewUser = this.detailViewUser.bind(this);
+        this.searchUsers = this.searchUsers.bind(this);
+        this.search = this.search.bind(this);
+        this.openCreateModal = this.openCreateModal.bind(this);
+        this.openImportModal = this.openImportModal.bind(this);
+        this.showDetailedView = this.showDetailedView.bind(this);
+        this.closeCreateModal = this.closeCreateModal.bind(this);
+        this.closeImportModal = this.closeImportModal.bind(this);
+        this.closeDetailedView = this.closeDetailedView.bind(this);
+        this.updateUserCreator = this.updateUserCreator.bind(this);
+        this.updateUserEdited = this.updateUserEdited.bind(this)
+
     }
 
     createUser() {
         axios.post(
-            this.getURL(UserCommand.create),
+            getURL(usersMainPath, UserCommand.create),
             {
                 'username':this.state.createdUser[UserInput.Username],
-                'email':this.state.createdUser[UserInput.Email],
+                'password':this.state.createdUser[UserInput.Password],
                 'displayName':this.state.createdUser[UserInput.DisplayName],
+                'email':this.state.createdUser[UserInput.Email],
+                'privilege':this.state.createdUser[UserInput.Privilege],
             }
-            ).then(response => (this.setState({ items:response })));
+            ).then(response => console.log(response));
+
+        this.setState({
+            createdUser : {
+                'username':'',
+                'password':'',
+                'displayName':'',
+                'email':'',
+                'privilege':'',
+            },
+        });
     }
+
+    editUser() {
+        axios.post(
+            getURL(usersMainPath, UserCommand.edit),
+            {
+                'username':this.state.detailedValues[UserInput.Username],
+                'displayName':this.state.detailedValues[UserInput.DisplayName],
+                'email':this.state.detailedValues[UserInput.Email],
+                'privilege':this.state.detailedValues[UserInput.Privilege],
+            }
+            ).then(response => console.log(response));
+
+        this.setState({
+            detailedValues : {
+                'username':'',
+                'displayName':'',
+                'email':'',
+                'privilege':'',
+            },
+        });
+    }
+
 
     deleteUser() {
         axios.post(
-            this.getURL(UserCommand.delete),
+            getURL(usersMainPath, UserCommand.delete),
             {
                 'username':this.state.deleteUsername,
             }
             ).then(response => console.log(response));
+
+        this.setState({
+            deleteUsername:'',
+            showDetailedView:false
+        });
     }
 
-    detailViewUser() {
+    detailViewUser(username) {
         axios.post(
-            this.getURL(UserCommand.detailView),
+            getURL(usersMainPath, UserCommand.detailView),
             {
-                'username':this.state.viewUsername,
+                'username':username,
             }
-            ).then(response => console.log(response));
+            ).then(response => this.setState({ detailedValues: response.data['users'][0], detailViewLoading:false}));
+
+        this.setState({
+            viewUser:'',
+        });
     }
 
-    viewUser() {
+    searchUsers(username, email, displayName, privilege) {
         axios.post(
-            this.getURL(UserCommand.view),
+            getURL(usersMainPath, UserCommand.search),
             {
-                'username':this.state.viewUsername,
+                'username':username,
+                'email':email,
+                'displayName':displayName,
+                'privilege':privilege,
             }
-            ).then(response => console.log(response));
+            ).then(response => this.setState({ items: response.data['users'] }));
     }
 
-    searchUsers() {
-        axios.post(
-            getURL(UserCommand.search),
-            {
-                'filter':this.state.searchText,
-            }
-            ).then(response => this.setState({ items: jsonToArr(response)}));
+    search(filters) {
+        this.searchUsers(filters['username'], filters['email'], filters['displayName'], filters['privilege']);
     }
 
+    downloadTable() {
+        this.csvLink.link.click();
+    }
 
     openCreateModal() {
         this.setState({showCreateModal: true});
     }
 
+    openImportModal() {
+        this.setState({showImportModal: true});
+    }
+
+    showDetailedView(id) {
+        this.setState({
+            showDetailedView: true,
+            detailViewLoading:true,
+         });
+
+        var username = this.state.items[id]['username'];
+        var email = this.state.items[id]['email'];
+        var displayName = this.state.items[id]['displayName'];
+        var privilege = this.state.items[id]['privilege'];
+
+        //this.detailViewUser(username, email, displayName, privilege);
+        this.setState({ detailedValues: Constants.testUserArray[id], detailViewLoading:false})
+    }
+
+    closeCreateModal() {
+        this.setState({showCreateModal: false});
+    }
+
+    closeImportModal() {
+        this.setState({showImportModal: false});
+    }
+
+    closeDetailedView() {
+        this.setState({ showDetailedView: false })
+    }
+
     updateUserCreator(event) {
-        this.state.createdUser[event.target.name] = event.target.value;
+        this.state.createdUser[event.target.label] = event.target.value;
         this.forceUpdate()
     }
 
-    updateSearchText(event) {
-        this.setState({ searchText: event.target.value})
+    updateUserEdited(event) {
+        this.state.detailedValues[event.target.label] = event.target.value;
+        this.forceUpdate()
     }
 
     render() {
         return (
             <div>
-                <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={this.openCreateModal.bind(this)}
-                >
-                    Create
-                </Button>
-                <Modal
-                    aria-labelledby="simple-modal-title"
-                    aria-describedby="simple-modal-description"
-                    open={this.state.showCreateModal}
-                    onClose={() => (this.setState({showCreateModal:false}))}
-                >
-                    <div>
-                        <TextField id="standard-basic" name={UserInput.Vendor} label={columns[0]} onChange={this.updateUserCreator.bind(this)}/>
-                        <TextField id="standard-basic" name={UserInput.UserNumber} label={columns[1]} onChange={this.updateUserCreator.bind(this)}/>
-                        <TextField id="standard-basic" name={UserInput.Height} label={columns[2]} onChange={this.updateUserCreator.bind(this)}/>
-
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            onClick={this.createUser.bind(this)}
-                        >
-                            Create
-                        </Button>
-                    </div>
-                </Modal>
-                <div>
-                <div>
-                    <SearchIcon />
-                </div>
-                    <InputBase
-                        placeholder="Search (blank does a search all)"
-                        inputProps={{ 'aria-label': 'search' }}
-                        onChange={this.updateSearchText.bind(this)}
-                    />
-                    <Button
-                        onClick={this.searchUsers.bind(this)}
-                    >
-                        Search
-                    </Button>
-                </div>
+                <ButtonMenu
+                    openCreateModal={this.openCreateModal}
+                    openImportModal={this.openImportModal}
+                    downloadTable={this.downloadTable}
+                />
+                <CSVLink
+                    data={this.state.csvData}
+                    filename={userDownloadFileName}
+                    className="hidden"
+                    ref={(r) => this.csvLink = r}
+                    target="_blank"
+                />
+                <CreateModal
+                    showCreateModal={this.state.showCreateModal}
+                    closeCreateModal={this.closeCreateModal}
+                    createModel={this.createUser}
+                    updateModelCreator={this.updateUserCreator}
+                    inputs={inputs}
+                />
+                <UploadModal
+                    showImportModal={this.state.showImportModal}
+                    closeImportModal={this.closeImportModal}
+                />
+                <Filters
+                    updateSearchText={this.updateSearchText}
+                    search={this.search}
+                    filters={columns}
+                />
                 <TableView
                     columns={columns}
                     vals={this.state.items}
+                    keys={columns}
+                    showDetailedView={this.showDetailedView}
+                    filters={columns}
+                />
+                <DetailedView
+                    showDetailedView={this.state.showDetailedView}
+                    closeDetailedView={this.closeDetailedView}
+                    inputs={inputs}
+                    updateModelEdited={this.updateUserEdited}
+                    defaultValues={this.state.detailedValues}
+                    loading={this.state.detailViewLoading}
+                    edit={this.editUser}
+                    delete={this.deleteUser}
                 />
             </div>
-    );
+        );
     }
 }

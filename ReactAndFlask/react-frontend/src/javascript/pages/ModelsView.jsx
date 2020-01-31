@@ -2,35 +2,33 @@ import React from 'react';
 import axios from 'axios';
 import { ModelCommand } from '../enums/modelCommands.ts'
 import { ModelInput } from '../enums/modelInputs.ts'
-import Modal from '@material-ui/core/Modal';
-import Button from '@material-ui/core/Button';
-import TextField from "@material-ui/core/TextField";
 import TableView from '../helpers/TableView';
 import { CSVLink } from "react-csv";
 import ButtonMenu from '../helpers/ButtonMenu';
 import Filters from '../helpers/Filters';
 import UploadModal from '../helpers/UploadModal';
 import getURL from '../helpers/functions/GetURL';
-import jsonToArr from '../helpers/functions/JSONtoArr';
 import DetailedView from '../helpers/DetailedView';
+import CreateModal from '../helpers/CreateModal';
+import * as Constants from '../Constants';
 
 const inputs = [
-    "Vendor",
-    "Model Number",
-    "Height (U)",
-    "Display Color",
-    "Ethernet Ports",
-    "Power Ports",
-    "CPU",
-    "Memory",
-    "Storage",
-    "Comments",
+    'vendor',
+    'modelNumber',
+    'height',
+    'displayColor',
+    'ethernetPorts',
+    'powerPorts',
+    'cpu',
+    'memory',
+    'storage',
+    'comments',
 ]
 
 const columns = [
-    "Vendor",
-    "Model Number",
-    "Height (U)",
+    'vendor',
+    'modelNumber',
+    'height',
 ]
 
 const modelsMainPath = 'models/';
@@ -47,9 +45,7 @@ export default class ModelsView extends React.Component {
             showImportModal:false,
 
             // table items
-            items:[],
-
-            modelToken:"",
+            items:Constants.testModelArray,
 
             // vals for creating a new model
             createdModel : {
@@ -91,6 +87,7 @@ export default class ModelsView extends React.Component {
 
             // detailed view
             showDetailedView: false,
+            detailViewLoading:false,
             detailedValues : {
                 'vendor':'',
                 'modelNumber':'',
@@ -109,12 +106,17 @@ export default class ModelsView extends React.Component {
         this.openImportModal = this.openImportModal.bind(this);
         this.downloadTable = this.downloadTable.bind(this);
         this.updateSearchText = this.updateSearchText.bind(this);
-        this.searchModels = this.searchModels.bind(this);
+        this.search = this.search.bind(this);
         this.closeImportModal = this.closeImportModal.bind(this);
         this.closeCreateModal = this.closeCreateModal.bind(this);
         this.showDetailedView = this.showDetailedView.bind(this);
         this.editModel = this.editModel.bind(this);
         this.closeDetailedView = this.closeDetailedView.bind(this);
+        this.updateModelEdited = this.updateModelEdited.bind(this);
+        this.closeCreateModal = this.closeCreateModal.bind(this);
+        this.createModel = this.createModel.bind(this);
+        this.updateModelCreator = this.updateModelCreator.bind(this);
+        this.deleteModel = this.deleteModel.bind(this);
     }
 
     createModel() {
@@ -135,42 +137,89 @@ export default class ModelsView extends React.Component {
             ).then(response => console.log(response));
 
         this.setState({
-            createdVendor:'',
-            createdModelNum:'',
-            createdHeight:'',
-            createdDispClr:'',
-            createdEthPorts:'',
-            createdPwrPorts:'',
-            createdCPU:'',
-            createdMem:'',
-            createdStorage:'',
-            createdComments:'',
+            createdModel : {
+                'vendor':'',
+                'modelNumber':'',
+                'height':'',
+                'displayColor':'',
+                'ethernetPorts':'',
+                'powerPorts':'',
+                'cpu':'',
+                'memory':'',
+                'storage':'',
+                'comments':'',
+            },
         });
     }
+
+    editModel() {
+        axios.post(
+            getURL(modelsMainPath, ModelCommand.edit),
+            {
+                'vendor':this.state.detailedValues[ModelInput.Vendor],
+                'modelNumber':this.state.detailedValues[ModelInput.ModelNumber],
+                'height':this.state.detailedValues[ModelInput.Height],
+                'displayColor':this.state.detailedValues[ModelInput.DisplayColor],
+                'ethernetPorts':this.state.detailedValues[ModelInput.EthernetPorts],
+                'powerPorts':this.state.detailedValues[ModelInput.PowerPorts],
+                'cpu':this.state.detailedValues[ModelInput.CPU],
+                'memory':this.state.detailedValues[ModelInput.Memory],
+                'storage':this.state.detailedValues[ModelInput.Storage],
+                'comments':this.state.detailedValues[ModelInput.Comment],
+            }
+            ).then(response => console.log(response) );
+
+        this.setState({
+            detailedValues : {
+                'vendor':'',
+                'modelNumber':'',
+                'height':'',
+                'displayColor':'',
+                'ethernetPorts':'',
+                'powerPorts':'',
+                'cpu':'',
+                'memory':'',
+                'storage':'',
+                'comments':'',
+            },
+        });
+    }
+
 
     deleteModel() {
         axios.post(
             getURL(modelsMainPath, ModelCommand.delete),
             {
-                'vendor':this.state.deleteVendor,
-                'modelNumber':this.state.deleteModel,
+                'vendor':this.state.detailedValues[ModelInput.Vendor],
+                'modelNumber':this.state.detailedValues[ModelInput.ModelNumber],
             }
             ).then(response => console.log(response));
 
         this.setState({
-            deleteVendor:'',
-            deleteModel:'',
+            detailedValues : {
+                'vendor':'',
+                'modelNumber':'',
+                'height':'',
+                'displayColor':'',
+                'ethernetPorts':'',
+                'powerPorts':'',
+                'cpu':'',
+                'memory':'',
+                'storage':'',
+                'comments':'',
+            },
+            showDetailedView:false
         });
     }
 
-    detailViewModel() {
+    detailViewModel(vendor, modelNum) {
         axios.post(
             getURL(modelsMainPath, ModelCommand.detailView),
             {
-                'vendor':this.state.viewVendor,
-                'modelNumber':this.state.viewModel,
+                'vendor':vendor,
+                'modelNumber':modelNum,
             }
-            ).then(response => console.log(response));
+            ).then(response => this.setState({ detailedValues: response.data['models'][0], detailViewLoading:false}));
 
         this.setState({
             viewVendor:'',
@@ -178,17 +227,23 @@ export default class ModelsView extends React.Component {
         });
     }
 
-    searchModels() {
+    searchModels(vendor, modelNum, height) {
         axios.post(
             getURL(modelsMainPath, ModelCommand.search),
             {
-                'filter':this.state.searchText,
+                'vendor':vendor,
+                'modelNumber':modelNum,
+                'height':height,
             }
-            ).then(response => this.setState({ items: jsonToArr(response.data['models']) }));
+            ).then(response => this.setState({ items: response.data['models'] }));
 
         this.setState({
             searchText:'',
         });
+    }
+
+    search(filters) {
+        this.searchModels(filters['vendor'], filters['modelNumber'], filters['height']);
     }
 
     downloadTable() {
@@ -203,33 +258,43 @@ export default class ModelsView extends React.Component {
         this.setState({showImportModal: true});
     }
 
+    showDetailedView(id) {
+        this.setState({
+            showDetailedView: true,
+            detailViewLoading:true,
+         });
+
+        var vendor = this.state.items[id]['vendor'];
+        var modelNum = this.state.items[id]['modelNumber'];
+
+        //this.detailViewModel(vendor, modelNum);
+        this.setState({ detailedValues: Constants.testModelArray[id], detailViewLoading:false})
+    }
+
     closeCreateModal() {
-        this.setState({showCreateModal: true});
+        this.setState({showCreateModal: false});
     }
 
     closeImportModal() {
         this.setState({showImportModal: false});
     }
 
+    closeDetailedView() {
+        this.setState({ showDetailedView: false })
+    }
+
     updateModelCreator(event) {
-        this.state.createdModel[event.target.name] = event.target.value;
+        this.state.createdModel[event.target.label] = event.target.value;
+        this.forceUpdate()
+    }
+
+    updateModelEdited(event) {
+        this.state.detailedValues[event.target.label] = event.target.value;
         this.forceUpdate()
     }
 
     updateSearchText(event) {
         this.setState({ searchText: event.target.value})
-    }
-
-    showDetailedView() {
-        this.setState({ showDetailedView: true })
-    }
-
-    closeDetailedView() {
-        this.setState({ showDetailedView: false })
-    }
-
-    editModel() {
-
     }
 
     render() {
@@ -247,55 +312,40 @@ export default class ModelsView extends React.Component {
                     ref={(r) => this.csvLink = r}
                     target="_blank"
                 />
-                <Modal
-                    style={{top: `50%`,left: `50%`,transform: `translate(-50%, -50%)`,}}
-                    aria-labelledby="simple-modal-title"
-                    aria-describedby="simple-modal-description"
-                    open={this.state.showCreateModal}
-                    onClose={() => (this.setState({showCreateModal:false}))}
-                >
-                    <div>
-
-                        <TextField id="standard-basic" name={ModelInput.Vendor} label={inputs[0]} onChange={this.updateModelCreator.bind(this)}/>
-                        <TextField id="standard-basic" name={ModelInput.ModelNumber} label={inputs[1]} onChange={this.updateModelCreator.bind(this)}/>
-                        <TextField id="standard-basic" name={ModelInput.Height} label={inputs[2]} onChange={this.updateModelCreator.bind(this)}/>
-                        <TextField id="standard-basic" name={ModelInput.DisplayColor} label={inputs[3]} onChange={this.updateModelCreator.bind(this)}/>
-                        <TextField id="standard-basic" name={ModelInput.EthernetPorts} label={inputs[4]} onChange={this.updateModelCreator.bind(this)}/>
-                        <TextField id="standard-basic" name={ModelInput.PowerPorts} label={inputs[5]} onChange={this.updateModelCreator.bind(this)}/>
-                        <TextField id="standard-basic" name={ModelInput.CPU} label={inputs[6]} onChange={this.updateModelCreator.bind(this)}/>
-                        <TextField id="standard-basic" name={ModelInput.Memory} label={inputs[7]} onChange={this.updateModelCreator.bind(this)}/>
-                        <TextField id="standard-basic" name={ModelInput.Storage} label={inputs[8]} onChange={this.updateModelCreator.bind(this)}/>
-                        <TextField id="standard-basic" name={ModelInput.Comment} label={inputs[9]} onChange={this.updateModelCreator.bind(this)}/>
-
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            onClick={this.createModel.bind(this)}
-                        >
-                            Create
-                        </Button>
-                    </div>
-                </Modal>
+                <CreateModal
+                    showCreateModal={this.state.showCreateModal}
+                    closeCreateModal={this.closeCreateModal}
+                    createModel={this.createModel}
+                    updateModelCreator={this.updateModelCreator}
+                    inputs={inputs}
+                />
                 <UploadModal
                     showImportModal={this.state.showImportModal}
                     closeImportModal={this.closeImportModal}
                 />
                 <Filters
                     updateSearchText={this.updateSearchText}
-                    searchModels={this.searchModels}
+                    search={this.search}
+                    filters={columns}
                 />
                 <TableView
                     columns={columns}
                     vals={this.state.items}
+                    keys={columns}
+                    showDetailedView={this.showDetailedView}
+                    filters={columns}
                 />
                 <DetailedView
-                    show={this.state.showDetailedView}
+                    showDetailedView={this.state.showDetailedView}
+                    closeDetailedView={this.closeDetailedView}
                     inputs={inputs}
-                    vals={this.state.detailedValues}
+                    updateModelEdited={this.updateModelEdited}
+                    defaultValues={this.state.detailedValues}
+                    loading={this.state.detailViewLoading}
                     edit={this.editModel}
-                    close={this.closeDetailedView}
+                    delete={this.deleteModel}
                 />
             </div>
-    );
+        );
     }
 }

@@ -5,7 +5,7 @@ import axios from 'axios';
 import getURL from './helpers/functions/GetURL';
 import * as Constants from './Constants';
 
-const loginMainPath = 'users/authenticate/';
+const loginMainPath = 'users/';
 
 export default class Login extends React.Component {
     constructor(props) {
@@ -22,7 +22,7 @@ export default class Login extends React.Component {
 
     submitCredentials() {
         axios.post(
-            getURL(Constants.serverEndpoint, loginMainPath),
+            getURL(loginMainPath, 'authenticate'),
             {
                 "username":this.state.username,
                 "password":this.state.password,
@@ -30,12 +30,13 @@ export default class Login extends React.Component {
             ).then(response => {
                 var valid = response.data['message'];
                 if (valid == 'success') {
-                    this.setState({ message: '' })
-                    this.props.login(response.data['token'])
+                    this.setState({ message: '' });
+                    this.props.loginFunc(response.data['token'], response.data['privilege']);
                 } else {
-                    this.setState({ message:response.data['message'] })
+                    this.setState({ message:response.data['message'] });
                 }
             });
+        //this.props.loginFunc('token', 'privilege');
     }
 
     updateUsername(event) {
@@ -43,7 +44,7 @@ export default class Login extends React.Component {
     }
 
     updatePassword(event) {
-        this.setState({ password: event.targe.value })
+        this.setState({ password: event.target.value })
     }
 
     render() {
@@ -67,7 +68,7 @@ export default class Login extends React.Component {
                     onChange={this.updatePassword.bind(this)}
                 />
                 <Button
-                    onClick={() => this.props.loginFunc}
+                    onClick={this.submitCredentials}
                     variant="contained"
                     color="primary"
                 >

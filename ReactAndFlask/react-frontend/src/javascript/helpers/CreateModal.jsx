@@ -24,7 +24,7 @@ export default class CreateModal extends React.Component {
             >
                 <div>
                     {this.props.inputs.map(input => (
-                        <TextField id="standard-basic" label={input} onChange={this.props.updateModelCreator}/>
+                        <TextField id="standard-basic" label={input} name={input} onChange={this.props.updateModelCreator}/>
                     ))}
                     <Button
                         variant="contained"

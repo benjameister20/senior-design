@@ -32,6 +32,9 @@ const columns = [
 const usersMainPath = 'users/';
 const userDownloadFileName = 'users.csv';
 
+axios.defaults.headers.common['token'] = this.props.token;
+axios.defaults.headers.common['privilege'] = this.props.privilege;
+
 export default class UsersView extends React.Component {
     constructor(props) {
         super(props);
@@ -43,7 +46,7 @@ export default class UsersView extends React.Component {
             showImportModal:false,
 
             // table items
-            items:Constants.testUserArray,
+            items:[], //Constants.testUserArray,
 
             // vals for creating a new user
             createdUser : {
@@ -111,6 +114,7 @@ export default class UsersView extends React.Component {
                 'email':'',
                 'privilege':'',
             },
+            showCreateModal:false,
         });
     }
 
@@ -132,6 +136,7 @@ export default class UsersView extends React.Component {
                 'email':'',
                 'privilege':'',
             },
+            showDetailedView:false,
         });
     }
 

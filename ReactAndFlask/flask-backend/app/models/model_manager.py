@@ -12,8 +12,11 @@ class ModelManager:
         # TODO add validation
 
         try:
+            print("making model")
             new_model = self.make_model(model_data)
+            print("made model")
             self.table.add_model(ModelEntry(new_model))
+            print("added model to table")
         except ChangeModelDBException:
             raise InvalidInputsError("failure")
 
@@ -55,27 +58,43 @@ class ModelManager:
 
     def make_model(self, model_data):
         try:
+            print("getting values")
             vendor = self.check_null(model_data["vendor"])
+            print(vendor)
             model_number = self.check_null(model_data["modelNumber"])
+            print(model_number)
             height = self.check_null(model_data["height"])
+            print(height)
             display_color = self.check_null(model_data["displayColor"])
+            print(display_color)
             eth_ports = self.check_null(model_data["ethernetPorts"])
+            print(eth_ports)
             pow_ports = self.check_null(model_data["powerPorts"])
+            print(pow_ports)
             cpu = self.check_null(model_data["cpu"])
+            print(cpu)
             memory = self.check_null(model_data["memory"])
+            print(memory)
             storage = self.check_null(model_data["storage"])
+            print(storage)
             comments = self.check_null(model_data["comments"])
+            print(comments)
+
+            print("got values")
         except:
             raise InvalidInputsError(
                 "Could not read data fields correctly. Client-server error occurred."
             )
 
+        print("checking inputs")
         if vendor == "":
             raise InvalidInputsError("Must provide a vendor")
         if model_number == "":
             raise InvalidInputsError("Must provide a model number")
         if height == "":
             raise InvalidInputsError("Must provide a height")
+
+        print("inputs validated")
 
         return Model(
             vendor,

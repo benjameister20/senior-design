@@ -43,7 +43,7 @@ class ModelManager:
         except ChangeModelDBException:
             return "error"
 
-    def edit_models(self, model_data):
+    def edit_model(self, model_data):
         try:
             new_model = self.make_model(model_data)
             self.table.edit_model(ModelEntry(new_model))

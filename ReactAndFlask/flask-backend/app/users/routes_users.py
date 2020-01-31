@@ -78,12 +78,12 @@ def create():
         return add_message_to_JSON(json, message)
 
     request_data = request.get_json()
-    print(request_data)
 
     username = request_data["username"]
     password = request_data["password"]
     email = request_data["email"]
-    display_name = request_data["display_name"]
+    display_name = request_data["displayName"]
+    privilege = request_data["privilege"]
 
     if not VALIDATOR.validate_username(username):
         return add_message_to_JSON(json, "Invalid username")
@@ -95,8 +95,8 @@ def create():
         return add_message_to_JSON(json, "Password too weak")
 
     encrypted_password = AUTH_MANAGER.encrypt_pw(password)
-    user = User(username, display_name, email, encrypted_password)
 
+    user = User(username, display_name, email, encrypted_password, privilege)
     USER_TABLE.add_user(user)
 
     return add_message_to_JSON(json, "Success")
@@ -121,7 +121,7 @@ def delete():
 
     user = USER_TABLE.get_user(username)
     if user is None:
-        return add_message_to_JSON(json, "User {} does not exist".format(username))
+        return add_message_to_JSON(json, "User {username} does not exist")
 
     USER_TABLE.delete_user(user)
 
@@ -142,13 +142,18 @@ def edit():
     display_name = request_data["display_name"]
     email = request_data["email"]
     password = request_data["password"]
+    privilege = request_data["privilege"]
 
     user = USER_TABLE.get_user(username)
     if user is None:
-        return add_message_to_JSON(json, "User {} does not exist".format(username))
+        return add_message_to_JSON(json, "User {username} does not exist")
 
     updated_user = User(
-        username=username, display_name=display_name, email=email, password=password
+        username=username,
+        display_name=display_name,
+        email=email,
+        password=password,
+        privilege=privilege,
     )
     USER_TABLE.delete_user(user)
     USER_TABLE.add_user(updated_user)
@@ -169,16 +174,18 @@ def authenticate():
     request_data = request.get_json()
     username = request_data["username"]
     attempted_password = request_data["password"]
+    privilege = request_data["privilege"]
 
     user = USER_TABLE.get_user(username)
     if user is None:
-        return add_message_to_JSON(json, "User {} does not exist".format(username))
+        return add_message_to_JSON(json, "User {username} does not exist")
 
     auth_success = AUTH_MANAGER.compare_pw(attempted_password, user.password)
     if not auth_success:
         return add_message_to_JSON(json, "Incorrect password")
 
     json["token"] = AUTH_MANAGER.encode_auth_token(username)
+    json["privilege"] = privilege
 
     return add_message_to_JSON(json, "success")
 

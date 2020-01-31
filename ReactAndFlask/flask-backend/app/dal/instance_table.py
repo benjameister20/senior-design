@@ -1,7 +1,9 @@
 from typing import List, Optional
 
 from app.dal.database import db
+from app.dal.exceptions.ChangeModelDBException import ChangeModelDBException
 from app.data_models.instance import Instance
+from sqlalchemy import and_
 
 
 class InstanceEntry(db.Model):
@@ -46,6 +48,16 @@ class InstanceTable:
 
         return instance_entry.make_instance()
 
+    def get_instance_by_rack_location(self, rack_label, rack_u):
+        """ Get the instance for the given rack location """
+        instance_entry: InstanceEntry = InstanceEntry.query.filter_by(
+            rack_label=rack_label, rack_u=rack_u,
+        ).first()
+        if instance_entry is None:
+            return None
+
+        return instance_entry.make_instance()
+
     def add_instance(self, instance: Instance) -> None:
         """ Adds an instance to the database """
         instance_entry: InstanceEntry = InstanceEntry(instance=instance)
@@ -55,6 +67,21 @@ class InstanceTable:
             db.session.commit()
         except:
             print(f"Failed to add instance {instance.hostname} {instance.rack_label}")
+
+    def edit_instance(self, instance: Instance) -> None:
+        """ Updates a model to the database """
+
+        instance_entry: InstanceEntry = InstanceEntry(instance=instance)
+
+        try:
+            InstanceEntry.query.filter_by(
+                rack_label=instance.rack_label, rack_u=instance.rack_u
+            ).update(instance_entry)
+            db.session.commit()
+        except:
+            raise ChangeModelDBException(
+                "Failed to udpate model {model.vendor} {model.model_number}"
+            )
 
     def delete_instance(self, instance: Instance) -> None:
         """ Removes an instance from the database """
@@ -80,7 +107,7 @@ class InstanceTable:
         except:
             print(f"Failed to delete instance {rack_label}")
 
-    def find_instances_with_rack(self, rack_label: str) -> List[Instance]:
+    def get_instances_by_rack(self, rack_label: str) -> List[Instance]:
         """ Get all instances for the given rack label """
         instance_entries: List[InstanceEntry] = InstanceEntry.query.filter_by(
             rack_label=rack_label
@@ -93,3 +120,40 @@ class InstanceTable:
         instance_entries: List[InstanceEntry] = InstanceEntry.query.all()
 
         return [entry.make_instance() for entry in instance_entries]
+
+    def get_instances_by_model_id(self, model_id):
+        instance_entries: List[InstanceEntry] = InstanceEntry.query.filter_by(
+            model_id=model_id
+        )
+        if instance_entries is None:
+            return None
+
+        return [entry.make_instance() for entry in instance_entries]
+
+    def get_instances_with_filter(
+        self,
+        model_id: Optional[int],
+        hostname: Optional[str],
+        rack_label: Optional[str],
+        rack_u: Optional[int],
+        limit: int,
+    ) -> List[Instance]:
+        """ Get a list of all instances containing the given filter """
+        conditions = []
+        if model_id is not None:
+            conditions.append(InstanceEntry.model_id == model_id)
+        if hostname is not None:
+            conditions.append(InstanceEntry.hostname == hostname)
+        if rack_label is not None:
+            conditions.append(InstanceEntry.rack_label == rack_label)
+        if rack_u is not None:
+            conditions.append(InstanceEntry.rack_u == rack_u)
+
+        filtered_instances: List[InstanceEntry] = InstanceEntry.query.filter(
+            and_(*conditions)
+        ).limit(limit)
+
+        if filtered_instances is None:
+            return None
+
+        return [entry.make_instance() for entry in filtered_instances]

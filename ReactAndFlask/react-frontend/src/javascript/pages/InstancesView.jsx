@@ -31,6 +31,9 @@ const columns = [
 const instancesMainPath = 'instances/';
 const instanceDownloadFileName = 'instances.csv';
 
+axios.defaults.headers.common['token'] = this.props.token;
+axios.defaults.headers.common['privilege'] = this.props.privilege;
+
 export default class InstancesView extends React.Component {
     constructor(props) {
         super(props);
@@ -117,6 +120,7 @@ export default class InstancesView extends React.Component {
                 'owner':'',
                 'comment':'',
             },
+            showCreateModal:false,
         });
     }
 
@@ -142,6 +146,7 @@ export default class InstancesView extends React.Component {
                 'owner':'',
                 'comment':'',
             },
+            showDetailedView:false,
         });
     }
 

@@ -8,6 +8,7 @@ export default class PageSelector extends React.Component {
 
     this.state = {
       token:'',
+      privilege:'',
       loggedIn:false,
     };
 
@@ -17,6 +18,7 @@ export default class PageSelector extends React.Component {
   login(token, privilege) {
     this.setState({
       token:token,
+      privilege:privilege,
       loggedIn:true,
     })
   }
@@ -24,7 +26,7 @@ export default class PageSelector extends React.Component {
   render() {
     return (
       <div>
-        {this.state.loggedIn ?  <TabManager token={this.state.token} /> : <Login loginFunc={this.login} />}
+        {this.state.loggedIn ?  <TabManager  token={this.props.token} privilege={this.props.privilege} /> : <Login loginFunc={this.login} />}
       </div>
     );
   }

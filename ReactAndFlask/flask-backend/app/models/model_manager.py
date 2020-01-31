@@ -30,10 +30,14 @@ class ModelManager:
         if model_number == "":
             raise InvalidInputsError("Must provide a model number")
 
-        # TODO add validation
-
         try:
-            self.table.delete_model_str(vendor, model_number)
+            delete_validation_result = self.validate.delete_model_validation(
+                vendor, model_number
+            )
+            if delete_validation_result == "success":
+                self.table.delete_model_str(vendor, model_number)
+            else:
+                raise InvalidInputsError(delete_validation_result)
         except ChangeModelDBException:
             raise ChangeModelDBException("Error adding model")
 

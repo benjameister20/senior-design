@@ -119,3 +119,12 @@ class InstanceTable:
         instance_entries: List[InstanceEntry] = InstanceEntry.query.all()
 
         return [entry.make_instance() for entry in instance_entries]
+
+    def get_instances_by_model_id(self, model_id):
+        instance_entries: List[InstanceEntry] = InstanceEntry.query.filter_by(
+            model_id=model_id
+        )
+        if instance_entries is None:
+            return None
+
+        return [entry.make_instance() for entry in instance_entries]

@@ -42,7 +42,7 @@ export default class InstancesView extends React.Component {
             showImportModal:false,
 
             // table items
-            items:Constants.testInstanceArray,
+            items:[], //Constants.testInstanceArray,
 
             // vals for creating a new instance
             createdInstance : {

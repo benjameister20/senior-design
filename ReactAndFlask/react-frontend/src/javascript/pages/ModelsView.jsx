@@ -45,7 +45,7 @@ export default class ModelsView extends React.Component {
             showImportModal:false,
 
             // table items
-            items:Constants.testModelArray,
+            items:[], //Constants.testModelArray,
 
             // vals for creating a new model
             createdModel : {
@@ -284,7 +284,7 @@ export default class ModelsView extends React.Component {
     }
 
     updateModelCreator(event) {
-        this.state.createdModel[event.target.label] = event.target.value;
+        this.state.createdModel[event.target.name] = event.target.value;
         this.forceUpdate()
     }
 

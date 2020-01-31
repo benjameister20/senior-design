@@ -14,7 +14,7 @@ export default class PageSelector extends React.Component {
     this.login = this.login.bind(this);
   }
 
-  login(token) {
+  login(token, privilege) {
     this.setState({
       token:token,
       loggedIn:true,

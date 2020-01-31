@@ -43,7 +43,7 @@ export default class UsersView extends React.Component {
             showImportModal:false,
 
             // table items
-            items:Constants.testUserArray,
+            items:[], //Constants.testUserArray,
 
             // vals for creating a new user
             createdUser : {

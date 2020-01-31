@@ -188,10 +188,12 @@ export default class InstancesView extends React.Component {
         axios.post(
             getURL(instancesMainPath, InstanceCommand.search),
             {
-                'model':model,
-                'hostname':hostname,
-                'rack':rack,
-                'rackU':rackU,
+                'filters':{
+                    'model':model,
+                    'hostname':hostname,
+                    'rack':rack,
+                    'rackU':rackU,
+                }
             }
             ).then(response => this.setState({ items: response.data['instances'] }));
     }

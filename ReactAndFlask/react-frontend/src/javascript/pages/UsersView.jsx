@@ -173,10 +173,12 @@ export default class UsersView extends React.Component {
         axios.post(
             getURL(usersMainPath, UserCommand.search),
             {
-                'username':username,
-                'email':email,
-                'displayName':displayName,
-                'privilege':privilege,
+                'filters':{
+                    'username':username,
+                    'email':email,
+                    'displayName':displayName,
+                    'privilege':privilege,
+                }
             }
             ).then(response => this.setState({ items: response.data['users'] }));
     }

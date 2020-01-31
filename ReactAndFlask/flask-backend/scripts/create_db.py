@@ -14,6 +14,7 @@ application.debug = True  # isort:skip
 
 from app.dal.database import db
 from app.dal.instance_table import InstanceEntry  # noqa
+from app.dal.model_table import ModelEntry  # noqa
 from app.dal.rack_table import RackEntry  # noqa
 from app.dal.user_table import UserEntry  # noqa
 

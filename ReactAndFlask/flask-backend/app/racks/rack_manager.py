@@ -1,11 +1,12 @@
 import string
-from typing import Callable, List
+from typing import Any, Callable, List
 
 from app.dal.database import DBWriteException
 from app.dal.instance_table import InstanceTable
 from app.dal.rack_table import RackTable
 from app.data_models.instance import Instance
 from app.data_models.rack import Rack
+from app.main.types import JSON
 
 
 class InvalidRangeError(Exception):
@@ -32,13 +33,18 @@ def _delete_rack_modifier(rack: Rack) -> None:
     RackTable().delete_rack(rack=rack)
 
 
+def _get_rack_modifier(rack: Rack) -> JSON:
+    """ Get rack details """
+    return {rack.label: InstanceTable().find_instances_with_rack(rack_label=rack.label)}
+
+
 def _modify_rack_range(
     start_letter: str,
     stop_letter: str,
     start_number: int,
     stop_number: int,
-    modifier: Callable[[Rack], None],
-) -> None:
+    modifier: Callable[[Rack], Any],
+) -> List[Any]:
     """ Modify a range of racks """
     if (not start_letter.isalpha) or (not stop_letter.isalpha):
         raise InvalidRangeError
@@ -51,13 +57,29 @@ def _modify_rack_range(
         alphabet.index(start_letter.upper()) : alphabet.index(stop_letter.upper()) + 1
     ]
 
+    results: List[Any] = []
     try:
         for letter in letters:
             for number in range(start_number, stop_number + 1):
                 rack: Rack = Rack(label=f"{letter}{number}")
-                modifier(rack)
+                results.append(modifier(rack))
     except (DBWriteException, RackNotEmptyError):
         raise
+
+    return results
+
+
+def get_rack_range(
+    start_letter: str, stop_letter: str, start_number: int, stop_number: int,
+) -> List[JSON]:
+    """ Get details of a range of racks """
+    return _modify_rack_range(
+        start_letter=start_letter,
+        stop_letter=stop_letter,
+        start_number=start_number,
+        stop_number=stop_number,
+        modifier=_get_rack_modifier,
+    )
 
 
 def add_rack_range(

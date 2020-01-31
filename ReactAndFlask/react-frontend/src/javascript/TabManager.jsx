@@ -85,19 +85,19 @@ export default function TabManager() {
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={0}>
-        <ModelsView />
+        <ModelsView token={this.props.token} privilege={this.props.privilege} />
       </TabPanel>
       <TabPanel value={value} index={1}>
-        <InstancesView />
+        <InstancesView token={this.props.token} privilege={this.props.privilege} />
       </TabPanel>
       <TabPanel value={value} index={2}>
-        <RacksView />
+        <RacksView token={this.props.token} privilege={this.props.privilege} />
       </TabPanel>
       <TabPanel value={value} index={3}>
-        <StatisticsView />
+        <StatisticsView token={this.props.token} privilege={this.props.privilege} />
       </TabPanel>
       <TabPanel value={value} index={4}>
-        <UsersView />
+        <UsersView token={this.props.token} privilege={this.props.privilege} />
       </TabPanel>
     </div>
   );

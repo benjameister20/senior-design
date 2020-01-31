@@ -34,6 +34,9 @@ const columns = [
 const modelsMainPath = 'models/';
 const modelDownloadFileName = 'models.csv';
 
+axios.defaults.headers.common['token'] = this.props.token;
+axios.defaults.headers.common['privilege'] = this.props.privilege;
+
 export default class ModelsView extends React.Component {
     constructor(props) {
         super(props);
@@ -149,6 +152,7 @@ export default class ModelsView extends React.Component {
                 'storage':'',
                 'comments':'',
             },
+            showCreateModal:false,
         });
     }
 
@@ -182,6 +186,7 @@ export default class ModelsView extends React.Component {
                 'storage':'',
                 'comments':'',
             },
+            showDetailedView:false
         });
     }
 
@@ -218,7 +223,7 @@ export default class ModelsView extends React.Component {
             {
                 'vendor':vendor,
                 'modelNumber':modelNum,
-            }
+            }, this.props.headers
             ).then(response => this.setState({ detailedValues: response.data['models'][0], detailViewLoading:false}));
 
         this.setState({

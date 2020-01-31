@@ -36,7 +36,7 @@ export default class Login extends React.Component {
                     this.setState({ message:response.data['message'] });
                 }
             });
-        this.props.loginFunc('token');
+        //this.props.loginFunc('token', 'privilege');
     }
 
     updateUsername(event) {

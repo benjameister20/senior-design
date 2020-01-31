@@ -15,6 +15,7 @@ class AuthManager:
         self.TOKEN_EXP_SECONDS = 0
         self.SESSION_EXPIRED = "Session expired. Please log in again."
         self.INVALID_TOKEN = "Invalid token. Please log in again."
+        # print(self.encode_auth_token("mark"))
 
     def encrypt_pw(self, password: str) -> str:
         """Encrypts a user password using bcrypt algorithm

@@ -6,12 +6,14 @@ from app.data_models.user import User
 from app.instances.routes_instances import instances
 from app.models.routes_models import models
 from app.racks.routes import racks
+from app.users.authentication import AuthManager
 from app.users.routes_users import users
 from flask import Flask, Response, jsonify, make_response, render_template
 from flask_heroku import Heroku
 
 application = Flask(__name__)
 heroku = Heroku(app=application)
+AUTH_MANAGER = AuthManager()
 
 
 class APIResponse(Response):
@@ -37,7 +39,7 @@ application.url_map.strict_slashes = False
 
 @application.route("/")
 def index():
-    user = User(username="", display_name="", email="", password="")
+    user = User(username="", display_name="", email="", password="", privilege="")
     return render_template("index.html")
 
 

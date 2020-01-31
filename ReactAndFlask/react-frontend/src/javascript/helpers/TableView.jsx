@@ -16,6 +16,10 @@ export default class TableView extends React.Component {
     };
   }
 
+  showDetailedView(event) {
+    this.props.showDetailedView(event.target.id);
+  }
+
   render() {
     return (
       <div>
@@ -27,9 +31,9 @@ export default class TableView extends React.Component {
               </TableRow>
             </TableHead>
             <TableBody>
-              {this.props.vals.map(row => (
+              {this.props.vals.map((row, index)=> (
               <TableRow>
-                {row.map(val => (<TableCell scope="row"><span onClick={this.props.showDetailView}>{val}</span></TableCell>))}
+                {this.props.keys.map(key => (<TableCell scope="row"><span id={index} onClick={this.showDetailedView.bind(this)}>{row[key]}</span></TableCell>))}
               </TableRow>
               ))}
             </TableBody>

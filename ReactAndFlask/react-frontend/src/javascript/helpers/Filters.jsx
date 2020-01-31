@@ -4,31 +4,52 @@ import InputBase from '@material-ui/core/InputBase';
 import Button from '@material-ui/core/Button';
 
 export default class Filters extends React.Component {
-    /*const classes = useStyles();*/
     constructor(props) {
         super(props);
 
         this.state = {
-            searchText:"",
+            filters:{},
         };
+    }
+
+    updateSearchText(event) {
+        if (this.state.filters.hasOwnProperty(event.target.id)) {
+            this.state.filters[event.target.id] = event.target.value;
+            this.forceUpdate();
+        } else {
+            var value = (event.target.value == null) ? '' : event.target.value;
+            this.state.filters[event.target.id] = event.target.value;
+            //this.state.filters.push({ key:event.target.id, value: value});
+            this.forceUpdate();
+        }
+    }
+
+    search() {
+        this.props.search(this.state.filters);
     }
 
     render() {
         return (
             <div>
+                {this.props.filters.map((filter, index) => (
+                    <div>
+                        <SearchIcon />
+                        <InputBase
+                            placeholder={filter+" filter"}
+                            inputProps={{ 'aria-label': 'search' }}
+                            onChange={this.updateSearchText.bind(this)}
+                            id={filter}
+                        />
+                    </div>
+                ))
+                }
                 <div>
-                    <SearchIcon />
+                    <Button
+                        onClick={this.search.bind(this)}
+                    >
+                        Search
+                    </Button>
                 </div>
-                <InputBase
-                    placeholder="Search (blank does a search all)"
-                    inputProps={{ 'aria-label': 'search' }}
-                    onChange={this.props.updateSearchText}
-                />
-                <Button
-                    onClick={this.props.searchModels}
-                >
-                    Search
-                </Button>
             </div>
         );
     }

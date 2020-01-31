@@ -1,6 +1,6 @@
 import React from "react";
 import Login from "./Login";
-import TabManager from "./TabManager";
+import TabViewer from "./Tabs";
 
 export default class PageSelector extends React.Component {
   constructor(props) {
@@ -26,7 +26,7 @@ export default class PageSelector extends React.Component {
   render() {
     return (
       <div>
-        {this.state.loggedIn ?  <TabManager  token={this.props.token} privilege={this.props.privilege} /> : <Login loginFunc={this.login} />}
+        {this.state.loggedIn ?  <TabViewer token={this.state.token} privilege={this.state.privilege} /> : <Login loginFunc={this.login} />}
       </div>
     );
   }

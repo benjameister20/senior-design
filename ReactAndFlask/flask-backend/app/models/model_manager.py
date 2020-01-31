@@ -2,18 +2,22 @@ from app.dal.exceptions.ChangeModelDBException import ChangeModelDBException
 from app.dal.model_table import ModelTable
 from app.data_models.model import Model
 from app.exceptions.InvalidInputsException import InvalidInputsError
+from app.models.model_validator import ModelValidator
 
 
 class ModelManager:
     def __init__(self):
         self.table = ModelTable()
+        self.validate = ModelValidator()
 
     def create_model(self, model_data):
-        # TODO add validation
-
         try:
             new_model = self.make_model(model_data)
-            self.table.add_model(new_model)
+            create_validation_result = self.validate.create_model_validation(new_model)
+            if create_validation_result == "success":
+                self.table.add_model(new_model)
+            else:
+                raise InvalidInputsError(create_validation_result)
         except ChangeModelDBException:
             raise InvalidInputsError("failure")
 
@@ -50,21 +54,30 @@ class ModelManager:
         except ChangeModelDBException:
             raise InvalidInputsError("failure")
 
-    def get_models(self, fitler: str, limit: int):
-        return ""
+    def get_models(self, filter, limit: int):
+        vendor = filter.get("vendor")
+        model_number = filter.get("modelNumber")
+        height = filter.get("height")
+        try:
+            model_list = self.table.get_models_with_filter(
+                vendor=vendor, model_number=model_number, height=height, limit=limit
+            )
+            return model_list
+        except:
+            return "error"
 
     def make_model(self, model_data):
         try:
-            vendor = self.check_null(model_data["vendor"])
-            model_number = self.check_null(model_data["modelNumber"])
-            height = self.check_null(model_data["height"])
-            display_color = self.check_null(model_data["displayColor"])
-            eth_ports = self.check_null(model_data["ethernetPorts"])
-            pow_ports = self.check_null(model_data["powerPorts"])
-            cpu = self.check_null(model_data["cpu"])
-            memory = self.check_null(model_data["memory"])
-            storage = self.check_null(model_data["storage"])
-            comments = self.check_null(model_data["comments"])
+            vendor = self.check_null(model_data.get("vendor"))
+            model_number = self.check_null(model_data.get("modelNumber"))
+            height = self.check_null(model_data.get("height"))
+            display_color = self.check_null(model_data.get("displayColor"))
+            eth_ports = self.check_null(model_data.get("ethernetPorts"))
+            pow_ports = self.check_null(model_data.get("powerPorts"))
+            cpu = self.check_null(model_data.get("cpu"))
+            memory = self.check_null(model_data.get("memory"))
+            storage = self.check_null(model_data.get("storage"))
+            comments = self.check_null(model_data.get("comments"))
         except:
             raise InvalidInputsError(
                 "Could not read data fields correctly. Client-server error occurred."

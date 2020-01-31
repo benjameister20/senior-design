@@ -10,7 +10,6 @@ class ModelEntry(db.Model):
     __tablename__ = "models"
 
     identifier = db.Column(db.Integer, primary_key=True, unique=True)
-
     vendor = db.Column(db.String(80))
     model_number = db.Column(db.String(80))
     height = db.Column(db.Integer)

@@ -8,8 +8,13 @@ export default class DetailedView extends React.Component {
         super(props);
 
         this.state = {
-
+            showConfirmationBox:false,
         };
+    }
+
+    closeModal() {
+        this.setState({showConfirmationBox:false,});
+
     }
 
     render() {
@@ -29,9 +34,16 @@ export default class DetailedView extends React.Component {
                     <Button
                         variant="contained"
                         color="primary"
-                        onClick={this.props.editModel}
+                        onClick={this.props.edit}
                     >
-                        Save Edits
+                        Save
+                    </Button>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={this.props.delete}
+                    >
+                        Delete
                     </Button>
                     <Button
                         variant="contained"

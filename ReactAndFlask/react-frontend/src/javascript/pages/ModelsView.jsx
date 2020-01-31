@@ -116,6 +116,7 @@ export default class ModelsView extends React.Component {
         this.closeCreateModal = this.closeCreateModal.bind(this);
         this.createModel = this.createModel.bind(this);
         this.updateModelCreator = this.updateModelCreator.bind(this);
+        this.deleteModel = this.deleteModel.bind(this);
     }
 
     createModel() {
@@ -189,14 +190,25 @@ export default class ModelsView extends React.Component {
         axios.post(
             getURL(modelsMainPath, ModelCommand.delete),
             {
-                'vendor':this.state.deleteVendor,
-                'modelNumber':this.state.deleteModel,
+                'vendor':this.state.detailedValues[ModelInput.Vendor],
+                'modelNumber':this.state.detailedValues[ModelInput.ModelNumber],
             }
             ).then(response => console.log(response));
 
         this.setState({
-            deleteVendor:'',
-            deleteModel:'',
+            detailedValues : {
+                'vendor':'',
+                'modelNumber':'',
+                'height':'',
+                'displayColor':'',
+                'ethernetPorts':'',
+                'powerPorts':'',
+                'cpu':'',
+                'memory':'',
+                'storage':'',
+                'comments':'',
+            },
+            showDetailedView:false
         });
     }
 
@@ -255,7 +267,8 @@ export default class ModelsView extends React.Component {
         var vendor = this.state.items[id]['vendor'];
         var modelNum = this.state.items[id]['modelNumber'];
 
-        this.detailViewModel(vendor, modelNum);
+        //this.detailViewModel(vendor, modelNum);
+        this.setState({ detailedValues: Constants.testModelArray[id], detailViewLoading:false})
     }
 
     closeCreateModal() {
@@ -329,6 +342,8 @@ export default class ModelsView extends React.Component {
                     updateModelEdited={this.updateModelEdited}
                     defaultValues={this.state.detailedValues}
                     loading={this.state.detailViewLoading}
+                    edit={this.editModel}
+                    delete={this.deleteModel}
                 />
             </div>
         );

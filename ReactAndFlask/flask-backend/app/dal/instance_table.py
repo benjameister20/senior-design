@@ -2,7 +2,6 @@ from typing import List, Optional
 
 from app.dal.database import db
 from app.data_models.instance import Instance
-from app.data_models.rack import Rack
 
 
 class InstanceEntry(db.Model):
@@ -11,8 +10,7 @@ class InstanceEntry(db.Model):
     identifier = db.Column(db.Integer, primary_key=True, unique=True)
     model_id = db.Column(db.Integer)
     hostname = db.Column(db.String(80))
-    row_letter = db.Column(db.String(80))
-    row_number = db.Column(db.Integer)
+    rack_label = db.Column(db.String(80))
     rack_u = db.Column(db.Integer)
     owner = db.Column(db.String(80))
     comment = db.Column(db.String(80))
@@ -20,47 +18,43 @@ class InstanceEntry(db.Model):
     def __init__(self, instance: Instance):
         self.model_id = instance.model_id
         self.hostname = instance.hostname
-        self.row_letter = instance.rack.row_letter
-        self.row_number = instance.rack.row_number
+        self.rack_label = instance.rack_label
         self.rack_u = instance.rack_u
         self.owner = instance.owner
         self.comment = instance.comment
+
+    def make_instance(self) -> Instance:
+        """ Convert the database entry to an instance """
+        return Instance(
+            model_id=self.model_id,
+            hostname=self.hostname,
+            rack_label=self.rack_label,
+            rack_u=self.rack_u,
+            owner=self.owner,
+            comment=self.comment,
+        )
 
 
 class InstanceTable:
     def get_instance(self, identifier: int) -> Optional[Instance]:
         """ Get the instance for the given idr """
-        instance: InstanceEntry = InstanceEntry.query.filter_by(
+        instance_entry: InstanceEntry = InstanceEntry.query.filter_by(
             identifier=identifier
         ).first()
-        if instance is None:
+        if instance_entry is None:
             return None
 
-        return Instance(
-            model_id=instance.model_id,
-            hostname=instance.hostname,
-            rack=Rack(row_letter=instance.row_letter, row_number=instance.row_number),
-            rack_u=instance.rack_u,
-            owner=instance.owner,
-            comment=instance.comment,
-        )
+        return instance_entry.make_instance()
 
     def get_instance_by_rack_location(self, rack, rack_u):
         """ Get the instance for the given idr """
-        instance: InstanceEntry = InstanceEntry.query.filter_by(
+        instance_entry: InstanceEntry = InstanceEntry.query.filter_by(
             rack=rack, rack_u=rack_u,
         ).first()
-        if instance is None:
+        if instance_entry is None:
             return None
 
-        return Instance(
-            model_id=instance.model_id,
-            hostname=instance.hostname,
-            rack=instance.rack,
-            rack_u=instance.rack_u,
-            owner=instance.owner,
-            comment=instance.comment,
-        )
+        return instance_entry.make_instance()
 
     def add_instance(self, instance: Instance) -> None:
         """ Adds an instance to the database """
@@ -70,49 +64,42 @@ class InstanceTable:
             db.session.add(instance_entry)
             db.session.commit()
         except:
-            print(
-                f"Failed to add instance {instance.hostname} {instance.rack.row_letter}{instance.rack.row_number}"
-            )
+            print(f"Failed to add instance {instance.hostname} {instance.rack_label}")
 
     def delete_instance(self, instance: Instance) -> None:
         """ Removes an instance from the database """
         try:
             InstanceEntry.query.filter_by(
                 hostname=instance.hostname,
-                row_letter=instance.rack.row_letter,
-                row_number=instance.rack.row_number,
+                rack_label=instance.rack_label,
                 rack_u=instance.rack_u,
             ).delete()
             db.session.commit()
         except:
             print(
-                f"Failed to delete instance {instance.hostname} {instance.rack.row_letter}{instance.rack.row_number}"
+                f"Failed to delete instance {instance.hostname} {instance.rack_label}"
             )
 
-    def delete_instance_by_rack_location(self, row_letter, row_number, rack_u) -> None:
+    def delete_instance_by_rack_location(self, rack_label: str, rack_u: int) -> None:
         """ Removes an instance from the database """
         try:
             InstanceEntry.query.filter_by(
-                row_letter=row_letter, row_number=row_number, rack_u=rack_u,
+                rack_label=rack_label, rack_u=rack_u,
             ).delete()
             db.session.commit()
         except:
-            print(f"Failed to delete instance {row_letter}{row_number}{rack_u}")
+            print(f"Failed to delete instance {rack_label}")
+
+    def find_instances_with_rack(self, rack_label: str) -> List[Instance]:
+        """ Get all instances for the given rack label """
+        instance_entries: List[InstanceEntry] = InstanceEntry.query.filter_by(
+            rack_label=rack_label
+        )
+
+        return [entry.make_instance() for entry in instance_entries]
 
     def get_all_instances(self) -> List[Instance]:
         """ Get a list of all racks """
-        all_instances: List[InstanceEntry] = InstanceEntry.query.all()
+        instance_entries: List[InstanceEntry] = InstanceEntry.query.all()
 
-        return [
-            Instance(
-                model_id=instance.model_id,
-                hostname=instance.hostname,
-                rack=Rack(
-                    row_letter=instance.row_letter, row_number=instance.row_number
-                ),
-                rack_u=instance.rack_u,
-                owner=instance.owner,
-                comment=instance.comment,
-            )
-            for instance in all_instances
-        ]
+        return [entry.make_instance() for entry in instance_entries]

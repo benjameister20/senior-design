@@ -6,16 +6,14 @@ class Rack:
     A data model for a Rack
 
     Attributes:
-        row_letter (str): row letter
-        row_number (int): row number
+        label (str): row letter and number
     """
 
-    def __init__(self, row_letter: str, row_number: int) -> None:
-        self.row_letter: str = row_letter
-        self.row_number: int = row_number
+    def __init__(self, label: str) -> None:
+        self.label = label
 
     def make_json(self) -> JSON:
-        return {"row_letter": self.row_letter, "row_number": self.row_number}
+        return {"label": self.label}
 
     def __repr__(self) -> str:
-        return f"Rack {self.row_letter}{self.row_number}"
+        return f"Rack {self.label}"

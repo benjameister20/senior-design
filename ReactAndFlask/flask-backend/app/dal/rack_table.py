@@ -1,6 +1,6 @@
 from typing import List, Optional
 
-from app.dal.database import db
+from app.dal.database import DBWriteException, db
 from app.data_models.rack import Rack
 
 
@@ -36,6 +36,7 @@ class RackTable:
             db.session.commit()
         except:
             print(f"Failed to add rack {rack.row_letter}{rack.row_number}")
+            raise DBWriteException
 
     def delete_rack(self, rack: Rack) -> None:
         """ Removes a rack from the database """

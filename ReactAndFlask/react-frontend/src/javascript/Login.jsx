@@ -4,6 +4,7 @@ import TextField from '@material-ui/core/TextField';
 import axios from 'axios';
 import getURL from './helpers/functions/GetURL';
 import * as Constants from './Constants';
+import { Privilege } from './enums/privilegeTypes.ts';
 
 const loginMainPath = 'users/';
 
@@ -36,7 +37,7 @@ export default class Login extends React.Component {
                     this.setState({ message:response.data['message'] });
                 }
             });
-        //this.props.loginFunc('token', 'privilege');
+        //this.props.loginFunc('token', Privilege.ADMIN);
     }
 
     updateUsername(event) {

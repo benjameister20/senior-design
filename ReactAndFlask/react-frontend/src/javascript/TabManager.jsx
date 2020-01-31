@@ -57,7 +57,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function TabManager() {
+export default function TabManager(token, privilege) {
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
 
@@ -85,19 +85,19 @@ export default function TabManager() {
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={0}>
-        <ModelsView token={this.props.token} privilege={this.props.privilege} />
+        <ModelsView token={token} privilege={privilege} />
       </TabPanel>
       <TabPanel value={value} index={1}>
-        <InstancesView token={this.props.token} privilege={this.props.privilege} />
+        <InstancesView token={token} privilege={privilege} />
       </TabPanel>
       <TabPanel value={value} index={2}>
-        <RacksView token={this.props.token} privilege={this.props.privilege} />
+        <RacksView token={token} privilege={privilege} />
       </TabPanel>
       <TabPanel value={value} index={3}>
-        <StatisticsView token={this.props.token} privilege={this.props.privilege} />
+        <StatisticsView token={token} privilege={privilege} />
       </TabPanel>
       <TabPanel value={value} index={4}>
-        <UsersView token={this.props.token} privilege={this.props.privilege} />
+        <UsersView token={token} privilege={privilege} />
       </TabPanel>
     </div>
   );

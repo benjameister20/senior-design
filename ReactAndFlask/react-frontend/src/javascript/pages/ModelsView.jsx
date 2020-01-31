@@ -2,6 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import { ModelCommand } from '../enums/modelCommands.ts'
 import { ModelInput } from '../enums/modelInputs.ts'
+import { Privilege } from '../enums/privilegeTypes.ts'
 import TableView from '../helpers/TableView';
 import { CSVLink } from "react-csv";
 import ButtonMenu from '../helpers/ButtonMenu';
@@ -33,9 +34,6 @@ const columns = [
 
 const modelsMainPath = 'models/';
 const modelDownloadFileName = 'models.csv';
-
-axios.defaults.headers.common['token'] = this.props.token;
-axios.defaults.headers.common['privilege'] = this.props.privilege;
 
 export default class ModelsView extends React.Component {
     constructor(props) {
@@ -103,6 +101,7 @@ export default class ModelsView extends React.Component {
                 'storage':'',
                 'comments':'',
             },
+
         };
 
         this.openCreateModal = this.openCreateModal.bind(this);
@@ -120,6 +119,9 @@ export default class ModelsView extends React.Component {
         this.createModel = this.createModel.bind(this);
         this.updateModelCreator = this.updateModelCreator.bind(this);
         this.deleteModel = this.deleteModel.bind(this);
+
+        axios.defaults.headers.common['token'] = this.props.token;
+        axios.defaults.headers.common['privilege'] = this.props.privilege;
     }
 
     createModel() {
@@ -305,7 +307,8 @@ export default class ModelsView extends React.Component {
     render() {
         return (
             <div>
-                <ButtonMenu
+                {(this.props.privilege == Privilege.ADMIN) ?
+                    (<div><ButtonMenu
                     openCreateModal={this.openCreateModal}
                     openImportModal={this.openImportModal}
                     downloadTable={this.downloadTable}
@@ -323,11 +326,12 @@ export default class ModelsView extends React.Component {
                     createModel={this.createModel}
                     updateModelCreator={this.updateModelCreator}
                     inputs={inputs}
-                />
+                    />
                 <UploadModal
                     showImportModal={this.state.showImportModal}
                     closeImportModal={this.closeImportModal}
-                />
+                /></div>):null
+                }
                 <Filters
                     updateSearchText={this.updateSearchText}
                     search={this.search}
@@ -349,6 +353,7 @@ export default class ModelsView extends React.Component {
                     loading={this.state.detailViewLoading}
                     edit={this.editModel}
                     delete={this.deleteModel}
+                    disabled={this.props.privilege==Privilege.USER}
                 />
             </div>
         );

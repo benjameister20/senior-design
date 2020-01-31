@@ -74,7 +74,12 @@ def edit():
     global INSTANCE_MANAGER
     returnJSON = createJSON()
 
-    return addMessageToJSON(returnJSON, "success")
+    try:
+        instance_data = request.get_json()
+        INSTANCE_MANAGER.edit_instance(instance_data)
+        return addMessageToJSON(returnJSON, "success")
+    except InvalidInputsError:
+        return addMessageToJSON(returnJSON, "failure")
 
 
 @instances.route("/instances/detailview", methods=["POST"])

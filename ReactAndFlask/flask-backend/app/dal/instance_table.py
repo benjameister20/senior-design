@@ -1,6 +1,7 @@
 from typing import List, Optional
 
 from app.dal.database import db
+from app.dal.exceptions.ChangeModelDBException import ChangeModelDBException
 from app.data_models.instance import Instance
 
 
@@ -65,6 +66,21 @@ class InstanceTable:
             db.session.commit()
         except:
             print(f"Failed to add instance {instance.hostname} {instance.rack_label}")
+
+    def edit_instance(self, instance: Instance) -> None:
+        """ Updates a model to the database """
+
+        instance_entry: InstanceEntry = InstanceEntry(instance=instance)
+
+        try:
+            InstanceEntry.query.filter_by(
+                rack_label=instance.rack_label, rack_u=instance.rack_u
+            ).update(instance_entry)
+            db.session.commit()
+        except:
+            raise ChangeModelDBException(
+                "Failed to udpate model {model.vendor} {model.model_number}"
+            )
 
     def delete_instance(self, instance: Instance) -> None:
         """ Removes an instance from the database """

@@ -1,5 +1,5 @@
-from app.dal.instance_table import InstanceEntry, InstanceTable
-from app.dal.model_table import ModelEntry, ModelTable
+from app.dal.instance_table import InstanceTable
+from app.dal.model_table import ModelTable
 from app.data_models.instance import Instance
 from app.exceptions.InvalidInputsException import InvalidInputsError
 
@@ -14,7 +14,7 @@ class InstanceManager:
 
         try:
             new_instance = self.make_instance(instance_data)
-            self.table.add_instance(InstanceEntry(new_instance))
+            self.table.add_instance(new_instance)
         except:
             raise InvalidInputsError("failure")
 
@@ -48,7 +48,7 @@ class InstanceManager:
     def edit_instance(self, instance_data):
         try:
             new_instance = self.make_instance(instance_data)
-            self.table.edit_instance(ModelEntry(new_instance))
+            self.table.edit_instance(new_instance)
         except:
             raise InvalidInputsError("failure")
 

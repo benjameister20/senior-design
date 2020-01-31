@@ -1,5 +1,5 @@
 from app.dal.exceptions.ChangeModelDBException import ChangeModelDBException
-from app.dal.model_table import ModelEntry, ModelTable
+from app.dal.model_table import ModelTable
 from app.data_models.model import Model
 from app.exceptions.InvalidInputsException import InvalidInputsError
 
@@ -13,7 +13,7 @@ class ModelManager:
 
         try:
             new_model = self.make_model(model_data)
-            self.table.add_model(ModelEntry(new_model))
+            self.table.add_model(new_model)
         except ChangeModelDBException:
             raise InvalidInputsError("failure")
 
@@ -45,8 +45,8 @@ class ModelManager:
 
     def edit_model(self, model_data):
         try:
-            new_model = self.make_model(model_data)
-            self.table.edit_model(ModelEntry(new_model))
+            updated_model = self.make_model(model_data)
+            self.table.edit_model(updated_model)
         except ChangeModelDBException:
             raise InvalidInputsError("failure")
 

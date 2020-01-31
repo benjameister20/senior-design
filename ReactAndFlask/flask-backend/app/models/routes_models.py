@@ -74,6 +74,13 @@ def edit():
     global MODEL_MANAGER
     returnJSON = createJSON()
 
+    try:
+        model_data = request.get_json()
+        MODEL_MANAGER.edit_model(model_data)
+        return addMessageToJSON(returnJSON, "success")
+    except:
+        return addMessageToJSON(returnJSON, "failure")
+
     return addMessageToJSON(returnJSON, "success")
 
 

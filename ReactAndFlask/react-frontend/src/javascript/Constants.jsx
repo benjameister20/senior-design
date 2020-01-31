@@ -66,3 +66,28 @@ export const testUserArray = [
         'privilege':'c',
     },
 ];
+
+export const testInstanceArray = [
+    {
+        'model':'a',
+        'hostname':'a',
+        'rack':'a',
+        'rackU':'a',
+        'owner':'a',
+        'comment':'a',
+    },{
+        'model':'b',
+        'hostname':'b',
+        'rack':'b',
+        'rackU':'b',
+        'owner':'b',
+        'comment':'b',
+    },{
+        'model':'c',
+        'hostname':'c',
+        'rack':'c',
+        'rackU':'c',
+        'owner':'c',
+        'comment':'c',
+    },
+];

@@ -1,61 +1,51 @@
 import React from 'react';
 import axios from 'axios';
-import { InstanceInput } from '../enums/instanceInputs.ts'
 import { InstanceCommand } from '../enums/instanceCommands.ts'
-import * as Constants from '../Constants';
-import Modal from '@material-ui/core/Modal';
-import Button from '@material-ui/core/Button';
-import TextField from "@material-ui/core/TextField";
-import CloudUploadIcon from '@material-ui/icons/CloudUpload';
-import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
+import { InstanceInput } from '../enums/instanceInputs.ts'
 import TableView from '../helpers/TableView';
 import { CSVLink } from "react-csv";
-import SearchIcon from '@material-ui/icons/Search';
-import InputBase from '@material-ui/core/InputBase';
+import ButtonMenu from '../helpers/ButtonMenu';
+import Filters from '../helpers/Filters';
+import UploadModal from '../helpers/UploadModal';
+import getURL from '../helpers/functions/GetURL';
+import DetailedView from '../helpers/DetailedView';
+import CreateModal from '../helpers/CreateModal';
+import * as Constants from '../Constants';
+
+const inputs = [
+    'model',
+    'hostname',
+    'rack',
+    'rackU',
+    'owner',
+    'comment',
+]
 
 const columns = [
-    "Model",
-    "Hostname",
-    "Rack",
-    "Rack U",
-    "Owner",
-    "Comments",
+    'model',
+    'hostname',
+    'rack',
+    'rackU',
 ]
 
 const instancesMainPath = 'instances/';
 const instanceDownloadFileName = 'instances.csv';
-
-function getURL(endpoint) {
-    return Constants.serverEndpoint + instancesMainPath + endpoint;
-}
-
-function jsonToArr(json) {
-    var instances = json.data['instances'];
-    const items = [];
-
-    for (const [index, val] of instances.entries()) {
-        const row = [];
-        row.push(val[InstanceInput.Model]);
-        row.push(val[InstanceInput.Hostname]);
-        row.push(val[InstanceInput.Rack]);
-        row.push(val[InstanceInput.RackU]);
-        row.push(val[InstanceInput.Owner]);
-        row.push(val[InstanceInput.Comment]);
-        items.push(row);
-    }
-    return items;
-}
 
 export default class InstancesView extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
+
+            // modals
             showCreateModal:false,
             showImportModal:false,
-            items:[],
-            instanceToken:"",
-            createdInstance: {
+
+            // table items
+            items:Constants.testInstanceArray,
+
+            // vals for creating a new instance
+            createdInstance : {
                 'model':'',
                 'hostname':'',
                 'rack':'',
@@ -63,18 +53,51 @@ export default class InstancesView extends React.Component {
                 'owner':'',
                 'comment':'',
             },
+
+            // vals for deleting an instance
             deleteInstanceRack:'',
             deleteInstanceRackU:'',
-            viewRack:'',
-            viewRackU:'',
+
+            // vals for viewing an instance
+            viewInstanceRack:'',
+            viewInstanceRackU:'',
+
+            // csv data
             csvData:[],
-            searchText:"",
+
+            // detailed view
+            showDetailedView: false,
+            detailViewLoading:false,
+            detailedValues : {
+                'model':'',
+                'hostname':'',
+                'rack':'',
+                'rackU':'',
+                'owner':'',
+                'comment':'',
+            },
         };
+
+        this.createInstance = this.createInstance.bind(this);
+        this.editInstance = this.editInstance.bind(this);
+        this.deleteInstance = this.deleteInstance.bind(this);
+        this.detailViewInstance = this.detailViewInstance.bind(this);
+        this.searchInstances = this.searchInstances.bind(this);
+        this.search = this.search.bind(this);
+        this.openCreateModal = this.openCreateModal.bind(this);
+        this.openImportModal = this.openImportModal.bind(this);
+        this.showDetailedView = this.showDetailedView.bind(this);
+        this.closeCreateModal = this.closeCreateModal.bind(this);
+        this.closeImportModal = this.closeImportModal.bind(this);
+        this.closeDetailedView = this.closeDetailedView.bind(this);
+        this.updateInstanceCreator = this.updateInstanceCreator.bind(this);
+        this.updateInstanceEdited = this.updateInstanceEdited.bind(this)
+
     }
 
     createInstance() {
         axios.post(
-            getURL(InstanceCommand.create),
+            getURL(instancesMainPath, InstanceCommand.create),
             {
                 'model':this.state.createdInstance[InstanceInput.Model],
                 'hostname':this.state.createdInstance[InstanceInput.Hostname],
@@ -83,46 +106,90 @@ export default class InstancesView extends React.Component {
                 'owner':this.state.createdInstance[InstanceInput.Owner],
                 'comment':this.state.createdInstance[InstanceInput.Comment],
             }
-            ).then(response => (this.setState({ items:jsonToArr(response) })));
+            ).then(response => console.log(response));
+
+        this.setState({
+            createdInstance : {
+                'model':'',
+                'hostname':'',
+                'rack':'',
+                'rackU':'',
+                'owner':'',
+                'comment':'',
+            },
+        });
     }
+
+    editInstance() {
+        axios.post(
+            getURL(instancesMainPath, InstanceCommand.edit),
+            {
+                'model':this.state.detailedValues[InstanceInput.Model],
+                'hostname':this.state.detailedValues[InstanceInput.Hostname],
+                'rack':this.state.detailedValues[InstanceInput.Rack],
+                'rackU':this.state.detailedValues[InstanceInput.RackU],
+                'owner':this.state.detailedValues[InstanceInput.Owner],
+                'comment':this.state.detailedValues[InstanceInput.Comment],
+            }
+            ).then(response => console.log(response));
+
+        this.setState({
+            detailedValues : {
+                'model':'',
+                'hostname':'',
+                'rack':'',
+                'rackU':'',
+                'owner':'',
+                'comment':'',
+            },
+        });
+    }
+
 
     deleteInstance() {
         axios.post(
-            getURL(InstanceCommand.delete),
+            getURL(instancesMainPath, InstanceCommand.delete),
             {
                 'rack':this.state.deleteInstanceRack,
-                'rackU':this.state.deleteInstanceRackU
+                'rackU':this.state.deleteInstanceRackU,
             }
-            ).then(response => (this.setState({ items:jsonToArr(response) })));
+            ).then(response => console.log(response));
+
+        this.setState({
+            deleteInstanceRack:'',
+            deleteInstanceRackU:'',
+            showDetailedView:false
+        });
     }
 
-    detailViewInstance() {
+    detailViewInstance(rack, rackU) {
         axios.post(
-            getURL(InstanceCommand.detailView),
+            getURL(instancesMainPath, InstanceCommand.detailView),
             {
-                'rack':this.state.deleteInstanceRack,
-                'rackU':this.state.deleteInstanceRackU
+                'rack':rack,
+                'rackU':rackU,
             }
-            ).then(response => (this.setState({ items:jsonToArr(response) })));
+            ).then(response => this.setState({ detailedValues: response.data['instances'][0], detailViewLoading:false}));
+
+        this.setState({
+            viewInstanceRack:'',
+        });
     }
 
-    viewInstance() {
+    searchInstances(model, hostname, rack, rackU) {
         axios.post(
-            getURL(InstanceCommand.view),
+            getURL(instancesMainPath, InstanceCommand.search),
             {
-                'rack':this.state.deleteInstanceRack,
-                'rackU':this.state.deleteInstanceRackU
+                'model':model,
+                'hostname':hostname,
+                'rack':rack,
+                'rackU':rackU,
             }
-            ).then(response => (this.setState({ items:jsonToArr(response) })));
+            ).then(response => this.setState({ items: response.data['instances'] }));
     }
 
-    searchInstances() {
-        axios.post(
-            getURL(InstanceCommand.search),
-            {
-                'filter':this.state.searchText,
-            }
-            ).then(response => this.setState({ items: jsonToArr(response)}));
+    search(filters) {
+        this.searchInstances(filters['model'], filters['hostname'], filters['rack'], filters['rackU']);
     }
 
     downloadTable() {
@@ -137,109 +204,92 @@ export default class InstancesView extends React.Component {
         this.setState({showImportModal: true});
     }
 
+    showDetailedView(id) {
+        this.setState({
+            showDetailedView: true,
+            detailViewLoading:true,
+        });
+
+        var model = this.state.items[id]['model'];
+        var hostname = this.state.items[id]['hostname'];
+        var rack = this.state.items[id]['rack'];
+        var rackU = this.state.items[id]['rackU'];
+
+        //this.detailViewInstance(model, hostname, rack, rackU);
+        this.setState({ detailedValues: Constants.testInstanceArray[id], detailViewLoading:false})
+    }
+
+    closeCreateModal() {
+        this.setState({showCreateModal: false});
+    }
+
+    closeImportModal() {
+        this.setState({showImportModal: false});
+    }
+
+    closeDetailedView() {
+        this.setState({ showDetailedView: false })
+    }
+
     updateInstanceCreator(event) {
-        this.state.createdInstance[event.target.name] = event.target.value;
+        this.state.createdInstance[event.target.label] = event.target.value;
         this.forceUpdate()
     }
 
-    updateSearchText(event) {
-        this.setState({ searchText: event.target.value})
+    updateInstanceEdited(event) {
+        this.state.detailedValues[event.target.label] = event.target.value;
+        this.forceUpdate()
     }
 
     render() {
         return (
             <div>
-                <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={this.openCreateModal.bind(this)}
-                >
-                    Create
-                </Button>
-                <Button
-                    variant="contained"
-                    color="primary"
-                    startIcon={<CloudUploadIcon />}
-                    onClick={this.openImportModal.bind(this)}
-                >
-                    Import
-                </Button>
-                <Button
-                    variant="contained"
-                    color="primary"
-                    startIcon={<CloudDownloadIcon />}
-                    onClick={this.downloadTable.bind(this)}
-                >
-                    Export
-                </Button>
+                <ButtonMenu
+                    openCreateModal={this.openCreateModal}
+                    openImportModal={this.openImportModal}
+                    downloadTable={this.downloadTable}
+                />
                 <CSVLink
                     data={this.state.csvData}
                     filename={instanceDownloadFileName}
                     className="hidden"
                     ref={(r) => this.csvLink = r}
-                    target="_blank"/>
-                <Modal
-                    style={{top: `50%`,left: `50%`,transform: `translate(-50%, -50%)`,}}
-                    aria-labelledby="simple-modal-title"
-                    aria-describedby="simple-modal-description"
-                    open={this.state.showCreateModal}
-                    onClose={() => (this.setState({showCreateModal:false}))}
-                >
-                    <div>
-
-                        <TextField id="standard-basic" name={InstanceInput.Model} label={columns[0]} onChange={this.updateInstanceCreator.bind(this)}/>
-                        <TextField id="standard-basic" name={InstanceInput.Hostname} label={columns[1]} onChange={this.updateInstanceCreator.bind(this)}/>
-                        <TextField id="standard-basic" name={InstanceInput.Rack} label={columns[2]} onChange={this.updateInstanceCreator.bind(this)}/>
-                        <TextField id="standard-basic" name={InstanceInput.RackU} label={columns[3]} onChange={this.updateInstanceCreator.bind(this)}/>
-                        <TextField id="standard-basic" name={InstanceInput.Owner} label={columns[4]} onChange={this.updateInstanceCreator.bind(this)}/>
-                        <TextField id="standard-basic" name={InstanceInput.Comment} label={columns[5]} onChange={this.updateInstanceCreator.bind(this)}/>
-
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            onClick={this.createInstance.bind(this)}
-                        >
-                            Create
-                        </Button>
-                    </div>
-                </Modal>
-                <Modal
-                    style={{top: `50%`,left: `50%`,transform: `translate(-50%, -50%)`,}}
-                    aria-labelledby="simple-modal-title"
-                    aria-describedby="simple-modal-description"
-                    open={this.state.showImportModal}
-                    onClose={() => (this.setState({showImportModal:false}))}
-                >
-                    <div>
-                        <input type='file' accept=".csv" />
-                        <Button
-                            variant="contained"
-                            color="primary"
-                        >
-                            Upload
-                        </Button>
-                    </div>
-                </Modal>
-                <div>
-                <div>
-                    <SearchIcon />
-                </div>
-                    <InputBase
-                        placeholder="Search (blank does a search all)"
-                        inputProps={{ 'aria-label': 'search' }}
-                        onChange={this.updateSearchText.bind(this)}
-                    />
-                    <Button
-                        onClick={this.searchInstances.bind(this)}
-                    >
-                        Search
-                    </Button>
-                </div>
+                    target="_blank"
+                />
+                <CreateModal
+                    showCreateModal={this.state.showCreateModal}
+                    closeCreateModal={this.closeCreateModal}
+                    createModel={this.createInstance}
+                    updateModelCreator={this.updateInstanceCreator}
+                    inputs={inputs}
+                />
+                <UploadModal
+                    showImportModal={this.state.showImportModal}
+                    closeImportModal={this.closeImportModal}
+                />
+                <Filters
+                    updateSearchText={this.updateSearchText}
+                    search={this.search}
+                    filters={columns}
+                />
                 <TableView
                     columns={columns}
                     vals={this.state.items}
+                    keys={columns}
+                    showDetailedView={this.showDetailedView}
+                    filters={columns}
+                />
+                <DetailedView
+                    showDetailedView={this.state.showDetailedView}
+                    closeDetailedView={this.closeDetailedView}
+                    inputs={inputs}
+                    updateModelEdited={this.updateInstanceEdited}
+                    defaultValues={this.state.detailedValues}
+                    loading={this.state.detailViewLoading}
+                    edit={this.editInstance}
+                    delete={this.deleteInstance}
                 />
             </div>
-    );
+        );
     }
 }

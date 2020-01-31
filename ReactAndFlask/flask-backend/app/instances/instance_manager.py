@@ -33,8 +33,6 @@ class InstanceManager:
         if rack_u == "":
             raise InvalidInputsError("Must provide a model number")
 
-        # TODO add validation
-
         try:
             self.table.delete_instance_by_rack_location(rack, rack_u)
         except:
@@ -57,21 +55,32 @@ class InstanceManager:
         except:
             raise InvalidInputsError("failure")
 
-    def get_instances(self, fitler: str, limit: int):
-        return ""
+    def get_instances(self, filter, limit: int):
+        model_name = filter.get("model")
+        if model_name is not None:
+            model_id = self.get_model_id_from_name(model_name)
+        else:
+            model_id = None
+
+        hostname = filter.get("hostname")
+        rack_label = filter.get("rack")
+        rack_u = filter.get("rackU")
+
+        try:
+            instance_list = self.table.get_instances_with_filters(
+                model_id=model_id,
+                hostname=hostname,
+                rack_label=rack_label,
+                rack_u=rack_u,
+                limit=limit,
+            )
+            return instance_list
+        except:
+            return "error"
 
     def make_instance(self, instance_data):
         model_name = self.check_null(instance_data["model"])
-        data = model_name.split()
-        if len(data) != 2:
-            return "Invalid Model"
-
-        vendor = data[0]
-        model_number = data[1]
-
-        model_id = self.model_table.get_model_id_by_vendor_number(vendor, model_number)
-        if model_id is None:
-            return "Invalid Model"
+        model_id = self.get_model_id_from_name(model_name)
 
         try:
             hostname = self.check_null(instance_data["hostname"])
@@ -92,6 +101,20 @@ class InstanceManager:
             raise InvalidInputsError("Must provide a rack location")
 
         return Instance(model_id, hostname, rack, rack_u, owner, comment)
+
+    def get_model_id_from_name(self, model_name):
+        data = model_name.split()
+        if len(data) != 2:
+            return "Invalid Model"
+
+        vendor = data[0]
+        model_number = data[1]
+
+        model_id = self.model_table.get_model_id_by_vendor_number(vendor, model_number)
+        if model_id is None:
+            return "Invalid Model"
+
+        return model_id
 
     def check_null(self, val):
         if val is None:

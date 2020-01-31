@@ -3,6 +3,7 @@ from typing import List, Optional
 from app.dal.database import db
 from app.dal.exceptions.ChangeModelDBException import ChangeModelDBException
 from app.data_models.instance import Instance
+from sqlalchemy import and_
 
 
 class InstanceEntry(db.Model):
@@ -128,3 +129,31 @@ class InstanceTable:
             return None
 
         return [entry.make_instance() for entry in instance_entries]
+
+    def get_instances_with_filter(
+        self,
+        model_id: Optional[int],
+        hostname: Optional[str],
+        rack_label: Optional[str],
+        rack_u: Optional[int],
+        limit: int,
+    ) -> List[Instance]:
+        """ Get a list of all instances containing the given filter """
+        conditions = []
+        if model_id is not None:
+            conditions.append(InstanceEntry.model_id == model_id)
+        if hostname is not None:
+            conditions.append(InstanceEntry.hostname == hostname)
+        if rack_label is not None:
+            conditions.append(InstanceEntry.rack_label == rack_label)
+        if rack_u is not None:
+            conditions.append(InstanceEntry.rack_u == rack_u)
+
+        filtered_instances: List[InstanceEntry] = InstanceEntry.query.filter(
+            and_(*conditions)
+        ).limit(limit)
+
+        if filtered_instances is None:
+            return None
+
+        return [entry.make_instance() for entry in filtered_instances]

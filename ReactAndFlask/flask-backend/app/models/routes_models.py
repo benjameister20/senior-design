@@ -94,14 +94,14 @@ def detail_view():
 
     global MODEL_MANAGER
     global modelsArr
-
-    model_data = request.get_json()
-    model = MODEL_MANAGER.detail_view(model_data)
-
     returnJSON = createJSON()
-    returnJSON = addModelsTOJSON(addMessageToJSON(returnJSON, "success"), [model])
 
-    return returnJSON
+    try:
+        model_data = request.get_json()
+        model = MODEL_MANAGER.detail_view(model_data)
+        return addModelsTOJSON(addMessageToJSON(returnJSON, "success"), [model])
+    except:
+        return addMessageToJSON(returnJSON, "failure")
 
 
 def createJSON() -> dict:

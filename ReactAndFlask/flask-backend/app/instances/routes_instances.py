@@ -52,6 +52,7 @@ def search():
     """ Route for searching instances """
 
     global INSTANCE_MANAGER
+    global instancesArr
     returnJSON = createJSON()
 
     filter = request.json["filter"]
@@ -62,7 +63,10 @@ def search():
 
     try:
         INSTANCE_MANAGER.get_instances(filter, limit)
-        return addMessageToJSON(returnJSON, "success")
+        returnJSON = addInstancesTOJSON(
+            addMessageToJSON(returnJSON, "success"), [model_list]
+        )
+        return returnJSON
     except:
         return addMessageToJSON(returnJSON, "failure")
 
@@ -86,15 +90,16 @@ def edit():
 def detail_view():
     """ Route for table view of instances """
 
+    global INSTANCE_MANAGER
     global instancesArr
-
-    instance_data = request.get_json()
-    instance = INSTANCE_MANAGER.detail_view(instance_data)
-
     returnJSON = createJSON()
-    returnJSON = addInstancesTOJSON(addMessageToJSON(returnJSON, "success"), [instance])
 
-    return returnJSON
+    try:
+        instance_data = request.get_json()
+        instance = INSTANCE_MANAGER.detail_view(instance_data)
+        return addInstancesTOJSON(addMessageToJSON(returnJSON, "success"), [instance])
+    except InvalidInputsError:
+        return addMessageToJSON(returnJSON, "failure")
 
 
 def createJSON() -> dict:

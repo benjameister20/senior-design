@@ -1,4 +1,3 @@
-import string
 from http import HTTPStatus
 from typing import List
 
@@ -6,6 +5,12 @@ from app.dal.database import DBWriteException
 from app.dal.rack_table import RackTable
 from app.data_models.rack import Rack
 from app.main.types import JSON
+from app.racks.rack_manager import (
+    InvalidRangeError,
+    RackNotEmptyError,
+    add_rack_range,
+    delete_rack_range,
+)
 from flask import Blueprint, request
 
 racks = Blueprint(
@@ -38,26 +43,41 @@ def create_racks():
         start_number: int = int(data["start_number"])
         stop_number: int = int(data["stop_number"])
 
-        if (not start_letter.isalpha) or (not stop_letter.isalpha):
-            return HTTPStatus.BAD_REQUEST
-
-        if start_number < 1 or start_number > stop_number:
-            return HTTPStatus.BAD_REQUEST
-
-        alphabet: str = string.ascii_uppercase
-        letters: str = alphabet[
-            alphabet.index(start_letter.upper()) : alphabet.index(stop_letter.upper())
-            + 1
-        ]
-
-        for letter in letters:
-            for number in range(start_number, stop_number + 1):
-                rack: Rack = Rack(row_letter=letter, row_number=number)
-
-                rack_table.add_rack(rack=rack)
+        add_rack_range(
+            start_letter=start_letter,
+            stop_letter=stop_letter,
+            start_number=start_number,
+            stop_number=stop_number,
+        )
     except KeyError:
         return HTTPStatus.BAD_REQUEST
-    except DBWriteException:
+    except (DBWriteException, InvalidRangeError):
+        return HTTPStatus.INTERNAL_SERVER_ERROR
+
+    return HTTPStatus.OK
+
+
+@racks.route("/delete", methods=["DELETE"])
+def delete_racks():
+    """ Delete a range of racks """
+    data: JSON = request.get_json()
+    rack_table: RackTable = RackTable()
+
+    try:
+        start_letter: str = data["start_letter"]
+        stop_letter: str = data["stop_letter"]
+        start_number: int = int(data["start_number"])
+        stop_number: int = int(data["stop_number"])
+
+        delete_rack_range(
+            start_letter=start_letter,
+            stop_letter=stop_letter,
+            start_number=start_number,
+            stop_number=stop_number,
+        )
+    except KeyError:
+        return HTTPStatus.BAD_REQUEST
+    except (DBWriteException, InvalidRangeError, RackNotEmptyError):
         return HTTPStatus.INTERNAL_SERVER_ERROR
 
     return HTTPStatus.OK

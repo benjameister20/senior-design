@@ -2,12 +2,14 @@ from app.dal.instance_table import InstanceTable
 from app.dal.model_table import ModelTable
 from app.data_models.instance import Instance
 from app.exceptions.InvalidInputsException import InvalidInputsError
+from app.instances.instance_validator import InstanceValidator
 
 
 class InstanceManager:
     def __init__(self):
         self.table = InstanceTable()
         self.model_table = ModelTable()
+        self.validate = InstanceValidator()
 
     def create_instance(self, instance_data):
         # TODO add validation
@@ -31,7 +33,6 @@ class InstanceManager:
 
         try:
             self.table.delete_instance_by_rack_location(rack, rack_u)
-        # TODO change exception
         except:
             raise InvalidInputsError("Error adding model")
 

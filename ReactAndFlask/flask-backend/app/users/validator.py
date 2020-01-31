@@ -1,6 +1,10 @@
 import re
 
+from app.dal.user_table import UserTable
+
 # TODO: implement error class to return from validator functions so can provide error messages for each situation
+
+USER_TABLE = UserTable()
 
 
 class Validator:
@@ -55,10 +59,11 @@ class Validator:
         pattern = re.compile(reg, re.IGNORECASE)
         is_valid = bool(re.search(pattern, email))
 
-        # TODO: query db for suggested email
-        # selected_rows = list[User]
-        # not_already_used = len(selected_rows) == 0
-        not_already_used = False
+        user = USER_TABLE.get_user_by_email(email)
+        if user is None:
+            not_already_used = True
+        else:
+            not_already_used = False
 
         return is_valid and not_already_used
 
@@ -86,9 +91,12 @@ class Validator:
         pattern = re.compile(reg)
         is_valid = bool(re.search(pattern, username))
 
-        # TODO: query db for suggested username
-        # selected_rows = list[User]
-        # not_already_taken = len(selected_rows) == 0
-        not_already_taken = False
+        print("fetching user")
+        user = USER_TABLE.get_user(username)
+        print("broken")
+        if user is None:
+            not_already_taken = True
+        else:
+            not_already_taken = False
 
         return is_valid and not_already_taken

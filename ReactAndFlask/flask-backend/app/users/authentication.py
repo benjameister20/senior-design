@@ -7,18 +7,12 @@ import jwt
 
 
 class AuthManager:
-    """[summary]
-
-    Returns:
-        [type]: [description]
-    """
-
     def __init__(self) -> None:
         self.TOKEN_SECRET_KEY = os.getenv("TOKEN_SECRET_KEY", "my_precious")
         self.TOKEN_EXP_DAYS = 0
-        self.TOKEN_EXP_HOURS = 0
+        self.TOKEN_EXP_HOURS = 2
         self.TOKEN_EXP_MINUTES = 0
-        self.TOKEN_EXP_SECONDS = 2
+        self.TOKEN_EXP_SECONDS = 0
         self.SESSION_EXPIRED = "Session expired. Please log in again."
         self.INVALID_TOKEN = "Invalid token. Please log in again."
 
@@ -77,7 +71,6 @@ class AuthManager:
                 "sub": username,
             }
             token = jwt.encode(payload, self.TOKEN_SECRET_KEY, algorithm="HS256")
-            # print(type(token))
             return token
         except Exception as e:
             return e
@@ -101,7 +94,10 @@ class AuthManager:
 
     def validate_auth_token(self, headers):
 
-        auth_token = headers["Authentication"]
+        try:
+            auth_token = headers["Authentication"]
+        except KeyError:
+            return [False, "Please provide auth token"]
 
         decoded = self.decode_auth_token(auth_token)
         if decoded == self.SESSION_EXPIRED:

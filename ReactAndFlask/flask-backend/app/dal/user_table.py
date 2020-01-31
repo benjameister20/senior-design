@@ -33,6 +33,19 @@ class UserTable:
             password=user.password_hash,
         )
 
+    def get_user_by_email(self, email: str) -> Optional[User]:
+        """ Get the user for the given username """
+        user: UserEntry = UserEntry.query.filter_by(email=email).first()
+        if user is None:
+            return None
+
+        return User(
+            username=user.username,
+            display_name=user.display_name,
+            email=user.email,
+            password=user.password_hash,
+        )
+
     def add_user(self, user: User) -> None:
         """ Adds a user to the database """
         user_entry: UserEntry = UserEntry(user=user)

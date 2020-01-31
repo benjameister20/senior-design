@@ -48,8 +48,7 @@ class InstanceTable:
     def get_instance_by_rack_location(self, rack, rack_u):
         """ Get the instance for the given idr """
         instance: InstanceEntry = InstanceEntry.query.filter_by(
-            rack=rack,
-            rack_u=rack_u,
+            rack=rack, rack_u=rack_u,
         ).first()
         if instance is None:
             return None

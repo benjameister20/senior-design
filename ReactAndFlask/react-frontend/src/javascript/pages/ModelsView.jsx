@@ -184,7 +184,7 @@ export default class ModelsView extends React.Component {
             {
                 'filter':this.state.searchText,
             }
-            ).then(response => this.setState({ items: jsonToArr(response.data['models']) }));
+            ).then(response => this.setState({ items: response.data['models'] }));
 
         this.setState({
             searchText:'',

@@ -29,7 +29,7 @@ export default class TableView extends React.Component {
             <TableBody>
               {this.props.vals.map(row => (
               <TableRow>
-                {row.map(val => (<TableCell scope="row">{val}</TableCell>))}
+                {row.map(val => (<TableCell scope="row"><span onClick={this.props.showDetailView}>{val}</span></TableCell>))}
               </TableRow>
               ))}
             </TableBody>

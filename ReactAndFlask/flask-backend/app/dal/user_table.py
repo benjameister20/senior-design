@@ -11,12 +11,14 @@ class UserEntry(db.Model):
     password_hash = db.Column(db.String(80))
     display_name = db.Column(db.String(80))
     email = db.Column(db.String(80))
+    privilege = db.Column(db.String(80))
 
     def __init__(self, user: User):
         self.username = user.username
         self.password_hash = user.password
         self.display_name = user.display_name
         self.email = user.email
+        self.privilege = user.privilege
 
 
 class UserTable:
@@ -31,6 +33,7 @@ class UserTable:
             display_name=user.display_name,
             email=user.email,
             password=user.password_hash,
+            privilege=user.privilege,
         )
 
     def get_user_by_email(self, email: str) -> Optional[User]:
@@ -44,6 +47,7 @@ class UserTable:
             display_name=user.display_name,
             email=user.email,
             password=user.password_hash,
+            privilege=user.privilege,
         )
 
     def add_user(self, user: User) -> None:
@@ -84,6 +88,7 @@ class UserTable:
                 display_name=entry.display_name,
                 email=entry.email,
                 password=entry.password_hash,
+                privilege=entry.privilege,
             )
             for entry in all_users
         ]

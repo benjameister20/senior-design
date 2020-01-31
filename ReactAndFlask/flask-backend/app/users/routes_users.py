@@ -3,6 +3,7 @@
 
 from app.dal.user_table import UserTable
 from app.data_models.user import User
+from app.decorators.auth import requires_auth, requires_role
 from app.users.authentication import AuthManager
 from app.users.validator import Validator
 from flask import Blueprint, request
@@ -17,26 +18,23 @@ USER_TABLE = UserTable()
 
 
 @users.route("/users/test", methods=["GET"])
+@requires_auth(request)
 def test():
     """ route to test user endpoints """
 
     json = {}
 
-    is_authenticated, message = AUTH_MANAGER.validate_auth_token(request.headers)
-    if not is_authenticated:
-        return add_message_to_JSON(json, message)
+    # is_authenticated, message = AUTH_MANAGER.validate_auth_token(request.headers)
+    # if not is_authenticated:
+    #     return add_message_to_JSON(json, message)
 
     return add_message_to_JSON(json, "hello")
 
 
 @users.route("/users/search", methods=["POST"])
+@requires_auth(request)
+@requires_role(request, "admin")
 def search():
-
-    json = {}
-
-    is_authenticated, message = AUTH_MANAGER.validate_auth_token(request.headers)
-    if not is_authenticated:
-        return add_message_to_JSON(json, message)
 
     request_data = request.get_json()
     username = request_data["username"]
@@ -46,6 +44,8 @@ def search():
 
 
 @users.route("/users/create", methods=["POST"])
+@requires_auth(request)
+@requires_role(request, "admin")
 def create():
     """Route for creating users
 
@@ -73,10 +73,6 @@ def create():
 
     json = {}
 
-    is_authenticated, message = AUTH_MANAGER.validate_auth_token(request.headers)
-    if not is_authenticated:
-        return add_message_to_JSON(json, message)
-
     request_data = request.get_json()
 
     username = request_data["username"]
@@ -103,6 +99,8 @@ def create():
 
 
 @users.route("/users/delete", methods=["POST"])
+@requires_auth(request)
+@requires_role(request, "admin")
 def delete():
     """Route for deleting users
 
@@ -111,10 +109,6 @@ def delete():
     """
 
     json = {}
-
-    is_authenticated, message = AUTH_MANAGER.validate_auth_token(request.headers)
-    if not is_authenticated:
-        return add_message_to_JSON(json, message)
 
     request_data = request.get_json()
     username = request_data["username"]
@@ -129,13 +123,11 @@ def delete():
 
 
 @users.route("/users/edit", methods=["POST"])
+@requires_auth(request)
+@requires_role(request, "admin")
 def edit():
 
     json = {}
-
-    is_authenticated, message = AUTH_MANAGER.validate_auth_token(request.headers)
-    if not is_authenticated:
-        return add_message_to_JSON(json, message)
 
     request_data = request.get_json()
     username = request_data["username"]
@@ -167,14 +159,9 @@ def authenticate():
 
     json = {}
 
-    is_authenticated, message = AUTH_MANAGER.validate_auth_token(request.headers)
-    if not is_authenticated:
-        return add_message_to_JSON(json, message)
-
     request_data = request.get_json()
     username = request_data["username"]
     attempted_password = request_data["password"]
-    privilege = request_data["privilege"]
 
     user = USER_TABLE.get_user(username)
     if user is None:
@@ -185,7 +172,7 @@ def authenticate():
         return add_message_to_JSON(json, "Incorrect password")
 
     json["token"] = AUTH_MANAGER.encode_auth_token(username)
-    json["privilege"] = privilege
+    json["privilege"] = user.privilege
 
     return add_message_to_JSON(json, "success")
 

@@ -20,30 +20,11 @@ USER_TABLE = UserTable()
 def test():
     """ route to test user endpoints """
 
+    json = {}
+
     is_authenticated, message = AUTH_MANAGER.validate_auth_token(request.headers)
     if not is_authenticated:
-        return message
-
-    json = {}
-    # response = {
-    #     "users": [
-    #         {
-    #             "username": "jimmi",
-    #             "display_name": "jimmi",
-    #             "email": "jim@gmail.com",
-    #             "password": "aS8!Dk4n#h33@",
-    #             "privilege": "dsf",
-    #         },
-    #         {
-    #             "username": "jimmi",
-    #             "display_name": "jimmi",
-    #             "email": "jim@gmail.com",
-    #             "password": "aS8!Dk4n#h33@",
-    #             "privilege": "dsf",
-    #         },
-    #     ],
-    #     "token": 100,  # bookmarked location in database
-    # }
+        return add_message_to_JSON(json, message)
 
     return add_message_to_JSON(json, "hello")
 

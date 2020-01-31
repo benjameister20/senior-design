@@ -154,7 +154,7 @@ export default class ModelsView extends React.Component {
 
     editModel() {
         axios.post(
-            getURL(modelsMainPath, ModelCommand.create),
+            getURL(modelsMainPath, ModelCommand.edit),
             {
                 'vendor':this.state.detailedValues[ModelInput.Vendor],
                 'modelNumber':this.state.detailedValues[ModelInput.ModelNumber],

@@ -44,3 +44,25 @@ export const testModelArray = [
         'comments':'c',
     },
 ];
+
+export const testUserArray = [
+    {
+        'username':'a',
+        'password':'a',
+        'displayName':'a',
+        'email':'a',
+        'privilege':'a',
+    },{
+        'username':'b',
+        'password':'b',
+        'displayName':'b',
+        'email':'b',
+        'privilege':'b',
+    },{
+        'username':'c',
+        'password':'c',
+        'displayName':'c',
+        'email':'c',
+        'privilege':'c',
+    },
+];

@@ -64,12 +64,23 @@ class InstanceTable:
                 hostname=instance.hostname,
                 row_letter=instance.rack.row_letter,
                 row_number=instance.rack.row_number,
+                rack_u=instance.rack_u,
             ).delete()
             db.session.commit()
         except:
             print(
                 f"Failed to delete instance {instance.hostname} {instance.rack.row_letter}{instance.rack.row_number}"
             )
+
+    def delete_instance_by_rack_location(self, row_letter, row_number, rack_u) -> None:
+        """ Removes an instance from the database """
+        try:
+            InstanceEntry.query.filter_by(
+                row_letter=row_letter, row_number=row_number, rack_u=rack_u,
+            ).delete()
+            db.session.commit()
+        except:
+            print(f"Failed to delete instance {row_letter}{row_number}{rack_u}")
 
     def get_all_instances(self) -> List[Instance]:
         """ Get a list of all racks """

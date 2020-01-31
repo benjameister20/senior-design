@@ -22,7 +22,7 @@ export default class Login extends React.Component {
     }
 
     submitCredentials() {
-        /*axios.post(
+        axios.post(
             getURL(loginMainPath, 'authenticate'),
             {
                 "username":this.state.username,
@@ -36,8 +36,8 @@ export default class Login extends React.Component {
                 } else {
                     this.setState({ message:response.data['message'] });
                 }
-            });*/
-        this.props.loginFunc('token', Privilege.ADMIN);
+            });
+        //this.props.loginFunc('token', Privilege.ADMIN);
     }
 
     updateUsername(event) {

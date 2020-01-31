@@ -46,5 +46,5 @@ class InstanceValidator:
 
     def return_conflict(self, current_instance):
         result = f"The instance placement conflicts with instance with hostname {current_instance.hostname} "
-        result += f"on rack {current_instance.rack_label} at height {current_instance.rack_u}U."
+        result += f"on rack {current_instance.rack_label} at height U{current_instance.rack_u}."
         return result

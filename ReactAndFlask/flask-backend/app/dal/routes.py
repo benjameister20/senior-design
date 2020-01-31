@@ -49,14 +49,12 @@ def new_user():
     return HTTPStatus.OK
 
 
-@database.route("/rack/<string:row_letter>-<string:row_number>")
-def rack(row_letter: str, row_number):
+@database.route("/rack/<string:label>")
+def rack(label: str):
     """ Get a rack """
     rack_table: RackTable = RackTable()
 
-    rack: Optional[Rack] = rack_table.get_rack(
-        row_letter=row_letter, row_number=row_number
-    )
+    rack: Optional[Rack] = rack_table.get_rack(label=label)
     if rack is None:
         return HTTPStatus.NOT_FOUND
 
@@ -70,10 +68,9 @@ def new_rack():
     rack_table: RackTable = RackTable()
 
     try:
-        row_letter: str = data["row_letter"]
-        row_number: int = int(data["row_number"])
+        label: str = data["label"]
 
-        rack: Rack = Rack(row_letter=row_letter, row_number=row_number)
+        rack: Rack = Rack(label=label)
         rack_table.add_rack(rack=rack)
     except:
         return HTTPStatus.BAD_REQUEST
@@ -102,8 +99,7 @@ def new_instance():
     try:
         model_id: int = int(data["model_id"])
         hostname: str = data["hostname"]
-        row_letter: str = data["row_letter"]
-        row_number: int = int(data["row_number"])
+        rack_label: str = data["rack_label"]
         rack_u: int = int(data["rack_u"])
         owner: Optional[str] = data.get("owner")
         comment: Optional[str] = data.get("comment")
@@ -111,7 +107,7 @@ def new_instance():
         instance: Instance = Instance(
             model_id=model_id,
             hostname=hostname,
-            rack=Rack(row_letter=row_letter, row_number=row_number),
+            rack_label=rack_label,
             rack_u=rack_u,
             owner=owner,
             comment=comment,

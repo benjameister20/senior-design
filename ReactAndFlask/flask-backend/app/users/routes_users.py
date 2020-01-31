@@ -1,3 +1,8 @@
+# TODO: Make populate endpoint to populate the table upon sign in
+# TODO: Test format of json token exchange - might get messed up as byte string
+
+from app.dal.user_table import UserTable
+from app.data_models.user import User
 from app.users.authentication import AuthManager
 from app.users.validator import Validator
 from flask import Blueprint, request
@@ -6,45 +11,57 @@ users = Blueprint(
     "users", __name__, template_folder="templates", static_folder="static"
 )
 
-auth_manager = AuthManager()
-validator = Validator()
+AUTH_MANAGER = AuthManager()
+VALIDATOR = Validator()
+USER_TABLE = UserTable()
 
 
 @users.route("/users/test", methods=["GET"])
 def test():
     """ route to test user endpoints """
-    is_authenticated, message = auth_manager.validate_auth_token(request.headers)
+
+    is_authenticated, message = AUTH_MANAGER.validate_auth_token(request.headers)
     if not is_authenticated:
         return message
 
-    response = {
-        "users": [
-            {
-                "username": "jimmi",
-                "display_name": "jimmi",
-                "email": "jim@gmail.com",
-                "password": "aS8!Dk4n#h33@",
-                "privilege": "dsf",
-            },
-            {
-                "username": "jimmi",
-                "display_name": "jimmi",
-                "email": "jim@gmail.com",
-                "password": "aS8!Dk4n#h33@",
-                "privilege": "dsf",
-            },
-        ],
-        "token": 100,  # bookmarked location in database
-    }
+    json = {}
+    # response = {
+    #     "users": [
+    #         {
+    #             "username": "jimmi",
+    #             "display_name": "jimmi",
+    #             "email": "jim@gmail.com",
+    #             "password": "aS8!Dk4n#h33@",
+    #             "privilege": "dsf",
+    #         },
+    #         {
+    #             "username": "jimmi",
+    #             "display_name": "jimmi",
+    #             "email": "jim@gmail.com",
+    #             "password": "aS8!Dk4n#h33@",
+    #             "privilege": "dsf",
+    #         },
+    #     ],
+    #     "token": 100,  # bookmarked location in database
+    # }
 
-    return response
+    return add_message_to_JSON(json, "hello")
 
 
-@users.route("/users/view", methods=["POST"])
-def view(num_items):
-    # TODO: query db for top <num_items> rows
+@users.route("/users/search", methods=["POST"])
+def search():
 
-    return None
+    json = {}
+
+    is_authenticated, message = AUTH_MANAGER.validate_auth_token(request.headers)
+    if not is_authenticated:
+        return add_message_to_JSON(json, message)
+
+    request_data = request.get_json()
+    username = request_data["username"]
+    user = USER_TABLE.get_user(username)
+
+    return user.make_json()
 
 
 @users.route("/users/create", methods=["POST"])
@@ -73,25 +90,35 @@ def create():
         string: Success or failure, if failure provide message
     """
 
+    json = {}
+
+    is_authenticated, message = AUTH_MANAGER.validate_auth_token(request.headers)
+    if not is_authenticated:
+        return add_message_to_JSON(json, message)
+
     request_data = request.get_json()
-    request_data["auth_token"]
+    print(request_data)
+
     username = request_data["username"]
     password = request_data["password"]
     email = request_data["email"]
-    request_data["display_name"]
+    display_name = request_data["display_name"]
 
-    if not validator.validate_username(username):
-        return "Failure: Invalid username"
+    if not VALIDATOR.validate_username(username):
+        return add_message_to_JSON(json, "Invalid username")
 
-    if not validator.validate_email(email):
-        return "Failure: Invalid email address"
+    if not VALIDATOR.validate_email(email):
+        return add_message_to_JSON(json, "Invalid email address")
 
-    if not validator.validate_password(password):
-        return "Failure: Password too weak"
+    if not VALIDATOR.validate_password(password):
+        return add_message_to_JSON(json, "Password too weak")
 
-    # TODO: Store user as row in DB
+    encrypted_password = AUTH_MANAGER.encrypt_pw(password)
+    user = User(username, display_name, email, encrypted_password)
 
-    return "Success"
+    USER_TABLE.add_user(user)
+
+    return add_message_to_JSON(json, "Success")
 
 
 @users.route("/users/delete", methods=["POST"])
@@ -102,41 +129,80 @@ def delete():
         string: Success or failure, if failure provide message
     """
 
+    json = {}
+
+    is_authenticated, message = AUTH_MANAGER.validate_auth_token(request.headers)
+    if not is_authenticated:
+        return add_message_to_JSON(json, message)
+
     request_data = request.get_json()
-    request_data["username"]
+    username = request_data["username"]
 
-    # TODO: delete user with username <username> from db
+    user = USER_TABLE.get_user(username)
+    if user is None:
+        return add_message_to_JSON(json, "User {} does not exist".format(username))
 
-    return "Success"
+    USER_TABLE.delete_user(user)
+
+    return add_message_to_JSON(json, "Success")
 
 
 @users.route("/users/edit", methods=["POST"])
 def edit():
 
-    request.get_json()
+    json = {}
+
+    is_authenticated, message = AUTH_MANAGER.validate_auth_token(request.headers)
+    if not is_authenticated:
+        return add_message_to_JSON(json, message)
+
     request_data = request.get_json()
-    request_data["username"]
+    username = request_data["username"]
+    display_name = request_data["display_name"]
+    email = request_data["email"]
+    password = request_data["password"]
 
-    # TODO: delete and replace matching row from db with new values
+    user = USER_TABLE.get_user(username)
+    if user is None:
+        return add_message_to_JSON(json, "User {} does not exist".format(username))
 
-    return "Success"
+    updated_user = User(
+        username=username, display_name=display_name, email=email, password=password
+    )
+    USER_TABLE.delete_user(user)
+    USER_TABLE.add_user(updated_user)
+
+    return add_message_to_JSON(json, "Success")
 
 
 @users.route("/users/authenticate", methods=["POST"])
 def authenticate():
     """ Route for authenticating users """
 
-    request_data = request.get_json()
+    json = {}
 
+    is_authenticated, message = AUTH_MANAGER.validate_auth_token(request.headers)
+    if not is_authenticated:
+        return add_message_to_JSON(json, message)
+
+    request_data = request.get_json()
     username = request_data["username"]
     attempted_password = request_data["password"]
 
-    # TODO: use username to get password from database
-    db_password = auth_manager.encrypt_pw("aS8!Dk4n#h33@")
+    user = USER_TABLE.get_user(username)
+    if user is None:
+        return add_message_to_JSON(json, "User {} does not exist".format(username))
 
-    auth_success = auth_manager.compare_pw(attempted_password, db_password)
-
+    auth_success = AUTH_MANAGER.compare_pw(attempted_password, user.password)
     if not auth_success:
-        return "Either the username or password doesn't match"
+        return add_message_to_JSON(json, "Incorrect password")
 
-    return auth_manager.encode_auth_token(username)
+    json["token"] = AUTH_MANAGER.encode_auth_token(username)
+
+    return add_message_to_JSON(json, "success")
+
+
+def add_message_to_JSON(json, message) -> dict:
+    json["message"] = message
+
+    return json

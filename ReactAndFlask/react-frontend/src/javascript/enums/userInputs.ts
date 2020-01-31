@@ -3,4 +3,5 @@ export enum UserInput {
     Password='password',
     Email='email',
     DisplayName='displayName',
+    Privilege='privilege',
 }

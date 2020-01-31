@@ -12,10 +12,13 @@ class ModelManager:
 
     def create_model(self, model_data):
         try:
+            print("making model")
             new_model = self.make_model(model_data)
             create_validation_result = self.validate.create_model_validation(new_model)
             if create_validation_result == "success":
+                print("made model")
                 self.table.add_model(new_model)
+                print("model added to table")
             else:
                 raise InvalidInputsError(create_validation_result)
         except ChangeModelDBException:
@@ -72,27 +75,43 @@ class ModelManager:
 
     def make_model(self, model_data):
         try:
+            print("getting values")
             vendor = self.check_null(model_data.get("vendor"))
+            print(vendor)
             model_number = self.check_null(model_data.get("modelNumber"))
+            print(model_number)
             height = self.check_null(model_data.get("height"))
+            print(height)
             display_color = self.check_null(model_data.get("displayColor"))
+            print(display_color)
             eth_ports = self.check_null(model_data.get("ethernetPorts"))
+            print(eth_ports)
             pow_ports = self.check_null(model_data.get("powerPorts"))
+            print(pow_ports)
             cpu = self.check_null(model_data.get("cpu"))
+            print(cpu)
             memory = self.check_null(model_data.get("memory"))
+            print(memory)
             storage = self.check_null(model_data.get("storage"))
+            print(storage)
             comments = self.check_null(model_data.get("comments"))
+            print(comments)
+
+            print("got values")
         except:
             raise InvalidInputsError(
                 "Could not read data fields correctly. Client-server error occurred."
             )
 
+        print("checking inputs")
         if vendor == "":
             raise InvalidInputsError("Must provide a vendor")
         if model_number == "":
             raise InvalidInputsError("Must provide a model number")
         if height == "":
             raise InvalidInputsError("Must provide a height")
+
+        print("inputs validated")
 
         return Model(
             vendor,

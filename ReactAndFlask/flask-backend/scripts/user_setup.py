@@ -8,6 +8,8 @@ sys.path.append(
     os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 )  # isort:skip
 
+from application import application, init  # isort:skip
+
 from typing import List, Optional
 
 from app.dal.user_table import UserTable
@@ -70,6 +72,8 @@ def create_user():
 
     user_table.add_user(user=user)
 
+    print()
+
 
 def find_user():
     print("Please enter username")
@@ -90,6 +94,7 @@ def find_user():
 def find_all_users():
     users: List[User] = user_table.get_all_users()
 
+    print()
     print("Result:")
     print()
     for user in users:
@@ -98,4 +103,6 @@ def find_all_users():
 
 
 if __name__ == "__main__":
-    main()
+    with application.app_context():
+        init()
+        main()

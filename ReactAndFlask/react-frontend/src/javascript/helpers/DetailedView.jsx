@@ -8,8 +8,13 @@ export default class DetailedView extends React.Component {
         super(props);
 
         this.state = {
-
+            showConfirmationBox:false,
         };
+    }
+
+    closeModal() {
+        this.setState({showConfirmationBox:false,});
+
     }
 
     render() {
@@ -19,17 +24,37 @@ export default class DetailedView extends React.Component {
                 style={{top: `50%`,left: `50%`,transform: `translate(-50%, -50%)`,}}
                 aria-labelledby="simple-modal-title"
                 aria-describedby="simple-modal-description"
-                open={this.props.show}
-                onClose={this.props.close}
+                open={this.props.showDetailedView}
+                onClose={this.props.closeDetailedView}
             >
-                <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={this.props.edit}
-                >
-                    Save Edits
-                </Button>
+                <div>
+                    {this.props.inputs.map(input => (
+                        <TextField id="standard-basic" label={input} onChange={this.props.updateModelEdited} defaultValue={this.props.defaultValues[input]}/>
+                    ))}
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={this.props.edit}
+                    >
+                        Save
+                    </Button>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={this.props.delete}
+                    >
+                        Delete
+                    </Button>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={this.props.closeDetailedView}
+                    >
+                        Close
+                    </Button>
+                </div>
             </Modal>
-        </div>);
+        </div>
+        );
     }
 }

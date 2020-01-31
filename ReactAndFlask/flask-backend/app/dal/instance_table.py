@@ -47,10 +47,10 @@ class InstanceTable:
 
         return instance_entry.make_instance()
 
-    def get_instance_by_rack_location(self, rack, rack_u):
-        """ Get the instance for the given idr """
+    def get_instance_by_rack_location(self, rack_label, rack_u):
+        """ Get the instance for the given rack location """
         instance_entry: InstanceEntry = InstanceEntry.query.filter_by(
-            rack=rack, rack_u=rack_u,
+            rack_label=rack_label, rack_u=rack_u,
         ).first()
         if instance_entry is None:
             return None
@@ -106,7 +106,7 @@ class InstanceTable:
         except:
             print(f"Failed to delete instance {rack_label}")
 
-    def find_instances_with_rack(self, rack_label: str) -> List[Instance]:
+    def get_instances_by_rack(self, rack_label: str) -> List[Instance]:
         """ Get all instances for the given rack label """
         instance_entries: List[InstanceEntry] = InstanceEntry.query.filter_by(
             rack_label=rack_label

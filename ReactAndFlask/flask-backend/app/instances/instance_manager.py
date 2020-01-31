@@ -12,11 +12,15 @@ class InstanceManager:
         self.validate = InstanceValidator()
 
     def create_instance(self, instance_data):
-        # TODO add validation
-
         try:
             new_instance = self.make_instance(instance_data)
-            self.table.add_instance(new_instance)
+            create_validation_result = self.validate.create_instance_validation(
+                new_instance
+            )
+            if create_validation_result == "success":
+                self.table.add_instance(new_instance)
+            else:
+                raise InvalidInputsError(create_validation_result)
         except:
             raise InvalidInputsError("failure")
 

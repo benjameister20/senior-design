@@ -45,8 +45,12 @@ run-front:
 run-local:
 	heroku local
 
-.PHONY: setup-db
-setup-db:
+.PHONY: setup-db-local
+setup-db-local:
+	. ReactAndFlask/flask-backend/scripts/setup_db_local.sh
+
+.PHONY: create-db
+create-db:
 	. ReactAndFlask/flask-backend/scripts/setup_db.sh
 
 .PHONY: users

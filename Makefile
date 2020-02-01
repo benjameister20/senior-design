@@ -67,4 +67,4 @@ clean:
 	rm -rf .mypy_cache/
 	rm -rf __pycache__
 	rm -rf .pytest_cache
-	find ReactAndFlask/flask-backend/app -type f -name '*.py[co]' -delete -o -type d -name __pycache__ -delete
+	find ReactAndFlask/flask-backend -type f -name '*.py[co]' -delete -o -type d -name __pycache__ -delete

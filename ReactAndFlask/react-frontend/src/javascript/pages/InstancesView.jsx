@@ -237,8 +237,8 @@ export default class InstancesView extends React.Component {
         var rack = this.state.items[id]['rack'];
         var rackU = this.state.items[id]['rackU'];
 
-        //this.detailViewInstance(model, hostname, rack, rackU);
-        this.setState({ detailedValues: Constants.testInstanceArray[id], detailViewLoading:false})
+        this.detailViewInstance(model, hostname, rack, rackU);
+        //this.setState({ detailedValues: Constants.testInstanceArray[id], detailViewLoading:false})
     }
 
     closeCreateModal() {

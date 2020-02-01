@@ -36,5 +36,8 @@ class User:
             "privilege": self.privilege,
         }
 
+    def get_password(self):
+        return self.password
+
     def __repr__(self) -> str:
         return f"Username: {self.username}\nPassword: {self.password}\nDisplay Name: {self.display_name}\nEmail: {self.email}\nPrivilege: {self.privilege}"

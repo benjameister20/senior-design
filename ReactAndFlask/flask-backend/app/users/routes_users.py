@@ -181,14 +181,15 @@ def authenticate():
     if user is None:
         return add_message_to_JSON(json, "Username does not exist")
 
-    auth_success = AUTH_MANAGER.compare_pw(attempted_password, user.password)
+    auth_success = AUTH_MANAGER.compare_pw(attempted_password, user.get_password())
     if not auth_success:
         return add_message_to_JSON(json, "Incorrect password")
 
     json["token"] = AUTH_MANAGER.encode_auth_token(username)
     json["privilege"] = user.privilege
+    json["message"] = "success"
 
-    return add_message_to_JSON(json, "success")
+    return json
 
 
 def add_message_to_JSON(json, message) -> dict:

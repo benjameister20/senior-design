@@ -18,6 +18,7 @@ AUTH_MANAGER = AuthManager()
 
 class FlaskApp(Flask):
     def make_response(self, rv):
+        print(rv)
         if isinstance(rv, dict):
             rv = jsonify(rv)
         elif (

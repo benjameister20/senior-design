@@ -74,7 +74,7 @@ def create():
     json = {}
 
     request_data = request.get_json()
-
+    print(request_data)
     username = request_data["username"]
     password = request_data["password"]
     email = request_data["email"]

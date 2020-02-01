@@ -95,7 +95,7 @@ def create():
     user = User(username, display_name, email, encrypted_password, privilege)
     USER_TABLE.add_user(user)
 
-    return add_message_to_JSON(json, "Success")
+    return add_message_to_JSON(json, "success")
 
 
 @users.route("/users/delete", methods=["POST"])
@@ -119,7 +119,7 @@ def delete():
 
     USER_TABLE.delete_user(user)
 
-    return add_message_to_JSON(json, "Success")
+    return add_message_to_JSON(json, "success")
 
 
 @users.route("/users/edit", methods=["POST"])
@@ -150,7 +150,7 @@ def edit():
     USER_TABLE.delete_user(user)
     USER_TABLE.add_user(updated_user)
 
-    return add_message_to_JSON(json, "Success")
+    return add_message_to_JSON(json, "success")
 
 
 @users.route("/users/authenticate", methods=["POST"])
@@ -173,6 +173,7 @@ def authenticate():
 
     json["token"] = AUTH_MANAGER.encode_auth_token(username)
     json["privilege"] = user.privilege
+    # json["privilege"] = "admin"
 
     return add_message_to_JSON(json, "success")
 

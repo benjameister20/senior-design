@@ -71,7 +71,9 @@ class AuthManager:
                 "iat": datetime.datetime.utcnow(),
                 "sub": username,
             }
-            token = jwt.encode(payload, self.TOKEN_SECRET_KEY, algorithm="HS256")
+            token = jwt.encode(
+                payload, self.TOKEN_SECRET_KEY, algorithm="HS256"
+            ).decode("utf-8")
             return token
         except Exception as e:
             return e
@@ -96,7 +98,7 @@ class AuthManager:
     def validate_auth_token(self, headers):
 
         try:
-            auth_token = headers["Authentication"]
+            auth_token = headers["token"]
         except KeyError:
             return [False, "Please provide auth token"]
 

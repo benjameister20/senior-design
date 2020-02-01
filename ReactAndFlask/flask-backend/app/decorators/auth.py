@@ -12,7 +12,7 @@ def requires_auth(request):
         @wraps(f)
         def wrapper(*args, **kwargs):
             try:
-                request.headers["Authentication"]
+                request.headers["token"]
             except KeyError:
                 # return Response('Please provide auth token', 401, {'WWW-Authenticate': 'Basic realm="Login!"'})
                 return {"message": "Please provide auth token"}
@@ -31,7 +31,7 @@ def requires_role(request, role):
         @wraps(f)
         def wrapper(*args, **kwargs):
             try:
-                auth = request.headers["Authentication"]
+                auth = request.headers["privilege"]
             except KeyError:
                 return {"message": "Please provide auth token"}
             username = AUTH_MANAGER.decode_auth_token(auth)

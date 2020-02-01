@@ -1,6 +1,8 @@
 # TODO: Make populate endpoint to populate the table upon sign in
 # TODO: Test format of json token exchange - might get messed up as byte string
 
+import sys
+
 from app.dal.user_table import UserTable
 from app.data_models.user import User
 from app.decorators.auth import requires_auth, requires_role
@@ -73,13 +75,20 @@ def create():
 
     json = {}
 
+    print(request)
+    sys.stdout.write(request)
     request_data = request.get_json()
     print(request_data)
-    username = request_data["username"]
-    password = request_data["password"]
-    email = request_data["email"]
-    display_name = request_data["displayName"]
-    privilege = request_data["privilege"]
+    try:
+        username = request_data["username"]
+        password = request_data["password"]
+        email = request_data["email"]
+        display_name = request_data["displayName"]
+        privilege = request_data["privilege"]
+    except:
+        return add_message_to_JSON(
+            json, "Incorrectly formatted message. Application error on the frontend"
+        )
 
     if not VALIDATOR.validate_username(username):
         return add_message_to_JSON(json, "Invalid username")
@@ -90,10 +99,13 @@ def create():
     if not VALIDATOR.validate_password(password):
         return add_message_to_JSON(json, "Password too weak")
 
-    encrypted_password = AUTH_MANAGER.encrypt_pw(password)
+    try:
+        encrypted_password = AUTH_MANAGER.encrypt_pw(password)
 
-    user = User(username, display_name, email, encrypted_password, privilege)
-    USER_TABLE.add_user(user)
+        user = User(username, display_name, email, encrypted_password, privilege)
+        USER_TABLE.add_user(user)
+    except:
+        return add_message_to_JSON(json, "Server error. Please try again later...")
 
     return add_message_to_JSON(json, "success")
 

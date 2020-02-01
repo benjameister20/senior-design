@@ -22,7 +22,6 @@ def generate_report():
     global INSTANCE_MANAGER
 
     try:
-        STATS_MANAGER.create_report()
-
+        return STATS_MANAGER.create_report()
     except:
-        "Error generating usage report"
+        return "Error generating usage report"

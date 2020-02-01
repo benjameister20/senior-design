@@ -33,7 +33,7 @@ class AuthManager:
         salt = bcrypt.gensalt()
         hashed = bcrypt.hashpw(encoded, salt)
 
-        return hashed
+        return hashed.decode("utf-8")
 
     def compare_pw(self, attempt: str, actual: str) -> bool:
         """Checks for password matches
@@ -50,7 +50,7 @@ class AuthManager:
 
         encoded = attempt.encode("utf-8")
 
-        return bcrypt.checkpw(encoded, actual)
+        return bcrypt.checkpw(encoded, actual.encode("utf-8"))
 
     def encode_auth_token(self, username: str):
         """ Generate Auth Token

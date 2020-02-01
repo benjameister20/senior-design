@@ -52,9 +52,11 @@ def main():
                 find_user()
             elif input_num == 3:
                 find_all_users()
-        except:
+        except InvalidInputException:
             print("Please enter a valid number")
             print()
+        except:
+            raise
 
 
 def create_user():
@@ -65,9 +67,14 @@ def create_user():
     password: str = input("Password: ")
     display_name: str = input("Display name: ")
     email: str = input("Email: ")
+    privilege: str = input("Privilege: ")
 
     user: User = User(
-        username=username, display_name=display_name, email=email, password=password
+        username=username,
+        display_name=display_name,
+        email=email,
+        password=password,
+        privilege=privilege,
     )
 
     user_table.add_user(user=user)
@@ -104,5 +111,6 @@ def find_all_users():
 
 if __name__ == "__main__":
     with application.app_context():
+        application.debug = True
         init()
         main()

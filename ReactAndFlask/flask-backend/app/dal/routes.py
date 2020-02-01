@@ -1,6 +1,7 @@
 from http import HTTPStatus
 from typing import Optional
 
+from app.dal.database import DBWriteException
 from app.dal.instance_table import InstanceTable
 from app.dal.model_table import ModelTable
 from app.dal.rack_table import RackTable
@@ -38,13 +39,20 @@ def new_user():
         password: str = data["password"]
         display_name: str = data["display_name"]
         email: str = data["email"]
+        privilege: str = data["privilege"]
 
         user: User = User(
-            username=username, display_name=display_name, email=email, password=password
+            username=username,
+            display_name=display_name,
+            email=email,
+            password=password,
+            privilege=privilege,
         )
         user_table.add_user(user=user)
-    except:
+    except KeyError:
         return HTTPStatus.BAD_REQUEST
+    except DBWriteException:
+        return HTTPStatus.INTERNAL_SERVER_ERROR
 
     return HTTPStatus.OK
 

@@ -59,6 +59,7 @@ class UserTable:
             db.session.commit()
         except:
             print(f"Failed to add username {user.username}")
+            raise
 
     def change_password(self, user: User, new_password: str) -> None:
         """ Update the user's password """

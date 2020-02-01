@@ -276,8 +276,8 @@ export default class ModelsView extends React.Component {
         var vendor = this.state.items[id]['vendor'];
         var modelNum = this.state.items[id]['modelNumber'];
 
-        //this.detailViewModel(vendor, modelNum);
-        this.setState({ detailedValues: Constants.testModelArray[id], detailViewLoading:false})
+        this.detailViewModel(vendor, modelNum);
+        //this.setState({ detailedValues: Constants.testModelArray[id], detailViewLoading:false})
     }
 
     closeCreateModal() {

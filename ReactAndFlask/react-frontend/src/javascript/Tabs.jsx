@@ -1,5 +1,4 @@
 import React from 'react';
-import TabManager from './TabManager';
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
@@ -20,15 +19,10 @@ export default class TabViewer extends React.Component {
             currentTabID:0,
         };
         this.handleChange = this.handleChange.bind(this);
-        this.logout = this.logout.bind(this);
     }
 
     handleChange(event, newValue) {
         this.setState({ currentTabID: newValue })
-    }
-
-    logout() {
-
     }
 
     render() {
@@ -45,7 +39,7 @@ export default class TabViewer extends React.Component {
                         style={{flexGrow: 1,}}
                         variant="contained"
                         color="secondary"
-                        onClick={this.logout}
+                        onClick={this.props.logout}
                     >
                         Logout
                     </Button>

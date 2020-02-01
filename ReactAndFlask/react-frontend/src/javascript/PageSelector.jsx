@@ -1,6 +1,8 @@
 import React from "react";
 import Login from "./Login";
 import TabViewer from "./Tabs";
+import axios from 'axios';
+import getURL from './helpers/functions/GetURL';
 
 export default class PageSelector extends React.Component {
   constructor(props) {
@@ -13,6 +15,7 @@ export default class PageSelector extends React.Component {
     };
 
     this.login = this.login.bind(this);
+    this.logout = this.logout.bind(this);
   }
 
   login(token, privilege) {
@@ -23,10 +26,20 @@ export default class PageSelector extends React.Component {
     })
   }
 
+  logout() {
+    axios.get(getURL('users/', 'logout'));
+
+    this.setState({
+      token:'',
+      privilege:'',
+      loggedIn:false,
+    })
+  }
+
   render() {
     return (
       <div>
-        {this.state.loggedIn ?  <TabViewer token={this.state.token} privilege={this.state.privilege} /> : <Login loginFunc={this.login} />}
+        {this.state.loggedIn ?  <TabViewer token={this.state.token} privilege={this.state.privilege} logout={this.logout} /> : <Login loginFunc={this.login} />}
       </div>
     );
   }

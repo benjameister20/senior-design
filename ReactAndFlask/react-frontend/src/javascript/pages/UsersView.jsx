@@ -12,6 +12,8 @@ import getURL from '../helpers/functions/GetURL';
 import DetailedView from '../helpers/DetailedView';
 import CreateModal from '../helpers/CreateModal';
 import * as Constants from '../Constants';
+import MuiAlert from '@material-ui/lab/Alert';
+import StatusDisplay from '../helpers/StatusDisplay';
 
 
 
@@ -55,6 +57,10 @@ export default class UsersView extends React.Component {
                 'privilege':'',
             },
 
+            showStatus:false,
+            statusMessage:'',
+            statusSeverity:'',
+
             // vals for deleting a user
             deleteUsername:'',
 
@@ -89,6 +95,7 @@ export default class UsersView extends React.Component {
         this.closeDetailedView = this.closeDetailedView.bind(this);
         this.updateUserCreator = this.updateUserCreator.bind(this);
         this.updateUserEdited = this.updateUserEdited.bind(this);
+        this.closeShowStatus = this.closeShowStatus.bind(this);
 
         axios.defaults.headers.common['token'] = this.props.token;
         axios.defaults.headers.common['privilege'] = this.props.privilege;
@@ -105,7 +112,13 @@ export default class UsersView extends React.Component {
                 'email':this.state.createdUser[UserInput.Email],
                 'privilege':this.state.createdUser[UserInput.Privilege],
             }
-            ).then(response => console.log(response));
+            ).then(response => {
+                if (response.data.message === 'success') {
+                    this.setState({ showStatus: true, statusMessage: "Successfully created user", statusSeverity:"success" })
+                } else {
+                    this.setState({ showStatus: true, statusMessage: response.data.message, statusSeverity:"error" })
+                }
+            });
 
         this.setState({
             createdUser : {
@@ -210,8 +223,8 @@ export default class UsersView extends React.Component {
         var displayName = this.state.items[id]['displayName'];
         var privilege = this.state.items[id]['privilege'];
 
-        //this.detailViewUser(username, email, displayName, privilege);
-        this.setState({ detailedValues: Constants.testUserArray[id], detailViewLoading:false})
+        this.detailViewUser(username, email, displayName, privilege);
+        //this.setState({ detailedValues: Constants.testUserArray[id], detailViewLoading:false})
     }
 
     closeCreateModal() {
@@ -227,18 +240,28 @@ export default class UsersView extends React.Component {
     }
 
     updateUserCreator(event) {
-        this.state.createdUser[event.target.label] = event.target.value;
+        this.state.createdUser[event.target.name] = event.target.value;
         this.forceUpdate()
     }
 
     updateUserEdited(event) {
-        this.state.detailedValues[event.target.label] = event.target.value;
+        this.state.detailedValues[event.target.name] = event.target.value;
         this.forceUpdate()
+    }
+
+    closeShowStatus() {
+        this.setState({ showStatus: false })
     }
 
     render() {
         return (
             <div>
+                <StatusDisplay
+                    open={this.state.showStatus}
+                    severity={this.state.statusSeverity}
+                    closeStatus={this.closeShowStatus}
+                    message={this.state.statusMessage}
+                />
                 {(this.props.privilege == Privilege.ADMIN) ?
                     (<div>
                 <ButtonMenu

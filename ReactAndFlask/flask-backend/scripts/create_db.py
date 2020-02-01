@@ -20,5 +20,6 @@ from app.dal.user_table import UserEntry  # noqa
 
 # Create all tables
 with application.app_context():
+    db.drop_all()
     db.create_all()
     db.session.commit()

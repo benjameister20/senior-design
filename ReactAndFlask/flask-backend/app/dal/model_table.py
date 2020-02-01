@@ -10,7 +10,6 @@ class ModelEntry(db.Model):
     __tablename__ = "models"
 
     identifier = db.Column(db.Integer, primary_key=True, unique=True)
-
     vendor = db.Column(db.String(80))
     model_number = db.Column(db.String(80))
     height = db.Column(db.Integer)
@@ -56,7 +55,9 @@ class ModelTable:
         )
 
     def get_model_by_vendor_number(self, vendor, modelNumber):
-        model: ModelEntry.query.filter_by(vendor=vendor, model_number=modelNumber)
+        model: ModelEntry = ModelEntry.query.filter_by(
+            vendor=vendor, model_number=modelNumber
+        )
         if model is None:
             return None
 
@@ -74,7 +75,9 @@ class ModelTable:
         )
 
     def get_model_id_by_vendor_number(self, vendor, modelNumber):
-        model: ModelEntry.query.filter_by(vendor=vendor, model_number=modelNumber)
+        model: ModelEntry = ModelEntry.query.filter_by(
+            vendor=vendor, model_number=modelNumber
+        )
         if model is None:
             return None
 

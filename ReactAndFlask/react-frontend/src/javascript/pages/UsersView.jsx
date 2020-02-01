@@ -2,6 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import { UserCommand } from '../enums/userCommands.ts'
 import { UserInput } from '../enums/userInputs.ts'
+import { Privilege } from '../enums/privilegeTypes.ts'
 import TableView from '../helpers/TableView';
 import { CSVLink } from "react-csv";
 import ButtonMenu from '../helpers/ButtonMenu';
@@ -31,9 +32,6 @@ const columns = [
 
 const usersMainPath = 'users/';
 const userDownloadFileName = 'users.csv';
-
-axios.defaults.headers.common['token'] = this.props.token;
-axios.defaults.headers.common['privilege'] = this.props.privilege;
 
 export default class UsersView extends React.Component {
     constructor(props) {
@@ -90,7 +88,10 @@ export default class UsersView extends React.Component {
         this.closeImportModal = this.closeImportModal.bind(this);
         this.closeDetailedView = this.closeDetailedView.bind(this);
         this.updateUserCreator = this.updateUserCreator.bind(this);
-        this.updateUserEdited = this.updateUserEdited.bind(this)
+        this.updateUserEdited = this.updateUserEdited.bind(this);
+
+        axios.defaults.headers.common['token'] = this.props.token;
+        axios.defaults.headers.common['privilege'] = this.props.privilege;
 
     }
 
@@ -172,10 +173,12 @@ export default class UsersView extends React.Component {
         axios.post(
             getURL(usersMainPath, UserCommand.search),
             {
-                'username':username,
-                'email':email,
-                'displayName':displayName,
-                'privilege':privilege,
+                'filters':{
+                    'username':username,
+                    'email':email,
+                    'displayName':displayName,
+                    'privilege':privilege,
+                }
             }
             ).then(response => this.setState({ items: response.data['users'] }));
     }
@@ -236,6 +239,8 @@ export default class UsersView extends React.Component {
     render() {
         return (
             <div>
+                {(this.props.privilege == Privilege.ADMIN) ?
+                    (<div>
                 <ButtonMenu
                     openCreateModal={this.openCreateModal}
                     openImportModal={this.openImportModal}
@@ -258,7 +263,8 @@ export default class UsersView extends React.Component {
                 <UploadModal
                     showImportModal={this.state.showImportModal}
                     closeImportModal={this.closeImportModal}
-                />
+                /></div>):null
+            }
                 <Filters
                     updateSearchText={this.updateSearchText}
                     search={this.search}

@@ -2,6 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import { InstanceCommand } from '../enums/instanceCommands.ts'
 import { InstanceInput } from '../enums/instanceInputs.ts'
+import { Privilege } from '../enums/privilegeTypes.ts'
 import TableView from '../helpers/TableView';
 import { CSVLink } from "react-csv";
 import ButtonMenu from '../helpers/ButtonMenu';
@@ -31,8 +32,7 @@ const columns = [
 const instancesMainPath = 'instances/';
 const instanceDownloadFileName = 'instances.csv';
 
-axios.defaults.headers.common['token'] = this.props.token;
-axios.defaults.headers.common['privilege'] = this.props.privilege;
+
 
 export default class InstancesView extends React.Component {
     constructor(props) {
@@ -94,7 +94,10 @@ export default class InstancesView extends React.Component {
         this.closeImportModal = this.closeImportModal.bind(this);
         this.closeDetailedView = this.closeDetailedView.bind(this);
         this.updateInstanceCreator = this.updateInstanceCreator.bind(this);
-        this.updateInstanceEdited = this.updateInstanceEdited.bind(this)
+        this.updateInstanceEdited = this.updateInstanceEdited.bind(this);
+
+        axios.defaults.headers.common['token'] = this.props.token;
+        axios.defaults.headers.common['privilege'] = this.props.privilege;
 
     }
 
@@ -185,10 +188,12 @@ export default class InstancesView extends React.Component {
         axios.post(
             getURL(instancesMainPath, InstanceCommand.search),
             {
-                'model':model,
-                'hostname':hostname,
-                'rack':rack,
-                'rackU':rackU,
+                'filters':{
+                    'model':model,
+                    'hostname':hostname,
+                    'rack':rack,
+                    'rackU':rackU,
+                }
             }
             ).then(response => this.setState({ items: response.data['instances'] }));
     }
@@ -249,6 +254,8 @@ export default class InstancesView extends React.Component {
     render() {
         return (
             <div>
+                {(this.props.privilege == Privilege.ADMIN) ?
+                    (<div>
                 <ButtonMenu
                     openCreateModal={this.openCreateModal}
                     openImportModal={this.openImportModal}
@@ -271,7 +278,8 @@ export default class InstancesView extends React.Component {
                 <UploadModal
                     showImportModal={this.state.showImportModal}
                     closeImportModal={this.closeImportModal}
-                />
+                /></div>):null
+            }
                 <Filters
                     updateSearchText={this.updateSearchText}
                     search={this.search}

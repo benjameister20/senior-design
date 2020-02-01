@@ -21,7 +21,7 @@ export default class DetailedView extends React.Component {
         return (
         <div>
             <Modal
-                style={{top: `50%`,left: `50%`,transform: `translate(-50%, -50%)`,}}
+                style={{top: `50%`,left: `50%`,transform: `translate(-50%, -50%)`, bgcolor:'text.secondary'}}
                 aria-labelledby="simple-modal-title"
                 aria-describedby="simple-modal-description"
                 open={this.props.showDetailedView}
@@ -29,29 +29,32 @@ export default class DetailedView extends React.Component {
             >
                 <div>
                     {this.props.inputs.map(input => (
-                        <TextField id="standard-basic" label={input} onChange={this.props.updateModelEdited} defaultValue={this.props.defaultValues[input]}/>
+                        <TextField disabled={this.props.disabled} id="standard-basic" label={input} onChange={this.props.updateModelEdited} defaultValue={this.props.defaultValues[input]}/>
                     ))}
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={this.props.edit}
-                    >
-                        Save
-                    </Button>
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={this.props.delete}
-                    >
-                        Delete
-                    </Button>
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={this.props.closeDetailedView}
-                    >
-                        Close
-                    </Button>
+                    {this.props.disabled ? null:
+                    <div>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={this.props.edit}
+                        >
+                            Save
+                        </Button>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={this.props.delete}
+                        >
+                            Delete
+                        </Button>
+                    </div>}
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={this.props.closeDetailedView}
+                        >
+                            Close
+                        </Button>
                 </div>
             </Modal>
         </div>

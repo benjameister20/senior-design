@@ -48,9 +48,10 @@ class AuthManager:
             Boolean: True if passwords match, false if not
         """
 
-        encoded = attempt.encode("utf-8")
+        encoded_attempt = attempt.encode("utf-8")
+        # bytes_actual = bytes("utf-8")
 
-        return bcrypt.checkpw(encoded, actual)
+        return bcrypt.checkpw(encoded_attempt, actual)
 
     def encode_auth_token(self, username: str):
         """ Generate Auth Token

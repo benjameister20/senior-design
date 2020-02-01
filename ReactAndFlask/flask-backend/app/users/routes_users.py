@@ -74,9 +74,9 @@ def create():
 
     json = {}
 
-    print(request)
+    # print(request)
     request_data = request.get_json()
-    print(request_data)
+    # print(request_data)
     try:
         username = request_data["username"]
         password = request_data["password"]
@@ -183,7 +183,6 @@ def authenticate():
 
     json["token"] = AUTH_MANAGER.encode_auth_token(username)
     json["privilege"] = user.privilege
-    # json["privilege"] = "admin"
 
     return add_message_to_JSON(json, "success")
 

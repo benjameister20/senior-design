@@ -1,5 +1,4 @@
 # TODO: Make populate endpoint to populate the table upon sign in
-# TODO: Test format of json token exchange - might get messed up as byte string
 
 
 from app.dal.user_table import UserTable

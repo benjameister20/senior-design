@@ -8,7 +8,7 @@ class UserEntry(db.Model):
     __tablename__ = "users"
 
     username = db.Column(db.String(80), primary_key=True, unique=True)
-    password_hash = db.Column(db.String(80))
+    password_hash = db.Column(db.Binary(512))
     display_name = db.Column(db.String(80))
     email = db.Column(db.String(80))
     privilege = db.Column(db.String(80))

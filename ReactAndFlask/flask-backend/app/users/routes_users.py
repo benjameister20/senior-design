@@ -74,9 +74,9 @@ def create():
 
     json = {}
 
-    print(request)
+    # print(request)
     request_data = request.get_json()
-    print(request_data)
+    # print(request_data)
     try:
         username = request_data["username"]
         password = request_data["password"]
@@ -169,21 +169,24 @@ def authenticate():
 
     json = {}
 
-    request_data = request.get_json()
-    username = request_data["username"]
-    attempted_password = request_data["password"]
+    print(request)
+    try:
+        request_data = request.get_json()
+        username = request_data["username"]
+        attempted_password = request_data["password"]
+    except:
+        return add_message_to_JSON(json, "Connection error. Please try again later...")
 
     user = USER_TABLE.get_user(username)
-    if user is None and user != "admin":
+    if user is None:
         return add_message_to_JSON(json, "Username does not exist")
 
     auth_success = AUTH_MANAGER.compare_pw(attempted_password, user.password)
-    if not auth_success and attempted_password != "password":
+    if not auth_success:
         return add_message_to_JSON(json, "Incorrect password")
 
     json["token"] = AUTH_MANAGER.encode_auth_token(username)
     json["privilege"] = user.privilege
-    # json["privilege"] = "admin"
 
     return add_message_to_JSON(json, "success")
 

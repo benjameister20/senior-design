@@ -18,7 +18,7 @@ USER_TABLE = UserTable()
 
 
 @users.route("/users/test", methods=["GET"])
-@requires_auth(request)
+# @requires_auth(request)
 def test():
     """ route to test user endpoints """
 
@@ -180,15 +180,14 @@ def authenticate():
     if user is None:
         return add_message_to_JSON(json, "Username does not exist")
 
-    auth_success = AUTH_MANAGER.compare_pw(attempted_password, user.get_password())
+    auth_success = AUTH_MANAGER.compare_pw(attempted_password, user.password)
     if not auth_success:
         return add_message_to_JSON(json, "Incorrect password")
 
     json["token"] = AUTH_MANAGER.encode_auth_token(username)
     json["privilege"] = user.privilege
-    json["message"] = "success"
 
-    return json
+    return add_message_to_JSON(json, "success")
 
 
 def add_message_to_JSON(json, message) -> dict:

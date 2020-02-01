@@ -161,19 +161,19 @@ def authenticate():
 
     request_data = request.get_json()
     username = request_data["username"]
-    request_data["password"]
+    attempted_password = request_data["password"]
 
-    # user = USER_TABLE.get_user(username)
-    # if user is None:
-    #     return add_message_to_JSON(json, "User {username} does not exist")
+    user = USER_TABLE.get_user(username)
+    if user is None:
+        return add_message_to_JSON(json, "User {username} does not exist")
 
-    # auth_success = AUTH_MANAGER.compare_pw(attempted_password, user.password)
-    # if not auth_success:
-    #     return add_message_to_JSON(json, "Incorrect password")
+    auth_success = AUTH_MANAGER.compare_pw(attempted_password, user.password)
+    if not auth_success:
+        return add_message_to_JSON(json, "Incorrect password")
 
     json["token"] = AUTH_MANAGER.encode_auth_token(username)
-    # json["privilege"] = user.privilege
-    json["privilege"] = "admin"
+    json["privilege"] = user.privilege
+    # json["privilege"] = "admin"
 
     return add_message_to_JSON(json, "success")
 

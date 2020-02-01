@@ -44,8 +44,8 @@ def search():
 
 
 @users.route("/users/create", methods=["POST"])
-@requires_auth(request)
-@requires_role(request, "admin")
+# @requires_auth(request)
+# @requires_role(request, "admin")
 def create():
     """Route for creating users
 

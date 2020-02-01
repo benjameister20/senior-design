@@ -33,7 +33,7 @@ class AuthManager:
         salt = bcrypt.gensalt()
         hashed = bcrypt.hashpw(encoded, salt)
 
-        return hashed.decode("utf-8")
+        return hashed
 
     def compare_pw(self, attempt: str, actual: str) -> bool:
         """Checks for password matches

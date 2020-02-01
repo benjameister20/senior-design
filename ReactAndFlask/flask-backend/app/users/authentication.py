@@ -49,8 +49,9 @@ class AuthManager:
         """
 
         encoded = attempt.encode("utf-8")
+        encodedAct = actual.encode("utf-8")
 
-        return bcrypt.checkpw(encoded, actual)
+        return bcrypt.checkpw(encoded, encodedAct)
 
     def encode_auth_token(self, username: str):
         """ Generate Auth Token

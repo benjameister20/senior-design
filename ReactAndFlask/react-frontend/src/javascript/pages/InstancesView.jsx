@@ -12,6 +12,7 @@ import getURL from '../helpers/functions/GetURL';
 import DetailedView from '../helpers/DetailedView';
 import CreateModal from '../helpers/CreateModal';
 import * as Constants from '../Constants';
+import StatusDisplay from '../helpers/StatusDisplay';
 
 const inputs = [
     'model',
@@ -57,6 +58,10 @@ export default class InstancesView extends React.Component {
                 'comment':'',
             },
 
+            showStatus:false,
+            statusMessage:'',
+            statusSeverity:'',
+
             // vals for deleting an instance
             deleteInstanceRack:'',
             deleteInstanceRackU:'',
@@ -95,6 +100,7 @@ export default class InstancesView extends React.Component {
         this.closeDetailedView = this.closeDetailedView.bind(this);
         this.updateInstanceCreator = this.updateInstanceCreator.bind(this);
         this.updateInstanceEdited = this.updateInstanceEdited.bind(this);
+        this.closeShowStatus = this.closeShowStatus.bind(this);
 
         axios.defaults.headers.common['token'] = this.props.token;
         axios.defaults.headers.common['privilege'] = this.props.privilege;
@@ -112,7 +118,13 @@ export default class InstancesView extends React.Component {
                 'owner':this.state.createdInstance[InstanceInput.Owner],
                 'comment':this.state.createdInstance[InstanceInput.Comment],
             }
-            ).then(response => console.log(response));
+            ).then(response => {
+                if (response.data.message === 'success') {
+                    this.setState({ showStatus: true, statusMessage: "Successfully created instance", statusSeverity:"success" })
+                } else {
+                    this.setState({ showStatus: true, statusMessage: response.data.message, statusSeverity:"error" })
+                }
+            });
 
         this.setState({
             createdInstance : {
@@ -242,18 +254,27 @@ export default class InstancesView extends React.Component {
     }
 
     updateInstanceCreator(event) {
-        this.state.createdInstance[event.target.label] = event.target.value;
+        this.state.createdInstance[event.target.name] = event.target.value;
         this.forceUpdate()
     }
 
     updateInstanceEdited(event) {
-        this.state.detailedValues[event.target.label] = event.target.value;
+        this.state.detailedValues[event.target.name] = event.target.value;
         this.forceUpdate()
+    }
+    closeShowStatus() {
+        this.setState({ showStatus: false })
     }
 
     render() {
         return (
             <div>
+                <StatusDisplay
+                    open={this.state.showStatus}
+                    severity={this.state.statusSeverity}
+                    closeStatus={this.closeShowStatus}
+                    message={this.state.statusMessage}
+                />
                 {(this.props.privilege == Privilege.ADMIN) ?
                     (<div>
                 <ButtonMenu

@@ -5,6 +5,7 @@ import axios from 'axios';
 import getURL from './helpers/functions/GetURL';
 import * as Constants from './Constants';
 import { Privilege } from './enums/privilegeTypes.ts'
+import StatusDisplay from './helpers/StatusDisplay';
 
 const loginMainPath = 'users/';
 
@@ -15,9 +16,12 @@ export default class Login extends React.Component {
         this.state = {
             username:'',
             password:'',
-            message:'',
+            statusMessage:'',
+            showStatus:false,
+            statusSeverity:'',
         };
 
+        this.closeShowStatus = this.closeShowStatus.bind(this);
         this.submitCredentials = this.submitCredentials.bind(this);
     }
 
@@ -34,7 +38,7 @@ export default class Login extends React.Component {
                     this.setState({ message: '' });
                     this.props.loginFunc(response.data['token'], response.data['privilege']);
                 } else {
-                    this.setState({ message:response.data['message'] });
+                    this.setState({ showStatus:true, statusMessage:response.data['message'] });
                 }
             });
         //this.props.loginFunc('token', Privilege.ADMIN);
@@ -48,10 +52,19 @@ export default class Login extends React.Component {
         this.setState({ password: event.target.value })
     }
 
+    closeShowStatus() {
+        this.setState({ showStatus: false })
+    }
+
     render() {
         return (
             <div>
-                {this.state.message}
+                <StatusDisplay
+                    open={this.state.showStatus}
+                    severity={this.state.statusSeverity}
+                    closeStatus={this.closeShowStatus}
+                    message={this.state.statusMessage}
+                />
                 <TextField
                     id="outlined-basic"
                     label="Username"
@@ -66,6 +79,7 @@ export default class Login extends React.Component {
                     variant="outlined"
                     required="true"
                     ref='password'
+                    type="password"
                     onChange={this.updatePassword.bind(this)}
                 />
                 <Button

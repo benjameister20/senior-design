@@ -14,6 +14,9 @@ class InstanceManager:
     def create_instance(self, instance_data):
         try:
             new_instance = self.make_instance(instance_data)
+            print(new_instance)
+            create_validation_result = "success"
+            print(create_validation_result)
             create_validation_result = self.validate.create_instance_validation(
                 new_instance
             )
@@ -100,6 +103,7 @@ class InstanceManager:
         if rack_u == "":
             raise InvalidInputsError("Must provide a rack location")
 
+        print("about to make instance")
         return Instance(model_id, hostname, rack, rack_u, owner, comment)
 
     def get_model_id_from_name(self, model_name):

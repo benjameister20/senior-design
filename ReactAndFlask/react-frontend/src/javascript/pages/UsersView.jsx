@@ -79,6 +79,7 @@ export default class UsersView extends React.Component {
                 'email':'',
                 'privilege':'',
             },
+            originalUsername:'',
         };
 
         this.createUser = this.createUser.bind(this);
@@ -137,6 +138,7 @@ export default class UsersView extends React.Component {
         axios.post(
             getURL(usersMainPath, UserCommand.edit),
             {
+                'username_original':this.state.originalUsername,
                 'username':this.state.detailedValues[UserInput.Username],
                 'display_name':this.state.detailedValues[UserInput.display_name],
                 'email':this.state.detailedValues[UserInput.Email],
@@ -145,6 +147,7 @@ export default class UsersView extends React.Component {
             ).then(response => console.log(response));
 
         this.setState({
+            originalUsername:'',
             detailedValues : {
                 'username':'',
                 'display_name':'',
@@ -217,6 +220,7 @@ export default class UsersView extends React.Component {
         this.setState({
             showDetailedView: true,
             detailViewLoading:true,
+            originalUsername:this.state.items[id]['username'],
          });
 
         var username = this.state.items[id]['username'];

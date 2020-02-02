@@ -27,7 +27,7 @@ export default class DetailedView extends React.Component {
 
     deleteItem() {
         this.setState({ showConfirmationBox: false });
-        this.props.delete;
+        this.props.delete();
     }
 
     render() {

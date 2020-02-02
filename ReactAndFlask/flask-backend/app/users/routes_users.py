@@ -19,7 +19,6 @@ USER_TABLE = UserTable()
 blacklist_file = "/token_blacklist.json"
 dirname = os.path.dirname(__file__)
 BLACKLIST = []
-print(dirname)
 with open(dirname + blacklist_file, "r") as infile:
     contents = json.load(infile)
     BLACKLIST = contents.get("blacklist")
@@ -148,7 +147,11 @@ def delete():
     response = {}
 
     request_data = request.get_json()
-    username = request_data["username"]
+    print("request data")
+    print(request_data)
+    user = request_data["user"]
+    username = user.username
+    print(username)
 
     user = USER_TABLE.get_user(username)
     if user is None:

@@ -57,7 +57,7 @@ class ModelTable:
     def get_model_by_vendor_number(self, vendor, modelNumber):
         model: ModelEntry = ModelEntry.query.filter_by(
             vendor=vendor, model_number=modelNumber
-        )
+        ).first()
         if model is None:
             return None
 
@@ -77,7 +77,7 @@ class ModelTable:
     def get_model_id_by_vendor_number(self, vendor, modelNumber):
         model: ModelEntry = ModelEntry.query.filter_by(
             vendor=vendor, model_number=modelNumber
-        )
+        ).first()
         if model is None:
             return None
 
@@ -95,15 +95,13 @@ class ModelTable:
                 "Failed to add model {model.vendor} {model.model_number}"
             )
 
-    def edit_model(self, model: Model) -> None:
+    def edit_model(self, model_id, model: Model) -> None:
         """ Updates a model to the database """
 
         model_entry: ModelEntry = ModelEntry(model=model)
 
         try:
-            ModelEntry.query.filter_by(
-                vendor=model.vendor, model_number=model.model_number
-            ).update(model_entry)
+            ModelEntry.query.filter_by(identifier=model_id).update(model_entry)
             db.session.commit()
         except:
             raise ChangeModelDBException(
@@ -186,3 +184,9 @@ class ModelTable:
             )
             for model in filtered_models
         ]
+
+    def get_distinct_vendors(self):
+        model_list: List[ModelEntry] = ModelEntry.query.with_entities(
+            ModelEntry.vendor
+        ).distinct().all()
+        return [model.vendor for model in model_list]

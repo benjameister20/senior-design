@@ -1,9 +1,13 @@
 import datetime
+import json
 import os
 import time
 
 import bcrypt
 import jwt
+
+blacklist_file = "/token_blacklist.json"
+dirname = os.path.dirname(__file__)
 
 
 class AuthManager:
@@ -102,10 +106,17 @@ class AuthManager:
         except KeyError:
             return [False, "Please provide auth token"]
 
+        BLACKLIST = []
+        with open(dirname + blacklist_file, "r") as infile:
+            contents = json.load(infile)
+            BLACKLIST = contents.get("blacklist")
+
         decoded = self.decode_auth_token(auth_token)
         if decoded == self.SESSION_EXPIRED:
             return [False, self.SESSION_EXPIRED]
         elif decoded == self.INVALID_TOKEN:
+            return [False, self.INVALID_TOKEN]
+        elif auth_token in BLACKLIST:
             return [False, self.INVALID_TOKEN]
         else:
             return [True, "Token is valid"]

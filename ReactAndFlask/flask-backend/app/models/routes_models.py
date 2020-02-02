@@ -67,7 +67,8 @@ def search():
     try:
         model_list = MODEL_MANAGER.get_models(filter, limit)
         returnJSON = addModelsTOJSON(
-            addMessageToJSON(returnJSON, "success"), [model_list]
+            addMessageToJSON(returnJSON, "success"),
+            [list(map(lambda x: x.make_json(), model_list))],
         )
         return returnJSON
     except:
@@ -103,6 +104,20 @@ def detail_view():
         model_data = request.get_json()
         model = MODEL_MANAGER.detail_view(model_data)
         return addModelsTOJSON(addMessageToJSON(returnJSON, "success"), [model])
+    except:
+        return addMessageToJSON(returnJSON, "failure")
+
+
+@models.route("/models/assistedvendor", methods=["POST"])
+def assisted_vendor_input():
+    global MODEL_MANAGER
+    returnJSON = createJSON()
+
+    try:
+        prefix_json = request.get_json()
+        vendor_list = MODEL_MANAGER.get_distinct_vendors_with_prefix(prefix_json)
+        returnJSON["results"] = vendor_list
+        return returnJSON
     except:
         return addMessageToJSON(returnJSON, "failure")
 

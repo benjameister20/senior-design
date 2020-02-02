@@ -139,7 +139,31 @@ export default class ModelsView extends React.Component {
                 'storage':this.state.createdModel[ModelInput.Storage],
                 'comments':this.state.createdModel[ModelInput.Comment],
             }
-            ).then(response => console.log(response));
+            ).then(
+                response => {
+                    if (response.data.message === 'success') {
+                        this.setState({
+                            showStatus: true,
+                            statusMessage: "Successfully created model",
+                            statusSeverity:"success",
+                            createdModel : {
+                                'vendor':'',
+                                'modelNumber':'',
+                                'height':'',
+                                'displayColor':'',
+                                'ethernetPorts':'',
+                                'powerPorts':'',
+                                'cpu':'',
+                                'memory':'',
+                                'storage':'',
+                                'comments':'',
+                            },
+                            showCreateModal:false,
+                        })
+                    } else {
+                        this.setState({ showStatus: true, statusMessage: response.data.message, statusSeverity:"error" })
+                    }
+                });
 
         this.setState({
             createdModel : {
@@ -238,7 +262,7 @@ export default class ModelsView extends React.Component {
         axios.post(
             getURL(modelsMainPath, ModelCommand.search),
             {
-                'filters':{
+                'filter':{
                     'vendor':vendor,
                     'modelNumber':modelNum,
                     'height':height,
@@ -298,7 +322,7 @@ export default class ModelsView extends React.Component {
     }
 
     updateModelEdited(event) {
-        this.state.detailedValues[event.target.label] = event.target.value;
+        this.state.detailedValues[event.target.name] = event.target.value;
         this.forceUpdate()
     }
 

@@ -91,9 +91,7 @@ class Validator:
         pattern = re.compile(reg)
         is_valid = bool(re.search(pattern, username))
 
-        print("fetching user")
         user = USER_TABLE.get_user(username)
-        print("broken")
         if user is None:
             not_already_taken = True
         else:

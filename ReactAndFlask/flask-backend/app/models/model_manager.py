@@ -1,4 +1,5 @@
 from app.dal.exceptions.ChangeModelDBException import ChangeModelDBException
+from app.dal.instance_table import InstanceTable
 from app.dal.model_table import ModelTable
 from app.data_models.model import Model
 from app.exceptions.InvalidInputsException import InvalidInputsError
@@ -8,6 +9,7 @@ from app.models.model_validator import ModelValidator
 class ModelManager:
     def __init__(self):
         self.table = ModelTable()
+        self.instance_table = InstanceTable()
         self.validate = ModelValidator()
 
     def create_model(self, model_data):
@@ -57,7 +59,27 @@ class ModelManager:
     def edit_model(self, model_data):
         try:
             updated_model = self.make_model(model_data)
-            self.table.edit_model(updated_model)
+            original_vendor = self.check_null(model_data.get("vendorOriginal"))
+            original_model_number = self.check_null(
+                model_data.get("modelNumberOriginal")
+            )
+            original_height = self.check_null(model_data.get("heightOriginal"))
+
+            if original_height != updated_model.height:
+                model_id = self.table.get_model_id_by_vendor_number(
+                    original_vendor, original_model_number
+                )
+                if model_id is None:
+                    raise InvalidInputsError("Original model not found")
+                deployed_instances = self.instance_table.get_instances_by_model_id(
+                    model_id
+                )
+                if deployed_instances is not None:
+                    raise InvalidInputsError(
+                        "Cannot edit height while instances are deployed"
+                    )
+
+            self.table.edit_model(model_id, updated_model)
         except ChangeModelDBException:
             raise InvalidInputsError("failure")
 
@@ -73,6 +95,19 @@ class ModelManager:
         except:
             return "error"
 
+    def get_distinct_vendors_with_prefix(self, prefix_json):
+        return_list = []
+        prefix = prefix_json.get("input")
+        if prefix is None:
+            prefix = ""
+
+        vendor_list = self.table.get_distinct_vendors()
+        for vendor in vendor_list:
+            if vendor.startswith(prefix):
+                return_list.append(vendor)
+
+        return return_list
+
     def make_model(self, model_data):
         try:
             print("getting values")
@@ -80,17 +115,17 @@ class ModelManager:
             print(vendor)
             model_number = self.check_null(model_data.get("modelNumber"))
             print(model_number)
-            height = self.check_null(model_data.get("height"))
+            height = int(self.check_null(model_data.get("height")))
             print(height)
             display_color = self.check_null(model_data.get("displayColor"))
             print(display_color)
-            eth_ports = self.check_null(model_data.get("ethernetPorts"))
+            eth_ports = int(self.check_null(model_data.get("ethernetPorts")))
             print(eth_ports)
-            pow_ports = self.check_null(model_data.get("powerPorts"))
+            pow_ports = int(self.check_null(model_data.get("powerPorts")))
             print(pow_ports)
             cpu = self.check_null(model_data.get("cpu"))
             print(cpu)
-            memory = self.check_null(model_data.get("memory"))
+            memory = int(self.check_null(model_data.get("memory")))
             print(memory)
             storage = self.check_null(model_data.get("storage"))
             print(storage)
@@ -114,16 +149,16 @@ class ModelManager:
         print("inputs validated")
 
         return Model(
-            vendor,
-            model_number,
-            height,
-            display_color,
-            eth_ports,
-            pow_ports,
-            cpu,
-            memory,
-            storage,
-            comments,
+            vendor=vendor,
+            model_number=model_number,
+            height=height,
+            display_color=display_color,
+            eth_ports=eth_ports,
+            power_ports=pow_ports,
+            cpu=cpu,
+            memory=memory,
+            storage=storage,
+            comment=comments,
         )
 
     def check_null(self, val):

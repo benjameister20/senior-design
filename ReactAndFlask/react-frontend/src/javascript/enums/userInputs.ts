@@ -2,6 +2,6 @@ export enum UserInput {
     Username='username',
     Password='password',
     Email='email',
-    DisplayName='displayName',
+    display_name='display_name',
     Privilege='privilege',
 }

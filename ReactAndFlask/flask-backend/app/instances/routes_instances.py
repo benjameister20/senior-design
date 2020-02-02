@@ -102,6 +102,20 @@ def detail_view():
         return addMessageToJSON(returnJSON, "failure")
 
 
+@instances.route("/instances/assistedmodel", methods=["POST"])
+def assisted_model_input():
+    global INSTANCE_MANAGER
+    returnJSON = createJSON()
+
+    try:
+        prefix_json = request.get_json()
+        model_list = INSTANCE_MANAGER.get_possible_models_with_filters(prefix_json)
+        returnJSON["results"] = model_list
+        return returnJSON
+    except:
+        return addMessageToJSON(returnJSON, "failure")
+
+
 def createJSON() -> dict:
     return {"metadata": "none"}
 

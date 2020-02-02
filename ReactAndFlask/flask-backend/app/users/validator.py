@@ -98,3 +98,10 @@ class Validator:
             not_already_taken = False
 
         return is_valid and not_already_taken
+
+    def validate_privilege(self, privilege: str) -> bool:
+
+        if privilege == "admin" or privilege == "user":
+            return True
+
+        return False

@@ -98,14 +98,25 @@ class ModelTable:
     def edit_model(self, model_id, model: Model) -> None:
         """ Updates a model to the database """
 
-        model_entry: ModelEntry = ModelEntry(model=model)
+        # model_entry: ModelEntry = ModelEntry(model=model)
 
         try:
-            ModelEntry.query.filter_by(identifier=model_id).update(model_entry)
+            # ModelEntry.query.filter_by(identifier=model_id).update(model_entry)
+            old_entry = ModelEntry.query.filter_by(identifier=model_id).first()
+            old_entry.vendor = model.vendor
+            old_entry.model_number = model.model_number
+            old_entry.height = model.height
+            old_entry.eth_ports = model.eth_ports
+            old_entry.power_ports = model.power_ports
+            old_entry.cpu = model.cpu
+            old_entry.memory = model.memory
+            old_entry.storage = model.storage
+            old_entry.comment = model.comment
+            old_entry.display_color = model.display_color
             db.session.commit()
         except:
             raise ChangeModelDBException(
-                "Failed to udpate model {model.vendor} {model.model_number}"
+                f"Failed to udpate model {model.vendor} {model.model_number}"
             )
 
     @DeprecationWarning

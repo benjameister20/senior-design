@@ -19,7 +19,6 @@ USER_TABLE = UserTable()
 blacklist_file = "/token_blacklist.json"
 dirname = os.path.dirname(__file__)
 BLACKLIST = []
-print(dirname)
 with open(dirname + blacklist_file, "r") as infile:
     contents = json.load(infile)
     BLACKLIST = contents.get("blacklist")
@@ -105,6 +104,12 @@ def create():
             response, "Incorrectly formatted message. Application error on the frontend"
         )
 
+    if not VALIDATOR.validate_privilege(privilege):
+        return add_message_to_JSON(
+            response,
+            "Please provide valid privilege level. Options are 'admin' and 'user'",
+        )
+
     if not VALIDATOR.validate_username(username):
         return add_message_to_JSON(response, "Invalid username")
 
@@ -142,7 +147,11 @@ def delete():
     response = {}
 
     request_data = request.get_json()
-    username = request_data["username"]
+    print("request data")
+    print(request_data)
+    user = request_data["user"]
+    username = user.username
+    print(username)
 
     user = USER_TABLE.get_user(username)
     if user is None:
@@ -163,17 +172,17 @@ def edit():
 
     response = {}
 
-    # TODO: check
     request_data = request.get_json()
     print("request:")
     print(request_data)
+    username_original = request_data["username_original"]
     username = request_data["username"]
     display_name = request_data["display_name"]
     email = request_data["email"]
-    # password = request_data["password"]
     privilege = request_data["privilege"]
+    # password = request_data["password"]
 
-    user = USER_TABLE.get_user(username)
+    user = USER_TABLE.get_user(username_original)
     if user is None:
         return add_message_to_JSON(
             response, "User <{}> does not exist".format(username)

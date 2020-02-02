@@ -105,6 +105,12 @@ def create():
             response, "Incorrectly formatted message. Application error on the frontend"
         )
 
+    if not VALIDATOR.validate_privilege(privilege):
+        return add_message_to_JSON(
+            response,
+            "Please provide valid privilege level. Options are 'admin' and 'user'",
+        )
+
     if not VALIDATOR.validate_username(username):
         return add_message_to_JSON(response, "Invalid username")
 

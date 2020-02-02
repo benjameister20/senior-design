@@ -20,7 +20,7 @@ import StatusDisplay from '../helpers/StatusDisplay';
 const inputs = [
     'username',
     'email',
-    'displayName',
+    'display_name',
     'privilege',
     'password',
 ]
@@ -28,7 +28,7 @@ const inputs = [
 const columns = [
     'username',
     'email',
-    'displayName',
+    'display_name',
     'privilege',
 ]
 
@@ -52,7 +52,7 @@ export default class UsersView extends React.Component {
             createdUser : {
                 'username':'',
                 'password':'',
-                'displayName':'',
+                'display_name':'',
                 'email':'',
                 'privilege':'',
             },
@@ -75,7 +75,7 @@ export default class UsersView extends React.Component {
             detailViewLoading:false,
             detailedValues : {
                 'username':'',
-                'displayName':'',
+                'display_name':'',
                 'email':'',
                 'privilege':'',
             },
@@ -108,7 +108,7 @@ export default class UsersView extends React.Component {
             {
                 'username':this.state.createdUser[UserInput.Username],
                 'password':this.state.createdUser[UserInput.Password],
-                'displayName':this.state.createdUser[UserInput.DisplayName],
+                'display_name':this.state.createdUser[UserInput.display_name],
                 'email':this.state.createdUser[UserInput.Email],
                 'privilege':this.state.createdUser[UserInput.Privilege],
             }
@@ -121,7 +121,7 @@ export default class UsersView extends React.Component {
                         createdUser : {
                             'username':'',
                             'password':'',
-                            'displayName':'',
+                            'display_name':'',
                             'email':'',
                             'privilege':'',
                         },
@@ -138,7 +138,7 @@ export default class UsersView extends React.Component {
             getURL(usersMainPath, UserCommand.edit),
             {
                 'username':this.state.detailedValues[UserInput.Username],
-                'displayName':this.state.detailedValues[UserInput.DisplayName],
+                'display_name':this.state.detailedValues[UserInput.display_name],
                 'email':this.state.detailedValues[UserInput.Email],
                 'privilege':this.state.detailedValues[UserInput.Privilege],
             }
@@ -147,7 +147,7 @@ export default class UsersView extends React.Component {
         this.setState({
             detailedValues : {
                 'username':'',
-                'displayName':'',
+                'display_name':'',
                 'email':'',
                 'privilege':'',
             },
@@ -176,29 +176,29 @@ export default class UsersView extends React.Component {
             {
                 'username':username,
             }
-            ).then(response => this.setState({ detailedValues: response.data['users'][0], detailViewLoading:false}));
+            ).then(response => this.setState({ detailedValues: response.data['user'], detailViewLoading:false}));
 
         this.setState({
             viewUser:'',
         });
     }
 
-    searchUsers(username, email, displayName, privilege) {
+    searchUsers(username, email, display_name, privilege) {
         axios.post(
             getURL(usersMainPath, UserCommand.search),
             {
-                'filters':{
+                'filter':{
                     'username':username,
                     'email':email,
-                    'displayName':displayName,
+                    'display_name':display_name,
                     'privilege':privilege,
                 }
             }
-            ).then(response => this.setState({ items: response.data['users'] }));
+            ).then(response => this.setState({ items: (response.data['users']==null) ? [] : response.data['users'] }));
     }
 
     search(filters) {
-        this.searchUsers(filters['username'], filters['email'], filters['displayName'], filters['privilege']);
+        this.searchUsers(filters['username'], filters['email'], filters['display_name'], filters['privilege']);
     }
 
     downloadTable() {
@@ -221,10 +221,10 @@ export default class UsersView extends React.Component {
 
         var username = this.state.items[id]['username'];
         var email = this.state.items[id]['email'];
-        var displayName = this.state.items[id]['displayName'];
+        var display_name = this.state.items[id]['display_name'];
         var privilege = this.state.items[id]['privilege'];
 
-        this.detailViewUser(username, email, displayName, privilege);
+        this.detailViewUser(username, email, display_name, privilege);
         //this.setState({ detailedValues: Constants.testUserArray[id], detailViewLoading:false})
     }
 
@@ -304,7 +304,7 @@ export default class UsersView extends React.Component {
                 <DetailedView
                     showDetailedView={this.state.showDetailedView}
                     closeDetailedView={this.closeDetailedView}
-                    inputs={inputs}
+                    inputs={columns}
                     updateModelEdited={this.updateUserEdited}
                     defaultValues={this.state.detailedValues}
                     loading={this.state.detailViewLoading}

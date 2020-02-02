@@ -1,6 +1,3 @@
-# TODO: Make populate endpoint to populate the table upon sign in
-
-
 import json
 import os
 
@@ -35,10 +32,6 @@ def test():
 
     response = {}
 
-    # is_authenticated, message = AUTH_MANAGER.validate_auth_token(request.headers)
-    # if not is_authenticated:
-    #     return add_message_to_JSON(json, message)
-
     return add_message_to_JSON(response, "hello")
 
 
@@ -49,14 +42,14 @@ def search():
     # TESTED AND FUNCTIONAL
     # print(request.headers)
     request_data = request.get_json()
-    filters = request_data.get("filters")
+    filters = request_data.get("filter")
     limit = filters.get("limit")
     if limit is None:
         limit = 1000
 
     users = USER_TABLE.search_users(
         username=filters.get("username"),
-        display_name=filters.get("displayName"),
+        display_name=filters.get("display_name"),
         email=filters.get("email"),
         privilege=filters.get("privilege"),
         limit=limit,
@@ -105,7 +98,7 @@ def create():
         username = request_data["username"]
         password = request_data["password"]
         email = request_data["email"]
-        display_name = request_data["displayName"]
+        display_name = request_data["display_name"]
         privilege = request_data["privilege"]
     except:
         return add_message_to_JSON(
@@ -167,11 +160,13 @@ def edit():
 
     response = {}
 
+    # TODO: check
     request_data = request.get_json()
     username = request_data["username"]
-    display_name = request_data["displayName"]
+    display_name = request_data["display_name"]
     email = request_data["email"]
     password = request_data["password"]
+    privilege = request_data["privilege"]
 
     user = USER_TABLE.get_user(username)
     if user is None:
@@ -197,7 +192,7 @@ def edit():
         display_name=display_name,
         email=email,
         password=password,
-        privilege=user.privilege,
+        privilege=privilege,
     )
     USER_TABLE.delete_user(user)
     USER_TABLE.add_user(updated_user)
@@ -243,12 +238,33 @@ def logout():
 
     token = request.headers.get("token")
     BLACKLIST.append(token)
-    print(BLACKLIST)
+    # print(BLACKLIST)
 
     with open(dirname + blacklist_file, "w") as outfile:
         json.dump({"blacklist": BLACKLIST}, outfile, indent=4)
 
     return add_message_to_JSON(response, "Successfully logged out")
+
+
+@users.route("/users/detailView", methods=["POST"])
+def detail_view():
+
+    response = {}
+
+    request_data = request.get_json()
+    username = request_data.get("username")
+    if username is None:
+        return add_message_to_JSON(response, "Please provide a username")
+
+    user = USER_TABLE.get_user(username)
+    if user is None:
+        return add_message_to_JSON(
+            response, "User <{}> does not exist".format(username)
+        )
+
+    response["user"] = user.make_json()
+
+    return response
 
 
 def add_message_to_JSON(json, message) -> dict:

@@ -60,6 +60,7 @@ export default class StatisticsView extends React.Component {
         };
 
         this.closeShowStatus = this.closeShowStatus.bind(this);
+        this.generateReport = this.generateReport.bind(this);
 
         axios.defaults.headers.common['token'] = this.props.token;
         axios.defaults.headers.common['privilege'] = this.props.privilege;
@@ -67,7 +68,7 @@ export default class StatisticsView extends React.Component {
 
     generateReport() {
         axios.get(getURL(statsMainPath, StatsCommand.GENERATE_REPORT)).then(response => {
-                if (response.data.message === 'success') {
+                try {
                     var data = response.data;
 
                     var totalUsage = [];
@@ -76,20 +77,34 @@ export default class StatisticsView extends React.Component {
                     totalUsage.push(totalUsageRow);
 
                     var spaceUsage = JSONtoArr(data["spaceUsage"]);
+                    if (spaceUsage.length == 0) {
+                        spaceUsage.push(["No space is currently being used", []])
+                    }
                     var vendorUsage = JSONtoArr(data["vendorUsage"]);
+                    if (vendorUsage.length == 0) {
+                        vendorUsage.push(["No vendors currently using space", []])
+                    }
                     var modelUsage = JSONtoArr(data["modelUsage"]);
+                    if (modelUsage.length == 0) {
+                        modelUsage.push(["No models currently using space", []])
+                    }
                     var ownerUsage = JSONtoArr(data["ownerUsage"]);
+                    if (ownerUsage.length == 0) {
+                        ownerUsage.push(["No owners currently using space", []])
+                    }
 
                     this.setState({
                         showStatus: true,
                         statusMessage: "Success",
-                        totalUsage:totalUsage,
-                        spaceUsage:spaceUsage,
-                        vendorUsage:vendorUsage,
-                        modelUsage:modelUsage,
-                        ownerUsage:ownerUsage,
+                        tableValues: {
+                            "totalUsage":totalUsage,
+                            "spaceUsage": spaceUsage,
+                            "vendorUsage": vendorUsage,
+                            "modelUsage": modelUsage,
+                            "ownerUsage": ownerUsage,
+                        },
                      })
-                } else {
+                } catch {
                     this.setState({ showStatus: true, statusMessage: response.data.message, statusSeverity:"error" })
                 }
             });
@@ -117,18 +132,16 @@ export default class StatisticsView extends React.Component {
                         Generate New Report
                     </Button>
                 </div>
-                {Object.keys(tables).forEach(key => (
+                {Object.keys(tables).map(key => (
                 <ExpansionPanel>
                     <ExpansionPanelSummary
                         expandIcon={<ExpandMoreIcon />}
-                        aria-controls="panel1a-content"
-                        id={"panel-"+key+"-header"}
                     >
                         <Typography>{tables[key]}</Typography>
                     </ExpansionPanelSummary>
                     <ExpansionPanelDetails>
                         <TableContainer component={Paper}>
-                            <Table aria-label="simple table">
+                            <Table>
                                 <TableHead>
                                     <TableRow >
                                         {tableCols[key].map(column => (<TableCell><span id={column}>{column}</span></TableCell>))}

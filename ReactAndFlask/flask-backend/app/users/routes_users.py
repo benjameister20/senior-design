@@ -112,7 +112,10 @@ def create():
         return add_message_to_JSON(response, "Invalid email address")
 
     if not VALIDATOR.validate_password(password):
-        return add_message_to_JSON(response, "Password too weak")
+        return add_message_to_JSON(
+            response,
+            "Password too weak. Passwords must contain uppercase and lowercase characters, numbers, special characters, and be 8 to 20 characters long",
+        )
 
     try:
         encrypted_password = AUTH_MANAGER.encrypt_pw(password)

@@ -86,7 +86,7 @@ class ModelTable:
     def add_model(self, model: Model) -> None:
         """ Adds a model to the database """
         model_entry: ModelEntry = ModelEntry(model=model)
-
+        print("adding model")
         try:
             db.session.add(model_entry)
             db.session.commit()
@@ -158,11 +158,11 @@ class ModelTable:
     ) -> List[Model]:
         """ Get a list of all models containing the given filter """
         conditions = []
-        if vendor is not None:
+        if vendor is not None and vendor != "":
             conditions.append(ModelEntry.vendor == vendor)
-        if model_number is not None:
+        if model_number is not None and model_number != "":
             conditions.append(ModelEntry.model_number == model_number)
-        if height is not None:
+        if height is not None and height != "":
             conditions.append(ModelEntry.height == height)
 
         filtered_models: List[ModelEntry] = ModelEntry.query.filter(

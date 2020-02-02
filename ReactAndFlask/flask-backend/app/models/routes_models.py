@@ -59,6 +59,8 @@ def search():
     returnJSON = createJSON()
 
     filter = request.json["filter"]
+    print("filter")
+    print(filter)
     try:
         limit = int(request.json["limit"])
     except:
@@ -68,7 +70,7 @@ def search():
         model_list = MODEL_MANAGER.get_models(filter, limit)
         returnJSON = addModelsTOJSON(
             addMessageToJSON(returnJSON, "success"),
-            [list(map(lambda x: x.make_json(), model_list))],
+            list(map(lambda x: x.make_json(), model_list)),
         )
         return returnJSON
     except InvalidInputsError as e:

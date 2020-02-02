@@ -67,7 +67,8 @@ def search():
     try:
         model_list = MODEL_MANAGER.get_models(filter, limit)
         returnJSON = addModelsTOJSON(
-            addMessageToJSON(returnJSON, "success"), [model_list]
+            addMessageToJSON(returnJSON, "success"),
+            [list(map(lambda x: x.make_json(), model_list))],
         )
         return returnJSON
     except:

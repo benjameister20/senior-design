@@ -86,6 +86,7 @@ export default class InstancesView extends React.Component {
             },
             originalRack:'',
             originalrack_u:'',
+            modelList:[],
         };
 
         this.createInstance = this.createInstance.bind(this);
@@ -103,6 +104,7 @@ export default class InstancesView extends React.Component {
         this.updateInstanceCreator = this.updateInstanceCreator.bind(this);
         this.updateInstanceEdited = this.updateInstanceEdited.bind(this);
         this.closeShowStatus = this.closeShowStatus.bind(this);
+        this.getModelList = this.getModelList.bind(this);
 
         axios.defaults.headers.common['token'] = this.props.token;
         axios.defaults.headers.common['privilege'] = this.props.privilege;
@@ -213,6 +215,12 @@ export default class InstancesView extends React.Component {
             ).then(response => this.setState({ items: response.data['instances'] }));
     }
 
+    getModelList() {
+        axios.get(
+            getURL(instancesMainPath, InstanceCommand.GET_ALL_MODELS)
+            ).then(response => this.setState({ modelList: response.data.results }));
+    }
+
     search(filters) {
         this.searchInstances(filters['model'], filters['hostname'], filters['rack'], filters['rack_u']);
     }
@@ -273,6 +281,7 @@ export default class InstancesView extends React.Component {
     render() {
         return (
             <div>
+                {this.getModelList()}
                 <StatusDisplay
                     open={this.state.showStatus}
                     severity={this.state.statusSeverity}
@@ -299,6 +308,8 @@ export default class InstancesView extends React.Component {
                     createModel={this.createInstance}
                     updateModelCreator={this.updateInstanceCreator}
                     inputs={inputs}
+                    options={this.state.modelList}
+                    useAutocomplete={true}
                 />
                 <UploadModal
                     showImportModal={this.state.showImportModal}

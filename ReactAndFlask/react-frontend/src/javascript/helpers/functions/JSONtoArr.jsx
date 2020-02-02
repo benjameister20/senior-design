@@ -2,8 +2,7 @@ import { ModelInput } from '../../enums/modelInputs.ts'
 
 export default function jsonToArr(incomingJSON) {
     try {
-        JSON.parse(incomingJSON);
-        var json = incomingJSON;
+        var json = JSON.parse(incomingJSON);
     } catch (e) {
         var json = incomingJSON;
     }

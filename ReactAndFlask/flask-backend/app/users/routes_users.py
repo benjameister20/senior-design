@@ -1,6 +1,3 @@
-# TODO: Make populate endpoint to populate the table upon sign in
-
-
 import json
 import os
 
@@ -35,10 +32,6 @@ def test():
 
     response = {}
 
-    # is_authenticated, message = AUTH_MANAGER.validate_auth_token(request.headers)
-    # if not is_authenticated:
-    #     return add_message_to_JSON(json, message)
-
     return add_message_to_JSON(response, "hello")
 
 
@@ -49,7 +42,7 @@ def search():
     # TESTED AND FUNCTIONAL
     # print(request.headers)
     request_data = request.get_json()
-    filters = request_data.get("filters")
+    filters = request_data.get("filter")
     limit = filters.get("limit")
     if limit is None:
         limit = 1000

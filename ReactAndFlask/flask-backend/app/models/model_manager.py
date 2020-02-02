@@ -87,6 +87,7 @@ class ModelManager:
         vendor = filter.get("vendor")
         model_number = filter.get("modelNumber")
         height = filter.get("height")
+
         try:
             model_list = self.table.get_models_with_filter(
                 vendor=vendor, model_number=model_number, height=height, limit=limit

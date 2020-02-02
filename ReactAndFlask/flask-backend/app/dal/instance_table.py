@@ -140,13 +140,13 @@ class InstanceTable:
     ) -> List[Instance]:
         """ Get a list of all instances containing the given filter """
         conditions = []
-        if model_id is not None:
+        if model_id is not None and model_id != "":
             conditions.append(InstanceEntry.model_id == model_id)
-        if hostname is not None:
+        if hostname is not None and hostname != "":
             conditions.append(InstanceEntry.hostname == hostname)
-        if rack_label is not None:
+        if rack_label is not None and rack_label != "":
             conditions.append(InstanceEntry.rack_label == rack_label)
-        if rack_u is not None:
+        if rack_u is not None and rack_u != "":
             conditions.append(InstanceEntry.rack_u == rack_u)
 
         filtered_instances: List[InstanceEntry] = InstanceEntry.query.filter(

@@ -66,19 +66,19 @@ export const testUserArray = [
     {
         'username':'a',
         'password':'a',
-        'displayName':'a',
+        'display_name':'a',
         'email':'a',
         'privilege':'a',
     },{
         'username':'b',
         'password':'b',
-        'displayName':'b',
+        'display_name':'b',
         'email':'b',
         'privilege':'b',
     },{
         'username':'c',
         'password':'c',
-        'displayName':'c',
+        'display_name':'c',
         'email':'c',
         'privilege':'c',
     },

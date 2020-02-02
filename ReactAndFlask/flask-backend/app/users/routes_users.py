@@ -47,6 +47,7 @@ def test():
 @requires_role(request, "admin")
 def search():
     # TESTED AND FUNCTIONAL
+    # print(request.headers)
     request_data = request.get_json()
     filters = request_data.get("filters")
     limit = filters.get("limit")
@@ -209,7 +210,8 @@ def authenticate():
     # TESTED AND FUNCTIONAL
     """ Route for authenticating users """
 
-    response = {}
+    answer = {}
+    print(request)
 
     try:
         request_data = request.get_json()
@@ -217,23 +219,21 @@ def authenticate():
         attempted_password = request_data["password"]
     except:
         return add_message_to_JSON(
-            response, "Connection error. Please try again later..."
+            answer, "Connection error. Please try again later..."
         )
 
     user = USER_TABLE.get_user(username)
     if user is None:
-        return add_message_to_JSON(
-            response, "User <{}> does not exist".format(username)
-        )
+        return add_message_to_JSON(answer, "User <{}> does not exist".format(username))
 
     auth_success = AUTH_MANAGER.compare_pw(attempted_password, user.password)
     if not auth_success:
-        return add_message_to_JSON(response, "Incorrect password")
+        return add_message_to_JSON(answer, "Incorrect password")
 
-    response["token"] = AUTH_MANAGER.encode_auth_token(username)
-    response["privilege"] = user.privilege
+    answer["token"] = AUTH_MANAGER.encode_auth_token(username)
+    answer["privilege"] = user.privilege
 
-    return add_message_to_JSON(response, "success")
+    return add_message_to_JSON(answer, "success")
 
 
 @users.route("/users/logout", methods=["GET"])

@@ -165,10 +165,12 @@ def edit():
 
     # TODO: check
     request_data = request.get_json()
+    print("request:")
+    print(request_data)
     username = request_data["username"]
     display_name = request_data["display_name"]
     email = request_data["email"]
-    password = request_data["password"]
+    # password = request_data["password"]
     privilege = request_data["privilege"]
 
     user = USER_TABLE.get_user(username)
@@ -178,23 +180,23 @@ def edit():
         )
 
     # check for change of password
-    if (
-        password != ""
-        and password is not None
-        and not AUTH_MANAGER.compare_pw(password, user.password)
-    ):
-        if VALIDATOR.validate_password(password):
-            password = AUTH_MANAGER.encrypt_pw(password)
-        else:
-            return {"message": "Password invalid"}
-    else:
-        password = user.password
+    # if (
+    #     password != ""
+    #     and password is not None
+    #     and not AUTH_MANAGER.compare_pw(password, user.password)
+    # ):
+    #     if VALIDATOR.validate_password(password):
+    #         password = AUTH_MANAGER.encrypt_pw(password)
+    #     else:
+    #         return {"message": "Password invalid"}
+    # else:
+    #     password = user.password
 
     updated_user = User(
         username=username,
         display_name=display_name,
         email=email,
-        password=password,
+        password=user.password,
         privilege=privilege,
     )
     USER_TABLE.delete_user(user)

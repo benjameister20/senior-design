@@ -15,11 +15,11 @@ import * as Constants from '../Constants';
 
 const inputs = [
     'vendor',
-    'modelNumber',
+    'model_number',
     'height',
-    'displayColor',
-    'ethernetPorts',
-    'powerPorts',
+    'display_color',
+    'eth_ports',
+    'power_ports',
     'cpu',
     'memory',
     'storage',
@@ -28,7 +28,7 @@ const inputs = [
 
 const columns = [
     'vendor',
-    'modelNumber',
+    'model_number',
     'height',
 ]
 
@@ -51,11 +51,11 @@ export default class ModelsView extends React.Component {
             // vals for creating a new model
             createdModel : {
                 'vendor':'',
-                'modelNumber':'',
+                'model_number':'',
                 'height':'',
-                'displayColor':'',
-                'ethernetPorts':'',
-                'powerPorts':'',
+                'display_color':'',
+                'eth_ports':'',
+                'power_ports':'',
                 'cpu':'',
                 'memory':'',
                 'storage':'',
@@ -91,11 +91,11 @@ export default class ModelsView extends React.Component {
             detailViewLoading:false,
             detailedValues : {
                 'vendor':'',
-                'modelNumber':'',
+                'model_number':'',
                 'height':'',
-                'displayColor':'',
-                'ethernetPorts':'',
-                'powerPorts':'',
+                'display_color':'',
+                'eth_ports':'',
+                'power_ports':'',
                 'cpu':'',
                 'memory':'',
                 'storage':'',
@@ -129,11 +129,11 @@ export default class ModelsView extends React.Component {
             getURL(modelsMainPath, ModelCommand.create),
             {
                 'vendor':this.state.createdModel[ModelInput.Vendor],
-                'modelNumber':this.state.createdModel[ModelInput.ModelNumber],
+                'model_number':this.state.createdModel[ModelInput.model_number],
                 'height':this.state.createdModel[ModelInput.Height],
-                'displayColor':this.state.createdModel[ModelInput.DisplayColor],
-                'ethernetPorts':this.state.createdModel[ModelInput.EthernetPorts],
-                'powerPorts':this.state.createdModel[ModelInput.PowerPorts],
+                'display_color':this.state.createdModel[ModelInput.display_color],
+                'eth_ports':this.state.createdModel[ModelInput.eth_ports],
+                'power_ports':this.state.createdModel[ModelInput.power_ports],
                 'cpu':this.state.createdModel[ModelInput.CPU],
                 'memory':this.state.createdModel[ModelInput.Memory],
                 'storage':this.state.createdModel[ModelInput.Storage],
@@ -148,11 +148,11 @@ export default class ModelsView extends React.Component {
                             statusSeverity:"success",
                             createdModel : {
                                 'vendor':'',
-                                'modelNumber':'',
+                                'model_number':'',
                                 'height':'',
-                                'displayColor':'',
-                                'ethernetPorts':'',
-                                'powerPorts':'',
+                                'display_color':'',
+                                'eth_ports':'',
+                                'power_ports':'',
                                 'cpu':'',
                                 'memory':'',
                                 'storage':'',
@@ -168,11 +168,11 @@ export default class ModelsView extends React.Component {
         this.setState({
             createdModel : {
                 'vendor':'',
-                'modelNumber':'',
+                'model_number':'',
                 'height':'',
-                'displayColor':'',
-                'ethernetPorts':'',
-                'powerPorts':'',
+                'display_color':'',
+                'eth_ports':'',
+                'power_ports':'',
                 'cpu':'',
                 'memory':'',
                 'storage':'',
@@ -187,11 +187,11 @@ export default class ModelsView extends React.Component {
             getURL(modelsMainPath, ModelCommand.edit),
             {
                 'vendor':this.state.detailedValues[ModelInput.Vendor],
-                'modelNumber':this.state.detailedValues[ModelInput.ModelNumber],
+                'model_number':this.state.detailedValues[ModelInput.model_number],
                 'height':this.state.detailedValues[ModelInput.Height],
-                'displayColor':this.state.detailedValues[ModelInput.DisplayColor],
-                'ethernetPorts':this.state.detailedValues[ModelInput.EthernetPorts],
-                'powerPorts':this.state.detailedValues[ModelInput.PowerPorts],
+                'display_color':this.state.detailedValues[ModelInput.display_color],
+                'eth_ports':this.state.detailedValues[ModelInput.eth_ports],
+                'power_ports':this.state.detailedValues[ModelInput.power_ports],
                 'cpu':this.state.detailedValues[ModelInput.CPU],
                 'memory':this.state.detailedValues[ModelInput.Memory],
                 'storage':this.state.detailedValues[ModelInput.Storage],
@@ -202,11 +202,11 @@ export default class ModelsView extends React.Component {
         this.setState({
             detailedValues : {
                 'vendor':'',
-                'modelNumber':'',
+                'model_number':'',
                 'height':'',
-                'displayColor':'',
-                'ethernetPorts':'',
-                'powerPorts':'',
+                'display_color':'',
+                'eth_ports':'',
+                'power_ports':'',
                 'cpu':'',
                 'memory':'',
                 'storage':'',
@@ -222,18 +222,18 @@ export default class ModelsView extends React.Component {
             getURL(modelsMainPath, ModelCommand.delete),
             {
                 'vendor':this.state.detailedValues[ModelInput.Vendor],
-                'modelNumber':this.state.detailedValues[ModelInput.ModelNumber],
+                'model_number':this.state.detailedValues[ModelInput.model_number],
             }
             ).then(response => console.log(response));
 
         this.setState({
             detailedValues : {
                 'vendor':'',
-                'modelNumber':'',
+                'model_number':'',
                 'height':'',
-                'displayColor':'',
-                'ethernetPorts':'',
-                'powerPorts':'',
+                'display_color':'',
+                'eth_ports':'',
+                'power_ports':'',
                 'cpu':'',
                 'memory':'',
                 'storage':'',
@@ -248,7 +248,7 @@ export default class ModelsView extends React.Component {
             getURL(modelsMainPath, ModelCommand.detailView),
             {
                 'vendor':vendor,
-                'modelNumber':modelNum,
+                'model_number':modelNum,
             }, this.props.headers
             ).then(response => this.setState({ detailedValues: response.data['models'][0], detailViewLoading:false}));
 
@@ -264,7 +264,7 @@ export default class ModelsView extends React.Component {
             {
                 'filter':{
                     'vendor':vendor,
-                    'modelNumber':modelNum,
+                    'model_number':modelNum,
                     'height':height,
                 }
             }
@@ -276,7 +276,7 @@ export default class ModelsView extends React.Component {
     }
 
     search(filters) {
-        this.searchModels(filters['vendor'], filters['modelNumber'], filters['height']);
+        this.searchModels(filters['vendor'], filters['model_number'], filters['height']);
     }
 
     downloadTable() {
@@ -298,7 +298,7 @@ export default class ModelsView extends React.Component {
          });
 
         var vendor = this.state.items[id]['vendor'];
-        var modelNum = this.state.items[id]['modelNumber'];
+        var modelNum = this.state.items[id]['model_number'];
 
         this.detailViewModel(vendor, modelNum);
         //this.setState({ detailedValues: Constants.testModelArray[id], detailViewLoading:false})

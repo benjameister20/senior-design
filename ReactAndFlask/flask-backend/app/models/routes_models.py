@@ -92,7 +92,7 @@ def edit():
         return addMessageToJSON(returnJSON, e.message)
 
 
-@models.route("/models/detailview", methods=["POST"])
+@models.route("/models/detailView", methods=["POST"])
 def detail_view():
     """ Route for table view of models """
 
@@ -103,7 +103,9 @@ def detail_view():
     try:
         model_data = request.get_json()
         model = MODEL_MANAGER.detail_view(model_data)
-        return addModelsTOJSON(addMessageToJSON(returnJSON, "success"), [model])
+        return addModelsTOJSON(
+            addMessageToJSON(returnJSON, "success"), [model.make_json()]
+        )
     except InvalidInputsError as e:
         return addMessageToJSON(returnJSON, e.message)
 

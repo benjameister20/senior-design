@@ -59,7 +59,7 @@ class StatsManager:
             "ownerUsage": owner_usage_json,
         }
 
-        return json.dumps(returnJSON)
+        return returnJSON
 
     def iterate_instance(self, instance_list, rack_label):
         rack_space_used = 0

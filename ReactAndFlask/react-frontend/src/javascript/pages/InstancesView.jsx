@@ -120,23 +120,24 @@ export default class InstancesView extends React.Component {
             }
             ).then(response => {
                 if (response.data.message === 'success') {
-                    this.setState({ showStatus: true, statusMessage: "Successfully created instance", statusSeverity:"success" })
+                    this.setState({
+                        showStatus: true,
+                        statusMessage: "Successfully created instance",
+                        statusSeverity:"success",
+                        createdInstance : {
+                            'model':'',
+                            'hostname':'',
+                            'rack':'',
+                            'rackU':'',
+                            'owner':'',
+                            'comment':'',
+                        },
+                        showCreateModal:false,
+                    })
                 } else {
                     this.setState({ showStatus: true, statusMessage: response.data.message, statusSeverity:"error" })
                 }
             });
-
-        this.setState({
-            createdInstance : {
-                'model':'',
-                'hostname':'',
-                'rack':'',
-                'rackU':'',
-                'owner':'',
-                'comment':'',
-            },
-            showCreateModal:false,
-        });
     }
 
     editInstance() {

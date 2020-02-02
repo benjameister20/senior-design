@@ -114,22 +114,23 @@ export default class UsersView extends React.Component {
             }
             ).then(response => {
                 if (response.data.message === 'success') {
-                    this.setState({ showStatus: true, statusMessage: "Successfully created user", statusSeverity:"success" })
+                    this.setState({
+                        showStatus: true,
+                        statusMessage: "Successfully created user",
+                        statusSeverity:"success",
+                        createdUser : {
+                            'username':'',
+                            'password':'',
+                            'displayName':'',
+                            'email':'',
+                            'privilege':'',
+                        },
+                        showCreateModal:false,
+                    })
                 } else {
                     this.setState({ showStatus: true, statusMessage: response.data.message, statusSeverity:"error" })
                 }
             });
-
-        this.setState({
-            createdUser : {
-                'username':'',
-                'password':'',
-                'displayName':'',
-                'email':'',
-                'privilege':'',
-            },
-            showCreateModal:false,
-        });
     }
 
     editUser() {

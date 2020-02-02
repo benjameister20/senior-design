@@ -167,11 +167,13 @@ def edit():
 
     response = {}
 
+    # TODO: check
     request_data = request.get_json()
     username = request_data["username"]
     display_name = request_data["displayName"]
     email = request_data["email"]
     password = request_data["password"]
+    privilege = request_data["privilege"]
 
     user = USER_TABLE.get_user(username)
     if user is None:
@@ -197,7 +199,7 @@ def edit():
         display_name=display_name,
         email=email,
         password=password,
-        privilege=user.privilege,
+        privilege=privilege,
     )
     USER_TABLE.delete_user(user)
     USER_TABLE.add_user(updated_user)
@@ -243,12 +245,33 @@ def logout():
 
     token = request.headers.get("token")
     BLACKLIST.append(token)
-    print(BLACKLIST)
+    # print(BLACKLIST)
 
     with open(dirname + blacklist_file, "w") as outfile:
         json.dump({"blacklist": BLACKLIST}, outfile, indent=4)
 
     return add_message_to_JSON(response, "Successfully logged out")
+
+
+@users.route("/users/detailView", methods=["POST"])
+def detail_view():
+
+    response = {}
+
+    request_data = request.get_json()
+    username = request_data.get("username")
+    if username is None:
+        return add_message_to_JSON(response, "Please provide a username")
+
+    user = USER_TABLE.get_user(username)
+    if user is None:
+        return add_message_to_JSON(
+            response, "User <{}> does not exist".format(username)
+        )
+
+    response["user"] = user.make_json()
+
+    return response
 
 
 def add_message_to_JSON(json, message) -> dict:

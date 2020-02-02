@@ -11,7 +11,7 @@ import UploadModal from '../helpers/UploadModal';
 import getURL from '../helpers/functions/GetURL';
 import DetailedView from '../helpers/DetailedView';
 import CreateModal from '../helpers/CreateModal';
-import * as Constants from '../Constants';
+import StatusDisplay from '../helpers/StatusDisplay';
 
 const inputs = [
     'vendor',
@@ -105,6 +105,10 @@ export default class ModelsView extends React.Component {
             originalModelNumber:'',
             originalHeight:'',
 
+            showStatus:false,
+            statusSeverity:'',
+            statusMessage:''
+
         };
 
         this.openCreateModal = this.openCreateModal.bind(this);
@@ -122,6 +126,7 @@ export default class ModelsView extends React.Component {
         this.createModel = this.createModel.bind(this);
         this.updateModelCreator = this.updateModelCreator.bind(this);
         this.deleteModel = this.deleteModel.bind(this);
+        this.closeShowStatus = this.closeShowStatus.bind(this);
 
         axios.defaults.headers.common['token'] = this.props.token;
         axios.defaults.headers.common['privilege'] = this.props.privilege;
@@ -147,6 +152,7 @@ export default class ModelsView extends React.Component {
                     if (response.data.message === 'success') {
                         this.setState({
                             showStatus: true,
+                            statusMessage:'success',
                             statusMessage: "Successfully created model",
                             statusSeverity:"success",
                             createdModel : {
@@ -344,9 +350,19 @@ export default class ModelsView extends React.Component {
         this.setState({ searchText: event.target.value})
     }
 
+    closeShowStatus() {
+        this.setState({ showStatus: false })
+    }
+
     render() {
         return (
             <div>
+                <StatusDisplay
+                    open={this.state.showStatus}
+                    severity={this.state.statusSeverity}
+                    closeStatus={this.closeShowStatus}
+                    message={this.state.statusMessage}
+                />
                 {(this.props.privilege == Privilege.ADMIN) ?
                     (<div><ButtonMenu
                     openCreateModal={this.openCreateModal}

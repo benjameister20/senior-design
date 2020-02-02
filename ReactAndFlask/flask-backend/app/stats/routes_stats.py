@@ -24,7 +24,8 @@ def generate_report():
 
     try:
         report = STATS_MANAGER.create_report()
-        return addReportTOJSON(addMessageToJSON(returnJSON, "success"), report)
+        addMessageToJSON(returnJSON, "success")
+        return report
     except:
         return addMessageToJSON(returnJSON, "Error generating usage report")
 

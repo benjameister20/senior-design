@@ -69,8 +69,7 @@ export default class StatisticsView extends React.Component {
     generateReport() {
         axios.get(getURL(statsMainPath, StatsCommand.GENERATE_REPORT)).then(response => {
                 try {
-                    var data = response.data["report"];
-
+                    var data = response.data;
                     var totalUsage = [];
                     var totalUsageRow = ["Total Usage"];
                     totalUsageRow.push(data["totalUsage"]);

@@ -64,7 +64,8 @@ def search():
     try:
         model_list = INSTANCE_MANAGER.get_instances(filter, limit)
         returnJSON = addInstancesTOJSON(
-            addMessageToJSON(returnJSON, "success"), [model_list]
+            addMessageToJSON(returnJSON, "success"),
+            list(map(lambda x: x.make_json(), model_list)),
         )
         return returnJSON
     except InvalidInputsError as e:

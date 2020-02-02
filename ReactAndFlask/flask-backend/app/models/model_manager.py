@@ -1,4 +1,3 @@
-from app.dal.exceptions.ChangeModelDBException import ChangeModelDBException
 from app.dal.instance_table import InstanceTable
 from app.dal.model_table import ModelTable
 from app.data_models.model import Model
@@ -23,8 +22,8 @@ class ModelManager:
                 print("model added to table")
             else:
                 raise InvalidInputsError(create_validation_result)
-        except ChangeModelDBException:
-            raise InvalidInputsError("failure")
+        except:
+            raise InvalidInputsError("Unable to add the new model")
 
     def delete_model(self, model_data):
         vendor = self.check_null(model_data["vendor"])
@@ -43,8 +42,10 @@ class ModelManager:
                 self.table.delete_model_str(vendor, model_number)
             else:
                 raise InvalidInputsError(delete_validation_result)
-        except ChangeModelDBException:
-            raise ChangeModelDBException("Error adding model")
+        except:
+            raise InvalidInputsError(
+                "An error occured while trying to delete the model."
+            )
 
     def detail_view(self, model_data):
         vendor = self.check_null(model_data["vendor"])
@@ -53,8 +54,10 @@ class ModelManager:
         try:
             model = self.table.get_model_by_vendor_number(vendor, model_number)
             return model
-        except ChangeModelDBException:
-            return "error"
+        except:
+            raise InvalidInputsError(
+                "An error occured while trying to retrieve the model data."
+            )
 
     def edit_model(self, model_data):
         try:
@@ -70,7 +73,7 @@ class ModelManager:
                     original_vendor, original_model_number
                 )
                 if model_id is None:
-                    raise InvalidInputsError("Original model not found")
+                    raise InvalidInputsError("Model not found")
                 deployed_instances = self.instance_table.get_instances_by_model_id(
                     model_id
                 )
@@ -80,8 +83,10 @@ class ModelManager:
                     )
 
             self.table.edit_model(model_id, updated_model)
-        except ChangeModelDBException:
-            raise InvalidInputsError("failure")
+        except:
+            raise InvalidInputsError(
+                "A failure occured while trying to edit the model."
+            )
 
     def get_models(self, filter, limit: int):
         vendor = filter.get("vendor")
@@ -94,20 +99,27 @@ class ModelManager:
             )
             return model_list
         except:
-            return "error"
+            raise InvalidInputsError(
+                "A failure occured while searching with the given filters."
+            )
 
     def get_distinct_vendors_with_prefix(self, prefix_json):
-        return_list = []
-        prefix = prefix_json.get("input")
-        if prefix is None:
-            prefix = ""
+        try:
+            return_list = []
+            prefix = prefix_json.get("input")
+            if prefix is None:
+                prefix = ""
 
-        vendor_list = self.table.get_distinct_vendors()
-        for vendor in vendor_list:
-            if vendor.startswith(prefix):
-                return_list.append(vendor)
+            vendor_list = self.table.get_distinct_vendors()
+            for vendor in vendor_list:
+                if vendor.startswith(prefix):
+                    return_list.append(vendor)
 
-        return return_list
+            return return_list
+        except:
+            raise InvalidInputsError(
+                "An error occurred when trying to load previous vendors."
+            )
 
     def make_model(self, model_data):
         try:

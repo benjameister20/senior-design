@@ -25,7 +25,9 @@ class InstanceManager:
             else:
                 raise InvalidInputsError(create_validation_result)
         except:
-            raise InvalidInputsError("failure")
+            raise InvalidInputsError(
+                "An error occurred when attempting to create the instance."
+            )
 
     def delete_instance(self, instance_data):
         rack = self.check_null(instance_data["rack"])
@@ -39,7 +41,9 @@ class InstanceManager:
         try:
             self.table.delete_instance_by_rack_location(rack, rack_u)
         except:
-            raise InvalidInputsError("Error adding model")
+            raise InvalidInputsError(
+                "An error occurred when trying to delete the specified instance."
+            )
 
     def detail_view(self, instance_data):
         rack = self.check_null(instance_data["rack"])
@@ -49,21 +53,31 @@ class InstanceManager:
             instance = self.table.get_instance_by_rack_location(rack, rack_u)
             return instance
         except:
-            return "error"
+            raise InvalidInputsError(
+                "An error occured while retrieving data for this instance."
+            )
 
     def edit_instance(self, instance_data):
         try:
             new_instance = self.make_instance(instance_data)
             self.table.edit_instance(new_instance)
         except:
-            raise InvalidInputsError("failure")
+            raise InvalidInputsError(
+                "An error occurred while trying to edit the instance."
+            )
 
     def get_instances(self, filter, limit: int):
         model_name = filter.get("model")
-        if model_name is not None:
-            model_id = self.get_model_id_from_name(model_name)
-        else:
-            model_id = None
+
+        try:
+            if model_name is not None:
+                model_id = self.get_model_id_from_name(model_name)
+            else:
+                model_id = None
+        except:
+            raise InvalidInputsError(
+                "An error occurred while trying to filter by model name. Please input a different model name"
+            )
 
         hostname = filter.get("hostname")
         rack_label = filter.get("rack")
@@ -79,21 +93,28 @@ class InstanceManager:
             )
             return instance_list
         except:
-            return "error"
+            raise InvalidInputsError(
+                "An error occurred while trying to retrieve instance data."
+            )
 
     def get_possible_models_with_filters(self, prefix_json):
-        return_list = []
-        prefix = prefix_json.get("input")
-        if prefix is None:
-            prefix = ""
+        try:
+            return_list = []
+            prefix = prefix_json.get("input")
+            if prefix is None:
+                prefix = ""
 
-        model_list = self.model_table.get_all_models()
-        for model in model_list:
-            model_name = model.vendor + " " + model.model_number
-            if model_name.startswith(prefix):
-                return_list.append(model_name)
+            model_list = self.model_table.get_all_models()
+            for model in model_list:
+                model_name = model.vendor + " " + model.model_number
+                if model_name.startswith(prefix):
+                    return_list.append(model_name)
 
-        return return_list
+            return return_list
+        except:
+            raise InvalidInputsError(
+                "An error occurred while trying to retrieve model options."
+            )
 
     def make_instance(self, instance_data):
         model_name = self.check_null(instance_data["model"])
@@ -123,16 +144,23 @@ class InstanceManager:
     def get_model_id_from_name(self, model_name):
         data = model_name.split()
         if len(data) != 2:
-            return "Invalid Model"
+            raise InvalidInputsError("Invalid model name.")
 
         vendor = data[0]
         model_number = data[1]
 
-        model_id = self.model_table.get_model_id_by_vendor_number(vendor, model_number)
-        if model_id is None:
-            return "Invalid Model"
+        try:
+            model_id = self.model_table.get_model_id_by_vendor_number(
+                vendor, model_number
+            )
+            if model_id is None:
+                raise InvalidInputsError("Invalid model name.")
 
-        return model_id
+            return model_id
+        except:
+            raise InvalidInputsError(
+                "An error occurred while trying to retrieve model info corresponding to the instance."
+            )
 
     def check_null(self, val):
         if val is None:

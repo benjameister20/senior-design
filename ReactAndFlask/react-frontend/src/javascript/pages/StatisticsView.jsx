@@ -96,11 +96,13 @@ export default class StatisticsView extends React.Component {
                     this.setState({
                         showStatus: true,
                         statusMessage: "Success",
-                        totalUsage:totalUsage,
-                        spaceUsage:spaceUsage,
-                        vendorUsage:vendorUsage,
-                        modelUsage:modelUsage,
-                        ownerUsage:ownerUsage,
+                        tableValues: {
+                            "totalUsage":totalUsage,
+                            "spaceUsage": spaceUsage,
+                            "vendorUsage": vendorUsage,
+                            "modelUsage": modelUsage,
+                            "ownerUsage": ownerUsage,
+                        },
                      })
                 } catch {
                     this.setState({ showStatus: true, statusMessage: response.data.message, statusSeverity:"error" })
@@ -130,18 +132,16 @@ export default class StatisticsView extends React.Component {
                         Generate New Report
                     </Button>
                 </div>
-                {Object.keys(tables).forEach(key => (
+                {Object.keys(tables).map(key => (
                 <ExpansionPanel>
                     <ExpansionPanelSummary
                         expandIcon={<ExpandMoreIcon />}
-                        aria-controls="panel1a-content"
-                        id={"panel-"+key+"-header"}
                     >
                         <Typography>{tables[key]}</Typography>
                     </ExpansionPanelSummary>
                     <ExpansionPanelDetails>
                         <TableContainer component={Paper}>
-                            <Table aria-label="simple table">
+                            <Table>
                                 <TableHead>
                                     <TableRow >
                                         {tableCols[key].map(column => (<TableCell><span id={column}>{column}</span></TableCell>))}

@@ -304,7 +304,7 @@ export default class UsersView extends React.Component {
                 <DetailedView
                     showDetailedView={this.state.showDetailedView}
                     closeDetailedView={this.closeDetailedView}
-                    inputs={inputs}
+                    inputs={columns}
                     updateModelEdited={this.updateUserEdited}
                     defaultValues={this.state.detailedValues}
                     loading={this.state.detailViewLoading}

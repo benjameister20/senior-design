@@ -20,8 +20,24 @@ def generate_report():
     """ Route for generating usage report """
 
     global INSTANCE_MANAGER
+    returnJSON = createJSON()
 
     try:
-        return STATS_MANAGER.create_report()
+        report = STATS_MANAGER.create_report()
+        return addReportTOJSON(addMessageToJSON(returnJSON, "success"), report)
     except:
-        return "Error generating usage report"
+        return addMessageToJSON(returnJSON, "Error generating usage report")
+
+
+def createJSON() -> dict:
+    return {"metadata": "none"}
+
+
+def addMessageToJSON(json, message) -> dict:
+    json["message"] = message
+    return json
+
+
+def addReportTOJSON(json, report) -> dict:
+    json["report"] = report
+    return json

@@ -14,6 +14,7 @@ import CreateModal from '../helpers/CreateModal';
 import * as Constants from '../Constants';
 import MuiAlert from '@material-ui/lab/Alert';
 import StatusDisplay from '../helpers/StatusDisplay';
+import Button from '@material-ui/core/Button';
 
 
 
@@ -79,6 +80,7 @@ export default class UsersView extends React.Component {
                 'email':'',
                 'privilege':'',
             },
+            originalUsername:'',
         };
 
         this.createUser = this.createUser.bind(this);
@@ -137,6 +139,7 @@ export default class UsersView extends React.Component {
         axios.post(
             getURL(usersMainPath, UserCommand.edit),
             {
+                'username_original':this.state.originalUsername,
                 'username':this.state.detailedValues[UserInput.Username],
                 'display_name':this.state.detailedValues[UserInput.display_name],
                 'email':this.state.detailedValues[UserInput.Email],
@@ -145,6 +148,7 @@ export default class UsersView extends React.Component {
             ).then(response => console.log(response));
 
         this.setState({
+            originalUsername:'',
             detailedValues : {
                 'username':'',
                 'display_name':'',
@@ -160,7 +164,7 @@ export default class UsersView extends React.Component {
         axios.post(
             getURL(usersMainPath, UserCommand.delete),
             {
-                'username':this.state.deleteUsername,
+                'username':this.state.originalUsername,
             }
             ).then(response => console.log(response));
 
@@ -217,15 +221,12 @@ export default class UsersView extends React.Component {
         this.setState({
             showDetailedView: true,
             detailViewLoading:true,
+            originalUsername:this.state.items[id]['username'],
          });
 
         var username = this.state.items[id]['username'];
-        var email = this.state.items[id]['email'];
-        var display_name = this.state.items[id]['display_name'];
-        var privilege = this.state.items[id]['privilege'];
 
-        this.detailViewUser(username, email, display_name, privilege);
-        //this.setState({ detailedValues: Constants.testUserArray[id], detailViewLoading:false})
+        this.detailViewUser(username);
     }
 
     closeCreateModal() {
@@ -265,18 +266,13 @@ export default class UsersView extends React.Component {
                 />
                 {(this.props.privilege == Privilege.ADMIN) ?
                     (<div>
-                <ButtonMenu
-                    openCreateModal={this.openCreateModal}
-                    openImportModal={this.openImportModal}
-                    downloadTable={this.downloadTable}
-                />
-                <CSVLink
-                    data={this.state.csvData}
-                    filename={userDownloadFileName}
-                    className="hidden"
-                    ref={(r) => this.csvLink = r}
-                    target="_blank"
-                />
+                <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={this.openCreateModal}
+                >
+                    Create
+                </Button>
                 <CreateModal
                     showCreateModal={this.state.showCreateModal}
                     closeCreateModal={this.closeCreateModal}

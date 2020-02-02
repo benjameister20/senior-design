@@ -2,6 +2,7 @@ import React from 'react';
 import Modal from '@material-ui/core/Modal';
 import TextField from "@material-ui/core/TextField";
 import Button from '@material-ui/core/Button';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 export default class DetailedView extends React.Component {
     constructor(props) {
@@ -27,9 +28,11 @@ export default class DetailedView extends React.Component {
                 open={this.props.showDetailedView}
                 onClose={this.props.closeDetailedView}
             >
+                {
+                this.props.loading ? <CircularProgress /> :
                 <div>
                     {this.props.inputs.map(input => (
-                        <TextField disabled={this.props.disabled} id="standard-basic" label={input} onChange={this.props.updateModelEdited} defaultValue={this.props.defaultValues[input]}/>
+                        <TextField name={input} disabled={this.props.disabled} id="standard-basic" label={input} onChange={this.props.updateModelEdited} defaultValue={this.props.defaultValues[input]}/>
                     ))}
                     {this.props.disabled ? null:
                     <div>
@@ -55,7 +58,7 @@ export default class DetailedView extends React.Component {
                         >
                             Close
                         </Button>
-                </div>
+                </div>}
             </Modal>
         </div>
         );

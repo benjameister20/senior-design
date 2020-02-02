@@ -84,6 +84,8 @@ export default class InstancesView extends React.Component {
                 'owner':'',
                 'comment':'',
             },
+            originalRack:'',
+            originalRackU:'',
         };
 
         this.createInstance = this.createInstance.bind(this);
@@ -171,14 +173,14 @@ export default class InstancesView extends React.Component {
         axios.post(
             getURL(instancesMainPath, InstanceCommand.delete),
             {
-                'rack':this.state.deleteInstanceRack,
-                'rackU':this.state.deleteInstanceRackU,
+                'rack':this.state.originalRack,
+                'rackU':this.state.originalRackU,
             }
             ).then(response => console.log(response));
 
         this.setState({
-            deleteInstanceRack:'',
-            deleteInstanceRackU:'',
+            originalRack:'',
+            originalRackU:'',
             showDetailedView:false
         });
     }
@@ -231,6 +233,8 @@ export default class InstancesView extends React.Component {
         this.setState({
             showDetailedView: true,
             detailViewLoading:true,
+            originalRack: this.state.items[id]['rack'],
+            originalRackU: this.state.items[id]['rackU'],
         });
 
         var model = this.state.items[id]['model'];
@@ -239,7 +243,6 @@ export default class InstancesView extends React.Component {
         var rackU = this.state.items[id]['rackU'];
 
         this.detailViewInstance(model, hostname, rack, rackU);
-        //this.setState({ detailedValues: Constants.testInstanceArray[id], detailViewLoading:false})
     }
 
     closeCreateModal() {

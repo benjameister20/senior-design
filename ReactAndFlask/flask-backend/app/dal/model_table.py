@@ -54,9 +54,9 @@ class ModelTable:
             display_color=model.display_color,
         )
 
-    def get_model_by_vendor_number(self, vendor, modelNumber):
+    def get_model_by_vendor_number(self, vendor, model_number):
         model: ModelEntry = ModelEntry.query.filter_by(
-            vendor=vendor, model_number=modelNumber
+            vendor=vendor, model_number=model_number
         ).first()
         if model is None:
             return None
@@ -74,9 +74,9 @@ class ModelTable:
             display_color=model.display_color,
         )
 
-    def get_model_id_by_vendor_number(self, vendor, modelNumber):
+    def get_model_id_by_vendor_number(self, vendor, model_number):
         model: ModelEntry = ModelEntry.query.filter_by(
-            vendor=vendor, model_number=modelNumber
+            vendor=vendor, model_number=model_number
         ).first()
         if model is None:
             return None

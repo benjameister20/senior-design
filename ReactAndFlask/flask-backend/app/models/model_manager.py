@@ -27,7 +27,7 @@ class ModelManager:
 
     def delete_model(self, model_data):
         vendor = self.check_null(model_data["vendor"])
-        model_number = self.check_null(model_data["modelNumber"])
+        model_number = self.check_null(model_data["model_number"])
 
         if vendor == "":
             raise InvalidInputsError("Must provide a vendor")
@@ -49,7 +49,7 @@ class ModelManager:
 
     def detail_view(self, model_data):
         vendor = self.check_null(model_data["vendor"])
-        model_number = self.check_null(model_data["modelNumber"])
+        model_number = self.check_null(model_data["model_number"])
 
         try:
             model = self.table.get_model_by_vendor_number(vendor, model_number)
@@ -64,7 +64,7 @@ class ModelManager:
             updated_model = self.make_model(model_data)
             original_vendor = self.check_null(model_data.get("vendorOriginal"))
             original_model_number = self.check_null(
-                model_data.get("modelNumberOriginal")
+                model_data.get("model_numberOriginal")
             )
             original_height = self.check_null(model_data.get("heightOriginal"))
 
@@ -90,7 +90,7 @@ class ModelManager:
 
     def get_models(self, filter, limit: int):
         vendor = filter.get("vendor")
-        model_number = filter.get("modelNumber")
+        model_number = filter.get("model_number")
         height = filter.get("height")
 
         try:
@@ -126,15 +126,15 @@ class ModelManager:
             print("getting values")
             vendor = self.check_null(model_data.get("vendor"))
             print(vendor)
-            model_number = self.check_null(model_data.get("modelNumber"))
+            model_number = self.check_null(model_data.get("model_number"))
             print(model_number)
             height = int(self.check_null(model_data.get("height")))
             print(height)
-            display_color = self.check_null(model_data.get("displayColor"))
+            display_color = self.check_null(model_data.get("display_color"))
             print(display_color)
-            eth_ports = int(self.check_null(model_data.get("ethernetPorts")))
+            eth_ports = int(self.check_null(model_data.get("eth_ports")))
             print(eth_ports)
-            pow_ports = int(self.check_null(model_data.get("powerPorts")))
+            pow_ports = int(self.check_null(model_data.get("power_ports")))
             print(pow_ports)
             cpu = self.check_null(model_data.get("cpu"))
             print(cpu)

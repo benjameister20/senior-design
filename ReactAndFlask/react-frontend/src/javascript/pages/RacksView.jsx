@@ -46,7 +46,7 @@ export default class RacksView extends React.Component {
     }
 
     getAllRacks() {
-        axios.get(getURL(racksMainPath, command)).then(response => {
+        axios.get(getURL(racksMainPath, RackCommand.GET_ALL_RACKS)).then(response => {
                 if (response.data.message === 'success') {
                     this.setState({ showStatus: true, statusMessage: "Success" })
                 } else {
@@ -112,25 +112,25 @@ export default class RacksView extends React.Component {
                 />
                 <FormControl>
                     <Select id="starting-letter-selector" value={this.state.startingRackLetter} onChange={this.changeStartingLetter}>
-                        {Constants.RackX.map(val => (<MenuItem value={val}>val</MenuItem>))}
+                        {Constants.RackX.map(val => (<MenuItem value={val}>{val}</MenuItem>))}
                     </Select>
                     <FormHelperText>Starting Letter</FormHelperText>
                 </FormControl>
                 <FormControl>
                     <Select id="ending-letter-selector" value={this.state.endingRackLetter} onChange={this.changeEndingLetter}>
-                        {Constants.RackX.map(val => (<MenuItem value={val}>val</MenuItem>))}
+                        {Constants.RackX.map(val => (<MenuItem value={val}>{val}</MenuItem>))}
                     </Select>
                     <FormHelperText>Ending Letter</FormHelperText>
                 </FormControl>
                 <FormControl>
                     <Select id="starting-num-selector" value={this.state.startingRackNumber} onChange={this.changeStartingNum}>
-                        {Constants.RackY.map(val => (<MenuItem value={val}>val</MenuItem>))}
+                        {Constants.RackY.map(val => (<MenuItem value={val}>{val}</MenuItem>))}
                     </Select>
                     <FormHelperText>Starting Number</FormHelperText>
                 </FormControl>
                 <FormControl>
                     <Select id="ending-num-selector" value={this.state.endingRackNumber} onChange={this.changeEndingNum}>
-                        {Constants.RackY.map(val => (<MenuItem value={val}>val</MenuItem>))}
+                        {Constants.RackY.map(val => (<MenuItem value={val}>{val}</MenuItem>))}
                     </Select>
                     <FormHelperText>Ending Number</FormHelperText>
                 </FormControl>

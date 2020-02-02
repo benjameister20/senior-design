@@ -31,8 +31,8 @@ def create():
         MODEL_MANAGER.create_model(model_data)
         print("made model")
         return addMessageToJSON(returnJSON, "success")
-    except InvalidInputsError:
-        return addMessageToJSON(returnJSON, "failure")
+    except InvalidInputsError as e:
+        return addMessageToJSON(returnJSON, e.message)
 
 
 @models.route("/models/delete", methods=["POST"])
@@ -46,8 +46,8 @@ def delete():
         model_data = request.get_json()
         MODEL_MANAGER.delete_model(model_data)
         return addMessageToJSON(returnJSON, "success")
-    except InvalidInputsError:
-        return addMessageToJSON(returnJSON, "failure")
+    except InvalidInputsError as e:
+        return addMessageToJSON(returnJSON, e.message)
 
 
 @models.route("/models/search/", methods=["POST"])
@@ -71,8 +71,8 @@ def search():
             [list(map(lambda x: x.make_json(), model_list))],
         )
         return returnJSON
-    except:
-        return addMessageToJSON(returnJSON, "failure")
+    except InvalidInputsError as e:
+        return addMessageToJSON(returnJSON, e.message)
 
 
 @models.route("/models/edit", methods=["POST"])
@@ -86,10 +86,8 @@ def edit():
         model_data = request.get_json()
         MODEL_MANAGER.edit_model(model_data)
         return addMessageToJSON(returnJSON, "success")
-    except:
-        return addMessageToJSON(returnJSON, "failure")
-
-    return addMessageToJSON(returnJSON, "success")
+    except InvalidInputsError as e:
+        return addMessageToJSON(returnJSON, e.message)
 
 
 @models.route("/models/detailview", methods=["POST"])
@@ -104,8 +102,8 @@ def detail_view():
         model_data = request.get_json()
         model = MODEL_MANAGER.detail_view(model_data)
         return addModelsTOJSON(addMessageToJSON(returnJSON, "success"), [model])
-    except:
-        return addMessageToJSON(returnJSON, "failure")
+    except InvalidInputsError as e:
+        return addMessageToJSON(returnJSON, e.message)
 
 
 @models.route("/models/assistedvendor", methods=["POST"])
@@ -117,9 +115,9 @@ def assisted_vendor_input():
         prefix_json = request.get_json()
         vendor_list = MODEL_MANAGER.get_distinct_vendors_with_prefix(prefix_json)
         returnJSON["results"] = vendor_list
-        return returnJSON
-    except:
-        return addMessageToJSON(returnJSON, "failure")
+        return addMessageToJSON(returnJSON, "success")
+    except InvalidInputsError as e:
+        return addMessageToJSON(returnJSON, e.message)
 
 
 def createJSON() -> dict:

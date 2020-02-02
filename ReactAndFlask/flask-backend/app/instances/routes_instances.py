@@ -28,8 +28,8 @@ def create():
         instance_data = request.get_json()
         INSTANCE_MANAGER.create_instance(instance_data)
         return addMessageToJSON(returnJSON, "success")
-    except InvalidInputsError:
-        return addMessageToJSON(returnJSON, "failure")
+    except InvalidInputsError as e:
+        return addMessageToJSON(returnJSON, e.message)
 
 
 @instances.route("/instances/delete", methods=["POST"])
@@ -43,8 +43,8 @@ def delete():
         instance_data = request.get_json()
         INSTANCE_MANAGER.delete_instance(instance_data)
         return addMessageToJSON(returnJSON, "success")
-    except InvalidInputsError:
-        return addMessageToJSON(returnJSON, "failure")
+    except InvalidInputsError as e:
+        return addMessageToJSON(returnJSON, e.message)
 
 
 @instances.route("/instances/search/", methods=["POST"])
@@ -62,13 +62,13 @@ def search():
         limit = 1000
 
     try:
-        INSTANCE_MANAGER.get_instances(filter, limit)
+        model_list = INSTANCE_MANAGER.get_instances(filter, limit)
         returnJSON = addInstancesTOJSON(
             addMessageToJSON(returnJSON, "success"), [model_list]
         )
         return returnJSON
-    except:
-        return addMessageToJSON(returnJSON, "failure")
+    except InvalidInputsError as e:
+        return addMessageToJSON(returnJSON, e.message)
 
 
 @instances.route("/instances/edit", methods=["POST"])
@@ -82,8 +82,8 @@ def edit():
         instance_data = request.get_json()
         INSTANCE_MANAGER.edit_instance(instance_data)
         return addMessageToJSON(returnJSON, "success")
-    except InvalidInputsError:
-        return addMessageToJSON(returnJSON, "failure")
+    except InvalidInputsError as e:
+        return addMessageToJSON(returnJSON, e.message)
 
 
 @instances.route("/instances/detailview", methods=["POST"])
@@ -98,8 +98,8 @@ def detail_view():
         instance_data = request.get_json()
         instance = INSTANCE_MANAGER.detail_view(instance_data)
         return addInstancesTOJSON(addMessageToJSON(returnJSON, "success"), [instance])
-    except InvalidInputsError:
-        return addMessageToJSON(returnJSON, "failure")
+    except InvalidInputsError as e:
+        return addMessageToJSON(returnJSON, e.message)
 
 
 @instances.route("/instances/assistedmodel", methods=["POST"])
@@ -112,8 +112,8 @@ def assisted_model_input():
         model_list = INSTANCE_MANAGER.get_possible_models_with_filters(prefix_json)
         returnJSON["results"] = model_list
         return returnJSON
-    except:
-        return addMessageToJSON(returnJSON, "failure")
+    except InvalidInputsError as e:
+        return addMessageToJSON(returnJSON, e.message)
 
 
 def createJSON() -> dict:

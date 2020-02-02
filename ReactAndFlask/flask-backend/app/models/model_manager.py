@@ -1,4 +1,5 @@
 from app.dal.exceptions.ChangeModelDBException import ChangeModelDBException
+from app.dal.instance_table import InstanceTable
 from app.dal.model_table import ModelTable
 from app.data_models.model import Model
 from app.exceptions.InvalidInputsException import InvalidInputsError
@@ -8,6 +9,7 @@ from app.models.model_validator import ModelValidator
 class ModelManager:
     def __init__(self):
         self.table = ModelTable()
+        self.instance_table = InstanceTable()
         self.validate = ModelValidator()
 
     def create_model(self, model_data):
@@ -57,7 +59,27 @@ class ModelManager:
     def edit_model(self, model_data):
         try:
             updated_model = self.make_model(model_data)
-            self.table.edit_model(updated_model)
+            original_vendor = self.check_null(model_data.get("vendorOriginal"))
+            original_model_number = self.check_null(
+                model_data.get("modelNumberOriginal")
+            )
+            original_height = self.check_null(model_data.get("heightOriginal"))
+
+            if original_height != updated_model.height:
+                model_id = self.table.get_model_id_by_vendor_number(
+                    original_vendor, original_model_number
+                )
+                if model_id is None:
+                    raise InvalidInputsError("Original model not found")
+                deployed_instances = self.instance_table.get_instances_by_model_id(
+                    model_id
+                )
+                if deployed_instances is not None:
+                    raise InvalidInputsError(
+                        "Cannot edit height while instances are deployed"
+                    )
+
+            self.table.edit_model(model_id, updated_model)
         except ChangeModelDBException:
             raise InvalidInputsError("failure")
 

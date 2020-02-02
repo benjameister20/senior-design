@@ -163,17 +163,17 @@ def edit():
 
     response = {}
 
-    # TODO: check
     request_data = request.get_json()
     print("request:")
     print(request_data)
+    username_original = request_data["username_original"]
     username = request_data["username"]
     display_name = request_data["display_name"]
     email = request_data["email"]
-    # password = request_data["password"]
     privilege = request_data["privilege"]
+    # password = request_data["password"]
 
-    user = USER_TABLE.get_user(username)
+    user = USER_TABLE.get_user(username_original)
     if user is None:
         return add_message_to_JSON(
             response, "User <{}> does not exist".format(username)

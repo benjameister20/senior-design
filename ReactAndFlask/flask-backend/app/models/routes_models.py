@@ -117,7 +117,7 @@ def detail_view():
         return addMessageToJSON(returnJSON, e.message)
 
 
-@models.route("/models/assistedvendor", methods=["POST"])
+@models.route("/models/assistedvendor")
 def assisted_vendor_input():
     global MODEL_MANAGER
     returnJSON = createJSON()

@@ -280,6 +280,8 @@ export default class UsersView extends React.Component {
                     createModel={this.createUser}
                     updateModelCreator={this.updateUserCreator}
                     inputs={inputs}
+                    options={[]}
+                    useAutocomplete={false}
                 />
                 <UploadModal
                     showImportModal={this.state.showImportModal}

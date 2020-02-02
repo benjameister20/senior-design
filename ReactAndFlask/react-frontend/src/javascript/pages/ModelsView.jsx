@@ -107,7 +107,9 @@ export default class ModelsView extends React.Component {
 
             showStatus:false,
             statusSeverity:'',
-            statusMessage:''
+            statusMessage:'',
+
+            vendorsList:[],
 
         };
 
@@ -127,6 +129,7 @@ export default class ModelsView extends React.Component {
         this.updateModelCreator = this.updateModelCreator.bind(this);
         this.deleteModel = this.deleteModel.bind(this);
         this.closeShowStatus = this.closeShowStatus.bind(this);
+        this.getVendorList = this.getVendorList.bind(this);
 
         axios.defaults.headers.common['token'] = this.props.token;
         axios.defaults.headers.common['privilege'] = this.props.privilege;
@@ -291,6 +294,12 @@ export default class ModelsView extends React.Component {
         });
     }
 
+    getVendorList() {
+        axios.get(
+            getURL(modelsMainPath, ModelCommand.VENDOR_VALUES)
+            ).then(response => this.setState({ vendorsList: response.data.results }));
+    }
+
     search(filters) {
         this.searchModels(filters['vendor'], filters['model_number'], filters['height']);
     }
@@ -357,6 +366,7 @@ export default class ModelsView extends React.Component {
     render() {
         return (
             <div>
+                {this.getVendorList}
                 <StatusDisplay
                     open={this.state.showStatus}
                     severity={this.state.statusSeverity}
@@ -382,7 +392,9 @@ export default class ModelsView extends React.Component {
                     createModel={this.createModel}
                     updateModelCreator={this.updateModelCreator}
                     inputs={inputs}
-                    />
+                    options={this.state.vendorsList}
+                    useAutocomplete={true}
+                />
                 <UploadModal
                     showImportModal={this.state.showImportModal}
                     closeImportModal={this.closeImportModal}

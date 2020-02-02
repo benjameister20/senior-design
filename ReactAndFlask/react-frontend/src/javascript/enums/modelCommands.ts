@@ -5,4 +5,5 @@ export enum ModelCommand {
     view = 'view/',
     detailView = 'detailView/',
     search = 'search/',
+    VENDOR_VALUES = 'assistedvendor/',
 }

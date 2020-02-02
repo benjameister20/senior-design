@@ -14,6 +14,7 @@ import CreateModal from '../helpers/CreateModal';
 import * as Constants from '../Constants';
 import MuiAlert from '@material-ui/lab/Alert';
 import StatusDisplay from '../helpers/StatusDisplay';
+import Button from '@material-ui/core/Button';
 
 
 
@@ -163,7 +164,7 @@ export default class UsersView extends React.Component {
         axios.post(
             getURL(usersMainPath, UserCommand.delete),
             {
-                'username':this.state.deleteUsername,
+                'username':this.state.originalUsername,
             }
             ).then(response => console.log(response));
 
@@ -265,18 +266,13 @@ export default class UsersView extends React.Component {
                 />
                 {(this.props.privilege == Privilege.ADMIN) ?
                     (<div>
-                <ButtonMenu
-                    openCreateModal={this.openCreateModal}
-                    openImportModal={this.openImportModal}
-                    downloadTable={this.downloadTable}
-                />
-                <CSVLink
-                    data={this.state.csvData}
-                    filename={userDownloadFileName}
-                    className="hidden"
-                    ref={(r) => this.csvLink = r}
-                    target="_blank"
-                />
+                <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={this.openCreateModal}
+                >
+                    Create
+                </Button>
                 <CreateModal
                     showCreateModal={this.state.showCreateModal}
                     closeCreateModal={this.closeCreateModal}

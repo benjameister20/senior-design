@@ -68,14 +68,14 @@ class InstanceTable:
         except:
             print(f"Failed to add instance {instance.hostname} {instance.rack_label}")
 
-    def edit_instance(self, instance: Instance) -> None:
+    def edit_instance(self, instance: Instance, original_rack, original_rack_u) -> None:
         """ Updates a model to the database """
 
         instance_entry: InstanceEntry = InstanceEntry(instance=instance)
 
         try:
             InstanceEntry.query.filter_by(
-                rack_label=instance.rack_label, rack_u=instance.rack_u
+                rack_label=original_rack, rack_u=original_rack_u
             ).update(instance_entry)
             db.session.commit()
         except:

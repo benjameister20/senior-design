@@ -116,7 +116,7 @@ class AuthManager:
             return [False, self.SESSION_EXPIRED]
         elif decoded == self.INVALID_TOKEN:
             return [False, self.INVALID_TOKEN]
-        elif BLACKLIST.contains(auth_token):
+        elif auth_token in BLACKLIST:
             return [False, self.INVALID_TOKEN]
         else:
             return [True, "Token is valid"]

@@ -25,11 +25,11 @@ export default class CreateModal extends React.Component {
             >
                 <div>
                     {this.props.inputs.map((input, index) => (
-                        (index===1 && this.props.useAutocomplete) ? <Autocomplete
+                        (index===0 && this.props.useAutocomplete) ? <Autocomplete
                             id="combo-box-demo"
                             options={this.props.options}
                             renderInput={params => (
-                            <TextField {...params} label="Combo box" variant="outlined" fullWidth />
+                            <TextField {...params} label={input} name={input} onChange={this.props.updateModelCreator} variant="outlined" fullWidth />
                             )}
                         /> :
                         <TextField id="standard-basic" variant="outlined" label={input} name={input} onChange={this.props.updateModelCreator}/>

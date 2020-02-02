@@ -282,7 +282,7 @@ export default class InstancesView extends React.Component {
     render() {
         return (
             <div>
-                {this.getVendorList}
+                {this.getModelList()}
                 <StatusDisplay
                     open={this.state.showStatus}
                     severity={this.state.statusSeverity}

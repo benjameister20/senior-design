@@ -171,7 +171,8 @@ export default class ModelsView extends React.Component {
                                 'comments':'',
                             },
                             showCreateModal:false,
-                        })
+                        });
+                        this.getVendorList();
                     } else {
                         this.setState({ showStatus: true, statusMessage: response.data.message, statusSeverity:"error" })
                     }
@@ -233,6 +234,8 @@ export default class ModelsView extends React.Component {
             },
             showDetailedView:false
         });
+
+        this.getVendorList();
     }
 
 
@@ -260,6 +263,7 @@ export default class ModelsView extends React.Component {
             },
             showDetailedView:false
         });
+        this.getVendorList();
     }
 
     detailViewModel(vendor, modelNum) {
@@ -366,7 +370,7 @@ export default class ModelsView extends React.Component {
     render() {
         return (
             <div>
-                {this.getVendorList}
+                {this.getVendorList()}
                 <StatusDisplay
                     open={this.state.showStatus}
                     severity={this.state.statusSeverity}

@@ -56,7 +56,7 @@ def search():
 
     users = USER_TABLE.search_users(
         username=filters.get("username"),
-        display_name=filters.get("displayName"),
+        display_name=filters.get("display_name"),
         email=filters.get("email"),
         privilege=filters.get("privilege"),
         limit=limit,
@@ -105,7 +105,7 @@ def create():
         username = request_data["username"]
         password = request_data["password"]
         email = request_data["email"]
-        display_name = request_data["displayName"]
+        display_name = request_data["display_name"]
         privilege = request_data["privilege"]
     except:
         return add_message_to_JSON(
@@ -169,7 +169,7 @@ def edit():
 
     request_data = request.get_json()
     username = request_data["username"]
-    display_name = request_data["displayName"]
+    display_name = request_data["display_name"]
     email = request_data["email"]
     password = request_data["password"]
 

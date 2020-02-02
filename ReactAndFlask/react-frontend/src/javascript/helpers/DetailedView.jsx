@@ -14,6 +14,7 @@ export default class DetailedView extends React.Component {
 
         this.closeModal = this.closeModal.bind(this);
         this.confirmDelete = this.confirmDelete.bind(this);
+        this.deleteItem = this.deleteItem.bind(this);
     }
 
     confirmDelete() {
@@ -22,6 +23,11 @@ export default class DetailedView extends React.Component {
 
     closeModal() {
         this.setState({showConfirmationBox:false,});
+    }
+
+    deleteItem() {
+        this.setState({ showConfirmationBox: false });
+        this.props.delete;
     }
 
     render() {
@@ -73,7 +79,7 @@ export default class DetailedView extends React.Component {
                         <Button
                             variant="contained"
                             color="primary"
-                            onClick={this.props.delete}
+                            onClick={this.deleteItem}
                         >
                             Yes
                         </Button>

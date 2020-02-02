@@ -231,8 +231,8 @@ export default class ModelsView extends React.Component {
         axios.post(
             getURL(modelsMainPath, ModelCommand.delete),
             {
-                'vendor':this.state.detailedValues[ModelInput.Vendor],
-                'model_number':this.state.detailedValues[ModelInput.model_number],
+                'vendor':this.state.originalVendor,
+                'model_number':this.state.originalModelNumber,
             }
             ).then(response => console.log(response));
 

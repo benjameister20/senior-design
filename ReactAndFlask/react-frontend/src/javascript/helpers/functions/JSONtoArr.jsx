@@ -3,11 +3,11 @@ import { ModelInput } from '../../enums/modelInputs.ts'
 export default function jsonToArr(json) {
     const items = [];
 
-    for (const [index, val] of json.entries()) {
+    Object.keys(json).forEach(function(key) {
         const row = [];
-        row.push(val[ModelInput.Vendor]);
-        row.push(val[ModelInput.ModelNumber]);
+        row.push(key);
+        row.push(json[key]);
         items.push(row);
-    }
+    });
     return items;
 }

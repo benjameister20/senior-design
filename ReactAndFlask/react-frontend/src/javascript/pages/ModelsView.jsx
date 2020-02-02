@@ -322,7 +322,7 @@ export default class ModelsView extends React.Component {
     }
 
     updateModelEdited(event) {
-        this.state.detailedValues[event.target.label] = event.target.value;
+        this.state.detailedValues[event.target.name] = event.target.value;
         this.forceUpdate()
     }
 

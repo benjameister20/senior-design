@@ -2,6 +2,7 @@ from typing import List, Optional
 
 from app.dal.database import db
 from app.data_models.user import User
+from sqlalchemy import and_
 
 
 class UserEntry(db.Model):
@@ -35,6 +36,40 @@ class UserTable:
             password=user.password_hash,
             privilege=user.privilege,
         )
+
+    def search_users(
+        self,
+        username: Optional[str],
+        display_name: Optional[str],
+        email: Optional[str],
+        privilege: Optional[str],
+        limit: int,
+    ) -> List[User]:
+        """ Get a list of all users matching the given criteria """
+        criteria = []
+        if username is not None and username != "":
+            criteria.append(UserEntry.username == username)
+        if display_name is not None and display_name != "":
+            criteria.append(UserEntry.display_name == display_name)
+        if email is not None and email != "":
+            criteria.append(UserEntry.email == email)
+        if privilege is not None and privilege != "":
+            criteria.append(UserEntry.privilege == privilege)
+
+        filtered_users: List[UserEntry] = UserEntry.query.filter(and_(*criteria)).limit(
+            limit
+        )
+
+        return [
+            User(
+                username=user.username,
+                display_name=user.display_name,
+                email=user.email,
+                password=user.password_hash,
+                privilege=user.privilege,
+            )
+            for user in filtered_users
+        ]
 
     def get_user_by_email(self, email: str) -> Optional[User]:
         """ Get the user for the given username """

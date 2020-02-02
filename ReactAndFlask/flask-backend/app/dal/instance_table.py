@@ -124,7 +124,7 @@ class InstanceTable:
     def get_instances_by_model_id(self, model_id):
         instance_entries: List[InstanceEntry] = InstanceEntry.query.filter_by(
             model_id=model_id
-        )
+        ).first()
         if instance_entries is None:
             return None
 

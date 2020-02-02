@@ -29,21 +29,31 @@ class ModelManager:
         vendor = self.check_null(model_data["vendor"])
         model_number = self.check_null(model_data["model_number"])
 
+        print("Got vendor and model_number")
+
         if vendor == "":
             raise InvalidInputsError("Must provide a vendor")
         if model_number == "":
             raise InvalidInputsError("Must provide a model number")
 
+        print("Vendor and Model not blank")
+
         try:
             delete_validation_result = self.validate.delete_model_validation(
                 vendor, model_number
             )
+            print("Validation complete")
+            print(delete_validation_result)
             if delete_validation_result == "success":
+                print("Validation successful")
                 self.table.delete_model_str(vendor, model_number)
+                print("Successfully deleted from ModelTable")
             else:
-                raise InvalidInputsError(delete_validation_result)
+                print("Validation unsuccessful")
+                return InvalidInputsError(delete_validation_result)
         except:
-            raise InvalidInputsError(
+            print("SOMETHING BAD HAPPENED")
+            return InvalidInputsError(
                 "An error occured while trying to delete the model."
             )
 
@@ -68,20 +78,19 @@ class ModelManager:
             )
             original_height = self.check_null(model_data.get("heightOriginal"))
 
+            model_id = self.table.get_model_id_by_vendor_number(
+                original_vendor, original_model_number
+            )
             if original_height != updated_model.height:
-                model_id = self.table.get_model_id_by_vendor_number(
-                    original_vendor, original_model_number
-                )
                 if model_id is None:
-                    raise InvalidInputsError("Model not found")
+                    return InvalidInputsError("Model not found")
                 deployed_instances = self.instance_table.get_instances_by_model_id(
                     model_id
                 )
                 if deployed_instances is not None:
-                    raise InvalidInputsError(
+                    return InvalidInputsError(
                         "Cannot edit height while instances are deployed"
                     )
-
             self.table.edit_model(model_id, updated_model)
         except:
             raise InvalidInputsError(

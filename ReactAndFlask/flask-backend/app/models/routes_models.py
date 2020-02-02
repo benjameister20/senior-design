@@ -44,8 +44,13 @@ def delete():
 
     try:
         model_data = request.get_json()
-        MODEL_MANAGER.delete_model(model_data)
-        return addMessageToJSON(returnJSON, "success")
+        print("Model data: ")
+        print(model_data)
+        error = MODEL_MANAGER.delete_model(model_data)
+        if error is None:
+            return addMessageToJSON(returnJSON, "success")
+        else:
+            return addMessageToJSON(returnJSON, error.message)
     except InvalidInputsError as e:
         return addMessageToJSON(returnJSON, e.message)
 
@@ -86,7 +91,9 @@ def edit():
 
     try:
         model_data = request.get_json()
-        MODEL_MANAGER.edit_model(model_data)
+        error = MODEL_MANAGER.edit_model(model_data)
+        if error is not None:
+            return addMessageToJSON(returnJSON, error.message)
         return addMessageToJSON(returnJSON, "success")
     except InvalidInputsError as e:
         return addMessageToJSON(returnJSON, e.message)

@@ -57,7 +57,7 @@ def create_racks():
     return HTTPStatus.OK
 
 
-@racks.route("/details")
+@racks.route("/details", methods=["POST"])
 def get_rack_details():
     """ Get details of a range of racks """
     data: JSON = request.get_json()
@@ -80,7 +80,7 @@ def get_rack_details():
         return HTTPStatus.INTERNAL_SERVER_ERROR
 
 
-@racks.route("/delete", methods=["DELETE"])
+@racks.route("/delete", methods=["POST"])
 def delete_racks():
     """ Delete a range of racks """
     data: JSON = request.get_json()

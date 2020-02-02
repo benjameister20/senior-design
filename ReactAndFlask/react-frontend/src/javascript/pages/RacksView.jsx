@@ -34,7 +34,7 @@ export default class RacksView extends React.Component {
         this.updateRacks = this.updateRacks.bind(this);
         this.createRacks = this.createRacks.bind(this);
         this.deleteRacks = this.deleteRacks.bind(this);
-        this.showDetailedView = this.showDetailedView.bind(this);
+        this.viewRacks = this.viewRacks.bind(this);
         this.changeStartingLetter = this.changeStartingLetter.bind(this);
         this.changeEndingLetter = this.changeEndingLetter.bind(this);
         this.changeStartingNum = this.changeStartingNum.bind(this);
@@ -70,6 +70,11 @@ export default class RacksView extends React.Component {
                 } else {
                     this.setState({ showStatus: true, statusMessage: response.data.message, statusSeverity:"error" })
                 }
+
+                if (command == RackCommand.GET_RACK_DETAILS) {
+                    console.log(response.data);
+                    this.setState({ items: response.data });
+                }
             });
     }
 
@@ -81,7 +86,7 @@ export default class RacksView extends React.Component {
         this.updateRacks(RackCommand.DELETE_RACKS);
     }
 
-    showDetailedView() {
+    viewRacks() {
         this.updateRacks(RackCommand.GET_RACK_DETAILS);
     }
 

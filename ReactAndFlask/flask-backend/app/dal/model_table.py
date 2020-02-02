@@ -186,3 +186,9 @@ class ModelTable:
             )
             for model in filtered_models
         ]
+
+    def get_distinct_vendors(self):
+        model_list: List[ModelEntry] = ModelEntry.query.with_entities(
+            ModelEntry.vendor
+        ).distinct().all()
+        return [model.vendor for model in model_list]

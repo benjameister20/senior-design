@@ -107,6 +107,20 @@ def detail_view():
         return addMessageToJSON(returnJSON, "failure")
 
 
+@models.route("/models/assistedvendor", methods=["POST"])
+def assisted_vendor_input():
+    global MODEL_MANAGER
+    returnJSON = createJSON()
+
+    try:
+        prefix_json = request.get_json()
+        vendor_list = MODEL_MANAGER.get_distinct_vendors_with_prefix(prefix_json)
+        returnJSON["results"] = vendor_list
+        return returnJSON
+    except:
+        return addMessageToJSON(returnJSON, "failure")
+
+
 def createJSON() -> dict:
     return {"metadata": "none"}
 

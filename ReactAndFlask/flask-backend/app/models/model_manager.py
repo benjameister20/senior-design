@@ -73,6 +73,19 @@ class ModelManager:
         except:
             return "error"
 
+    def get_distinct_vendors_with_prefix(self, prefix_json):
+        return_list = []
+        prefix = prefix_json.get("input")
+        if prefix is None:
+            prefix = ""
+
+        vendor_list = self.table.get_distinct_vendors()
+        for vendor in vendor_list:
+            if vendor.startswith(prefix):
+                return_list.append(vendor)
+
+        return return_list
+
     def make_model(self, model_data):
         try:
             print("getting values")

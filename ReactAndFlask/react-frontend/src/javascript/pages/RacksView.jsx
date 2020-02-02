@@ -28,6 +28,8 @@ export default class RacksView extends React.Component {
             showStatus:false,
             statusMessage:'',
             statusSeverity:'',
+
+            showConfirmationBox:false,
         };
 
         this.getAllRacks = this.getAllRacks.bind(this);
@@ -67,7 +69,7 @@ export default class RacksView extends React.Component {
             }
             ).then(response => {
                 if (response.data.message === 'success') {
-                    this.setState({ showStatus: true, statusMessage: "Success" })
+                    this.setState({ showStatus: true, statusMessage: "Success", statusSeverity:"success" })
                 } else {
                     this.setState({ showStatus: true, statusMessage: response.data.message, statusSeverity:"error" })
                 }
@@ -148,6 +150,7 @@ export default class RacksView extends React.Component {
                     variant="contained"
                     color="primary"
                     onClick={this.viewRacks}
+                    disabled={this.state.showConfirmationBox}
                 >
                     View
                 </Button>
@@ -157,17 +160,37 @@ export default class RacksView extends React.Component {
                         variant="contained"
                         color="primary"
                         onClick={this.createRacks}
+                        disabled={this.state.showConfirmationBox}
                     >
                         Create
                     </Button>
                     <Button
                         variant="contained"
                         color="primary"
-                        onClick={this.deleteRacks}
+                        onClick={() => this.setState({ showConfirmationBox: true, })}
+                        disabled={this.state.showConfirmationBox}
                     >
                         Delete
                     </Button>
                 </div>):null}
+
+                {this.state.showConfirmationBox ? <div>
+                        Are you sure you wish to delete?
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={this.deleteRacks}
+                        >
+                            Yes
+                        </Button>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={() => this.setState({ showConfirmationBox: false, })}
+                        >
+                            No
+                        </Button>
+                    </div>:null}
 
                 {/*<TableView
                     columns={columns}

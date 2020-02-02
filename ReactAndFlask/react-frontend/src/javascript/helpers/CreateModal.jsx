@@ -2,6 +2,7 @@ import React from 'react';
 import Modal from '@material-ui/core/Modal';
 import TextField from "@material-ui/core/TextField";
 import Button from '@material-ui/core/Button';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 
 export default class CreateModal extends React.Component {
     constructor(props) {
@@ -23,8 +24,15 @@ export default class CreateModal extends React.Component {
                 onClose={this.props.closeCreateModal}
             >
                 <div>
-                    {this.props.inputs.map(input => (
-                        <TextField id="standard-basic" label={input} name={input} onChange={this.props.updateModelCreator}/>
+                    {this.props.inputs.map((input, index) => (
+                        (index===0 && this.props.useAutocomplete) ? <Autocomplete
+                            id="combo-box-demo"
+                            options={this.props.options}
+                            renderInput={params => (
+                            <TextField {...params} label={input} name={input} onChange={this.props.updateModelCreator} variant="outlined" fullWidth />
+                            )}
+                        /> :
+                        <TextField id="standard-basic" variant="outlined" label={input} name={input} onChange={this.props.updateModelCreator}/>
                     ))}
                     <Button
                         variant="contained"

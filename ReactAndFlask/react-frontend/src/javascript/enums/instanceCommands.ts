@@ -4,5 +4,6 @@ export enum InstanceCommand {
     edit = 'edit/',
     view = 'view/',
     detailView = 'detailView/',
-    search = 'search/'
+    search = 'search/',
+    GET_ALL_MODELS = 'assistedmodel/',
 }

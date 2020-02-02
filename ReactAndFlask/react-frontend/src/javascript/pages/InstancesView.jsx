@@ -84,6 +84,8 @@ export default class InstancesView extends React.Component {
                 'owner':'',
                 'comment':'',
             },
+            originalRack:'',
+            originalRackU:'',
         };
 
         this.createInstance = this.createInstance.bind(this);

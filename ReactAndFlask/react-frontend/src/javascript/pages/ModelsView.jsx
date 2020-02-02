@@ -101,6 +101,9 @@ export default class ModelsView extends React.Component {
                 'storage':'',
                 'comments':'',
             },
+            originalVendor:'',
+            originalModelNumber:'',
+            originalHeight:'',
 
         };
 
@@ -186,6 +189,10 @@ export default class ModelsView extends React.Component {
         axios.post(
             getURL(modelsMainPath, ModelCommand.edit),
             {
+                'vendorOriginal':this.state.originalVendor,
+                'model_numberOriginal':this.state.originalModelNumber,
+                'heightOriginal':this.state.originalHeight,
+
                 'vendor':this.state.detailedValues[ModelInput.Vendor],
                 'model_number':this.state.detailedValues[ModelInput.model_number],
                 'height':this.state.detailedValues[ModelInput.Height],
@@ -200,6 +207,9 @@ export default class ModelsView extends React.Component {
             ).then(response => console.log(response) );
 
         this.setState({
+            originalVendor:'',
+            originalModelNumber:'',
+            originalHeight:'',
             detailedValues : {
                 'vendor':'',
                 'model_number':'',
@@ -295,6 +305,10 @@ export default class ModelsView extends React.Component {
         this.setState({
             showDetailedView: true,
             detailViewLoading:true,
+
+            originalHeight:this.state.items[id]['height'],
+            originalModelNumber:this.state.items[id]['model_number'],
+            originalVendor:this.state.items[id]['vendor'],
          });
 
         var vendor = this.state.items[id]['vendor'];

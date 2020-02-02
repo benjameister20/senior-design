@@ -227,6 +227,7 @@ export default class UsersView extends React.Component {
         var username = this.state.items[id]['username'];
 
         this.detailViewUser(username);
+        //this.setState({ detailedValues: Constants.testUserArray[id], detailViewLoading:false})
     }
 
     closeCreateModal() {

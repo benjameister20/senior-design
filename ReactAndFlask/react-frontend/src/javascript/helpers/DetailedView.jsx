@@ -11,11 +11,17 @@ export default class DetailedView extends React.Component {
         this.state = {
             showConfirmationBox:false,
         };
+
+        this.closeModal = this.closeModal.bind(this);
+        this.confirmDelete = this.confirmDelete.bind(this);
+    }
+
+    confirmDelete() {
+        this.setState({ showConfirmationBox: true });
     }
 
     closeModal() {
         this.setState({showConfirmationBox:false,});
-
     }
 
     render() {
@@ -40,13 +46,15 @@ export default class DetailedView extends React.Component {
                             variant="contained"
                             color="primary"
                             onClick={this.props.edit}
+                            disabled={this.state.showConfirmationBox}
                         >
                             Save
                         </Button>
                         <Button
                             variant="contained"
                             color="primary"
-                            onClick={this.props.delete}
+                            onClick={this.confirmDelete}
+                            disabled={this.state.showConfirmationBox}
                         >
                             Delete
                         </Button>
@@ -55,9 +63,28 @@ export default class DetailedView extends React.Component {
                             variant="contained"
                             color="primary"
                             onClick={this.props.closeDetailedView}
+                            disabled={this.state.showConfirmationBox}
                         >
                             Close
                         </Button>
+
+                    {this.state.showConfirmationBox ? <div>
+                        Are you sure you wish to delete?
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={this.props.delete}
+                        >
+                            Yes
+                        </Button>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={this.closeModal}
+                        >
+                            No
+                        </Button>
+                    </div>:null}
                 </div>}
             </Modal>
         </div>

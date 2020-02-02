@@ -6,7 +6,7 @@ export const localServerEndpoint = 'http://localhost:4010/';
 export const devServerEndpoint = 'https://parseltongue-dev.herokuapp.com/';
 export const prodServerEndpoint = 'https://parseltongue-prod.herokuapp.com/';
 
-export const serverEndpoint = devServerEndpoint;
+export const serverEndpoint = localServerEndpoint;
 
 export const RackX = [
     'A', 'B', 'C', 'D', 'E',
@@ -89,21 +89,21 @@ export const testInstanceArray = [
         'model':'a',
         'hostname':'a',
         'rack':'a',
-        'rackU':'a',
+        'rack_u':'a',
         'owner':'a',
         'comment':'a',
     },{
         'model':'b',
         'hostname':'b',
         'rack':'b',
-        'rackU':'b',
+        'rack_u':'b',
         'owner':'b',
         'comment':'b',
     },{
         'model':'c',
         'hostname':'c',
         'rack':'c',
-        'rackU':'c',
+        'rack_u':'c',
         'owner':'c',
         'comment':'c',
     },

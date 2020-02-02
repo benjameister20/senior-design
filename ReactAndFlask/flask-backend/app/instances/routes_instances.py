@@ -24,12 +24,14 @@ def create():
     global INSTANCE_MANAGER
     returnJSON = createJSON()
 
-    try:
-        instance_data = request.get_json()
-        INSTANCE_MANAGER.create_instance(instance_data)
-        return addMessageToJSON(returnJSON, "success")
-    except InvalidInputsError as e:
-        return addMessageToJSON(returnJSON, e.message)
+    # try:
+    instance_data = request.get_json()
+    error = INSTANCE_MANAGER.create_instance(instance_data)
+    if error is not None:
+        return addMessageToJSON(returnJSON, error.message)
+    return addMessageToJSON(returnJSON, "success")
+    # except InvalidInputsError as e:
+    #     return addMessageToJSON(returnJSON, e.message)
 
 
 @instances.route("/instances/delete", methods=["POST"])
@@ -63,13 +65,14 @@ def search():
 
     try:
         instance_list = INSTANCE_MANAGER.get_instances(filter, limit)
-        returnJSON = addInstancesTOJSON(
-            addMessageToJSON(returnJSON, "success"),
-            list(map(lambda x: x.make_json(), instance_list)),
-        )
-        return returnJSON
     except InvalidInputsError as e:
         return addMessageToJSON(returnJSON, e.message)
+
+    returnJSON = addInstancesTOJSON(
+        addMessageToJSON(returnJSON, "success"),
+        list(map(lambda x: x.make_json(), instance_list)),
+    )
+    return returnJSON
 
 
 @instances.route("/instances/edit", methods=["POST"])
@@ -87,7 +90,7 @@ def edit():
         return addMessageToJSON(returnJSON, e.message)
 
 
-@instances.route("/instances/detailview", methods=["POST"])
+@instances.route("/instances/detailView", methods=["POST"])
 def detail_view():
     """ Route for table view of instances """
 
@@ -98,7 +101,9 @@ def detail_view():
     try:
         instance_data = request.get_json()
         instance = INSTANCE_MANAGER.detail_view(instance_data)
-        return addInstancesTOJSON(addMessageToJSON(returnJSON, "success"), [instance])
+        return addInstancesTOJSON(
+            addMessageToJSON(returnJSON, "success"), [instance.make_json()]
+        )
     except InvalidInputsError as e:
         return addMessageToJSON(returnJSON, e.message)
 

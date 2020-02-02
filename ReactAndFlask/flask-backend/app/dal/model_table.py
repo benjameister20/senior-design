@@ -37,7 +37,7 @@ class ModelEntry(db.Model):
 class ModelTable:
     def get_model(self, identifier: int) -> Optional[Model]:
         """ Get the model for the given id """
-        model: ModelEntry = ModelEntry.query.filter_by(identifier=identifier).model()
+        model: ModelEntry = ModelEntry.query.filter_by(identifier=identifier).first()
         if model is None:
             return None
 

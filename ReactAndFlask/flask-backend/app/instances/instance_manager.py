@@ -23,7 +23,7 @@ class InstanceManager:
             if create_validation_result == "success":
                 self.table.add_instance(new_instance)
             else:
-                raise InvalidInputsError(create_validation_result)
+                return InvalidInputsError(create_validation_result)
         except:
             raise InvalidInputsError(
                 "An error occurred when attempting to create the instance."
@@ -31,7 +31,7 @@ class InstanceManager:
 
     def delete_instance(self, instance_data):
         rack = self.check_null(instance_data["rack"])
-        rack_u = self.check_null(instance_data["rackU"])
+        rack_u = self.check_null(instance_data["rack_u"])
 
         if rack == "":
             raise InvalidInputsError("Must provide a vendor")
@@ -46,20 +46,24 @@ class InstanceManager:
             )
 
     def detail_view(self, instance_data):
+        print(instance_data)
         rack = self.check_null(instance_data["rack"])
-        rack_u = self.check_null(instance_data["rackU"])
+        rack_u = self.check_null(instance_data["rack_u"])
 
-        try:
-            instance = self.table.get_instance_by_rack_location(rack, rack_u)
-            return instance
-        except:
-            raise InvalidInputsError(
-                "An error occured while retrieving data for this instance."
-            )
+        # try:
+        print("Get these things")
+        print(rack)
+        print(rack_u)
+        instance = self.table.get_instance_by_rack_location(rack, rack_u)
+        return instance
+        # except:
+        #     raise InvalidInputsError(
+        #         "An error occured while retrieving data for this instance."
+        #     )
 
     def edit_instance(self, instance_data):
         original_rack = instance_data.get("rackOriginal")
-        original_rack_u = instance_data.get("rackUOriginal")
+        original_rack_u = instance_data.get("rack_uOriginal")
         if original_rack is None or original_rack_u is None:
             raise InvalidInputsError("Unable to find the instance to edit.")
 
@@ -86,7 +90,7 @@ class InstanceManager:
 
         hostname = filter.get("hostname")
         rack_label = filter.get("rack")
-        rack_u = filter.get("rackU")
+        rack_u = filter.get("rack_u")
 
         try:
             instance_list = self.table.get_instances_with_filters(
@@ -128,7 +132,7 @@ class InstanceManager:
         try:
             hostname = self.check_null(instance_data["hostname"])
             rack = self.check_null(instance_data["rack"])
-            rack_u = self.check_null(instance_data["rackU"])
+            rack_u = self.check_null(instance_data["rack_u"])
             owner = self.check_null(instance_data["owner"])
             comment = self.check_null(instance_data["comment"])
         except:

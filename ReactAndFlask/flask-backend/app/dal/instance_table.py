@@ -130,7 +130,7 @@ class InstanceTable:
 
         return [entry.make_instance() for entry in instance_entries]
 
-    def get_instances_with_filter(
+    def get_instances_with_filters(
         self,
         model_id: Optional[int],
         hostname: Optional[str],

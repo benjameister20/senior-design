@@ -201,7 +201,7 @@ export default class InstancesView extends React.Component {
         axios.post(
             getURL(instancesMainPath, InstanceCommand.search),
             {
-                'filters':{
+                'filter':{
                     'model':model,
                     'hostname':hostname,
                     'rack':rack,

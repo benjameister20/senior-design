@@ -49,7 +49,7 @@ def search():
     # TESTED AND FUNCTIONAL
     # print(request.headers)
     request_data = request.get_json()
-    filters = request_data.get("filters")
+    filters = request_data.get("filter")
     limit = filters.get("limit")
     if limit is None:
         limit = 1000

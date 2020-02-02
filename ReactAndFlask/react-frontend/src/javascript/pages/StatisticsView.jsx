@@ -60,6 +60,7 @@ export default class StatisticsView extends React.Component {
         };
 
         this.closeShowStatus = this.closeShowStatus.bind(this);
+        this.generateReport = this.generateReport.bind(this);
 
         axios.defaults.headers.common['token'] = this.props.token;
         axios.defaults.headers.common['privilege'] = this.props.privilege;

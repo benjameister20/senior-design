@@ -39,6 +39,7 @@ export default class RacksView extends React.Component {
         this.changeEndingLetter = this.changeEndingLetter.bind(this);
         this.changeStartingNum = this.changeStartingNum.bind(this);
         this.changeEndingNum = this.changeEndingNum.bind(this);
+        this.closeShowStatus = this.closeShowStatus.bind(this);
 
         axios.defaults.headers.common['token'] = this.props.token;
         axios.defaults.headers.common['privilege'] = this.props.privilege;
@@ -104,6 +105,10 @@ export default class RacksView extends React.Component {
 
     changeEndingNum(event) {
         this.setState({ endingRackNumber: event.target.value })
+    }
+
+    closeShowStatus() {
+        this.setState({ showStatus: false })
     }
 
     render() {

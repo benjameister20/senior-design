@@ -6,6 +6,7 @@ from app.data_models.user import User
 from app.instances.routes_instances import instances
 from app.models.routes_models import models
 from app.racks.racks_routes import racks
+from app.stats.routes_stats import stats
 from app.users.authentication import AuthManager
 from app.users.routes_users import users
 from flask import Flask, jsonify, render_template
@@ -58,7 +59,7 @@ def _register_routes() -> None:
     application.register_blueprint(instances)
     application.register_blueprint(racks)
     application.register_blueprint(database)
-    # application.register_blueprint(stats)
+    application.register_blueprint(stats)
 
 
 def init() -> None:

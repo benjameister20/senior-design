@@ -80,17 +80,17 @@ class ModelManager:
             print(vendor)
             model_number = self.check_null(model_data.get("modelNumber"))
             print(model_number)
-            height = self.check_null(model_data.get("height"))
+            height = int(self.check_null(model_data.get("height")))
             print(height)
             display_color = self.check_null(model_data.get("displayColor"))
             print(display_color)
-            eth_ports = self.check_null(model_data.get("ethernetPorts"))
+            eth_ports = int(self.check_null(model_data.get("ethernetPorts")))
             print(eth_ports)
-            pow_ports = self.check_null(model_data.get("powerPorts"))
+            pow_ports = int(self.check_null(model_data.get("powerPorts")))
             print(pow_ports)
             cpu = self.check_null(model_data.get("cpu"))
             print(cpu)
-            memory = self.check_null(model_data.get("memory"))
+            memory = int(self.check_null(model_data.get("memory")))
             print(memory)
             storage = self.check_null(model_data.get("storage"))
             print(storage)
@@ -114,16 +114,16 @@ class ModelManager:
         print("inputs validated")
 
         return Model(
-            vendor,
-            model_number,
-            height,
-            display_color,
-            eth_ports,
-            pow_ports,
-            cpu,
-            memory,
-            storage,
-            comments,
+            vendor=vendor,
+            model_number=model_number,
+            height=height,
+            display_color=display_color,
+            eth_ports=eth_ports,
+            power_ports=pow_ports,
+            cpu=cpu,
+            memory=memory,
+            storage=storage,
+            comment=comments,
         )
 
     def check_null(self, val):

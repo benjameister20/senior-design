@@ -24,7 +24,7 @@ def _add_rack_modifier(rack: Rack) -> None:
 
 def _delete_rack_modifier(rack: Rack) -> None:
     """ Delete a rack """
-    instances: List[Instance] = InstanceTable().find_instances_with_rack(
+    instances: List[Instance] = InstanceTable().get_instances_by_rack(
         rack_label=rack.label
     )
     if len(instances) != 0:
@@ -35,7 +35,7 @@ def _delete_rack_modifier(rack: Rack) -> None:
 
 def _get_rack_modifier(rack: Rack) -> JSON:
     """ Get rack details """
-    return {rack.label: InstanceTable().find_instances_with_rack(rack_label=rack.label)}
+    return {rack.label: InstanceTable().get_instances_by_rack(rack_label=rack.label)}
 
 
 def _modify_rack_range(

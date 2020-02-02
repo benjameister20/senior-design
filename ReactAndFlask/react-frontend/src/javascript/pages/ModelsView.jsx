@@ -262,7 +262,7 @@ export default class ModelsView extends React.Component {
         axios.post(
             getURL(modelsMainPath, ModelCommand.search),
             {
-                'filters':{
+                'filter':{
                     'vendor':vendor,
                     'modelNumber':modelNum,
                     'height':height,

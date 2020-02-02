@@ -57,7 +57,7 @@ class ModelTable:
     def get_model_by_vendor_number(self, vendor, modelNumber):
         model: ModelEntry = ModelEntry.query.filter_by(
             vendor=vendor, model_number=modelNumber
-        )
+        ).first()
         if model is None:
             return None
 

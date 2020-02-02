@@ -111,7 +111,7 @@ class InstanceTable:
         """ Get all instances for the given rack label """
         instance_entries: List[InstanceEntry] = InstanceEntry.query.filter_by(
             rack_label=rack_label
-        )
+        ).all()
 
         return [entry.make_instance() for entry in instance_entries]
 

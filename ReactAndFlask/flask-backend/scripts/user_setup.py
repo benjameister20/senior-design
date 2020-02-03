@@ -14,6 +14,7 @@ from typing import List, Optional
 
 from app.dal.user_table import UserTable
 from app.data_models.user import User
+from app.users.authentication import AuthManager
 
 
 class InvalidInputException(Exception):
@@ -69,14 +70,15 @@ def create_user():
     email: str = input("Email: ")
     privilege: str = input("Privilege: ")
 
+    encrypted_password = AuthManager().encrypt_pw(password=password)
+
     user: User = User(
         username=username,
         display_name=display_name,
         email=email,
-        password=password,
+        password=encrypted_password,
         privilege=privilege,
     )
-
     user_table.add_user(user=user)
 
     print()
@@ -111,6 +113,5 @@ def find_all_users():
 
 if __name__ == "__main__":
     with application.app_context():
-        application.debug = True
         init()
         main()

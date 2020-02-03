@@ -17,7 +17,7 @@ export default class CreateModal extends React.Component {
         return (
         <div>
             <Modal
-                style={{top: `50%`,left: `50%`,transform: `translate(-50%, -50%)`, background: 'linear-gradient(45deg, #2196F3 30%, #21CBF3 90%)',}}
+                style={{top: `50%`,left: `50%`,transform: `translate(-50%, -50%)`, background: '#FFFFFF',}}
                 aria-labelledby="simple-modal-title"
                 aria-describedby="simple-modal-description"
                 open={this.props.showCreateModal}
@@ -31,7 +31,7 @@ export default class CreateModal extends React.Component {
                             includeInputInList
                             freeSolo
                             renderInput={params => (
-                            <TextField {...params} label={input} name={input} onChange={this.props.updateModelCreator} variant="outlined" fullWidth />
+                            <TextField {...params} label={input} name={input} onChange={this.props.updateModelCreator} onBlur={this.props.updateModelCreator} variant="outlined" fullWidth />
                             )}
                         /> :
                         <TextField id="standard-basic" variant="outlined" label={input} name={input} onChange={this.props.updateModelCreator}/>

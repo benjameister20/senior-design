@@ -154,7 +154,7 @@ export default class InstancesView extends React.Component {
                 'model':this.state.detailedValues[InstanceInput.Model],
                 'hostname':this.state.detailedValues[InstanceInput.Hostname],
                 'rack':this.state.detailedValues[InstanceInput.Rack],
-                'rack_u':this.state.detailedValues[InstanceInput.rack_u],
+                'rack_u':this.state.detailedValues[InstanceInput.RackU],
                 'owner':this.state.detailedValues[InstanceInput.Owner],
                 'comment':this.state.detailedValues[InstanceInput.Comment],
             }

@@ -44,9 +44,9 @@ class Instance:
 
     def make_json_with_model_name(self, model_name):
         return {
-            "model_id": model_name,
+            "model": model_name,
             "hostname": self.hostname,
-            "rack_label": f"{self.rack_label}",
+            "rack": f"{self.rack_label}",
             "rack_u": self.rack_u,
             "owner": self.owner,
             "comment": self.comment,

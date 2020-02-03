@@ -334,9 +334,7 @@ export default class ModelsView extends React.Component {
     }
 
     search(filters) {
-        this.setState({ searchVendor:filters['vendor'], searchModelNum:filters['model_number'], searchHeight:filters['height']});
-        this.forceUpdate();
-        this.searchModels();
+        this.setState({ searchVendor:filters['vendor'], searchModelNum:filters['model_number'], searchHeight:filters['height']}, this.searchModels);
     }
 
     openCreateModal() {

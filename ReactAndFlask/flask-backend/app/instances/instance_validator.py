@@ -22,8 +22,11 @@ class InstanceValidator:
         if duplicate_hostname is not None:
             return f"An instance with hostname {duplicate_hostname.hostname} exists at location {duplicate_hostname.rack_label} U{duplicate_hostname.rack_u}"
 
+        if len(instance.hostname) > 64:
+            return "Hostnames must be 64 characters or less"
+
         host_pattern = re.compile("[a-zA-Z]+[A-Za-z0-9-]+[A-Za-z0-9]")
-        if host_pattern.fullmatch(instance.rack_u) is None:
+        if host_pattern.fullmatch(instance.hostname) is None:
             return "Hostnames must start with a letter, only contain letters, numbers, and hyphens, and end with a letter or number."
 
         model_template = self.model_table.get_model(instance.model_id)

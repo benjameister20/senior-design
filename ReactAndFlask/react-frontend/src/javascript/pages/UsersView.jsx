@@ -229,9 +229,7 @@ export default class UsersView extends React.Component {
             searchEml:filters['email'],
             searchDspNm: filters['display_name'],
             searchPriv:filters['privilege'],
-        });
-        this.forceUpdate();
-        this.searchUsers();
+        }, this.searchUsers);
     }
 
     downloadTable() {

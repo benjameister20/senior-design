@@ -81,16 +81,25 @@ class InstanceTable:
     def edit_instance(self, instance: Instance, original_rack, original_rack_u) -> None:
         """ Updates a model to the database """
 
-        instance_entry: InstanceEntry = InstanceEntry(instance=instance)
+        # instance_entry: InstanceEntry = InstanceEntry(instance=instance)
 
         try:
-            InstanceEntry.query.filter_by(
+            # InstanceEntry.query.filter_by(
+            #     rack_label=original_rack, rack_u=original_rack_u
+            # ).update(instance_entry)
+            old_entry = InstanceEntry.query.filter_by(
                 rack_label=original_rack, rack_u=original_rack_u
-            ).update(instance_entry)
+            ).first()
+            old_entry.model_id = instance.model_id
+            old_entry.hostname = instance.hostname
+            old_entry.rack_label = instance.rack_label
+            old_entry.rack_u = instance.rack_u
+            old_entry.owner = instance.owner
+            old_entry.comment = instance.comment
             db.session.commit()
         except:
             raise ChangeModelDBException(
-                "Failed to udpate model {model.vendor} {model.model_number}"
+                f"Failed to udpate instance {instance.model_id}"
             )
 
     def delete_instance(self, instance: Instance) -> None:

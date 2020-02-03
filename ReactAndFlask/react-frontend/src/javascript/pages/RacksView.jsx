@@ -15,6 +15,7 @@ import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import ErrorBoundray from '../errors/ErrorBoundry';
 
 
 const racksMainPath = 'racks/';
@@ -121,6 +122,7 @@ export default class RacksView extends React.Component {
     render() {
         return (
             <div>
+                <ErrorBoundray>
                 <StatusDisplay
                     open={this.state.showStatus}
                     severity={this.state.statusSeverity}
@@ -225,6 +227,7 @@ export default class RacksView extends React.Component {
                         </ExpansionPanelDetails>
                     </ExpansionPanel>
                     ))}
+                </ErrorBoundray>
             </div>
         );
     }

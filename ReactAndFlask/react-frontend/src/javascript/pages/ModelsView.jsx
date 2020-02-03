@@ -12,6 +12,7 @@ import getURL from '../helpers/functions/GetURL';
 import DetailedView from '../helpers/DetailedView';
 import CreateModal from '../helpers/CreateModal';
 import StatusDisplay from '../helpers/StatusDisplay';
+import ErrorBoundray from '../errors/ErrorBoundry';
 
 const inputs = [
     'vendor',
@@ -404,6 +405,7 @@ export default class ModelsView extends React.Component {
     render() {
         return (
             <div>
+                <ErrorBoundray>
                 {(this.state.madeVendorQuery) ? null: this.getVendorList()}
                 <StatusDisplay
                     open={this.state.showStatus}
@@ -463,6 +465,7 @@ export default class ModelsView extends React.Component {
                     delete={this.deleteModel}
                     disabled={this.props.privilege==Privilege.USER}
                 />
+            </ErrorBoundray>
             </div>
         );
     }

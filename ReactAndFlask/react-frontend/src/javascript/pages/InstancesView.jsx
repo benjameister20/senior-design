@@ -13,6 +13,7 @@ import DetailedView from '../helpers/DetailedView';
 import CreateModal from '../helpers/CreateModal';
 import * as Constants from '../Constants';
 import StatusDisplay from '../helpers/StatusDisplay';
+import ErrorBoundray from '../errors/ErrorBoundry';
 
 const inputs = [
     'model',
@@ -340,6 +341,7 @@ export default class InstancesView extends React.Component {
     render() {
         return (
             <div>
+                <ErrorBoundray>
                 {(this.state.madeModelQuery) ? null: this.getModelList()}
                 <StatusDisplay
                     open={this.state.showStatus}
@@ -400,6 +402,7 @@ export default class InstancesView extends React.Component {
                     delete={this.deleteInstance}
                     disabled={this.props.privilege==Privilege.USER}
                 />
+            </ErrorBoundray>
             </div>
         );
     }

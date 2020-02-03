@@ -1,8 +1,8 @@
 from typing import List, Optional
 
-from app.dal.database import db
-from app.dal.exceptions.ChangeModelDBException import ChangeModelDBException
+from app.dal.database import DBWriteException, db
 from app.data_models.model import Model
+from app.main.types import JSON
 from sqlalchemy import and_
 
 
@@ -13,25 +13,39 @@ class ModelEntry(db.Model):
     vendor = db.Column(db.String(80))
     model_number = db.Column(db.String(80))
     height = db.Column(db.Integer)
-    eth_ports = db.Column(db.Integer)
+    display_color = db.Column(db.String(80))
+    ethernet_ports = db.Column(db.Integer)
     power_ports = db.Column(db.Integer)
     cpu = db.Column(db.String(80))
     memory = db.Column(db.Integer)
     storage = db.Column(db.String(80))
     comment = db.Column(db.String(80))
-    display_color = db.Column(db.String(80))
 
     def __init__(self, model: Model):
         self.vendor = model.vendor
         self.model_number = model.model_number
         self.height = model.height
-        self.eth_ports = model.eth_ports
+        self.display_color = model.display_color
+        self.ethernet_ports = model.ethernet_ports
         self.power_ports = model.power_ports
         self.cpu = model.cpu
         self.memory = model.memory
         self.storage = model.storage
         self.comment = model.comment
-        self.display_color = model.display_color
+
+    def make_json(self) -> JSON:
+        return {
+            "vendor": self.vendor,
+            "model_number": self.model_number,
+            "height": self.height,
+            "display_color": self.display_color,
+            "ethernet_ports": self.ethernet_ports,
+            "power_ports": self.power_ports,
+            "cpu": self.cpu,
+            "memory": self.memory,
+            "storage": self.storage,
+            "comment": self.comment,
+        }
 
 
 class ModelTable:
@@ -45,7 +59,7 @@ class ModelTable:
             vendor=model.vendor,
             model_number=model.model_number,
             height=model.height,
-            eth_ports=model.eth_ports,
+            ethernet_ports=model.ethernet_ports,
             power_ports=model.power_ports,
             cpu=model.cpu,
             memory=model.memory,
@@ -54,7 +68,7 @@ class ModelTable:
             display_color=model.display_color,
         )
 
-    def get_model_by_vendor_number(self, vendor, model_number):
+    def get_model_by_vendor_number(self, vendor: str, modelNumber: str):
         model: ModelEntry = ModelEntry.query.filter_by(
             vendor=vendor, model_number=model_number
         ).first()
@@ -65,7 +79,7 @@ class ModelTable:
             vendor=model.vendor,
             model_number=model.model_number,
             height=model.height,
-            eth_ports=model.eth_ports,
+            ethernet_ports=model.ethernet_ports,
             power_ports=model.power_ports,
             cpu=model.cpu,
             memory=model.memory,
@@ -74,7 +88,9 @@ class ModelTable:
             display_color=model.display_color,
         )
 
-    def get_model_id_by_vendor_number(self, vendor, model_number):
+    def get_model_id_by_vendor_number(
+        self, vendor: str, model_number: str
+    ) -> Optional[int]:
         model: ModelEntry = ModelEntry.query.filter_by(
             vendor=vendor, model_number=model_number
         ).first()
@@ -91,32 +107,44 @@ class ModelTable:
             db.session.add(model_entry)
             db.session.commit()
         except:
-            raise ChangeModelDBException(
-                "Failed to add model {model.vendor} {model.model_number}"
+            raise DBWriteException(
+                message="Failed to add model {model.vendor} {model.model_number}"
             )
 
-    def edit_model(self, model_id, model: Model) -> None:
+    def edit_model(self, model_id: str, model: Model) -> None:
         """ Updates a model to the database """
-
-        # model_entry: ModelEntry = ModelEntry(model=model)
+        model_entry: ModelEntry = ModelEntry(model=model)
 
         try:
-            # ModelEntry.query.filter_by(identifier=model_id).update(model_entry)
-            old_entry = ModelEntry.query.filter_by(identifier=model_id).first()
-            old_entry.vendor = model.vendor
-            old_entry.model_number = model.model_number
-            old_entry.height = model.height
-            old_entry.eth_ports = model.eth_ports
-            old_entry.power_ports = model.power_ports
-            old_entry.cpu = model.cpu
-            old_entry.memory = model.memory
-            old_entry.storage = model.storage
-            old_entry.comment = model.comment
-            old_entry.display_color = model.display_color
+            ModelEntry.query.filter_by(identifier=model_id).update(
+                values=model_entry.make_json()
+            )
             db.session.commit()
         except:
-            raise ChangeModelDBException(
-                f"Failed to udpate model {model.vendor} {model.model_number}"
+            raise DBWriteException(
+                message="Failed to udpate model {model.vendor} {model.model_number}"
+            )
+
+    def add_or_update(self, model: Model) -> None:
+        """" Adds a model or updates it if it already exists """
+        model_entry: ModelEntry = ModelEntry(model=model)
+
+        try:
+            result: ModelEntry = ModelEntry.query.filter_by(
+                vendor=model.vendor, model_number=model.model_number
+            ).first()
+
+            if result is not None:
+                ModelEntry.query.filter_by(
+                    vendor=model.vendor, model_number=model.model_number
+                ).update(values=model_entry.make_json())
+            else:
+                db.session.add(model_entry)
+
+            db.session.commit()
+        except:
+            raise DBWriteException(
+                message="Failed to udpate model {model.vendor} {model.model_number}"
             )
 
     @DeprecationWarning
@@ -128,8 +156,8 @@ class ModelTable:
             ).delete()
             db.session.commit()
         except:
-            raise ChangeModelDBException(
-                "Failed to add model {model.vendor} {model.model_number}"
+            raise DBWriteException(
+                message="Failed to add model {model.vendor} {model.model_number}"
             )
 
     def delete_model_str(self, vendor: str, model_num: str) -> None:
@@ -138,7 +166,9 @@ class ModelTable:
             ModelEntry.query.filter_by(vendor=vendor, model_number=model_num).delete()
             db.session.commit()
         except:
-            raise ChangeModelDBException("Failed to add model {vendor} {model_number}")
+            raise DBWriteException(
+                message="Failed to add model {vendor} {model_number}"
+            )
 
     def get_all_models(self) -> List[Model]:
         """ Get a list of all models """
@@ -149,7 +179,7 @@ class ModelTable:
                 vendor=model.vendor,
                 model_number=model.model_number,
                 height=model.height,
-                eth_ports=model.eth_ports,
+                ethernet_ports=model.ethernet_ports,
                 power_ports=model.power_ports,
                 cpu=model.cpu,
                 memory=model.memory,
@@ -185,7 +215,7 @@ class ModelTable:
                 vendor=model.vendor,
                 model_number=model.model_number,
                 height=model.height,
-                eth_ports=model.eth_ports,
+                ethernet_ports=model.ethernet_ports,
                 power_ports=model.power_ports,
                 cpu=model.cpu,
                 memory=model.memory,

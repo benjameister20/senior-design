@@ -6,6 +6,7 @@ import getURL from './helpers/functions/GetURL';
 import * as Constants from './Constants';
 import { Privilege } from './enums/privilegeTypes.ts'
 import StatusDisplay from './helpers/StatusDisplay';
+import ErrorBoundry from './errors/ErrorBoundry';
 
 const loginMainPath = 'users/';
 
@@ -59,6 +60,7 @@ export default class Login extends React.Component {
     render() {
         return (
             <div>
+                <ErrorBoundry>
                 <StatusDisplay
                     open={this.state.showStatus}
                     severity={this.state.statusSeverity}
@@ -89,6 +91,7 @@ export default class Login extends React.Component {
                 >
                     Sign In
                 </Button>
+                </ErrorBoundry>
             </div>
         );
     }

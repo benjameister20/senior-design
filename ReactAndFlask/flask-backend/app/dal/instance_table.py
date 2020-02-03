@@ -1,7 +1,8 @@
 from typing import List, Optional
 
-from app.dal.database import db
+from app.dal.database import DBWriteException, db
 from app.dal.exceptions.ChangeModelDBException import ChangeModelDBException
+from app.dal.rack_table import RackEntry
 from app.data_models.instance import Instance
 from sqlalchemy import and_
 
@@ -35,6 +36,15 @@ class InstanceEntry(db.Model):
             owner=self.owner,
             comment=self.comment,
         )
+
+
+class RackDoesNotExistError(Exception):
+    """
+    Raised when a rack does not already exist
+    """
+
+    def __init__(self, rack_label: str):
+        self.message: str = f"Rack {rack_label} does not exist."
 
 
 class InstanceTable:
@@ -80,7 +90,6 @@ class InstanceTable:
 
     def edit_instance(self, instance: Instance, original_rack, original_rack_u) -> None:
         """ Updates a model to the database """
-
         # instance_entry: InstanceEntry = InstanceEntry(instance=instance)
 
         try:
@@ -100,6 +109,37 @@ class InstanceTable:
         except:
             raise ChangeModelDBException(
                 f"Failed to udpate instance {instance.model_id}"
+            )
+
+    def add_or_update(self, instance: Instance) -> None:
+        """" Adds a model or updates it if it already exists """
+        instance_entry: InstanceEntry = InstanceEntry(instance=instance)
+
+        try:
+            result: InstanceEntry = InstanceEntry.query.filter_by(
+                rack_label=instance.rack_label, rack_u=instance.rack_u
+            ).first()
+
+            if result is not None:
+                InstanceEntry.query.filter_by(
+                    rack_label=instance.rack_label, rack_u=instance.rack_u
+                ).update(instance_entry)
+            else:
+                # Add new instance to database, only if rack exists
+                rack_result: RackEntry = RackEntry.query.filter_by(
+                    label=instance.rack_label
+                ).first()
+                if rack_result is not None:
+                    db.session.add(instance_entry)
+                else:
+                    raise RackDoesNotExistError(rack_label=instance.rack_label)
+
+            db.session.commit()
+        except RackDoesNotExistError:
+            raise
+        except:
+            raise DBWriteException(
+                message="Failed to udpate instance {instance.rack_label} {instance.rack_u}"
             )
 
     def delete_instance(self, instance: Instance) -> None:

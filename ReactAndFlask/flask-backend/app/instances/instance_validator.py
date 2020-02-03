@@ -1,3 +1,5 @@
+import re
+
 from app.dal.instance_table import InstanceTable
 from app.dal.model_table import ModelTable
 from app.dal.rack_table import RackTable
@@ -24,11 +26,12 @@ class InstanceValidator:
         if model_template is None:
             return "The model does not exist."
 
+        pattern = re.compile("[0-9]+")
+        if pattern.fullmatch(instance.rack_u) is None:
+            return "The value for Rack U must be a positive integer."
+
         instance_bottom = int(instance.rack_u)
-        print("instance rack_u and model_template height")
-        print(instance.rack_u)
-        print(model_template.height)
-        instance_top = int(instance.rack_u) + int(model_template.height) - 1
+        instance_top = instance_bottom + int(model_template.height) - 1
 
         if instance_top > self.rack_height:
             return "The placement of the instance exceeds the height of the rack."

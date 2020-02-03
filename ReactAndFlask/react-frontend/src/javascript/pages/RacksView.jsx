@@ -10,6 +10,11 @@ import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
 import { MenuItem, Button } from '@material-ui/core';
 import { RackCommand } from "../enums/rackCommands.ts";
+import ExpansionPanel from '@material-ui/core/ExpansionPanel';
+import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
+import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
+import Typography from '@material-ui/core/Typography';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 
 const racksMainPath = 'racks/';
@@ -76,7 +81,7 @@ export default class RacksView extends React.Component {
 
                 if (command == RackCommand.GET_RACK_DETAILS) {
                     console.log(response.data);
-                    this.setState({ items: response.data });
+                    this.setState({ items: response.data.racks });
                 }
             });
     }
@@ -192,13 +197,34 @@ export default class RacksView extends React.Component {
                         </Button>
                     </div>:null}
 
-                {/*<TableView
-                    columns={columns}
-                    vals={this.state.items}
-                    keys={columns}
-                    showDetailedView={this.showDetailedView}
-                    filters={columns}
-                />*/}
+                    {this.state.items.map(rack => (
+                    <ExpansionPanel>
+                        <ExpansionPanelSummary
+                            expandIcon={<ExpandMoreIcon />}
+                        >
+                            <Typography>{rack.label}</Typography>
+                        </ExpansionPanelSummary>
+                        <ExpansionPanelDetails>
+                            {rack}
+                            {/*<TableContainer component={Paper}>
+                                <Table>
+                                    <TableHead>
+                                        <TableRow >
+                                            {tableCols[key].map(column => (<TableCell><span id={column}>{column}</span></TableCell>))}
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                    {this.state.tableValues[key].map(row => (
+                                        <TableRow>
+                                            {row.map(column => (<TableCell><span id={column}>{column}</span></TableCell>))}
+                                        </TableRow>
+                                    ))}
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>*/}
+                        </ExpansionPanelDetails>
+                    </ExpansionPanel>
+                    ))}
             </div>
         );
     }

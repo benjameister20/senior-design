@@ -3,6 +3,7 @@ from typing import List
 from app.dal.database import DBWriteException
 from app.dal.rack_table import RackTable
 from app.data_models.rack import Rack
+from app.decorators.auth import requires_auth, requires_role
 from app.main.types import JSON
 from app.racks.rack_manager import (
     InvalidRangeError,
@@ -23,6 +24,7 @@ racks = Blueprint(
 
 
 @racks.route("/all", methods=["GET"])
+@requires_auth(request)
 def get_all_racks():
     """ Get all racks """
 
@@ -42,6 +44,7 @@ def get_all_racks():
 
 
 @racks.route("/create", methods=["POST"])
+@requires_auth(request)
 def create_racks():
     """ Create a range of racks """
     returnJSON = createJSON()
@@ -72,6 +75,7 @@ def create_racks():
 
 
 @racks.route("/details", methods=["POST"])
+@requires_auth(request)
 def get_rack_details():
     """ Get details of a range of racks """
     data: JSON = request.get_json()
@@ -82,12 +86,16 @@ def get_rack_details():
         start_number: int = int(data["start_number"])
         stop_number: int = int(data["stop_number"])
 
-        returnJSON = get_rack_range(
+        racks = get_rack_range(
             start_letter=start_letter,
             stop_letter=stop_letter,
             start_number=start_number,
             stop_number=stop_number,
         )
+
+        returnJSON = {}
+        returnJSON["racks"] = racks
+
         return addMessageToJSON(returnJSON, "success")
     except KeyError:
         return addMessageToJSON(returnJSON, "Unable to retrieve rack data.")
@@ -99,6 +107,8 @@ def get_rack_details():
 
 
 @racks.route("/delete", methods=["POST"])
+@requires_auth(request)
+@requires_role(request, "admin")
 def delete_racks():
     """ Delete a range of racks """
     data: JSON = request.get_json()

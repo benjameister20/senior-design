@@ -1,5 +1,6 @@
 from typing import List
 
+from app.decorators.auth import requires_auth, requires_role
 from app.exceptions.InvalidInputsException import InvalidInputsError
 from app.instances.instance_manager import InstanceManager
 from flask import Blueprint, request
@@ -18,6 +19,8 @@ def test():
 
 
 @instances.route("/instances/create", methods=["POST"])
+@requires_auth(request)
+@requires_role(request, "admin")
 def create():
     """ Route for creating instances """
     print("REQUEST")
@@ -39,6 +42,8 @@ def create():
 
 
 @instances.route("/instances/delete", methods=["POST"])
+@requires_auth(request)
+@requires_role(request, "admin")
 def delete():
     """ Route for deleting instances """
 
@@ -54,6 +59,7 @@ def delete():
 
 
 @instances.route("/instances/search/", methods=["POST"])
+@requires_auth(request)
 def search():
     """ Route for searching instances """
 
@@ -86,6 +92,8 @@ def search():
 
 
 @instances.route("/instances/edit", methods=["POST"])
+@requires_auth(request)
+@requires_role(request, "admin")
 def edit():
     """ Route for editing instances """
 
@@ -105,6 +113,7 @@ def edit():
 
 
 @instances.route("/instances/detailView", methods=["POST"])
+@requires_auth(request)
 def detail_view():
     """ Route for table view of instances """
 
@@ -128,6 +137,7 @@ def detail_view():
 
 
 @instances.route("/instances/assistedmodel", methods=["GET"])
+@requires_auth(request)
 def assisted_model_input():
     global INSTANCE_MANAGER
     returnJSON = createJSON()

@@ -38,7 +38,7 @@ def requires_role(request, role):
             username = AUTH_MANAGER.decode_auth_token(token)
             user = USER_TABLE.get_user(username)
             if user is None:
-                return {"message": "User {} does not exist".format(username)}
+                return {"message": f"User {username} does not exist"}
             if not user.privilege == role:
                 return {"message": "Access denied"}
             return f(*args, **kwargs)

@@ -255,6 +255,8 @@ def logout():
 
 
 @users.route("/users/detailView", methods=["POST"])
+@requires_auth(request)
+@requires_role(request, "admin")
 def detail_view():
 
     response = {}

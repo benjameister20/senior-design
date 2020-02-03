@@ -1,5 +1,6 @@
+from app.decorators.auth import requires_auth
 from app.stats.stats_manager import StatsManager
-from flask import Blueprint
+from flask import Blueprint, request
 
 stats = Blueprint(
     "stats", __name__, template_folder="templates", static_folder="static"
@@ -16,6 +17,7 @@ STATS_MANAGER = StatsManager()
 
 
 @stats.route("/stats/generate-report", methods=["GET"])
+@requires_auth(request)
 def generate_report():
     """ Route for generating usage report """
 

@@ -1,5 +1,6 @@
 from typing import List
 
+from app.decorators.auth import requires_auth, requires_role
 from app.exceptions.InvalidInputsException import InvalidInputsError
 from app.models.model_manager import ModelManager
 from flask import Blueprint, request
@@ -18,6 +19,8 @@ def test():
 
 
 @models.route("/models/create", methods=["POST"])
+@requires_auth(request)
+@requires_role(request, "admin")
 def create():
     """ Route for creating models """
 
@@ -36,6 +39,8 @@ def create():
 
 
 @models.route("/models/delete", methods=["POST"])
+@requires_auth(request)
+@requires_role(request, "admin")
 def delete():
     """ Route for deleting models """
 
@@ -56,6 +61,7 @@ def delete():
 
 
 @models.route("/models/search/", methods=["POST"])
+@requires_auth(request)
 def search():
     """ Route for searching models """
 
@@ -83,6 +89,8 @@ def search():
 
 
 @models.route("/models/edit", methods=["POST"])
+@requires_auth(request)
+@requires_role(request, "admin")
 def edit():
     """ Route for editing models """
 
@@ -100,6 +108,7 @@ def edit():
 
 
 @models.route("/models/detailView", methods=["POST"])
+@requires_auth(request)
 def detail_view():
     """ Route for table view of models """
 
@@ -118,6 +127,7 @@ def detail_view():
 
 
 @models.route("/models/assistedvendor", methods=["GET"])
+@requires_auth(request)
 def assisted_vendor_input():
     global MODEL_MANAGER
     returnJSON = createJSON()

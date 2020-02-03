@@ -147,7 +147,8 @@ export default class InstancesView extends React.Component {
                             'comment':'',
                         },
                         showCreateModal:false,
-                    })
+                    });
+                    this.searchInstances();
                 } else {
                     this.setState({ showStatus: true, statusMessage: response.data.message, statusSeverity:"error" })
                 }
@@ -183,6 +184,8 @@ export default class InstancesView extends React.Component {
                         },
                         showDetailedView:false,
                     });
+                    this.searchInstances();
+
                 } else {
                     this.setState({ showStatus: true, statusMessage: response.data.message, statusSeverity:"error" })
                 }
@@ -207,6 +210,7 @@ export default class InstancesView extends React.Component {
                         originalrack_u:'',
                         showDetailedView:false
                     });
+                    this.searchInstances();
                 } else {
                     this.setState({ showStatus: true, statusMessage: response.data.message, statusSeverity:"error" })
                 }
@@ -263,6 +267,7 @@ export default class InstancesView extends React.Component {
             searchRack:filters['rack'],
             searchRack:filters['rack_u'],
         });
+        this.forceUpdate();
         this.searchInstances();
     }
 

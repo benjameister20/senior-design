@@ -212,7 +212,7 @@ export default class ModelsView extends React.Component {
                     if (response.data.message === 'success') {
                         this.setState({
                             showStatus: true,
-                            statusMessage:'success',
+                            statusSeverity:'success',
                             statusMessage: "Successfully edited model",
                             originalVendor:'',
                             originalModelNumber:'',
@@ -334,7 +334,8 @@ export default class ModelsView extends React.Component {
     }
 
     search(filters) {
-        this.setState({ searchVendor:filters['vendor'], searchModelNum:filters['model_number'], searchHeight:filters['height']})
+        this.setState({ searchVendor:filters['vendor'], searchModelNum:filters['model_number'], searchHeight:filters['height']});
+        this.forceUpdate();
         this.searchModels();
     }
 

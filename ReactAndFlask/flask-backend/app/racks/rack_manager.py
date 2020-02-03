@@ -3,6 +3,7 @@ from typing import Any, Callable, List
 
 from app.dal.database import DBWriteException
 from app.dal.instance_table import InstanceTable
+from app.dal.model_table import ModelTable
 from app.dal.rack_table import RackTable
 from app.data_models.instance import Instance
 from app.data_models.rack import Rack
@@ -35,7 +36,26 @@ def _delete_rack_modifier(rack: Rack) -> None:
 
 def _get_rack_modifier(rack: Rack) -> JSON:
     """ Get rack details """
-    return {rack.label: InstanceTable().get_instances_by_rack(rack_label=rack.label)}
+    instance_entries = InstanceTable().get_instances_by_rack(rack_label=rack.label)
+
+    return {
+        rack.label: list(
+            map(
+                lambda x: x.make_json_with_model_name(
+                    _get_model_name_from_id(x.model_id)
+                ),
+                instance_entries,
+            )
+        ),
+    }
+
+
+def _get_model_name_from_id(model_id):
+    model = ModelTable().get_model(model_id)
+    if model is None:
+        raise DBWriteException
+
+    return model.vendor + " " + model.model_number
 
 
 def _modify_rack_range(

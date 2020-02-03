@@ -15,7 +15,7 @@ export default class UploadModal extends React.Component {
     render() {
         return (
             <Modal
-                style={{top: `50%`,left: `50%`,transform: `translate(-50%, -50%)`, backgroundColor: palette.background.paper,}}
+                style={{top: `50%`,left: `50%`,transform: `translate(-50%, -50%)`}}
                 aria-labelledby="simple-modal-title"
                 aria-describedby="simple-modal-description"
                 open={this.props.showImportModal}

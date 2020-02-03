@@ -35,7 +35,7 @@ export default class DetailedView extends React.Component {
         return (
         <div>
             <Modal
-                style={{top: `50%`,left: `50%`,transform: `translate(-50%, -50%)`, backgroundColor: palette.background.paper,}}
+                style={{top: `50%`,left: `50%`,transform: `translate(-50%, -50%)`}}
                 aria-labelledby="simple-modal-title"
                 aria-describedby="simple-modal-description"
                 open={this.props.showDetailedView}

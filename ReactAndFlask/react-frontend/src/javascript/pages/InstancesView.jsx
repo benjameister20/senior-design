@@ -265,10 +265,8 @@ export default class InstancesView extends React.Component {
             searchModel:filters['model'],
             searchHostname:filters['hostname'],
             searchRack:filters['rack'],
-            searchRack:filters['rack_u'],
-        });
-        this.forceUpdate();
-        this.searchInstances();
+            searchRackU:filters['rack_u'],
+        }, this.searchInstances);
     }
 
     downloadTable() {

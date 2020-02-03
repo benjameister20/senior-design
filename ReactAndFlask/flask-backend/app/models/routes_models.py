@@ -1,5 +1,6 @@
 from typing import List
 
+from app.decorators.auth import requires_auth, requires_role
 from app.exceptions.InvalidInputsException import InvalidInputsError
 from app.models.model_manager import ModelManager
 from flask import Blueprint, request
@@ -18,6 +19,8 @@ def test():
 
 
 @models.route("/models/create", methods=["POST"])
+@requires_auth(request)
+@requires_role(request, "admin")
 def create():
     """ Route for creating models """
 
@@ -31,11 +34,13 @@ def create():
         MODEL_MANAGER.create_model(model_data)
         print("made model")
         return addMessageToJSON(returnJSON, "success")
-    except InvalidInputsError:
-        return addMessageToJSON(returnJSON, "failure")
+    except InvalidInputsError as e:
+        return addMessageToJSON(returnJSON, e.message)
 
 
 @models.route("/models/delete", methods=["POST"])
+@requires_auth(request)
+@requires_role(request, "admin")
 def delete():
     """ Route for deleting models """
 
@@ -44,13 +49,19 @@ def delete():
 
     try:
         model_data = request.get_json()
-        MODEL_MANAGER.delete_model(model_data)
-        return addMessageToJSON(returnJSON, "success")
-    except InvalidInputsError:
-        return addMessageToJSON(returnJSON, "failure")
+        print("Model data: ")
+        print(model_data)
+        error = MODEL_MANAGER.delete_model(model_data)
+        if error is None:
+            return addMessageToJSON(returnJSON, "success")
+        else:
+            return addMessageToJSON(returnJSON, error.message)
+    except InvalidInputsError as e:
+        return addMessageToJSON(returnJSON, e.message)
 
 
 @models.route("/models/search/", methods=["POST"])
+@requires_auth(request)
 def search():
     """ Route for searching models """
 
@@ -59,6 +70,8 @@ def search():
     returnJSON = createJSON()
 
     filter = request.json["filter"]
+    print("filter")
+    print(filter)
     try:
         limit = int(request.json["limit"])
     except:
@@ -68,14 +81,16 @@ def search():
         model_list = MODEL_MANAGER.get_models(filter, limit)
         returnJSON = addModelsTOJSON(
             addMessageToJSON(returnJSON, "success"),
-            [list(map(lambda x: x.make_json(), model_list))],
+            list(map(lambda x: x.make_json(), model_list)),
         )
         return returnJSON
-    except:
-        return addMessageToJSON(returnJSON, "failure")
+    except InvalidInputsError as e:
+        return addMessageToJSON(returnJSON, e.message)
 
 
 @models.route("/models/edit", methods=["POST"])
+@requires_auth(request)
+@requires_role(request, "admin")
 def edit():
     """ Route for editing models """
 
@@ -84,15 +99,16 @@ def edit():
 
     try:
         model_data = request.get_json()
-        MODEL_MANAGER.edit_model(model_data)
+        error = MODEL_MANAGER.edit_model(model_data)
+        if error is not None:
+            return addMessageToJSON(returnJSON, error.message)
         return addMessageToJSON(returnJSON, "success")
-    except:
-        return addMessageToJSON(returnJSON, "failure")
-
-    return addMessageToJSON(returnJSON, "success")
+    except InvalidInputsError as e:
+        return addMessageToJSON(returnJSON, e.message)
 
 
-@models.route("/models/detailview", methods=["POST"])
+@models.route("/models/detailView", methods=["POST"])
+@requires_auth(request)
 def detail_view():
     """ Route for table view of models """
 
@@ -103,12 +119,15 @@ def detail_view():
     try:
         model_data = request.get_json()
         model = MODEL_MANAGER.detail_view(model_data)
-        return addModelsTOJSON(addMessageToJSON(returnJSON, "success"), [model])
-    except:
-        return addMessageToJSON(returnJSON, "failure")
+        return addModelsTOJSON(
+            addMessageToJSON(returnJSON, "success"), [model.make_json()]
+        )
+    except InvalidInputsError as e:
+        return addMessageToJSON(returnJSON, e.message)
 
 
-@models.route("/models/assistedvendor", methods=["POST"])
+@models.route("/models/assistedvendor", methods=["GET"])
+@requires_auth(request)
 def assisted_vendor_input():
     global MODEL_MANAGER
     returnJSON = createJSON()
@@ -117,9 +136,9 @@ def assisted_vendor_input():
         prefix_json = request.get_json()
         vendor_list = MODEL_MANAGER.get_distinct_vendors_with_prefix(prefix_json)
         returnJSON["results"] = vendor_list
-        return returnJSON
-    except:
-        return addMessageToJSON(returnJSON, "failure")
+        return addMessageToJSON(returnJSON, "success")
+    except InvalidInputsError as e:
+        return addMessageToJSON(returnJSON, e.message)
 
 
 def createJSON() -> dict:

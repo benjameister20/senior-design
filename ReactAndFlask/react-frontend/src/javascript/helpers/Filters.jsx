@@ -50,6 +50,7 @@ export default class Filters extends React.Component {
                         Search
                     </Button>
                 </div>
+                Click Search to populate table. Searching with empty filters searches over all values. Click on row values to see detailed view.
             </div>
         );
     }

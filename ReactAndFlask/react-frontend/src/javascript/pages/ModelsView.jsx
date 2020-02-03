@@ -11,15 +11,16 @@ import UploadModal from '../helpers/UploadModal';
 import getURL from '../helpers/functions/GetURL';
 import DetailedView from '../helpers/DetailedView';
 import CreateModal from '../helpers/CreateModal';
-import * as Constants from '../Constants';
+import StatusDisplay from '../helpers/StatusDisplay';
+import ErrorBoundray from '../errors/ErrorBoundry';
 
 const inputs = [
     'vendor',
-    'modelNumber',
+    'model_number',
     'height',
-    'displayColor',
-    'ethernetPorts',
-    'powerPorts',
+    'display_color',
+    'eth_ports',
+    'power_ports',
     'cpu',
     'memory',
     'storage',
@@ -28,7 +29,7 @@ const inputs = [
 
 const columns = [
     'vendor',
-    'modelNumber',
+    'model_number',
     'height',
 ]
 
@@ -51,11 +52,11 @@ export default class ModelsView extends React.Component {
             // vals for creating a new model
             createdModel : {
                 'vendor':'',
-                'modelNumber':'',
+                'model_number':'',
                 'height':'',
-                'displayColor':'',
-                'ethernetPorts':'',
-                'powerPorts':'',
+                'display_color':'',
+                'eth_ports':'',
+                'power_ports':'',
                 'cpu':'',
                 'memory':'',
                 'storage':'',
@@ -82,25 +83,39 @@ export default class ModelsView extends React.Component {
 
             // searching a model
             searchText:"",
+            searchVendor:'',
+            searchModelNum:'',
+            searchHeight:'',
 
             // csv data
             csvData:[],
+            importedFile:null,
 
             // detailed view
             showDetailedView: false,
             detailViewLoading:false,
             detailedValues : {
                 'vendor':'',
-                'modelNumber':'',
+                'model_number':'',
                 'height':'',
-                'displayColor':'',
-                'ethernetPorts':'',
-                'powerPorts':'',
+                'display_color':'',
+                'eth_ports':'',
+                'power_ports':'',
                 'cpu':'',
                 'memory':'',
                 'storage':'',
                 'comments':'',
             },
+            originalVendor:'',
+            originalModelNumber:'',
+            originalHeight:'',
+
+            showStatus:false,
+            statusSeverity:'',
+            statusMessage:'',
+
+            vendorsList:[],
+            madeVendorQuery:false,
 
         };
 
@@ -119,6 +134,11 @@ export default class ModelsView extends React.Component {
         this.createModel = this.createModel.bind(this);
         this.updateModelCreator = this.updateModelCreator.bind(this);
         this.deleteModel = this.deleteModel.bind(this);
+        this.closeShowStatus = this.closeShowStatus.bind(this);
+        this.getVendorList = this.getVendorList.bind(this);
+        this.chooseFile = this.chooseFile.bind(this);
+        this.uploadFile = this.uploadFile.bind(this);
+        this.sendUploadedFile = this.sendUploadedFile.bind(this);
 
         axios.defaults.headers.common['token'] = this.props.token;
         axios.defaults.headers.common['privilege'] = this.props.privilege;
@@ -129,11 +149,11 @@ export default class ModelsView extends React.Component {
             getURL(modelsMainPath, ModelCommand.create),
             {
                 'vendor':this.state.createdModel[ModelInput.Vendor],
-                'modelNumber':this.state.createdModel[ModelInput.ModelNumber],
+                'model_number':this.state.createdModel[ModelInput.model_number],
                 'height':this.state.createdModel[ModelInput.Height],
-                'displayColor':this.state.createdModel[ModelInput.DisplayColor],
-                'ethernetPorts':this.state.createdModel[ModelInput.EthernetPorts],
-                'powerPorts':this.state.createdModel[ModelInput.PowerPorts],
+                'display_color':this.state.createdModel[ModelInput.display_color],
+                'eth_ports':this.state.createdModel[ModelInput.eth_ports],
+                'power_ports':this.state.createdModel[ModelInput.power_ports],
                 'cpu':this.state.createdModel[ModelInput.CPU],
                 'memory':this.state.createdModel[ModelInput.Memory],
                 'storage':this.state.createdModel[ModelInput.Storage],
@@ -144,76 +164,80 @@ export default class ModelsView extends React.Component {
                     if (response.data.message === 'success') {
                         this.setState({
                             showStatus: true,
+                            statusMessage:'success',
                             statusMessage: "Successfully created model",
                             statusSeverity:"success",
                             createdModel : {
                                 'vendor':'',
-                                'modelNumber':'',
+                                'model_number':'',
                                 'height':'',
-                                'displayColor':'',
-                                'ethernetPorts':'',
-                                'powerPorts':'',
+                                'display_color':'',
+                                'eth_ports':'',
+                                'power_ports':'',
                                 'cpu':'',
                                 'memory':'',
                                 'storage':'',
                                 'comments':'',
                             },
                             showCreateModal:false,
-                        })
+                        });
+                        this.getVendorList();
+                        this.searchModels();
                     } else {
                         this.setState({ showStatus: true, statusMessage: response.data.message, statusSeverity:"error" })
                     }
                 });
-
-        this.setState({
-            createdModel : {
-                'vendor':'',
-                'modelNumber':'',
-                'height':'',
-                'displayColor':'',
-                'ethernetPorts':'',
-                'powerPorts':'',
-                'cpu':'',
-                'memory':'',
-                'storage':'',
-                'comments':'',
-            },
-            showCreateModal:false,
-        });
     }
 
     editModel() {
         axios.post(
             getURL(modelsMainPath, ModelCommand.edit),
             {
+                'vendorOriginal':this.state.originalVendor,
+                'model_numberOriginal':this.state.originalModelNumber,
+                'heightOriginal':this.state.originalHeight,
+
                 'vendor':this.state.detailedValues[ModelInput.Vendor],
-                'modelNumber':this.state.detailedValues[ModelInput.ModelNumber],
+                'model_number':this.state.detailedValues[ModelInput.model_number],
                 'height':this.state.detailedValues[ModelInput.Height],
-                'displayColor':this.state.detailedValues[ModelInput.DisplayColor],
-                'ethernetPorts':this.state.detailedValues[ModelInput.EthernetPorts],
-                'powerPorts':this.state.detailedValues[ModelInput.PowerPorts],
+                'display_color':this.state.detailedValues[ModelInput.display_color],
+                'eth_ports':this.state.detailedValues[ModelInput.eth_ports],
+                'power_ports':this.state.detailedValues[ModelInput.power_ports],
                 'cpu':this.state.detailedValues[ModelInput.CPU],
                 'memory':this.state.detailedValues[ModelInput.Memory],
                 'storage':this.state.detailedValues[ModelInput.Storage],
                 'comments':this.state.detailedValues[ModelInput.Comment],
             }
-            ).then(response => console.log(response) );
-
-        this.setState({
-            detailedValues : {
-                'vendor':'',
-                'modelNumber':'',
-                'height':'',
-                'displayColor':'',
-                'ethernetPorts':'',
-                'powerPorts':'',
-                'cpu':'',
-                'memory':'',
-                'storage':'',
-                'comments':'',
-            },
-            showDetailedView:false
-        });
+            ).then(
+                response => {
+                    if (response.data.message === 'success') {
+                        this.setState({
+                            showStatus: true,
+                            statusSeverity:'success',
+                            statusMessage: "Successfully edited model",
+                            originalVendor:'',
+                            originalModelNumber:'',
+                            originalHeight:'',
+                            detailedValues : {
+                                'vendor':'',
+                                'model_number':'',
+                                'height':'',
+                                'display_color':'',
+                                'eth_ports':'',
+                                'power_ports':'',
+                                'cpu':'',
+                                'memory':'',
+                                'storage':'',
+                                'comments':'',
+                            },
+                            showDetailedView:false
+                        });
+                        this.getVendorList();
+                        this.searchModels();
+                    } else {
+                        this.setState({ showStatus: true, statusMessage: response.data.message, statusSeverity:"error" })
+                    }
+                });
     }
 
 
@@ -221,26 +245,36 @@ export default class ModelsView extends React.Component {
         axios.post(
             getURL(modelsMainPath, ModelCommand.delete),
             {
-                'vendor':this.state.detailedValues[ModelInput.Vendor],
-                'modelNumber':this.state.detailedValues[ModelInput.ModelNumber],
+                'vendor':this.state.originalVendor,
+                'model_number':this.state.originalModelNumber,
             }
-            ).then(response => console.log(response));
-
-        this.setState({
-            detailedValues : {
-                'vendor':'',
-                'modelNumber':'',
-                'height':'',
-                'displayColor':'',
-                'ethernetPorts':'',
-                'powerPorts':'',
-                'cpu':'',
-                'memory':'',
-                'storage':'',
-                'comments':'',
-            },
-            showDetailedView:false
-        });
+            ).then(
+                response => {
+                    if (response.data.message === 'success') {
+                        this.setState({
+                            showStatus: true,
+                            statusMessage:'success',
+                            statusMessage: "Successfully deleted model",
+                            detailedValues : {
+                                'vendor':'',
+                                'model_number':'',
+                                'height':'',
+                                'display_color':'',
+                                'eth_ports':'',
+                                'power_ports':'',
+                                'cpu':'',
+                                'memory':'',
+                                'storage':'',
+                                'comments':'',
+                            },
+                            showDetailedView:false
+                        });
+                        this.getVendorList();
+                        this.searchModels();
+                    } else {
+                        this.setState({ showStatus: true, statusMessage: response.data.message, statusSeverity:"error" })
+                    }
+                });
     }
 
     detailViewModel(vendor, modelNum) {
@@ -248,7 +282,7 @@ export default class ModelsView extends React.Component {
             getURL(modelsMainPath, ModelCommand.detailView),
             {
                 'vendor':vendor,
-                'modelNumber':modelNum,
+                'model_number':modelNum,
             }, this.props.headers
             ).then(response => this.setState({ detailedValues: response.data['models'][0], detailViewLoading:false}));
 
@@ -258,14 +292,14 @@ export default class ModelsView extends React.Component {
         });
     }
 
-    searchModels(vendor, modelNum, height) {
+    searchModels() {
         axios.post(
             getURL(modelsMainPath, ModelCommand.search),
             {
                 'filter':{
-                    'vendor':vendor,
-                    'modelNumber':modelNum,
-                    'height':height,
+                    'vendor':this.state.searchVendor,
+                    'model_number':this.state.searchModelNum,
+                    'height':this.state.searchHeight,
                 }
             }
             ).then(response => this.setState({ items: response.data['models'] }));
@@ -275,12 +309,33 @@ export default class ModelsView extends React.Component {
         });
     }
 
-    search(filters) {
-        this.searchModels(filters['vendor'], filters['modelNumber'], filters['height']);
+    getVendorList() {
+        axios.get(
+            getURL(modelsMainPath, ModelCommand.VENDOR_VALUES), {}
+            ).then(response => this.setState({ vendorsList: response.data.results }));
+
+        this.setState({ madeVendorQuery: true });
+    }
+
+    sendUploadedFile(data) {
+        axios.post(
+            getURL(modelsMainPath, ModelCommand.UPLOAD_FILE), data
+            ).then(response => this.setState({ showStatus: true, statusMessage: response.data.message, }));
+
+        this.setState({ madeVendorQuery: true });
     }
 
     downloadTable() {
-        this.csvLink.link.click();
+        axios.get(
+            getURL(modelsMainPath, ModelCommand.EXPORT_FILE)
+            ).then(response => {
+                this.setState({ csvData: response.data.csvData });
+                this.csvLink.link.click();
+            });
+    }
+
+    search(filters) {
+        this.setState({ searchVendor:filters['vendor'], searchModelNum:filters['model_number'], searchHeight:filters['height']}, this.searchModels);
     }
 
     openCreateModal() {
@@ -295,13 +350,16 @@ export default class ModelsView extends React.Component {
         this.setState({
             showDetailedView: true,
             detailViewLoading:true,
+
+            originalHeight:this.state.items[id]['height'],
+            originalModelNumber:this.state.items[id]['model_number'],
+            originalVendor:this.state.items[id]['vendor'],
          });
 
         var vendor = this.state.items[id]['vendor'];
-        var modelNum = this.state.items[id]['modelNumber'];
+        var modelNum = this.state.items[id]['model_number'];
 
         this.detailViewModel(vendor, modelNum);
-        //this.setState({ detailedValues: Constants.testModelArray[id], detailViewLoading:false})
     }
 
     closeCreateModal() {
@@ -330,9 +388,31 @@ export default class ModelsView extends React.Component {
         this.setState({ searchText: event.target.value})
     }
 
+    closeShowStatus() {
+        this.setState({ showStatus: false })
+    }
+
+    uploadFile() {
+        const data = new FormData();
+        data.append('file', this.state.importedFile);
+        this.sendUploadedFile(data);
+    }
+
+    chooseFile(event) {
+        this.setState({ importedFile: event.target.files[0] })
+    }
+
     render() {
         return (
             <div>
+                <ErrorBoundray>
+                {(this.state.madeVendorQuery) ? null: this.getVendorList()}
+                <StatusDisplay
+                    open={this.state.showStatus}
+                    severity={this.state.statusSeverity}
+                    closeStatus={this.closeShowStatus}
+                    message={this.state.statusMessage}
+                />
                 {(this.props.privilege == Privilege.ADMIN) ?
                     (<div><ButtonMenu
                     openCreateModal={this.openCreateModal}
@@ -352,10 +432,14 @@ export default class ModelsView extends React.Component {
                     createModel={this.createModel}
                     updateModelCreator={this.updateModelCreator}
                     inputs={inputs}
-                    />
+                    options={this.state.vendorsList}
+                    useAutocomplete={true}
+                />
                 <UploadModal
                     showImportModal={this.state.showImportModal}
                     closeImportModal={this.closeImportModal}
+                    uploadFile={this.uploadFile}
+                    chooseFile={this.chooseFile}
                 /></div>):null
                 }
                 <Filters
@@ -381,6 +465,7 @@ export default class ModelsView extends React.Component {
                     delete={this.deleteModel}
                     disabled={this.props.privilege==Privilege.USER}
                 />
+            </ErrorBoundray>
             </div>
         );
     }

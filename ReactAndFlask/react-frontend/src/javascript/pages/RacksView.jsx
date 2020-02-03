@@ -10,6 +10,12 @@ import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
 import { MenuItem, Button } from '@material-ui/core';
 import { RackCommand } from "../enums/rackCommands.ts";
+import ExpansionPanel from '@material-ui/core/ExpansionPanel';
+import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
+import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
+import Typography from '@material-ui/core/Typography';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import ErrorBoundray from '../errors/ErrorBoundry';
 
 
 const racksMainPath = 'racks/';
@@ -28,6 +34,8 @@ export default class RacksView extends React.Component {
             showStatus:false,
             statusMessage:'',
             statusSeverity:'',
+
+            showConfirmationBox:false,
         };
 
         this.getAllRacks = this.getAllRacks.bind(this);
@@ -39,6 +47,7 @@ export default class RacksView extends React.Component {
         this.changeEndingLetter = this.changeEndingLetter.bind(this);
         this.changeStartingNum = this.changeStartingNum.bind(this);
         this.changeEndingNum = this.changeEndingNum.bind(this);
+        this.closeShowStatus = this.closeShowStatus.bind(this);
 
         axios.defaults.headers.common['token'] = this.props.token;
         axios.defaults.headers.common['privilege'] = this.props.privilege;
@@ -66,14 +75,14 @@ export default class RacksView extends React.Component {
             }
             ).then(response => {
                 if (response.data.message === 'success') {
-                    this.setState({ showStatus: true, statusMessage: "Success" })
+                    this.setState({ showStatus: true, statusMessage: "Success", statusSeverity:"success" })
                 } else {
                     this.setState({ showStatus: true, statusMessage: response.data.message, statusSeverity:"error" })
                 }
 
                 if (command == RackCommand.GET_RACK_DETAILS) {
                     console.log(response.data);
-                    this.setState({ items: response.data });
+                    this.setState({ items: response.data.racks });
                 }
             });
     }
@@ -106,9 +115,14 @@ export default class RacksView extends React.Component {
         this.setState({ endingRackNumber: event.target.value })
     }
 
+    closeShowStatus() {
+        this.setState({ showStatus: false })
+    }
+
     render() {
         return (
             <div>
+                <ErrorBoundray>
                 <StatusDisplay
                     open={this.state.showStatus}
                     severity={this.state.statusSeverity}
@@ -143,6 +157,7 @@ export default class RacksView extends React.Component {
                     variant="contained"
                     color="primary"
                     onClick={this.viewRacks}
+                    disabled={this.state.showConfirmationBox}
                 >
                     View
                 </Button>
@@ -152,25 +167,67 @@ export default class RacksView extends React.Component {
                         variant="contained"
                         color="primary"
                         onClick={this.createRacks}
+                        disabled={this.state.showConfirmationBox}
                     >
                         Create
                     </Button>
                     <Button
                         variant="contained"
                         color="primary"
-                        onClick={this.deleteRacks}
+                        onClick={() => this.setState({ showConfirmationBox: true, })}
+                        disabled={this.state.showConfirmationBox}
                     >
                         Delete
                     </Button>
                 </div>):null}
 
-                {/*<TableView
-                    columns={columns}
-                    vals={this.state.items}
-                    keys={columns}
-                    showDetailedView={this.showDetailedView}
-                    filters={columns}
-                />*/}
+                {this.state.showConfirmationBox ? <div>
+                        Are you sure you wish to delete?
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={this.deleteRacks}
+                        >
+                            Yes
+                        </Button>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={() => this.setState({ showConfirmationBox: false, })}
+                        >
+                            No
+                        </Button>
+                    </div>:null}
+
+                    {this.state.items.map(rack => (
+                    <ExpansionPanel>
+                        <ExpansionPanelSummary
+                            expandIcon={<ExpandMoreIcon />}
+                        >
+                            <Typography>{rack.label}</Typography>
+                        </ExpansionPanelSummary>
+                        <ExpansionPanelDetails>
+                            {rack}
+                            {/*<TableContainer component={Paper}>
+                                <Table>
+                                    <TableHead>
+                                        <TableRow >
+                                            {tableCols[key].map(column => (<TableCell><span id={column}>{column}</span></TableCell>))}
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                    {this.state.tableValues[key].map(row => (
+                                        <TableRow>
+                                            {row.map(column => (<TableCell><span id={column}>{column}</span></TableCell>))}
+                                        </TableRow>
+                                    ))}
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>*/}
+                        </ExpansionPanelDetails>
+                    </ExpansionPanel>
+                    ))}
+                </ErrorBoundray>
             </div>
         );
     }

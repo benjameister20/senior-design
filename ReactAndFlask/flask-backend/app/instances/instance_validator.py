@@ -1,3 +1,5 @@
+import re
+
 from app.dal.instance_table import InstanceTable
 from app.dal.model_table import ModelTable
 from app.dal.rack_table import RackTable
@@ -14,12 +16,29 @@ class InstanceValidator:
         if self.rack_table.get_rack(instance.rack_label) is None:
             return "The requested rack does not exist. Instances must be created on preexisting racks"
 
+        duplicate_hostname = self.instance_table.get_instance_by_hostname(
+            instance.hostname
+        )
+        if duplicate_hostname is not None:
+            return f"An instance with hostname {duplicate_hostname.hostname} exists at location {duplicate_hostname.rack_label} U{duplicate_hostname.rack_u}"
+
+        if len(instance.hostname) > 64:
+            return "Hostnames must be 64 characters or less"
+
+        host_pattern = re.compile("[a-zA-Z]+[A-Za-z0-9-]+[A-Za-z0-9]")
+        if host_pattern.fullmatch(instance.hostname) is None:
+            return "Hostnames must start with a letter, only contain letters, numbers, and hyphens, and end with a letter or number."
+
         model_template = self.model_table.get_model(instance.model_id)
         if model_template is None:
             return "The model does not exist."
 
-        instance_bottom = instance.rack_u
-        instance_top = instance.rack_u + model_template.height - 1
+        pattern = re.compile("[0-9]+")
+        if pattern.fullmatch(instance.rack_u) is None:
+            return "The value for Rack U must be a positive integer."
+
+        instance_bottom = int(instance.rack_u)
+        instance_top = instance_bottom + int(model_template.height) - 1
 
         if instance_top > self.rack_height:
             return "The placement of the instance exceeds the height of the rack."

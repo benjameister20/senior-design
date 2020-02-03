@@ -1,4 +1,3 @@
-from app.dal.exceptions.ChangeModelDBException import ChangeModelDBException
 from app.dal.instance_table import InstanceTable
 from app.dal.model_table import ModelTable
 from app.data_models.model import Model
@@ -23,105 +22,128 @@ class ModelManager:
                 print("model added to table")
             else:
                 raise InvalidInputsError(create_validation_result)
-        except ChangeModelDBException:
-            raise InvalidInputsError("failure")
+        except:
+            raise InvalidInputsError("Unable to add the new model")
 
     def delete_model(self, model_data):
         vendor = self.check_null(model_data["vendor"])
-        model_number = self.check_null(model_data["modelNumber"])
+        model_number = self.check_null(model_data["model_number"])
+
+        print("Got vendor and model_number")
 
         if vendor == "":
             raise InvalidInputsError("Must provide a vendor")
         if model_number == "":
             raise InvalidInputsError("Must provide a model number")
 
+        print("Vendor and Model not blank")
+
         try:
             delete_validation_result = self.validate.delete_model_validation(
                 vendor, model_number
             )
+            print("Validation complete")
+            print(delete_validation_result)
             if delete_validation_result == "success":
+                print("Validation successful")
                 self.table.delete_model_str(vendor, model_number)
+                print("Successfully deleted from ModelTable")
             else:
-                raise InvalidInputsError(delete_validation_result)
-        except ChangeModelDBException:
-            raise ChangeModelDBException("Error adding model")
+                print("Validation unsuccessful")
+                return InvalidInputsError(delete_validation_result)
+        except:
+            print("SOMETHING BAD HAPPENED")
+            return InvalidInputsError(
+                "An error occured while trying to delete the model."
+            )
 
     def detail_view(self, model_data):
         vendor = self.check_null(model_data["vendor"])
-        model_number = self.check_null(model_data["modelNumber"])
+        model_number = self.check_null(model_data["model_number"])
 
         try:
             model = self.table.get_model_by_vendor_number(vendor, model_number)
             return model
-        except ChangeModelDBException:
-            return "error"
+        except:
+            raise InvalidInputsError(
+                "An error occured while trying to retrieve the model data."
+            )
 
     def edit_model(self, model_data):
         try:
             updated_model = self.make_model(model_data)
             original_vendor = self.check_null(model_data.get("vendorOriginal"))
             original_model_number = self.check_null(
-                model_data.get("modelNumberOriginal")
+                model_data.get("model_numberOriginal")
             )
             original_height = self.check_null(model_data.get("heightOriginal"))
 
+            model_id = self.table.get_model_id_by_vendor_number(
+                original_vendor, original_model_number
+            )
             if original_height != updated_model.height:
-                model_id = self.table.get_model_id_by_vendor_number(
-                    original_vendor, original_model_number
-                )
                 if model_id is None:
-                    raise InvalidInputsError("Original model not found")
+                    return InvalidInputsError("Model not found")
                 deployed_instances = self.instance_table.get_instances_by_model_id(
                     model_id
                 )
                 if deployed_instances is not None:
-                    raise InvalidInputsError(
+                    return InvalidInputsError(
                         "Cannot edit height while instances are deployed"
                     )
-
             self.table.edit_model(model_id, updated_model)
-        except ChangeModelDBException:
-            raise InvalidInputsError("failure")
+        except:
+            raise InvalidInputsError(
+                "A failure occured while trying to edit the model."
+            )
 
     def get_models(self, filter, limit: int):
         vendor = filter.get("vendor")
-        model_number = filter.get("modelNumber")
+        model_number = filter.get("model_number")
         height = filter.get("height")
+
         try:
             model_list = self.table.get_models_with_filter(
                 vendor=vendor, model_number=model_number, height=height, limit=limit
             )
             return model_list
         except:
-            return "error"
+            raise InvalidInputsError(
+                "A failure occured while searching with the given filters."
+            )
 
     def get_distinct_vendors_with_prefix(self, prefix_json):
-        return_list = []
-        prefix = prefix_json.get("input")
-        if prefix is None:
-            prefix = ""
+        try:
+            return_list = []
+            # prefix = prefix_json.get("input")
+            # if prefix is None:
+            #     prefix = ""
 
-        vendor_list = self.table.get_distinct_vendors()
-        for vendor in vendor_list:
-            if vendor.startswith(prefix):
+            vendor_list = self.table.get_distinct_vendors()
+            for vendor in vendor_list:
+                # if vendor.startswith(prefix):
                 return_list.append(vendor)
 
-        return return_list
+            return return_list
+        except:
+            raise InvalidInputsError(
+                "An error occurred when trying to load previous vendors."
+            )
 
     def make_model(self, model_data):
         try:
             print("getting values")
             vendor = self.check_null(model_data.get("vendor"))
             print(vendor)
-            model_number = self.check_null(model_data.get("modelNumber"))
+            model_number = self.check_null(model_data.get("model_number"))
             print(model_number)
             height = int(self.check_null(model_data.get("height")))
             print(height)
-            display_color = self.check_null(model_data.get("displayColor"))
+            display_color = self.check_null(model_data.get("display_color"))
             print(display_color)
-            eth_ports = int(self.check_null(model_data.get("ethernetPorts")))
+            eth_ports = int(self.check_null(model_data.get("eth_ports")))
             print(eth_ports)
-            pow_ports = int(self.check_null(model_data.get("powerPorts")))
+            pow_ports = int(self.check_null(model_data.get("power_ports")))
             print(pow_ports)
             cpu = self.check_null(model_data.get("cpu"))
             print(cpu)

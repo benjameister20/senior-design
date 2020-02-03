@@ -19,7 +19,6 @@ USER_TABLE = UserTable()
 blacklist_file = "/token_blacklist.json"
 dirname = os.path.dirname(__file__)
 BLACKLIST = []
-print(dirname)
 with open(dirname + blacklist_file, "r") as infile:
     contents = json.load(infile)
     BLACKLIST = contents.get("blacklist")
@@ -105,6 +104,12 @@ def create():
             response, "Incorrectly formatted message. Application error on the frontend"
         )
 
+    if not VALIDATOR.validate_privilege(privilege):
+        return add_message_to_JSON(
+            response,
+            "Please provide valid privilege level. Options are 'admin' and 'user'",
+        )
+
     if not VALIDATOR.validate_username(username):
         return add_message_to_JSON(response, "Invalid username")
 
@@ -112,7 +117,10 @@ def create():
         return add_message_to_JSON(response, "Invalid email address")
 
     if not VALIDATOR.validate_password(password):
-        return add_message_to_JSON(response, "Password too weak")
+        return add_message_to_JSON(
+            response,
+            "Password too weak. Passwords must contain uppercase and lowercase characters, numbers, special characters, and be 8 to 20 characters long",
+        )
 
     try:
         encrypted_password = AUTH_MANAGER.encrypt_pw(password)
@@ -139,13 +147,13 @@ def delete():
     response = {}
 
     request_data = request.get_json()
+    print("request data")
+    print(request_data)
     username = request_data["username"]
 
     user = USER_TABLE.get_user(username)
     if user is None:
-        return add_message_to_JSON(
-            response, "User <{}> does not exist".format(username)
-        )
+        return add_message_to_JSON(response, f"User <{username}> does not exist")
 
     USER_TABLE.delete_user(user)
 
@@ -160,38 +168,38 @@ def edit():
 
     response = {}
 
-    # TODO: check
     request_data = request.get_json()
+    print("request:")
+    print(request_data)
+    username_original = request_data["username_original"]
     username = request_data["username"]
     display_name = request_data["display_name"]
     email = request_data["email"]
-    password = request_data["password"]
     privilege = request_data["privilege"]
+    # password = request_data["password"]
 
-    user = USER_TABLE.get_user(username)
+    user = USER_TABLE.get_user(username_original)
     if user is None:
-        return add_message_to_JSON(
-            response, "User <{}> does not exist".format(username)
-        )
+        return add_message_to_JSON(response, f"User <{username}> does not exist")
 
     # check for change of password
-    if (
-        password != ""
-        and password is not None
-        and not AUTH_MANAGER.compare_pw(password, user.password)
-    ):
-        if VALIDATOR.validate_password(password):
-            password = AUTH_MANAGER.encrypt_pw(password)
-        else:
-            return {"message": "Password invalid"}
-    else:
-        password = user.password
+    # if (
+    #     password != ""
+    #     and password is not None
+    #     and not AUTH_MANAGER.compare_pw(password, user.password)
+    # ):
+    #     if VALIDATOR.validate_password(password):
+    #         password = AUTH_MANAGER.encrypt_pw(password)
+    #     else:
+    #         return {"message": "Password invalid"}
+    # else:
+    #     password = user.password
 
     updated_user = User(
         username=username,
         display_name=display_name,
         email=email,
-        password=password,
+        password=user.password,
         privilege=privilege,
     )
     USER_TABLE.delete_user(user)
@@ -219,7 +227,7 @@ def authenticate():
 
     user = USER_TABLE.get_user(username)
     if user is None:
-        return add_message_to_JSON(answer, "User <{}> does not exist".format(username))
+        return add_message_to_JSON(answer, f"User <{username}> does not exist")
 
     auth_success = AUTH_MANAGER.compare_pw(attempted_password, user.password)
     if not auth_success:
@@ -247,6 +255,8 @@ def logout():
 
 
 @users.route("/users/detailView", methods=["POST"])
+@requires_auth(request)
+@requires_role(request, "admin")
 def detail_view():
 
     response = {}
@@ -258,9 +268,7 @@ def detail_view():
 
     user = USER_TABLE.get_user(username)
     if user is None:
-        return add_message_to_JSON(
-            response, "User <{}> does not exist".format(username)
-        )
+        return add_message_to_JSON(response, f"User <{username}> does not exist")
 
     response["user"] = user.make_json()
 

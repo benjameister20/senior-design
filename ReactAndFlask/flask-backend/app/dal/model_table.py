@@ -51,7 +51,7 @@ class ModelEntry(db.Model):
 class ModelTable:
     def get_model(self, identifier: int) -> Optional[Model]:
         """ Get the model for the given id """
-        model: ModelEntry = ModelEntry.query.filter_by(identifier=identifier).model()
+        model: ModelEntry = ModelEntry.query.filter_by(identifier=identifier).first()
         if model is None:
             return None
 
@@ -70,7 +70,7 @@ class ModelTable:
 
     def get_model_by_vendor_number(self, vendor: str, modelNumber: str):
         model: ModelEntry = ModelEntry.query.filter_by(
-            vendor=vendor, model_number=modelNumber
+            vendor=vendor, model_number=model_number
         ).first()
         if model is None:
             return None
@@ -102,7 +102,7 @@ class ModelTable:
     def add_model(self, model: Model) -> None:
         """ Adds a model to the database """
         model_entry: ModelEntry = ModelEntry(model=model)
-
+        print("adding model")
         try:
             db.session.add(model_entry)
             db.session.commit()
@@ -199,11 +199,11 @@ class ModelTable:
     ) -> List[Model]:
         """ Get a list of all models containing the given filter """
         conditions = []
-        if vendor is not None:
+        if vendor is not None and vendor != "":
             conditions.append(ModelEntry.vendor == vendor)
-        if model_number is not None:
+        if model_number is not None and model_number != "":
             conditions.append(ModelEntry.model_number == model_number)
-        if height is not None:
+        if height is not None and height != "":
             conditions.append(ModelEntry.height == height)
 
         filtered_models: List[ModelEntry] = ModelEntry.query.filter(

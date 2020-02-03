@@ -17,6 +17,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import StatusDisplay from '../helpers/StatusDisplay';
 import Paper from '@material-ui/core/Paper';
+import ErrorBoundray from '../errors/ErrorBoundry';
 
 
 const statsMainPath = 'stats/';
@@ -70,7 +71,6 @@ export default class StatisticsView extends React.Component {
         axios.get(getURL(statsMainPath, StatsCommand.GENERATE_REPORT)).then(response => {
                 try {
                     var data = response.data;
-
                     var totalUsage = [];
                     var totalUsageRow = ["Total Usage"];
                     totalUsageRow.push(data["totalUsage"]);
@@ -95,12 +95,15 @@ export default class StatisticsView extends React.Component {
 
                     this.setState({
                         showStatus: true,
+                        statusSeverity:"success",
                         statusMessage: "Success",
-                        totalUsage:totalUsage,
-                        spaceUsage:spaceUsage,
-                        vendorUsage:vendorUsage,
-                        modelUsage:modelUsage,
-                        ownerUsage:ownerUsage,
+                        tableValues: {
+                            "totalUsage":totalUsage,
+                            "spaceUsage": spaceUsage,
+                            "vendorUsage": vendorUsage,
+                            "modelUsage": modelUsage,
+                            "ownerUsage": ownerUsage,
+                        },
                      })
                 } catch {
                     this.setState({ showStatus: true, statusMessage: response.data.message, statusSeverity:"error" })
@@ -115,6 +118,7 @@ export default class StatisticsView extends React.Component {
     render() {
         return (
             <div>
+                <ErrorBoundray >
                 <StatusDisplay
                     open={this.state.showStatus}
                     severity={this.state.statusSeverity}
@@ -130,18 +134,16 @@ export default class StatisticsView extends React.Component {
                         Generate New Report
                     </Button>
                 </div>
-                {Object.keys(tables).forEach(key => (
+                {Object.keys(tables).map(key => (
                 <ExpansionPanel>
                     <ExpansionPanelSummary
                         expandIcon={<ExpandMoreIcon />}
-                        aria-controls="panel1a-content"
-                        id={"panel-"+key+"-header"}
                     >
                         <Typography>{tables[key]}</Typography>
                     </ExpansionPanelSummary>
                     <ExpansionPanelDetails>
                         <TableContainer component={Paper}>
-                            <Table aria-label="simple table">
+                            <Table>
                                 <TableHead>
                                     <TableRow >
                                         {tableCols[key].map(column => (<TableCell><span id={column}>{column}</span></TableCell>))}
@@ -159,6 +161,7 @@ export default class StatisticsView extends React.Component {
                     </ExpansionPanelDetails>
                 </ExpansionPanel>
                 ))}
+                </ErrorBoundray>
             </div>
         );
     }

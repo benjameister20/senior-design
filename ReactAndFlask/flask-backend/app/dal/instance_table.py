@@ -68,6 +68,16 @@ class InstanceTable:
 
         return instance_entry.make_instance()
 
+    def get_instance_by_hostname(self, hostname):
+        """ Get the instance for the given hostname """
+        instance_entry: InstanceEntry = InstanceEntry.query.filter_by(
+            hostname=hostname
+        ).first()
+        if instance_entry is None:
+            return None
+
+        return instance_entry.make_instance()
+
     def add_instance(self, instance: Instance) -> None:
         """ Adds an instance to the database """
         instance_entry: InstanceEntry = InstanceEntry(instance=instance)
@@ -78,18 +88,27 @@ class InstanceTable:
         except:
             print(f"Failed to add instance {instance.hostname} {instance.rack_label}")
 
-    def edit_instance(self, instance: Instance) -> None:
+    def edit_instance(self, instance: Instance, original_rack, original_rack_u) -> None:
         """ Updates a model to the database """
-        instance_entry: InstanceEntry = InstanceEntry(instance=instance)
+        # instance_entry: InstanceEntry = InstanceEntry(instance=instance)
 
         try:
-            InstanceEntry.query.filter_by(
-                rack_label=instance.rack_label, rack_u=instance.rack_u
-            ).update(instance_entry)
+            # InstanceEntry.query.filter_by(
+            #     rack_label=original_rack, rack_u=original_rack_u
+            # ).update(instance_entry)
+            old_entry = InstanceEntry.query.filter_by(
+                rack_label=original_rack, rack_u=original_rack_u
+            ).first()
+            old_entry.model_id = instance.model_id
+            old_entry.hostname = instance.hostname
+            old_entry.rack_label = instance.rack_label
+            old_entry.rack_u = instance.rack_u
+            old_entry.owner = instance.owner
+            old_entry.comment = instance.comment
             db.session.commit()
         except:
             raise ChangeModelDBException(
-                "Failed to udpate model {model.vendor} {model.model_number}"
+                f"Failed to udpate instance {instance.model_id}"
             )
 
     def add_or_update(self, instance: Instance) -> None:
@@ -165,12 +184,15 @@ class InstanceTable:
         instance_entries: List[InstanceEntry] = InstanceEntry.query.filter_by(
             model_id=model_id
         )
+        print("INSTANCE ENTRIES")
+        print(instance_entries)
+        print(model_id)
         if instance_entries is None:
             return None
 
         return [entry.make_instance() for entry in instance_entries]
 
-    def get_instances_with_filter(
+    def get_instances_with_filters(
         self,
         model_id: Optional[int],
         hostname: Optional[str],
@@ -180,13 +202,13 @@ class InstanceTable:
     ) -> List[Instance]:
         """ Get a list of all instances containing the given filter """
         conditions = []
-        if model_id is not None:
+        if model_id is not None and model_id != "":
             conditions.append(InstanceEntry.model_id == model_id)
-        if hostname is not None:
+        if hostname is not None and hostname != "":
             conditions.append(InstanceEntry.hostname == hostname)
-        if rack_label is not None:
+        if rack_label is not None and rack_label != "":
             conditions.append(InstanceEntry.rack_label == rack_label)
-        if rack_u is not None:
+        if rack_u is not None and rack_u != "":
             conditions.append(InstanceEntry.rack_u == rack_u)
 
         filtered_instances: List[InstanceEntry] = InstanceEntry.query.filter(

@@ -18,6 +18,8 @@ class StatsManager:
         self.rack_height = 42
 
     def create_report(self):
+        self.reset_counters()
+
         rack_list = self.rack_table.get_all_racks()
         num_racks = len(rack_list)
 
@@ -59,7 +61,7 @@ class StatsManager:
             "ownerUsage": owner_usage_json,
         }
 
-        return json.dumps(returnJSON)
+        return returnJSON
 
     def iterate_instance(self, instance_list, rack_label):
         rack_space_used = 0
@@ -94,3 +96,11 @@ class StatsManager:
             dictionary[key] = round((dictionary[key] / total_space_used) * 100, 2)
 
         return dictionary
+
+    def reset_counters(self):
+        self.space_by_rack = {}
+        self.space_by_vendor = {}
+        self.space_by_model = {}
+        self.space_by_owner = {}
+
+        return

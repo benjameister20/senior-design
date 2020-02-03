@@ -13,12 +13,13 @@ import DetailedView from '../helpers/DetailedView';
 import CreateModal from '../helpers/CreateModal';
 import * as Constants from '../Constants';
 import StatusDisplay from '../helpers/StatusDisplay';
+import ErrorBoundray from '../errors/ErrorBoundry';
 
 const inputs = [
     'model',
     'hostname',
     'rack',
-    'rackU',
+    'rack_u',
     'owner',
     'comment',
 ]
@@ -27,7 +28,7 @@ const columns = [
     'model',
     'hostname',
     'rack',
-    'rackU',
+    'rack_u',
 ]
 
 const instancesMainPath = 'instances/';
@@ -53,7 +54,7 @@ export default class InstancesView extends React.Component {
                 'model':'',
                 'hostname':'',
                 'rack':'',
-                'rackU':'',
+                'rack_u':'',
                 'owner':'',
                 'comment':'',
             },
@@ -64,14 +65,20 @@ export default class InstancesView extends React.Component {
 
             // vals for deleting an instance
             deleteInstanceRack:'',
-            deleteInstanceRackU:'',
+            deleteInstancerack_u:'',
 
             // vals for viewing an instance
             viewInstanceRack:'',
-            viewInstanceRackU:'',
+            viewInstancerack_u:'',
+
+            searchModel:'',
+            searchHostname:'',
+            searchRack:'',
+            searchRackU:'',
 
             // csv data
             csvData:[],
+            importedFile:null,
 
             // detailed view
             showDetailedView: false,
@@ -80,10 +87,14 @@ export default class InstancesView extends React.Component {
                 'model':'',
                 'hostname':'',
                 'rack':'',
-                'rackU':'',
+                'rack_u':'',
                 'owner':'',
                 'comment':'',
             },
+            originalRack:'',
+            originalrack_u:'',
+            modelList:[],
+            madeModelQuery: false,
         };
 
         this.createInstance = this.createInstance.bind(this);
@@ -101,6 +112,10 @@ export default class InstancesView extends React.Component {
         this.updateInstanceCreator = this.updateInstanceCreator.bind(this);
         this.updateInstanceEdited = this.updateInstanceEdited.bind(this);
         this.closeShowStatus = this.closeShowStatus.bind(this);
+        this.getModelList = this.getModelList.bind(this);
+        this.chooseFile = this.chooseFile.bind(this);
+        this.uploadFile = this.uploadFile.bind(this);
+        this.sendUploadedFile = this.sendUploadedFile.bind(this);
 
         axios.defaults.headers.common['token'] = this.props.token;
         axios.defaults.headers.common['privilege'] = this.props.privilege;
@@ -114,7 +129,7 @@ export default class InstancesView extends React.Component {
                 'model':this.state.createdInstance[InstanceInput.Model],
                 'hostname':this.state.createdInstance[InstanceInput.Hostname],
                 'rack':this.state.createdInstance[InstanceInput.Rack],
-                'rackU':this.state.createdInstance[InstanceInput.RackU],
+                'rack_u':this.state.createdInstance[InstanceInput.RackU],
                 'owner':this.state.createdInstance[InstanceInput.Owner],
                 'comment':this.state.createdInstance[InstanceInput.Comment],
             }
@@ -128,12 +143,13 @@ export default class InstancesView extends React.Component {
                             'model':'',
                             'hostname':'',
                             'rack':'',
-                            'rackU':'',
+                            'rack_u':'',
                             'owner':'',
                             'comment':'',
                         },
                         showCreateModal:false,
-                    })
+                    });
+                    this.searchInstances();
                 } else {
                     this.setState({ showStatus: true, statusMessage: response.data.message, statusSeverity:"error" })
                 }
@@ -144,26 +160,37 @@ export default class InstancesView extends React.Component {
         axios.post(
             getURL(instancesMainPath, InstanceCommand.edit),
             {
+                'rackOriginal':this.state.originalRack,
+                'rack_uOriginal':this.state.originalrack_u,
                 'model':this.state.detailedValues[InstanceInput.Model],
                 'hostname':this.state.detailedValues[InstanceInput.Hostname],
                 'rack':this.state.detailedValues[InstanceInput.Rack],
-                'rackU':this.state.detailedValues[InstanceInput.RackU],
+                'rack_u':this.state.detailedValues[InstanceInput.RackU],
                 'owner':this.state.detailedValues[InstanceInput.Owner],
                 'comment':this.state.detailedValues[InstanceInput.Comment],
             }
-            ).then(response => console.log(response));
+            ).then(response => {
+                if (response.data.message === 'success') {
+                    this.setState({
+                        showStatus: true,
+                        statusMessage: "Successfully created instance",
+                        statusSeverity:"success",
+                        detailedValues : {
+                            'model':'',
+                            'hostname':'',
+                            'rack':'',
+                            'rack_u':'',
+                            'owner':'',
+                            'comment':'',
+                        },
+                        showDetailedView:false,
+                    });
+                    this.searchInstances();
 
-        this.setState({
-            detailedValues : {
-                'model':'',
-                'hostname':'',
-                'rack':'',
-                'rackU':'',
-                'owner':'',
-                'comment':'',
-            },
-            showDetailedView:false,
-        });
+                } else {
+                    this.setState({ showStatus: true, statusMessage: response.data.message, statusSeverity:"error" })
+                }
+            });
     }
 
 
@@ -171,24 +198,32 @@ export default class InstancesView extends React.Component {
         axios.post(
             getURL(instancesMainPath, InstanceCommand.delete),
             {
-                'rack':this.state.deleteInstanceRack,
-                'rackU':this.state.deleteInstanceRackU,
+                'rack':this.state.originalRack,
+                'rack_u':this.state.originalrack_u,
             }
-            ).then(response => console.log(response));
-
-        this.setState({
-            deleteInstanceRack:'',
-            deleteInstanceRackU:'',
-            showDetailedView:false
-        });
+            ).then(response => {
+                if (response.data.message === 'success') {
+                    this.setState({
+                        showStatus: true,
+                        statusMessage: "Successfully created instance",
+                        statusSeverity:"success",
+                        originalRack:'',
+                        originalrack_u:'',
+                        showDetailedView:false
+                    });
+                    this.searchInstances();
+                } else {
+                    this.setState({ showStatus: true, statusMessage: response.data.message, statusSeverity:"error" })
+                }
+            });
     }
 
-    detailViewInstance(rack, rackU) {
+    detailViewInstance(rack, rack_u) {
         axios.post(
             getURL(instancesMainPath, InstanceCommand.detailView),
             {
                 'rack':rack,
-                'rackU':rackU,
+                'rack_u':rack_u,
             }
             ).then(response => this.setState({ detailedValues: response.data['instances'][0], detailViewLoading:false}));
 
@@ -197,26 +232,51 @@ export default class InstancesView extends React.Component {
         });
     }
 
-    searchInstances(model, hostname, rack, rackU) {
+    searchInstances() {
         axios.post(
             getURL(instancesMainPath, InstanceCommand.search),
             {
                 'filter':{
-                    'model':model,
-                    'hostname':hostname,
-                    'rack':rack,
-                    'rackU':rackU,
+                    'model':this.state.searchModel,
+                    'hostname':this.state.searchHostname,
+                    'rack':this.state.searchRack,
+                    'rack_u':this.state.searchRackU,
                 }
             }
             ).then(response => this.setState({ items: response.data['instances'] }));
     }
 
+    getModelList() {
+        axios.get(
+            getURL(instancesMainPath, InstanceCommand.GET_ALL_MODELS), {}
+            ).then(response => this.setState({ modelList: response.data.results }));
+        this.setState({ madeModelQuery: true });
+    }
+
+    sendUploadedFile(data) {
+        axios.post(
+            getURL(instancesMainPath, InstanceCommand.UPLOAD_FILE), data
+            ).then(response => this.setState({ showStatus: true, statusMessage: response.data.message, }));
+
+        this.setState({ madeVendorQuery: true });
+    }
+
     search(filters) {
-        this.searchInstances(filters['model'], filters['hostname'], filters['rack'], filters['rackU']);
+        this.setState({
+            searchModel:filters['model'],
+            searchHostname:filters['hostname'],
+            searchRack:filters['rack'],
+            searchRackU:filters['rack_u'],
+        }, this.searchInstances);
     }
 
     downloadTable() {
-        this.csvLink.link.click();
+        axios.get(
+            getURL(instancesMainPath, InstanceCommand.EXPORT_FILE)
+            ).then(response => {
+                this.setState({ csvData: response.data.csvData });
+                this.csvLink.link.click();
+            });
     }
 
     openCreateModal() {
@@ -231,15 +291,16 @@ export default class InstancesView extends React.Component {
         this.setState({
             showDetailedView: true,
             detailViewLoading:true,
+            originalRack: this.state.items[id]['rack'],
+            originalrack_u: this.state.items[id]['rack_u'],
         });
 
         var model = this.state.items[id]['model'];
         var hostname = this.state.items[id]['hostname'];
         var rack = this.state.items[id]['rack'];
-        var rackU = this.state.items[id]['rackU'];
+        var rack_u = this.state.items[id]['rack_u'];
 
-        this.detailViewInstance(model, hostname, rack, rackU);
-        //this.setState({ detailedValues: Constants.testInstanceArray[id], detailViewLoading:false})
+        this.detailViewInstance(rack, rack_u);
     }
 
     closeCreateModal() {
@@ -267,9 +328,21 @@ export default class InstancesView extends React.Component {
         this.setState({ showStatus: false })
     }
 
+    uploadFile() {
+        const data = new FormData();
+        data.append('file', this.state.importedFile);
+        this.sendUploadedFile(data);
+    }
+
+    chooseFile(event) {
+        this.setState({ importedFile: event.target.files[0] })
+    }
+
     render() {
         return (
             <div>
+                <ErrorBoundray>
+                {(this.state.madeModelQuery) ? null: this.getModelList()}
                 <StatusDisplay
                     open={this.state.showStatus}
                     severity={this.state.statusSeverity}
@@ -296,10 +369,14 @@ export default class InstancesView extends React.Component {
                     createModel={this.createInstance}
                     updateModelCreator={this.updateInstanceCreator}
                     inputs={inputs}
+                    options={this.state.modelList}
+                    useAutocomplete={true}
                 />
                 <UploadModal
                     showImportModal={this.state.showImportModal}
                     closeImportModal={this.closeImportModal}
+                    uploadFile={this.uploadFile}
+                    chooseFile={this.chooseFile}
                 /></div>):null
             }
                 <Filters
@@ -323,7 +400,9 @@ export default class InstancesView extends React.Component {
                     loading={this.state.detailViewLoading}
                     edit={this.editInstance}
                     delete={this.deleteInstance}
+                    disabled={this.props.privilege==Privilege.USER}
                 />
+            </ErrorBoundray>
             </div>
         );
     }

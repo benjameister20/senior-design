@@ -6,7 +6,7 @@ export const localServerEndpoint = 'http://localhost:4010/';
 export const devServerEndpoint = 'https://parseltongue-dev.herokuapp.com/';
 export const prodServerEndpoint = 'https://parseltongue-prod.herokuapp.com/';
 
-export const serverEndpoint = devServerEndpoint;
+export const serverEndpoint = localServerEndpoint;
 
 export const RackX = [
     'A', 'B', 'C', 'D', 'E',
@@ -28,33 +28,33 @@ export const RackY = [
 export const testModelArray = [
     {
         'vendor':'a',
-        'modelNumber':'a',
+        'model_number':'a',
         'height':'a',
-        'displayColor':'a',
-        'ethernetPorts':'a',
-        'powerPorts':'a',
+        'display_color':'a',
+        'eth_ports':'a',
+        'power_ports':'a',
         'cpu':'a',
         'memory':'a',
         'storage':'a',
         'comments':'a',
     },{
         'vendor':'b',
-        'modelNumber':'b',
+        'model_number':'b',
         'height':'b',
-        'displayColor':'b',
-        'ethernetPorts':'b',
-        'powerPorts':'b',
+        'display_color':'b',
+        'eth_ports':'b',
+        'power_ports':'b',
         'cpu':'b',
         'memory':'b',
         'storage':'b',
         'comments':'b',
     },{
         'vendor':'c',
-        'modelNumber':'c',
+        'model_number':'c',
         'height':'c',
-        'displayColor':'c',
-        'ethernetPorts':'c',
-        'powerPorts':'c',
+        'display_color':'c',
+        'eth_ports':'c',
+        'power_ports':'c',
         'cpu':'c',
         'memory':'c',
         'storage':'c',
@@ -89,21 +89,21 @@ export const testInstanceArray = [
         'model':'a',
         'hostname':'a',
         'rack':'a',
-        'rackU':'a',
+        'rack_u':'a',
         'owner':'a',
         'comment':'a',
     },{
         'model':'b',
         'hostname':'b',
         'rack':'b',
-        'rackU':'b',
+        'rack_u':'b',
         'owner':'b',
         'comment':'b',
     },{
         'model':'c',
         'hostname':'c',
         'rack':'c',
-        'rackU':'c',
+        'rack_u':'c',
         'owner':'c',
         'comment':'c',
     },

@@ -30,17 +30,15 @@ def requires_role(request, role):
     def wrap(f):
         @wraps(f)
         def wrapper(*args, **kwargs):
-            print(request.headers)
             try:
                 request.headers["privilege"]
                 token = request.headers["token"]
             except KeyError:
                 return {"message": "Please provide auth token"}
             username = AUTH_MANAGER.decode_auth_token(token)
-            print("username: " + username)
             user = USER_TABLE.get_user(username)
             if user is None:
-                return {"message": "User {} does not exist".format(username)}
+                return {"message": f"User {username} does not exist"}
             if not user.privilege == role:
                 return {"message": "Access denied"}
             return f(*args, **kwargs)

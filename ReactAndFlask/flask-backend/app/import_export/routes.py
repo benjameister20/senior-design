@@ -152,6 +152,7 @@ def import_models_csv():
             HTTPStatus.BAD_REQUEST,
         )
     except DBWriteException:
+        raise
         return (
             {"message": "Error writing to database."},
             HTTPStatus.INTERNAL_SERVER_ERROR,

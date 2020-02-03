@@ -91,7 +91,7 @@ class Model:
     def to_csv(self) -> str:
         """ Get the model as a csv row """
         json_data: JSON = self.make_json()
-        values: List[str] = list(map(lambda x: json_data[x], Model.headers()))
+        values: List[str] = list(map(lambda x: str(json_data[x]), Model.headers()))
 
         return ",".join(values)
 

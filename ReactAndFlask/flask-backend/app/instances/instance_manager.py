@@ -13,13 +13,21 @@ class InstanceManager:
 
     def create_instance(self, instance_data):
         # try:
+        # try:
         new_instance = self.make_instance(instance_data)
+        if type(new_instance) is InvalidInputsError:
+            return new_instance
         print(new_instance)
+        # except InvalidInputsError as e:
+        #     return e.message
         create_validation_result = "success"
         print(create_validation_result)
+        # try:
         create_validation_result = self.validate.create_instance_validation(
             new_instance
         )
+        # except InvalidInputsError as e:
+        #     return e.message
         if create_validation_result == "success":
             self.table.add_instance(new_instance)
         else:
@@ -67,13 +75,10 @@ class InstanceManager:
         if original_rack is None or original_rack_u is None:
             raise InvalidInputsError("Unable to find the instance to edit.")
 
-        # try:
         new_instance = self.make_instance(instance_data)
+        if type(new_instance) is InvalidInputsError:
+            return new_instance
         self.table.edit_instance(new_instance, original_rack, original_rack_u)
-        # except:
-        #     raise InvalidInputsError(
-        #         "An error occurred while trying to edit the instance."
-        #     )
 
     def get_instances(self, filter, limit: int):
         model_name = filter.get("model")
@@ -143,11 +148,11 @@ class InstanceManager:
             )
 
         if hostname == "":
-            raise InvalidInputsError("Must provide a hostname")
+            return InvalidInputsError("Must provide a hostname")
         if rack == "":
-            raise InvalidInputsError("Must provide a rack location")
+            return InvalidInputsError("Must provide a rack location")
         if rack_u == "":
-            raise InvalidInputsError("Must provide a rack location")
+            return InvalidInputsError("Must provide a rack location")
 
         print("about to make instance")
         return Instance(model_id, hostname, rack, rack_u, owner, comment)

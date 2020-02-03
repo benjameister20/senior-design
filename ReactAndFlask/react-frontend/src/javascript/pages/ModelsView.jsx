@@ -322,7 +322,7 @@ export default class ModelsView extends React.Component {
             getURL(modelsMainPath, ModelCommand.UPLOAD_FILE), data
             ).then(response => {
                 if (response.data.message === 'success') {
-                    this.setState({ showStatus: true, statusMessage: 'Successfully added data', })
+                    this.setState({ showStatus: true, statusMessage: 'Successfully added models', statusSeverity:'success', showImportModal: false,})
                     this.searchModels();
                 } else {
                     this.setState({ showStatus: true, statusMessage: response.data.message, statusSeverity:"error" })

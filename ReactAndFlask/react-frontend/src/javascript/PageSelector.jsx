@@ -33,7 +33,9 @@ export default class PageSelector extends React.Component {
       token:'',
       privilege:'',
       loggedIn:false,
-    })
+    });
+
+    //window.location.reload();
   }
 
   render() {

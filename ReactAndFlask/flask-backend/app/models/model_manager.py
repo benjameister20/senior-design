@@ -23,7 +23,6 @@ class ModelManager:
             else:
                 raise InvalidInputsError(create_validation_result)
         except:
-            raise
             raise InvalidInputsError("Unable to add the new model")
 
     def delete_model(self, model_data):

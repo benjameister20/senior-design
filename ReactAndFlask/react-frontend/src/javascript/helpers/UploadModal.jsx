@@ -21,10 +21,11 @@ export default class UploadModal extends React.Component {
                 onClose={this.props.closeImportModal}
             >
                 <div>
-                    <input type='file' accept=".csv" />
+                    <input type='file' accept=".csv" onChange={this.props.chooseFile} />
                     <Button
                         variant="contained"
                         color="primary"
+                        onClick={this.props.uploadFile}
                     >
                         Upload
                     </Button>

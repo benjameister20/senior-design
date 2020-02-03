@@ -8,6 +8,9 @@ from app.dal.instance_table import InstanceTable, RackDoesNotExistError
 from app.dal.model_table import ModelTable
 from app.data_models.instance import Instance
 from app.data_models.model import Model
+from app.instances.instance_manager import InstanceManager
+from app.main.types import JSON
+from app.models.model_manager import ModelManager
 from flask import Blueprint, request
 
 import_export = Blueprint("import_export", __name__)
@@ -187,9 +190,19 @@ def import_instances_csv():
 
 @import_export.route("/models/export")
 def export_models():
-    model_table: ModelTable = ModelTable()
+    """ Export models with given filters """
+    data: JSON = request.get_json()
 
-    all_models: List[Model] = model_table.get_all_models()
+    try:
+        filter = data["filter"]
+    except:
+        return HTTPStatus.BAD_REQUEST
+
+    limit: int = int(data.get("limit", 1000))
+    model_table: ModelTable = ModelTable()
+    model_manager: ModelManager = ModelManager()
+
+    all_models: List[Model] = model_manager.get_models(filter=filter, limit=limit)
     text: str = ",".join(Model.headers()) + "\n"
 
     for model in all_models:
@@ -200,9 +213,21 @@ def export_models():
 
 @import_export.route("/instances/export")
 def export_instances():
-    instances_table: InstanceTable = InstanceTable()
+    """ Export instances with given filters """
+    data: JSON = request.get_json()
 
-    all_instances: List[Instance] = instances_table.get_all_instances()
+    try:
+        filter = data["filter"]
+    except:
+        return HTTPStatus.BAD_REQUEST
+
+    limit: int = int(data.get("limit", 1000))
+    instances_table: InstanceTable = InstanceTable()
+    instance_manager: InstanceManager = InstanceManager()
+
+    all_instances: List[Instance] = instance_manager.get_instances(
+        filter=filter, limit=limit
+    )
     text: str = ",".join(Instance.headers()) + "\n"
 
     for instance in all_instances:

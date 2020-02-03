@@ -230,6 +230,7 @@ export default class UsersView extends React.Component {
             searchDspNm: filters['display_name'],
             searchPriv:filters['privilege'],
         });
+        this.forceUpdate();
         this.searchUsers();
     }
 

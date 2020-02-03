@@ -267,6 +267,7 @@ export default class InstancesView extends React.Component {
             searchRack:filters['rack'],
             searchRack:filters['rack_u'],
         });
+        this.forceUpdate();
         this.searchInstances();
     }
 

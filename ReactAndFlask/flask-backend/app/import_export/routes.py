@@ -161,7 +161,7 @@ def import_models_csv():
             HTTPStatus.INTERNAL_SERVER_ERROR,
         )
 
-    return {"message": "Success"}, HTTPStatus.OK
+    return {"message": "success"}, HTTPStatus.OK
 
 
 @import_export.route("/instances/import", methods=["POST"])

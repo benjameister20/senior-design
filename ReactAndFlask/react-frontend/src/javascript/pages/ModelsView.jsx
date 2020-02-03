@@ -88,7 +88,7 @@ export default class ModelsView extends React.Component {
             searchHeight:'',
 
             // csv data
-            csvData:[],
+            csvData:'',
             importedFile:null,
 
             // detailed view
@@ -320,14 +320,26 @@ export default class ModelsView extends React.Component {
     sendUploadedFile(data) {
         axios.post(
             getURL(modelsMainPath, ModelCommand.UPLOAD_FILE), data
-            ).then(response => this.setState({ showStatus: true, statusMessage: response.data.message, }));
-
-        this.setState({ madeVendorQuery: true });
+            ).then(response => {
+                if (response.data.message === 'success') {
+                    this.setState({ showStatus: true, statusMessage: 'Successfully added data', })
+                    this.searchModels();
+                } else {
+                    this.setState({ showStatus: true, statusMessage: response.data.message, statusSeverity:"error" })
+                }
+            });
     }
 
     downloadTable() {
-        axios.get(
-            getURL(modelsMainPath, ModelCommand.EXPORT_FILE)
+        axios.post(
+            getURL(modelsMainPath, ModelCommand.EXPORT_FILE),
+            {
+                'filter':{
+                    'vendor':this.state.searchVendor,
+                    'model_number':this.state.searchModelNum,
+                    'height':this.state.searchHeight,
+                }
+            }
             ).then(response => {
                 this.setState({ csvData: response.data.csvData });
                 this.csvLink.link.click();

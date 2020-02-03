@@ -77,7 +77,7 @@ export default class InstancesView extends React.Component {
             searchRackU:'',
 
             // csv data
-            csvData:[],
+            csvData:'',
             importedFile:null,
 
             // detailed view
@@ -256,9 +256,14 @@ export default class InstancesView extends React.Component {
     sendUploadedFile(data) {
         axios.post(
             getURL(instancesMainPath, InstanceCommand.UPLOAD_FILE), data
-            ).then(response => this.setState({ showStatus: true, statusMessage: response.data.message, }));
-
-        this.setState({ madeVendorQuery: true });
+            ).then(response => {
+                if (response.data.message === 'success') {
+                    this.setState({ showStatus: true, statusMessage: response.data.message, })
+                    this.searchInstances();
+                } else {
+                    this.setState({ showStatus: true, statusMessage: response.data.message, statusSeverity:"error" })
+                }
+            });
     }
 
     search(filters) {
@@ -272,7 +277,15 @@ export default class InstancesView extends React.Component {
 
     downloadTable() {
         axios.get(
-            getURL(instancesMainPath, InstanceCommand.EXPORT_FILE)
+            getURL(instancesMainPath, InstanceCommand.EXPORT_FILE),
+            {
+                'filter':{
+                    'model':this.state.searchModel,
+                    'hostname':this.state.searchHostname,
+                    'rack':this.state.searchRack,
+                    'rack_u':this.state.searchRackU,
+                }
+            }
             ).then(response => {
                 this.setState({ csvData: response.data.csvData });
                 this.csvLink.link.click();

@@ -18,6 +18,8 @@ class StatsManager:
         self.rack_height = 42
 
     def create_report(self):
+        self.reset_counters()
+
         rack_list = self.rack_table.get_all_racks()
         num_racks = len(rack_list)
 
@@ -62,8 +64,6 @@ class StatsManager:
         return returnJSON
 
     def iterate_instance(self, instance_list, rack_label):
-        self.reset_counters()
-
         rack_space_used = 0
         for instance in instance_list:
             model = self.model_table.get_model(instance.model_id)

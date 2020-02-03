@@ -110,6 +110,7 @@ export default class ModelsView extends React.Component {
             statusMessage:'',
 
             vendorsList:[],
+            madeVendorQuery:false,
 
         };
 
@@ -300,8 +301,10 @@ export default class ModelsView extends React.Component {
 
     getVendorList() {
         axios.get(
-            getURL(modelsMainPath, ModelCommand.VENDOR_VALUES)
+            getURL(modelsMainPath, ModelCommand.VENDOR_VALUES), {}
             ).then(response => this.setState({ vendorsList: response.data.results }));
+
+        this.setState({ madeVendorQuery: true });
     }
 
     search(filters) {

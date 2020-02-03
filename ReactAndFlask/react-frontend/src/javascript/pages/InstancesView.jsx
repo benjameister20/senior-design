@@ -87,6 +87,7 @@ export default class InstancesView extends React.Component {
             originalRack:'',
             originalrack_u:'',
             modelList:[],
+            madeModelQuery: false,
         };
 
         this.createInstance = this.createInstance.bind(this);
@@ -217,8 +218,9 @@ export default class InstancesView extends React.Component {
 
     getModelList() {
         axios.get(
-            getURL(instancesMainPath, InstanceCommand.GET_ALL_MODELS)
+            getURL(instancesMainPath, InstanceCommand.GET_ALL_MODELS), {}
             ).then(response => this.setState({ modelList: response.data.results }));
+        this.setState({ madeModelQuery: true });
     }
 
     search(filters) {

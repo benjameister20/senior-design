@@ -149,9 +149,7 @@ def delete():
     request_data = request.get_json()
     print("request data")
     print(request_data)
-    user = request_data["user"]
-    username = user.username
-    print(username)
+    username = request_data["username"]
 
     user = USER_TABLE.get_user(username)
     if user is None:

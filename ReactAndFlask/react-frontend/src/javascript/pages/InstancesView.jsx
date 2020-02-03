@@ -149,6 +149,8 @@ export default class InstancesView extends React.Component {
         axios.post(
             getURL(instancesMainPath, InstanceCommand.edit),
             {
+                'rackOriginal':this.state.originalRack,
+                'rack_uOriginal':this.state.originalrack_u,
                 'model':this.state.detailedValues[InstanceInput.Model],
                 'hostname':this.state.detailedValues[InstanceInput.Hostname],
                 'rack':this.state.detailedValues[InstanceInput.Rack],

@@ -28,6 +28,8 @@ export default class CreateModal extends React.Component {
                         (index===0 && this.props.useAutocomplete) ? <Autocomplete
                             id="combo-box-demo"
                             options={this.props.options}
+                            includeInputInList
+                            freeSolo
                             renderInput={params => (
                             <TextField {...params} label={input} name={input} onChange={this.props.updateModelCreator} variant="outlined" fullWidth />
                             )}

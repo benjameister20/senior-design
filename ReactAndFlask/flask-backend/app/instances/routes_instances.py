@@ -20,7 +20,8 @@ def test():
 @instances.route("/instances/create", methods=["POST"])
 def create():
     """ Route for creating instances """
-
+    print("REQUEST")
+    print(request.get_json())
     global INSTANCE_MANAGER
     returnJSON = createJSON()
 
@@ -84,6 +85,8 @@ def edit():
 
     try:
         instance_data = request.get_json()
+        print("REQUEST")
+        print(instance_data)
         INSTANCE_MANAGER.edit_instance(instance_data)
         return addMessageToJSON(returnJSON, "success")
     except InvalidInputsError as e:

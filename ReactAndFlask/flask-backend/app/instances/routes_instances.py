@@ -108,7 +108,7 @@ def detail_view():
         return addMessageToJSON(returnJSON, e.message)
 
 
-@instances.route("/instances/assistedmodel", methods=["POST"])
+@instances.route("/instances/assistedmodel", methods=["GET"])
 def assisted_model_input():
     global INSTANCE_MANAGER
     returnJSON = createJSON()

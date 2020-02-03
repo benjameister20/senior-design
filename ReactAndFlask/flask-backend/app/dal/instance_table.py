@@ -124,13 +124,16 @@ class InstanceTable:
     def get_instances_by_model_id(self, model_id):
         instance_entries: List[InstanceEntry] = InstanceEntry.query.filter_by(
             model_id=model_id
-        ).first()
+        )
+        print("INSTANCE ENTRIES")
+        print(instance_entries)
+        print(model_id)
         if instance_entries is None:
             return None
 
         return [entry.make_instance() for entry in instance_entries]
 
-    def get_instances_with_filter(
+    def get_instances_with_filters(
         self,
         model_id: Optional[int],
         hostname: Optional[str],

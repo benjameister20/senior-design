@@ -18,8 +18,11 @@ class InstanceValidator:
         if model_template is None:
             return "The model does not exist."
 
-        instance_bottom = instance.rack_u
-        instance_top = instance.rack_u + model_template.height - 1
+        instance_bottom = int(instance.rack_u)
+        print("instance rack_u and model_template height")
+        print(instance.rack_u)
+        print(model_template.height)
+        instance_top = int(instance.rack_u) + int(model_template.height) - 1
 
         if instance_top > self.rack_height:
             return "The placement of the instance exceeds the height of the rack."

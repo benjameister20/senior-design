@@ -18,7 +18,7 @@ const inputs = [
     'model',
     'hostname',
     'rack',
-    'rackU',
+    'rack_u',
     'owner',
     'comment',
 ]
@@ -27,7 +27,7 @@ const columns = [
     'model',
     'hostname',
     'rack',
-    'rackU',
+    'rack_u',
 ]
 
 const instancesMainPath = 'instances/';
@@ -53,7 +53,7 @@ export default class InstancesView extends React.Component {
                 'model':'',
                 'hostname':'',
                 'rack':'',
-                'rackU':'',
+                'rack_u':'',
                 'owner':'',
                 'comment':'',
             },
@@ -64,11 +64,11 @@ export default class InstancesView extends React.Component {
 
             // vals for deleting an instance
             deleteInstanceRack:'',
-            deleteInstanceRackU:'',
+            deleteInstancerack_u:'',
 
             // vals for viewing an instance
             viewInstanceRack:'',
-            viewInstanceRackU:'',
+            viewInstancerack_u:'',
 
             // csv data
             csvData:[],
@@ -80,13 +80,12 @@ export default class InstancesView extends React.Component {
                 'model':'',
                 'hostname':'',
                 'rack':'',
-                'rackU':'',
+                'rack_u':'',
                 'owner':'',
                 'comment':'',
             },
             originalRack:'',
-            originalRackU:'',
-
+            originalrack_u:'',
             modelList:[],
             madeModelQuery: false,
         };
@@ -120,7 +119,7 @@ export default class InstancesView extends React.Component {
                 'model':this.state.createdInstance[InstanceInput.Model],
                 'hostname':this.state.createdInstance[InstanceInput.Hostname],
                 'rack':this.state.createdInstance[InstanceInput.Rack],
-                'rackU':this.state.createdInstance[InstanceInput.RackU],
+                'rack_u':this.state.createdInstance[InstanceInput.RackU],
                 'owner':this.state.createdInstance[InstanceInput.Owner],
                 'comment':this.state.createdInstance[InstanceInput.Comment],
             }
@@ -134,7 +133,7 @@ export default class InstancesView extends React.Component {
                             'model':'',
                             'hostname':'',
                             'rack':'',
-                            'rackU':'',
+                            'rack_u':'',
                             'owner':'',
                             'comment':'',
                         },
@@ -150,10 +149,12 @@ export default class InstancesView extends React.Component {
         axios.post(
             getURL(instancesMainPath, InstanceCommand.edit),
             {
+                'rackOriginal':this.state.originalRack,
+                'rack_uOriginal':this.state.originalrack_u,
                 'model':this.state.detailedValues[InstanceInput.Model],
                 'hostname':this.state.detailedValues[InstanceInput.Hostname],
                 'rack':this.state.detailedValues[InstanceInput.Rack],
-                'rackU':this.state.detailedValues[InstanceInput.RackU],
+                'rack_u':this.state.detailedValues[InstanceInput.rack_u],
                 'owner':this.state.detailedValues[InstanceInput.Owner],
                 'comment':this.state.detailedValues[InstanceInput.Comment],
             }
@@ -164,7 +165,7 @@ export default class InstancesView extends React.Component {
                 'model':'',
                 'hostname':'',
                 'rack':'',
-                'rackU':'',
+                'rack_u':'',
                 'owner':'',
                 'comment':'',
             },
@@ -178,23 +179,23 @@ export default class InstancesView extends React.Component {
             getURL(instancesMainPath, InstanceCommand.delete),
             {
                 'rack':this.state.originalRack,
-                'rackU':this.state.originalRackU,
+                'rack_u':this.state.originalrack_u,
             }
             ).then(response => console.log(response));
 
         this.setState({
             originalRack:'',
-            originalRackU:'',
+            originalrack_u:'',
             showDetailedView:false
         });
     }
 
-    detailViewInstance(rack, rackU) {
+    detailViewInstance(rack, rack_u) {
         axios.post(
             getURL(instancesMainPath, InstanceCommand.detailView),
             {
                 'rack':rack,
-                'rackU':rackU,
+                'rack_u':rack_u,
             }
             ).then(response => this.setState({ detailedValues: response.data['instances'][0], detailViewLoading:false}));
 
@@ -203,7 +204,7 @@ export default class InstancesView extends React.Component {
         });
     }
 
-    searchInstances(model, hostname, rack, rackU) {
+    searchInstances(model, hostname, rack, rack_u) {
         axios.post(
             getURL(instancesMainPath, InstanceCommand.search),
             {
@@ -211,7 +212,7 @@ export default class InstancesView extends React.Component {
                     'model':model,
                     'hostname':hostname,
                     'rack':rack,
-                    'rackU':rackU,
+                    'rack_u':rack_u,
                 }
             }
             ).then(response => this.setState({ items: response.data['instances'] }));
@@ -225,7 +226,7 @@ export default class InstancesView extends React.Component {
     }
 
     search(filters) {
-        this.searchInstances(filters['model'], filters['hostname'], filters['rack'], filters['rackU']);
+        this.searchInstances(filters['model'], filters['hostname'], filters['rack'], filters['rack_u']);
     }
 
     downloadTable() {
@@ -245,15 +246,15 @@ export default class InstancesView extends React.Component {
             showDetailedView: true,
             detailViewLoading:true,
             originalRack: this.state.items[id]['rack'],
-            originalRackU: this.state.items[id]['rackU'],
+            originalrack_u: this.state.items[id]['rack_u'],
         });
 
         var model = this.state.items[id]['model'];
         var hostname = this.state.items[id]['hostname'];
         var rack = this.state.items[id]['rack'];
-        var rackU = this.state.items[id]['rackU'];
+        var rack_u = this.state.items[id]['rack_u'];
 
-        this.detailViewInstance(model, hostname, rack, rackU);
+        this.detailViewInstance(rack, rack_u);
     }
 
     closeCreateModal() {

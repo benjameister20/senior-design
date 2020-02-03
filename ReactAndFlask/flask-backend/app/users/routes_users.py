@@ -149,15 +149,11 @@ def delete():
     request_data = request.get_json()
     print("request data")
     print(request_data)
-    user = request_data["user"]
-    username = user.username
-    print(username)
+    username = request_data["username"]
 
     user = USER_TABLE.get_user(username)
     if user is None:
-        return add_message_to_JSON(
-            response, "User <{}> does not exist".format(username)
-        )
+        return add_message_to_JSON(response, f"User <{username}> does not exist")
 
     USER_TABLE.delete_user(user)
 
@@ -184,9 +180,7 @@ def edit():
 
     user = USER_TABLE.get_user(username_original)
     if user is None:
-        return add_message_to_JSON(
-            response, "User <{}> does not exist".format(username)
-        )
+        return add_message_to_JSON(response, f"User <{username}> does not exist")
 
     # check for change of password
     # if (
@@ -233,7 +227,7 @@ def authenticate():
 
     user = USER_TABLE.get_user(username)
     if user is None:
-        return add_message_to_JSON(answer, "User <{}> does not exist".format(username))
+        return add_message_to_JSON(answer, f"User <{username}> does not exist")
 
     auth_success = AUTH_MANAGER.compare_pw(attempted_password, user.password)
     if not auth_success:
@@ -272,9 +266,7 @@ def detail_view():
 
     user = USER_TABLE.get_user(username)
     if user is None:
-        return add_message_to_JSON(
-            response, "User <{}> does not exist".format(username)
-        )
+        return add_message_to_JSON(response, f"User <{username}> does not exist")
 
     response["user"] = user.make_json()
 

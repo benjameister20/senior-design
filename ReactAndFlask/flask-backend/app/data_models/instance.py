@@ -42,5 +42,15 @@ class Instance:
             "comment": self.comment,
         }
 
+    def make_json_with_model_name(self, model_name):
+        return {
+            "model_id": model_name,
+            "hostname": self.hostname,
+            "rack_label": f"{self.rack_label}",
+            "rack_u": self.rack_u,
+            "owner": self.owner,
+            "comment": self.comment,
+        }
+
     def __repr__(self) -> str:
         return f"Instance {self.hostname} {self.rack_label}"

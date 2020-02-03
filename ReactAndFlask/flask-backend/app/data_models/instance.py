@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Any, Dict, List, Optional
 
 from app.main.types import JSON
 
@@ -32,6 +32,17 @@ class Instance:
         self.owner: Optional[str] = owner
         self.comment: Optional[str] = comment
 
+    @classmethod
+    def headers(cls) -> List[str]:
+        return [
+            "model_id",
+            "hostname",
+            "rack_label",
+            "rack_u",
+            "owner",
+            "comment",
+        ]
+
     def make_json(self) -> JSON:
         return {
             "model_id": self.model_id,
@@ -41,6 +52,24 @@ class Instance:
             "owner": self.owner,
             "comment": self.comment,
         }
+
+    @classmethod
+    def from_csv(cls, csv_row: Dict[str, Any]) -> "Instance":
+        return Instance(
+            model_id=csv_row["model_id"],
+            hostname=csv_row["hostname"],
+            rack_label=csv_row["rack"],
+            rack_u=csv_row["rack_position"],
+            owner=csv_row["owner"],
+            comment=csv_row["comment"],
+        )
+
+    def to_csv(self) -> str:
+        """ Get the model as a csv row """
+        json_data: JSON = self.make_json()
+        values: List[str] = list(map(lambda x: json_data[x], Instance.headers()))
+
+        return ",".join(values)
 
     def __repr__(self) -> str:
         return f"Instance {self.hostname} {self.rack_label}"

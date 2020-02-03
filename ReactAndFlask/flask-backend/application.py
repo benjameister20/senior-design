@@ -3,6 +3,7 @@ from http import HTTPStatus
 from app.dal.database import db
 from app.dal.routes import database
 from app.data_models.user import User
+from app.import_export.routes import import_export
 from app.instances.routes_instances import instances
 from app.models.routes_models import models
 from app.racks.racks_routes import racks
@@ -19,7 +20,6 @@ AUTH_MANAGER = AuthManager()
 
 class FlaskApp(Flask):
     def make_response(self, rv):
-        print(rv)
         if isinstance(rv, dict):
             rv = jsonify(rv)
         elif (
@@ -27,6 +27,7 @@ class FlaskApp(Flask):
             and isinstance(rv[0], dict)
             and isinstance(rv[1], HTTPStatus)
         ):
+            rv[0]["status"] = rv[1]
             rv = jsonify(rv[0]), rv[1]
         elif isinstance(rv, HTTPStatus):
             rv = jsonify({"status": rv}), rv
@@ -60,6 +61,7 @@ def _register_routes() -> None:
     application.register_blueprint(racks)
     application.register_blueprint(database)
     application.register_blueprint(stats)
+    application.register_blueprint(import_export)
 
 
 def init() -> None:

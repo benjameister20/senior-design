@@ -149,7 +149,7 @@ def new_model():
         vendor: str = data["vendor"]
         model_number: str = data["model_number"]
         height: int = data["height"]
-        eth_ports: Optional[int] = data.get("eth_ports")
+        ethernet_ports: Optional[int] = data.get("ethernet_ports")
         power_ports: Optional[int] = data.get("power_ports")
         cpu: Optional[str] = data.get("cpu")
         memory: Optional[int] = data.get("memory")
@@ -161,7 +161,7 @@ def new_model():
             vendor=vendor,
             model_number=model_number,
             height=height,
-            eth_ports=eth_ports,
+            ethernet_ports=ethernet_ports,
             power_ports=power_ports,
             cpu=cpu,
             memory=memory,

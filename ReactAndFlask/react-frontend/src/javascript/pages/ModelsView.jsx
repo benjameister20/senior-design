@@ -178,22 +178,6 @@ export default class ModelsView extends React.Component {
                         this.setState({ showStatus: true, statusMessage: response.data.message, statusSeverity:"error" })
                     }
                 });
-
-        this.setState({
-            createdModel : {
-                'vendor':'',
-                'model_number':'',
-                'height':'',
-                'display_color':'',
-                'eth_ports':'',
-                'power_ports':'',
-                'cpu':'',
-                'memory':'',
-                'storage':'',
-                'comments':'',
-            },
-            showCreateModal:false,
-        });
     }
 
     editModel() {
@@ -215,28 +199,35 @@ export default class ModelsView extends React.Component {
                 'storage':this.state.detailedValues[ModelInput.Storage],
                 'comments':this.state.detailedValues[ModelInput.Comment],
             }
-            ).then(response => console.log(response) );
-
-        this.setState({
-            originalVendor:'',
-            originalModelNumber:'',
-            originalHeight:'',
-            detailedValues : {
-                'vendor':'',
-                'model_number':'',
-                'height':'',
-                'display_color':'',
-                'eth_ports':'',
-                'power_ports':'',
-                'cpu':'',
-                'memory':'',
-                'storage':'',
-                'comments':'',
-            },
-            showDetailedView:false
-        });
-
-        this.getVendorList();
+            ).then(
+                response => {
+                    if (response.data.message === 'success') {
+                        this.setState({
+                            showStatus: true,
+                            statusMessage:'success',
+                            statusMessage: "Successfully edited model",
+                            originalVendor:'',
+                            originalModelNumber:'',
+                            originalHeight:'',
+                            detailedValues : {
+                                'vendor':'',
+                                'model_number':'',
+                                'height':'',
+                                'display_color':'',
+                                'eth_ports':'',
+                                'power_ports':'',
+                                'cpu':'',
+                                'memory':'',
+                                'storage':'',
+                                'comments':'',
+                            },
+                            showDetailedView:false
+                        });
+                        this.getVendorList();
+                    } else {
+                        this.setState({ showStatus: true, statusMessage: response.data.message, statusSeverity:"error" })
+                    }
+                });
     }
 
 
@@ -247,24 +238,32 @@ export default class ModelsView extends React.Component {
                 'vendor':this.state.originalVendor,
                 'model_number':this.state.originalModelNumber,
             }
-            ).then(response => console.log(response));
-
-        this.setState({
-            detailedValues : {
-                'vendor':'',
-                'model_number':'',
-                'height':'',
-                'display_color':'',
-                'eth_ports':'',
-                'power_ports':'',
-                'cpu':'',
-                'memory':'',
-                'storage':'',
-                'comments':'',
-            },
-            showDetailedView:false
-        });
-        this.getVendorList();
+            ).then(
+                response => {
+                    if (response.data.message === 'success') {
+                        this.setState({
+                            showStatus: true,
+                            statusMessage:'success',
+                            statusMessage: "Successfully deleted model",
+                            detailedValues : {
+                                'vendor':'',
+                                'model_number':'',
+                                'height':'',
+                                'display_color':'',
+                                'eth_ports':'',
+                                'power_ports':'',
+                                'cpu':'',
+                                'memory':'',
+                                'storage':'',
+                                'comments':'',
+                            },
+                            showDetailedView:false
+                        });
+                        this.getVendorList();
+                    } else {
+                        this.setState({ showStatus: true, statusMessage: response.data.message, statusSeverity:"error" })
+                    }
+                });
     }
 
     detailViewModel(vendor, modelNum) {
@@ -337,7 +336,6 @@ export default class ModelsView extends React.Component {
         var modelNum = this.state.items[id]['model_number'];
 
         this.detailViewModel(vendor, modelNum);
-        //this.setState({ detailedValues: Constants.testModelArray[id], detailViewLoading:false})
     }
 
     closeCreateModal() {

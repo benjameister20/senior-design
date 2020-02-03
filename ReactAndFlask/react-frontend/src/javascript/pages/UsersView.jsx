@@ -145,18 +145,25 @@ export default class UsersView extends React.Component {
                 'email':this.state.detailedValues[UserInput.Email],
                 'privilege':this.state.detailedValues[UserInput.Privilege],
             }
-            ).then(response => console.log(response));
-
-        this.setState({
-            originalUsername:'',
-            detailedValues : {
-                'username':'',
-                'display_name':'',
-                'email':'',
-                'privilege':'',
-            },
-            showDetailedView:false,
-        });
+            ).then(response => {
+                if (response.data.message === 'success') {
+                    this.setState({
+                        showStatus: true,
+                        statusMessage: "Successfully created user",
+                        statusSeverity:"success",
+                        originalUsername:'',
+                        detailedValues : {
+                            'username':'',
+                            'display_name':'',
+                            'email':'',
+                            'privilege':'',
+                        },
+                        showDetailedView:false,
+                    })
+                } else {
+                    this.setState({ showStatus: true, statusMessage: response.data.message, statusSeverity:"error" })
+                }
+            });
     }
 
 
@@ -166,12 +173,19 @@ export default class UsersView extends React.Component {
             {
                 'username':this.state.originalUsername,
             }
-            ).then(response => console.log(response));
-
-        this.setState({
-            deleteUsername:'',
-            showDetailedView:false
-        });
+            ).then(response => {
+                if (response.data.message === 'success') {
+                    this.setState({
+                        showStatus: true,
+                        statusMessage: "Successfully created user",
+                        statusSeverity:"success",
+                        deleteUsername:'',
+                        showDetailedView:false,
+                    })
+                } else {
+                    this.setState({ showStatus: true, statusMessage: response.data.message, statusSeverity:"error" })
+                }
+            });
     }
 
     detailViewUser(username) {

@@ -158,19 +158,26 @@ export default class InstancesView extends React.Component {
                 'owner':this.state.detailedValues[InstanceInput.Owner],
                 'comment':this.state.detailedValues[InstanceInput.Comment],
             }
-            ).then(response => console.log(response));
-
-        this.setState({
-            detailedValues : {
-                'model':'',
-                'hostname':'',
-                'rack':'',
-                'rack_u':'',
-                'owner':'',
-                'comment':'',
-            },
-            showDetailedView:false,
-        });
+            ).then(response => {
+                if (response.data.message === 'success') {
+                    this.setState({
+                        showStatus: true,
+                        statusMessage: "Successfully created instance",
+                        statusSeverity:"success",
+                        detailedValues : {
+                            'model':'',
+                            'hostname':'',
+                            'rack':'',
+                            'rack_u':'',
+                            'owner':'',
+                            'comment':'',
+                        },
+                        showDetailedView:false,
+                    });
+                } else {
+                    this.setState({ showStatus: true, statusMessage: response.data.message, statusSeverity:"error" })
+                }
+            });
     }
 
 
@@ -181,13 +188,20 @@ export default class InstancesView extends React.Component {
                 'rack':this.state.originalRack,
                 'rack_u':this.state.originalrack_u,
             }
-            ).then(response => console.log(response));
-
-        this.setState({
-            originalRack:'',
-            originalrack_u:'',
-            showDetailedView:false
-        });
+            ).then(response => {
+                if (response.data.message === 'success') {
+                    this.setState({
+                        showStatus: true,
+                        statusMessage: "Successfully created instance",
+                        statusSeverity:"success",
+                        originalRack:'',
+                        originalrack_u:'',
+                        showDetailedView:false
+                    });
+                } else {
+                    this.setState({ showStatus: true, statusMessage: response.data.message, statusSeverity:"error" })
+                }
+            });
     }
 
     detailViewInstance(rack, rack_u) {

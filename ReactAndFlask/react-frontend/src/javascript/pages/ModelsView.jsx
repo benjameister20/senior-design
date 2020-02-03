@@ -373,7 +373,7 @@ export default class ModelsView extends React.Component {
     render() {
         return (
             <div>
-                {this.getVendorList()}
+                {(this.state.madeVendorQuery) ? null: this.getVendorList()}
                 <StatusDisplay
                     open={this.state.showStatus}
                     severity={this.state.statusSeverity}

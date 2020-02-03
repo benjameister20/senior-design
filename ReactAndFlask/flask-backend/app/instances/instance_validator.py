@@ -22,6 +22,10 @@ class InstanceValidator:
         if duplicate_hostname is not None:
             return f"An instance with hostname {duplicate_hostname.hostname} exists at location {duplicate_hostname.rack_label} U{duplicate_hostname.rack_u}"
 
+        host_pattern = re.compile("[a-zA-Z]+[A-Za-z0-9-]+[A-Za-z0-9]")
+        if host_pattern.fullmatch(instance.rack_u) is None:
+            return "Hostnames must start with a letter, only contain letters, numbers, and hyphens, and end with a letter or number."
+
         model_template = self.model_table.get_model(instance.model_id)
         if model_template is None:
             return "The model does not exist."

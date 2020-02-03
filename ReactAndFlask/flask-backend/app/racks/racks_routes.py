@@ -82,12 +82,16 @@ def get_rack_details():
         start_number: int = int(data["start_number"])
         stop_number: int = int(data["stop_number"])
 
-        returnJSON = get_rack_range(
+        racks = get_rack_range(
             start_letter=start_letter,
             stop_letter=stop_letter,
             start_number=start_number,
             stop_number=stop_number,
         )
+
+        returnJSON = {}
+        returnJSON["racks"] = racks
+
         return addMessageToJSON(returnJSON, "success")
     except KeyError:
         return addMessageToJSON(returnJSON, "Unable to retrieve rack data.")

@@ -160,17 +160,17 @@ class InstanceManager:
     def get_model_id_from_name(self, model_name):
         data = model_name.split(" ")
         print(data)
-        # if len(data) != 2:
-        #     raise InvalidInputsError("Invalid model name.")
+        if len(data) != 2:
+            return None
 
-        # vendor = data[0]
-        # model_number = data[1]
-        if len(data) > 2:
-            raise InvalidInputsError("Invalid model name.")
         vendor = data[0]
-        model_number = ""
-        if len(data) > 1:
-            model_number = data[1]
+        model_number = data[1]
+        # if len(data) > 2:
+        #     raise InvalidInputsError("Invalid model name.")
+        # vendor = data[0]
+        # model_number = ""
+        # if len(data) > 1:
+        #     model_number = data[1]
 
         try:
             model_id = self.model_table.get_model_id_by_vendor_number(

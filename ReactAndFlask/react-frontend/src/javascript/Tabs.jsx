@@ -10,6 +10,7 @@ import RacksView from './pages/RacksView';
 import StatisticsView from './pages/StatisticsView';
 import Typography from '@material-ui/core/Typography';
 import { Privilege } from './enums/privilegeTypes.ts'
+import ErrorBoundry from './errors/ErrorBoundry';
 
 export default class TabViewer extends React.Component {
     constructor(props) {
@@ -28,6 +29,7 @@ export default class TabViewer extends React.Component {
     render() {
         return (
         <div>
+            <ErrorBoundry>
             <AppBar position="static">
                 <Tabs value={this.state.currentTabID} onChange={this.handleChange}>
                     <Tab value={0} style={{flexGrow: 1,}} label="Models"> </Tab>
@@ -90,6 +92,7 @@ export default class TabViewer extends React.Component {
             >
                 <StatisticsView token={this.props.token} privilege={this.props.privilege} />
             </Typography>
+            </ErrorBoundry>
         </div>);
     }
 }

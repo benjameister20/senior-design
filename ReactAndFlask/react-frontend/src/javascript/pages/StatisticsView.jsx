@@ -17,6 +17,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import StatusDisplay from '../helpers/StatusDisplay';
 import Paper from '@material-ui/core/Paper';
+import ErrorBoundray from '../errors/ErrorBoundry';
 
 
 const statsMainPath = 'stats/';
@@ -117,6 +118,7 @@ export default class StatisticsView extends React.Component {
     render() {
         return (
             <div>
+                <ErrorBoundray >
                 <StatusDisplay
                     open={this.state.showStatus}
                     severity={this.state.statusSeverity}
@@ -159,6 +161,7 @@ export default class StatisticsView extends React.Component {
                     </ExpansionPanelDetails>
                 </ExpansionPanel>
                 ))}
+                </ErrorBoundray>
             </div>
         );
     }

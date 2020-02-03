@@ -15,7 +15,7 @@ import * as Constants from '../Constants';
 import MuiAlert from '@material-ui/lab/Alert';
 import StatusDisplay from '../helpers/StatusDisplay';
 import Button from '@material-ui/core/Button';
-
+import ErrorBoundray from '../errors/ErrorBoundry';
 
 
 const inputs = [
@@ -286,6 +286,7 @@ export default class UsersView extends React.Component {
     render() {
         return (
             <div>
+                <ErrorBoundray>
                 <StatusDisplay
                     open={this.state.showStatus}
                     severity={this.state.statusSeverity}
@@ -338,6 +339,7 @@ export default class UsersView extends React.Component {
                     delete={this.deleteUser}
                     disabled={this.props.privilege==Privilege.USER}
                 />
+                </ErrorBoundray>
             </div>
         );
     }

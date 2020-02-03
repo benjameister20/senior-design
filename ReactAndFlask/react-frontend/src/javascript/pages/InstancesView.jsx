@@ -173,7 +173,7 @@ export default class InstancesView extends React.Component {
                 if (response.data.message === 'success') {
                     this.setState({
                         showStatus: true,
-                        statusMessage: "Successfully created instance",
+                        statusMessage: "Successfully edited instance",
                         statusSeverity:"success",
                         detailedValues : {
                             'model':'',
@@ -205,7 +205,7 @@ export default class InstancesView extends React.Component {
                 if (response.data.message === 'success') {
                     this.setState({
                         showStatus: true,
-                        statusMessage: "Successfully created instance",
+                        statusMessage: "Successfully deleted instance",
                         statusSeverity:"success",
                         originalRack:'',
                         originalrack_u:'',
@@ -258,7 +258,7 @@ export default class InstancesView extends React.Component {
             getURL(instancesMainPath, InstanceCommand.UPLOAD_FILE), data
             ).then(response => {
                 if (response.data.message === 'success') {
-                    this.setState({ showStatus: true, statusMessage: response.data.message, })
+                    this.setState({ showStatus: true, statusMessage: "Successfully added instances", statusSeverity:'success', showImportModal: false,})
                     this.searchInstances();
                 } else {
                     this.setState({ showStatus: true, statusMessage: response.data.message, statusSeverity:"error" })

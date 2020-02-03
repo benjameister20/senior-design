@@ -62,6 +62,11 @@ export default class UsersView extends React.Component {
             statusMessage:'',
             statusSeverity:'',
 
+            searchUsernm:'',
+            searchEml:'',
+            searchDspNm:'',
+            searchPriv:'',
+
             // vals for deleting a user
             deleteUsername:'',
 
@@ -128,7 +133,8 @@ export default class UsersView extends React.Component {
                             'privilege':'',
                         },
                         showCreateModal:false,
-                    })
+                    });
+                    this.searchUsers();
                 } else {
                     this.setState({ showStatus: true, statusMessage: response.data.message, statusSeverity:"error" })
                 }
@@ -159,7 +165,8 @@ export default class UsersView extends React.Component {
                             'privilege':'',
                         },
                         showDetailedView:false,
-                    })
+                    });
+                    this.searchUsers();
                 } else {
                     this.setState({ showStatus: true, statusMessage: response.data.message, statusSeverity:"error" })
                 }
@@ -181,7 +188,8 @@ export default class UsersView extends React.Component {
                         statusSeverity:"success",
                         deleteUsername:'',
                         showDetailedView:false,
-                    })
+                    });
+                    this.searchUsers();
                 } else {
                     this.setState({ showStatus: true, statusMessage: response.data.message, statusSeverity:"error" })
                 }
@@ -201,22 +209,28 @@ export default class UsersView extends React.Component {
         });
     }
 
-    searchUsers(username, email, display_name, privilege) {
+    searchUsers() {
         axios.post(
             getURL(usersMainPath, UserCommand.search),
             {
                 'filter':{
-                    'username':username,
-                    'email':email,
-                    'display_name':display_name,
-                    'privilege':privilege,
+                    'username':this.state.searchUsernm,
+                    'email':this.state.searchEml,
+                    'display_name':this.state.searchDspNm,
+                    'privilege':this.state.searchPriv,
                 }
             }
             ).then(response => this.setState({ items: (response.data['users']==null) ? [] : response.data['users'] }));
     }
 
     search(filters) {
-        this.searchUsers(filters['username'], filters['email'], filters['display_name'], filters['privilege']);
+        this.setState({
+            searchUsernm:filters['username'],
+            searchEml:filters['email'],
+            searchDspNm: filters['display_name'],
+            searchPriv:filters['privilege'],
+        });
+        this.searchUsers();
     }
 
     downloadTable() {
@@ -323,6 +337,7 @@ export default class UsersView extends React.Component {
                     loading={this.state.detailViewLoading}
                     edit={this.editUser}
                     delete={this.deleteUser}
+                    disabled={this.props.privilege==Privilege.USER}
                 />
             </div>
         );

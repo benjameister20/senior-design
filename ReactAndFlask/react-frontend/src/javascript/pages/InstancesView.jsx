@@ -70,6 +70,11 @@ export default class InstancesView extends React.Component {
             viewInstanceRack:'',
             viewInstancerack_u:'',
 
+            searchModel:'',
+            searchHostname:'',
+            searchRack:'',
+            searchRackU:'',
+
             // csv data
             csvData:[],
             importedFile:null,
@@ -222,15 +227,15 @@ export default class InstancesView extends React.Component {
         });
     }
 
-    searchInstances(model, hostname, rack, rack_u) {
+    searchInstances() {
         axios.post(
             getURL(instancesMainPath, InstanceCommand.search),
             {
                 'filter':{
-                    'model':model,
-                    'hostname':hostname,
-                    'rack':rack,
-                    'rack_u':rack_u,
+                    'model':this.state.searchModel,
+                    'hostname':this.state.searchHostname,
+                    'rack':this.state.searchRack,
+                    'rack_u':this.state.searchRackU,
                 }
             }
             ).then(response => this.setState({ items: response.data['instances'] }));
@@ -252,7 +257,13 @@ export default class InstancesView extends React.Component {
     }
 
     search(filters) {
-        this.searchInstances(filters['model'], filters['hostname'], filters['rack'], filters['rack_u']);
+        this.setState({
+            searchModel:filters['model'],
+            searchHostname:filters['hostname'],
+            searchRack:filters['rack'],
+            searchRack:filters['rack_u'],
+        });
+        this.searchInstances();
     }
 
     downloadTable() {
@@ -384,6 +395,7 @@ export default class InstancesView extends React.Component {
                     loading={this.state.detailViewLoading}
                     edit={this.editInstance}
                     delete={this.deleteInstance}
+                    disabled={this.props.privilege==Privilege.USER}
                 />
             </div>
         );

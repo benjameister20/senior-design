@@ -109,15 +109,15 @@ class InstanceManager:
     def get_possible_models_with_filters(self, prefix_json):
         try:
             return_list = []
-            prefix = prefix_json.get("input")
-            if prefix is None:
-                prefix = ""
+            # prefix = prefix_json.get("input")
+            # if prefix is None:
+            #     prefix = ""
 
             model_list = self.model_table.get_all_models()
             for model in model_list:
                 model_name = model.vendor + " " + model.model_number
-                if model_name.startswith(prefix):
-                    return_list.append(model_name)
+                # if model_name.startswith(prefix):
+                return_list.append(model_name)
 
             return return_list
         except:

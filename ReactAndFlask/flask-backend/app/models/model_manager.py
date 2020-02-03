@@ -115,14 +115,14 @@ class ModelManager:
     def get_distinct_vendors_with_prefix(self, prefix_json):
         try:
             return_list = []
-            prefix = prefix_json.get("input")
-            if prefix is None:
-                prefix = ""
+            # prefix = prefix_json.get("input")
+            # if prefix is None:
+            #     prefix = ""
 
             vendor_list = self.table.get_distinct_vendors()
             for vendor in vendor_list:
-                if vendor.startswith(prefix):
-                    return_list.append(vendor)
+                # if vendor.startswith(prefix):
+                return_list.append(vendor)
 
             return return_list
         except:

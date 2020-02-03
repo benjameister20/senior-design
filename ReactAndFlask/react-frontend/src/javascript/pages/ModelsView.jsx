@@ -212,7 +212,7 @@ export default class ModelsView extends React.Component {
                     if (response.data.message === 'success') {
                         this.setState({
                             showStatus: true,
-                            statusMessage:'success',
+                            statusSeverity:'success',
                             statusMessage: "Successfully edited model",
                             originalVendor:'',
                             originalModelNumber:'',

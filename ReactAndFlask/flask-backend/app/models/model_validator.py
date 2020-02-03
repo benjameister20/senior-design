@@ -17,13 +17,19 @@ class ModelValidator:
             return "This vendor and model number combination already exists."
 
         pattern = re.compile("[0-9]+")
-        if pattern.fullmatch(model.height) is None:
+        if pattern.fullmatch(str(model.height)) is None:
             return "The value for model height must be a positive integer."
-        if model.eth_ports != "" and pattern.fullmatch(model.eth_ports) is None:
+        if (
+            model.ethernet_ports != ""
+            and pattern.fullmatch(str(model.ethernet_ports)) is None
+        ):
             return "The value for ethernet ports must be a positive integer."
-        if model.power_ports != "" and pattern.fullmatch(model.power_ports) is None:
+        if (
+            model.power_ports != ""
+            and pattern.fullmatch(str(model.power_ports)) is None
+        ):
             return "The value for ethernet ports must be a positive integer."
-        if model.memory != "" and pattern.fullmatch(model.memory) is None:
+        if model.memory != "" and pattern.fullmatch(str(model.memory)) is None:
             return "The value for memory must be a positive integer in terms of GB."
 
         return "success"

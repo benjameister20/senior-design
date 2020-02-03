@@ -23,6 +23,7 @@ class ModelManager:
             else:
                 raise InvalidInputsError(create_validation_result)
         except:
+            raise
             raise InvalidInputsError("Unable to add the new model")
 
     def delete_model(self, model_data):
@@ -141,8 +142,8 @@ class ModelManager:
             print(height)
             display_color = self.check_null(model_data.get("display_color"))
             print(display_color)
-            eth_ports = int(self.check_null(model_data.get("eth_ports")))
-            print(eth_ports)
+            ethernet_ports = int(self.check_null(model_data.get("ethernet_ports")))
+            print(ethernet_ports)
             pow_ports = int(self.check_null(model_data.get("power_ports")))
             print(pow_ports)
             cpu = self.check_null(model_data.get("cpu"))
@@ -169,13 +170,12 @@ class ModelManager:
             raise InvalidInputsError("Must provide a height")
 
         print("inputs validated")
-
         return Model(
             vendor=vendor,
             model_number=model_number,
             height=height,
             display_color=display_color,
-            eth_ports=eth_ports,
+            ethernet_ports=ethernet_ports,
             power_ports=pow_ports,
             cpu=cpu,
             memory=memory,

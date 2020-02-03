@@ -14,6 +14,12 @@ class InstanceValidator:
         if self.rack_table.get_rack(instance.rack_label) is None:
             return "The requested rack does not exist. Instances must be created on preexisting racks"
 
+        duplicate_hostname = self.instance_table.get_instance_by_hostname(
+            instance.hostname
+        )
+        if duplicate_hostname is not None:
+            return f"An instance with hostname {duplicate_hostname.hostname} exists at location {duplicate_hostname.rack_label} U{duplicate_hostname.rack_u}"
+
         model_template = self.model_table.get_model(instance.model_id)
         if model_template is None:
             return "The model does not exist."

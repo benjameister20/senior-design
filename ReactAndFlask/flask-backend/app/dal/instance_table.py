@@ -58,6 +58,16 @@ class InstanceTable:
 
         return instance_entry.make_instance()
 
+    def get_instance_by_hostname(self, hostname):
+        """ Get the instance for the given hostname """
+        instance_entry: InstanceEntry = InstanceEntry.query.filter_by(
+            hostname=hostname
+        ).first()
+        if instance_entry is None:
+            return None
+
+        return instance_entry.make_instance()
+
     def add_instance(self, instance: Instance) -> None:
         """ Adds an instance to the database """
         instance_entry: InstanceEntry = InstanceEntry(instance=instance)

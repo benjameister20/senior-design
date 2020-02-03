@@ -81,12 +81,6 @@ def search():
     except InvalidInputsError as e:
         return addMessageToJSON(returnJSON, e.message)
 
-    returnJSON = addInstancesTOJSON(
-        addMessageToJSON(returnJSON, "success"),
-        list(map(lambda x: x.make_json(), instance_list)),
-    )
-    return returnJSON
-
 
 @instances.route("/instances/edit", methods=["POST"])
 def edit():
@@ -117,7 +111,12 @@ def detail_view():
         instance_data = request.get_json()
         instance = INSTANCE_MANAGER.detail_view(instance_data)
         return addInstancesTOJSON(
-            addMessageToJSON(returnJSON, "success"), [instance.make_json()]
+            addMessageToJSON(returnJSON, "success"),
+            [
+                instance.make_json_with_model_name(
+                    INSTANCE_MANAGER.get_model_name_from_id(instance.model_id)
+                )
+            ],
         )
     except InvalidInputsError as e:
         return addMessageToJSON(returnJSON, e.message)

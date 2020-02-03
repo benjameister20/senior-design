@@ -82,6 +82,9 @@ export default class ModelsView extends React.Component {
 
             // searching a model
             searchText:"",
+            searchVendor:'',
+            searchModelNum:'',
+            searchHeight:'',
 
             // csv data
             csvData:[],
@@ -178,6 +181,7 @@ export default class ModelsView extends React.Component {
                             showCreateModal:false,
                         });
                         this.getVendorList();
+                        this.searchModels();
                     } else {
                         this.setState({ showStatus: true, statusMessage: response.data.message, statusSeverity:"error" })
                     }
@@ -228,6 +232,7 @@ export default class ModelsView extends React.Component {
                             showDetailedView:false
                         });
                         this.getVendorList();
+                        this.searchModels();
                     } else {
                         this.setState({ showStatus: true, statusMessage: response.data.message, statusSeverity:"error" })
                     }
@@ -264,6 +269,7 @@ export default class ModelsView extends React.Component {
                             showDetailedView:false
                         });
                         this.getVendorList();
+                        this.searchModels();
                     } else {
                         this.setState({ showStatus: true, statusMessage: response.data.message, statusSeverity:"error" })
                     }
@@ -285,14 +291,14 @@ export default class ModelsView extends React.Component {
         });
     }
 
-    searchModels(vendor, modelNum, height) {
+    searchModels() {
         axios.post(
             getURL(modelsMainPath, ModelCommand.search),
             {
                 'filter':{
-                    'vendor':vendor,
-                    'model_number':modelNum,
-                    'height':height,
+                    'vendor':this.state.searchVendor,
+                    'model_number':this.state.searchModelNum,
+                    'height':this.state.searchHeight,
                 }
             }
             ).then(response => this.setState({ items: response.data['models'] }));
@@ -328,7 +334,8 @@ export default class ModelsView extends React.Component {
     }
 
     search(filters) {
-        this.searchModels(filters['vendor'], filters['model_number'], filters['height']);
+        this.setState({ searchVendor:filters['vendor'], searchModelNum:filters['model_number'], searchHeight:filters['height']})
+        this.searchModels();
     }
 
     openCreateModal() {

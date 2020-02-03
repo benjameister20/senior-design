@@ -68,6 +68,8 @@ def search():
     returnJSON = createJSON()
 
     filter = request.json["filter"]
+    print("FILTER")
+    print(filter)
     try:
         limit = int(request.json["limit"])
     except:

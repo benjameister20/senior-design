@@ -72,6 +72,7 @@ export default class InstancesView extends React.Component {
 
             // csv data
             csvData:[],
+            importedFile:null,
 
             // detailed view
             showDetailedView: false,
@@ -106,6 +107,9 @@ export default class InstancesView extends React.Component {
         this.updateInstanceEdited = this.updateInstanceEdited.bind(this);
         this.closeShowStatus = this.closeShowStatus.bind(this);
         this.getModelList = this.getModelList.bind(this);
+        this.chooseFile = this.chooseFile.bind(this);
+        this.uploadFile = this.uploadFile.bind(this);
+        this.sendUploadedFile = this.sendUploadedFile.bind(this);
 
         axios.defaults.headers.common['token'] = this.props.token;
         axios.defaults.headers.common['privilege'] = this.props.privilege;
@@ -239,12 +243,25 @@ export default class InstancesView extends React.Component {
         this.setState({ madeModelQuery: true });
     }
 
+    sendUploadedFile(data) {
+        axios.post(
+            getURL(instancesMainPath, InstanceCommand.UPLOAD_FILE), data
+            ).then(response => this.setState({ showStatus: true, statusMessage: response.data.message, }));
+
+        this.setState({ madeVendorQuery: true });
+    }
+
     search(filters) {
         this.searchInstances(filters['model'], filters['hostname'], filters['rack'], filters['rack_u']);
     }
 
     downloadTable() {
-        this.csvLink.link.click();
+        axios.get(
+            getURL(instancesMainPath, InstanceCommand.EXPORT_FILE)
+            ).then(response => {
+                this.setState({ csvData: response.data.csvData });
+                this.csvLink.link.click();
+            });
     }
 
     openCreateModal() {
@@ -296,6 +313,16 @@ export default class InstancesView extends React.Component {
         this.setState({ showStatus: false })
     }
 
+    uploadFile() {
+        const data = new FormData();
+        data.append('file', this.state.importedFile);
+        this.sendUploadedFile(data);
+    }
+
+    chooseFile(event) {
+        this.setState({ importedFile: event.target.files[0] })
+    }
+
     render() {
         return (
             <div>
@@ -332,6 +359,8 @@ export default class InstancesView extends React.Component {
                 <UploadModal
                     showImportModal={this.state.showImportModal}
                     closeImportModal={this.closeImportModal}
+                    uploadFile={this.uploadFile}
+                    chooseFile={this.chooseFile}
                 /></div>):null
             }
                 <Filters

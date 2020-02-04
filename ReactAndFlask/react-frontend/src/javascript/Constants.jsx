@@ -3,10 +3,11 @@
  */
 
 export const localServerEndpoint = 'http://localhost:4010/';
+export const testServerEndpoint = ' https://parseltongue-finishinge-lfw68m.herokuapp.com/';
 export const devServerEndpoint = 'https://parseltongue-dev.herokuapp.com/';
 export const prodServerEndpoint = 'https://parseltongue-prod.herokuapp.com/';
 
-export const serverEndpoint = devServerEndpoint;
+export const serverEndpoint = testServerEndpoint;
 
 export const RackX = [
     'A', 'B', 'C', 'D', 'E',

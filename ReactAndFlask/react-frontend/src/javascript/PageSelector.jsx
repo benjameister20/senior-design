@@ -4,14 +4,18 @@ import TabViewer from "./Tabs";
 import axios from 'axios';
 import getURL from './helpers/functions/GetURL';
 
+const storedToken = 'token';
+const storedPrivilege = 'privilege';
+const storedLoggedIn = 'loggedIn';
+
 export default class PageSelector extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      token:'',
-      privilege:'',
-      loggedIn:false,
+      token:sessionStorage.getItem(storedToken) || '',
+      privilege:sessionStorage.getItem(storedPrivilege) || '',
+      loggedIn:sessionStorage.getItem(storedLoggedIn) || '',
     };
 
     this.login = this.login.bind(this);
@@ -19,6 +23,10 @@ export default class PageSelector extends React.Component {
   }
 
   login(token, privilege) {
+    sessionStorage.setItem(storedToken, token);
+    sessionStorage.setItem(storedPrivilege, privilege);
+    sessionStorage.setItem(storedLoggedIn, true);
+
     this.setState({
       token:token,
       privilege:privilege,
@@ -35,7 +43,7 @@ export default class PageSelector extends React.Component {
       loggedIn:false,
     });
 
-    //window.location.reload();
+    window.location.reload();
   }
 
   render() {

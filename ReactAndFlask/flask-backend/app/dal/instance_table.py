@@ -72,11 +72,11 @@ class InstanceTable:
         """ Get the instance for the given hostname """
         instance_entry: InstanceEntry = InstanceEntry.query.filter_by(
             hostname=hostname
-        ).first()
+        ).all()
         if instance_entry is None:
             return None
 
-        return instance_entry.make_instance()
+        return [entry.make_instance() for entry in instance_entry]
 
     def add_instance(self, instance: Instance) -> None:
         """ Adds an instance to the database """
@@ -91,7 +91,9 @@ class InstanceTable:
     def edit_instance(self, instance: Instance, original_rack, original_rack_u) -> None:
         """ Updates a model to the database """
         # instance_entry: InstanceEntry = InstanceEntry(instance=instance)
-
+        print("ORIG + ORIG_U")
+        print(original_rack)
+        print(original_rack_u)
         try:
             # InstanceEntry.query.filter_by(
             #     rack_label=original_rack, rack_u=original_rack_u

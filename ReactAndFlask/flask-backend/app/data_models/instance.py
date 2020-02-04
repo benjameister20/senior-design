@@ -65,6 +65,8 @@ class Instance:
 
     @classmethod
     def from_csv(cls, csv_row: Dict[str, Any]) -> "Instance":
+        print("CSV_ROW")
+        print(csv_row)
         return Instance(
             model_id=csv_row["model_id"],
             hostname=csv_row["hostname"],

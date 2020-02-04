@@ -56,7 +56,7 @@ def _get_csv():
         raise FileNotFoundError
 
     # Convert to string stream and return csv reader object
-    stream: io.StringIO = io.StringIO(f.stream.read().decode("UTF8"), newline=None)
+    stream: io.StringIO = io.StringIO(f.stream.read().decode("utf-8-sig"), newline=None)
     return csv.reader(stream)
 
 
@@ -95,14 +95,19 @@ def _parse_model_csv(csv_input) -> None:
 def _parse_instance_csv(csv_input) -> None:
     instance_table: InstanceTable = InstanceTable()
     model_table: ModelTable = ModelTable()
-
+    print("CSV_INPUT")
+    print(csv_input)
     # Extract header row
     try:
         headers: List[str] = next(csv_input)
+        print("HEADERS")
+        print(headers)
     except StopIteration:
         raise InvalidFormatError(message="No header row.")
 
     for row in csv_input:
+        print("ROW")
+        print(row)
         # Ensure proper input length of csv row
         if len(row) != len(headers):
             raise TooFewInputsError(message=",".join(row))
@@ -125,10 +130,10 @@ def _parse_instance_csv(csv_input) -> None:
         values["model_id"] = model_id
 
         # Create the instance; Raise an exception if some columns are missing
-        try:
-            instance: Instance = Instance.from_csv(csv_row=values)
-        except KeyError:
-            raise InvalidFormatError(message="Columns are missing.")
+        # try:
+        instance: Instance = Instance.from_csv(csv_row=values)
+        # except KeyError:
+        #     raise InvalidFormatError(message="Columns are missing.")
 
         # Write to database
         try:

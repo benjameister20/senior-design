@@ -18,11 +18,12 @@ class InstanceValidator:
         if self.rack_table.get_rack(instance.rack_label) is None:
             return "The requested rack does not exist. Instances must be created on preexisting racks"
 
-        duplicate_hostname = self.instance_table.get_instance_by_hostname(
+        duplicate_hostname_list = self.instance_table.get_instance_by_hostname(
             instance.hostname
         )
-        if duplicate_hostname is not None:
-            return f"An instance with hostname {duplicate_hostname.hostname} exists at location {duplicate_hostname.rack_label} U{duplicate_hostname.rack_u}"
+
+        if duplicate_hostname_list is not None and len(duplicate_hostname_list) > 0:
+            return f"An instance with hostname {duplicate_hostname_list[0].hostname} exists at location {duplicate_hostname_list[0].rack_label} U{duplicate_hostname_list[0].rack_u}"
 
         if len(instance.hostname) > 64:
             return "Hostnames must be 64 characters or less"
@@ -65,6 +66,68 @@ class InstanceValidator:
                 and current_instance_top <= instance_top
             ):
                 return self.return_conflict(current_instance)
+
+        return "success"
+
+    def edit_instance_validation(self, instance, original_rack, original_rack_u):
+        if self.rack_table.get_rack(instance.rack_label) is None:
+            return "The requested rack does not exist. Instances must be created on preexisting racks"
+
+        duplicate_hostname_list = self.instance_table.get_instance_by_hostname(
+            instance.hostname
+        )
+
+        # print("DUPLICATE LIST LEN")
+        # print(len(duplicate_hostname_list))
+
+        if len(duplicate_hostname_list) > 1:
+            return f"An instance with hostname {duplicate_hostname_list[0].hostname} exists at location {duplicate_hostname_list[0].rack_label} U{duplicate_hostname_list[0].rack_u}"
+
+        if len(instance.hostname) > 64:
+            return "Hostnames must be 64 characters or less"
+
+        host_pattern = re.compile("[a-zA-Z]+[A-Za-z0-9-]+[A-Za-z0-9]")
+        if host_pattern.fullmatch(instance.hostname) is None:
+            return "Hostnames must start with a letter, only contain letters, numbers, and hyphens, and end with a letter or number."
+
+        model_template = self.model_table.get_model(instance.model_id)
+        if model_template is None:
+            return "The model does not exist."
+
+        pattern = re.compile("[0-9]+")
+        if pattern.fullmatch(instance.rack_u) is None:
+            return "The value for Rack U must be a positive integer."
+
+        if instance.owner != "" and self.user_table.get_user(instance.owner) is None:
+            return "The owner must be an existing user on the system. Please enter the username of an existing user."
+
+        instance_bottom = int(instance.rack_u)
+        instance_top = instance_bottom + int(model_template.height) - 1
+
+        if instance_top > self.rack_height:
+            return "The placement of the instance exceeds the height of the rack."
+
+        instance_list = self.instance_table.get_instances_by_rack(instance.rack_label)
+        if instance_list is None:
+            return "success"
+
+        for current_instance in instance_list:
+            if not (
+                current_instance.rack_u == original_rack_u
+                and current_instance.rack_label == original_rack
+            ):
+                model = self.model_table.get_model(instance.model_id)
+                current_instance_top = current_instance.rack_u + model.height - 1
+                if (
+                    current_instance.rack_u >= instance_bottom
+                    and current_instance.rack_u <= instance_top
+                ):
+                    return self.return_conflict(current_instance)
+                elif (
+                    current_instance_top >= instance_bottom
+                    and current_instance_top <= instance_top
+                ):
+                    return self.return_conflict(current_instance)
 
         return "success"
 

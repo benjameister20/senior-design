@@ -36,6 +36,25 @@ class ModelValidator:
 
         return "success"
 
+    def edit_model_validation(self, model):
+        pattern = re.compile("[0-9]+")
+        if pattern.fullmatch(str(model.height)) is None:
+            return "The value for model height must be a positive integer."
+        if (
+            model.ethernet_ports != ""
+            and pattern.fullmatch(str(model.ethernet_ports)) is None
+        ):
+            return "The value for ethernet ports must be a positive integer."
+        if (
+            model.power_ports != ""
+            and pattern.fullmatch(str(model.power_ports)) is None
+        ):
+            return "The value for ethernet ports must be a positive integer."
+        if model.memory != "" and pattern.fullmatch(str(model.memory)) is None:
+            return "The value for memory must be a positive integer in terms of GB."
+
+        return "success"
+
     def delete_model_validation(self, vendor, model_number):
         model_id = self.model_table.get_model_id_by_vendor_number(vendor, model_number)
         print("MODEL_ID")

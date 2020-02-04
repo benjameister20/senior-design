@@ -76,32 +76,34 @@ class ModelManager:
             )
 
     def edit_model(self, model_data):
-        try:
-            updated_model = self.make_model(model_data)
-            original_vendor = self.check_null(model_data.get("vendorOriginal"))
-            original_model_number = self.check_null(
-                model_data.get("model_numberOriginal")
-            )
-            original_height = self.check_null(model_data.get("heightOriginal"))
+        # try:
+        updated_model = self.make_model(model_data)
+        original_vendor = self.check_null(model_data.get("vendorOriginal"))
+        original_model_number = self.check_null(model_data.get("model_numberOriginal"))
+        original_height = self.check_null(model_data.get("heightOriginal"))
 
-            model_id = self.table.get_model_id_by_vendor_number(
-                original_vendor, original_model_number
-            )
-            if original_height != updated_model.height:
-                if model_id is None:
-                    return InvalidInputsError("Model not found")
-                deployed_instances = self.instance_table.get_instances_by_model_id(
-                    model_id
+        model_id = self.table.get_model_id_by_vendor_number(
+            original_vendor, original_model_number
+        )
+        if original_height != updated_model.height:
+            if model_id is None:
+                return InvalidInputsError("Model not found")
+            deployed_instances = self.instance_table.get_instances_by_model_id(model_id)
+            if deployed_instances is not None:
+                return InvalidInputsError(
+                    "Cannot edit height while instances are deployed"
                 )
-                if deployed_instances is not None:
-                    return InvalidInputsError(
-                        "Cannot edit height while instances are deployed"
-                    )
+        edit_validation_result = self.validate.edit_model_validation(
+            self.make_model(model_data)
+        )
+        if edit_validation_result == "success":
             self.table.edit_model(model_id, updated_model)
-        except:
-            raise InvalidInputsError(
-                "A failure occured while trying to edit the model."
-            )
+        else:
+            return InvalidInputsError(edit_validation_result)
+        # except:
+        #     raise InvalidInputsError(
+        #         "A failure occured while trying to edit the model."
+        #     )
 
     def get_models(self, filter, limit: int):
         vendor = filter.get("vendor")

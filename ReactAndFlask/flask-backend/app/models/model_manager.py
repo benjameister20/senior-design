@@ -161,8 +161,8 @@ class ModelManager:
                 memory = int(memory)
             storage = self.check_null(model_data.get("storage"))
             print(storage)
-            comments = self.check_null(model_data.get("comments"))
-            print(comments)
+            comment = self.check_null(model_data.get("comment"))
+            print(comment)
 
             print("got values")
         except:
@@ -189,7 +189,7 @@ class ModelManager:
             cpu=cpu,
             memory=memory,
             storage=storage,
-            comment=comments,
+            comment=comment,
         )
 
     def check_null(self, val):

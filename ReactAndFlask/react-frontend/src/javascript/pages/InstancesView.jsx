@@ -294,6 +294,7 @@ export default class InstancesView extends React.Component {
     }
 
     openCreateModal() {
+        this.getModelList();
         this.setState({showCreateModal: true});
     }
 

@@ -60,6 +60,8 @@ class ModelManager:
             )
 
     def detail_view(self, model_data):
+        print("model data")
+        print(model_data)
         vendor = self.check_null(model_data["vendor"])
         model_number = self.check_null(model_data["model_number"])
 

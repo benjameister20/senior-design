@@ -74,20 +74,20 @@ class InstanceManager:
         print(instance_data)
         try:
             original_rack = instance_data.get("rackOriginal")
-            original_rack_u = instance_data.get("rack_uOriginal")
-            if original_rack is None or original_rack_u is None:
+            original_rack_position = instance_data.get("rack_positionOriginal")
+            if original_rack is None or original_rack_position is None:
                 raise InvalidInputsError("Unable to find the instance to edit.")
 
             new_instance = self.make_instance(instance_data)
             edit_validation_result = self.validate.edit_instance_validation(
-                new_instance, original_rack, original_rack_u
+                new_instance, original_rack, original_rack_position
             )
         except InvalidInputsError as e:
             return e.message
-        except:
-            return "Unsuccessful"
         if edit_validation_result == "success":
-            self.table.edit_instance(new_instance, original_rack, original_rack_u)
+            self.table.edit_instance(
+                new_instance, original_rack, original_rack_position
+            )
         else:
             return InvalidInputsError(edit_validation_result)
 
@@ -98,7 +98,7 @@ class InstanceManager:
         model_name = filter.get("model")
 
         try:
-            if model_name is not None:
+            if model_name is not None and model_name != "":
                 model_id = self.get_model_id_from_name(model_name)
             else:
                 model_id = None
@@ -164,14 +164,9 @@ class InstanceManager:
         if hostname == "":
             return InvalidInputsError("Must provide a hostname")
         if rack == "":
-            return InvalidInputsError("Must provide a rack")
+            return InvalidInputsError("Must provide a rack location")
         if rack_position == "":
             return InvalidInputsError("Must provide a rack location")
-
-        try:
-            rack_position = int(rack_position)
-        except:
-            return InvalidInputsError("Rack position must be a number")
 
         print("about to make instance")
         return Instance(model_id, hostname, rack, rack_position, owner, comment)

@@ -289,7 +289,7 @@ export default class UsersView extends React.Component {
     }
 
     initialized() {
-        this.searchInstances();
+        this.searchUsers();
     }
 
     render() {

@@ -416,7 +416,7 @@ export default class ModelsView extends React.Component {
     }
 
     initialize() {
-        this.searchInstances();
+        this.searchModels();
         this.getVendorList();
     }
 

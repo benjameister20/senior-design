@@ -9,6 +9,7 @@ export const prodServerEndpoint = 'https://parseltongue-prod.herokuapp.com/';
 
 export const serverEndpoint = devServerEndpoint;
 
+
 export const RackX = [
     'A', 'B', 'C', 'D', 'E',
     'F', 'G', 'H', 'I', 'J',

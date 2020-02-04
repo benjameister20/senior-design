@@ -25,13 +25,13 @@ class Model:
         vendor: str,
         model_number: str,
         height: int,
-        display_color: Optional[str],
-        ethernet_ports: Optional[int],
-        power_ports: Optional[int],
-        cpu: Optional[str],
-        memory: Optional[int],
-        storage: Optional[str],
-        comment: Optional[str],
+        display_color: Optional[str] = None,
+        ethernet_ports: Optional[int] = None,
+        power_ports: Optional[int] = None,
+        cpu: Optional[str] = None,
+        memory: Optional[int] = None,
+        storage: Optional[str] = None,
+        comment: Optional[str] = None,
     ) -> None:
         self.vendor: str = vendor
         self.model_number: str = model_number

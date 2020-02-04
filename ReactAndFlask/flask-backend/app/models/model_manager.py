@@ -24,6 +24,8 @@ class ModelManager:
                 print("model added to table")
             else:
                 raise InvalidInputsError(create_validation_result)
+        except InvalidInputsError as e:
+            raise InvalidInputsError(e.message)
         except:
             raise InvalidInputsError("Unable to add the new model")
 
@@ -74,32 +76,34 @@ class ModelManager:
             )
 
     def edit_model(self, model_data):
-        try:
-            updated_model = self.make_model(model_data)
-            original_vendor = self.check_null(model_data.get("vendorOriginal"))
-            original_model_number = self.check_null(
-                model_data.get("model_numberOriginal")
-            )
-            original_height = self.check_null(model_data.get("heightOriginal"))
+        # try:
+        updated_model = self.make_model(model_data)
+        original_vendor = self.check_null(model_data.get("vendorOriginal"))
+        original_model_number = self.check_null(model_data.get("model_numberOriginal"))
+        original_height = self.check_null(model_data.get("heightOriginal"))
 
-            model_id = self.table.get_model_id_by_vendor_number(
-                original_vendor, original_model_number
-            )
-            if original_height != updated_model.height:
-                if model_id is None:
-                    return InvalidInputsError("Model not found")
-                deployed_instances = self.instance_table.get_instances_by_model_id(
-                    model_id
+        model_id = self.table.get_model_id_by_vendor_number(
+            original_vendor, original_model_number
+        )
+        if original_height != updated_model.height:
+            if model_id is None:
+                return InvalidInputsError("Model not found")
+            deployed_instances = self.instance_table.get_instances_by_model_id(model_id)
+            if deployed_instances is not None:
+                return InvalidInputsError(
+                    "Cannot edit height while instances are deployed"
                 )
-                if deployed_instances is not None:
-                    return InvalidInputsError(
-                        "Cannot edit height while instances are deployed"
-                    )
+        edit_validation_result = self.validate.edit_model_validation(
+            self.make_model(model_data)
+        )
+        if edit_validation_result == "success":
             self.table.edit_model(model_id, updated_model)
-        except:
-            raise InvalidInputsError(
-                "A failure occured while trying to edit the model."
-            )
+        else:
+            return InvalidInputsError(edit_validation_result)
+        # except:
+        #     raise InvalidInputsError(
+        #         "A failure occured while trying to edit the model."
+        #     )
 
     def get_models(self, filter, limit: int):
         vendor = filter.get("vendor")
@@ -141,30 +145,24 @@ class ModelManager:
             print(vendor)
             model_number = self.check_null(model_data.get("model_number"))
             print(model_number)
-            height = int(self.check_null(model_data.get("height")))
+            height = self.check_null(model_data.get("height"))
             print(height)
             display_color = self.check_null(model_data.get("display_color"))
             print(display_color)
             ethernet_ports = self.check_null(model_data.get("ethernet_ports"))
             print(ethernet_ports)
-            try:
-                ethernet_ports = int(ethernet_ports)
-            except:
-                ethernet_ports = None
+            if ethernet_ports != "":
+                ethernet_ports = ethernet_ports
             pow_ports = self.check_null(model_data.get("power_ports"))
             print(pow_ports)
-            try:
-                pow_ports = int(pow_ports)
-            except:
-                pow_ports = None
+            if pow_ports != "":
+                pow_ports = pow_ports
             cpu = self.check_null(model_data.get("cpu"))
             print(cpu)
             memory = self.check_null(model_data.get("memory"))
             print(memory)
-            try:
-                memory = int(memory)
-            except:
-                memory = None
+            if memory != "":
+                memory = memory
             storage = self.check_null(model_data.get("storage"))
             print(storage)
             comment = self.check_null(model_data.get("comment"))

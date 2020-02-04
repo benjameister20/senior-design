@@ -87,7 +87,7 @@ class InstanceTable:
         if instance_entry is None:
             return None
 
-        return instance_entry.make_instance()
+        return instance_entry
 
     def add_instance(self, instance: Instance) -> None:
         """ Adds an instance to the database """
@@ -104,7 +104,9 @@ class InstanceTable:
     ) -> None:
         """ Updates a model to the database """
         # instance_entry: InstanceEntry = InstanceEntry(instance=instance)
-
+        print("ORIG + ORIG_U")
+        print(original_rack)
+        print(original_rack_u)
         try:
             # InstanceEntry.query.filter_by(
             #     rack_label=original_rack, rack_position=original_rack_position

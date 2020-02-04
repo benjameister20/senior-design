@@ -12,30 +12,30 @@ class InstanceManager:
         self.validate = InstanceValidator()
 
     def create_instance(self, instance_data):
-        # try:
-        # try:
-        new_instance = self.make_instance(instance_data)
-        if type(new_instance) is InvalidInputsError:
-            return new_instance
-        print(new_instance)
-        # except InvalidInputsError as e:
-        #     return e.message
-        create_validation_result = "success"
-        print(create_validation_result)
-        # try:
-        create_validation_result = self.validate.create_instance_validation(
-            new_instance
-        )
-        # except InvalidInputsError as e:
-        #     return e.message
-        if create_validation_result == "success":
-            self.table.add_instance(new_instance)
-        else:
-            return InvalidInputsError(create_validation_result)
-        # except:
-        #     raise InvalidInputsError(
-        #         "An error occurred when attempting to create the instance."
-        #     )
+        try:
+            try:
+                new_instance = self.make_instance(instance_data)
+                if type(new_instance) is InvalidInputsError:
+                    return new_instance
+                print(new_instance)
+            except InvalidInputsError as e:
+                return e.message
+            create_validation_result = "success"
+            print(create_validation_result)
+            try:
+                create_validation_result = self.validate.create_instance_validation(
+                    new_instance
+                )
+            except InvalidInputsError as e:
+                return e.message
+            if create_validation_result == "success":
+                self.table.add_instance(new_instance)
+            else:
+                return InvalidInputsError(create_validation_result)
+        except:
+            raise InvalidInputsError(
+                "An error occurred when attempting to create the instance."
+            )
 
     def delete_instance(self, instance_data):
         rack = self.check_null(instance_data["rack"])
@@ -70,15 +70,29 @@ class InstanceManager:
         #     )
 
     def edit_instance(self, instance_data):
-        original_rack = instance_data.get("rackOriginal")
-        original_rack_position = instance_data.get("rack_positionOriginal")
-        if original_rack is None or original_rack_position is None:
-            raise InvalidInputsError("Unable to find the instance to edit.")
+        print("INSTANCE DATA")
+        print(instance_data)
+        try:
+            original_rack = instance_data.get("rackOriginal")
+            original_rack_u = instance_data.get("rack_uOriginal")
+            if original_rack is None or original_rack_u is None:
+                raise InvalidInputsError("Unable to find the instance to edit.")
 
-        new_instance = self.make_instance(instance_data)
+            new_instance = self.make_instance(instance_data)
+            edit_validation_result = self.validate.edit_instance_validation(
+                new_instance, original_rack, original_rack_u
+            )
+        except InvalidInputsError as e:
+            return e.message
+        except:
+            return "Unsuccessful"
+        if edit_validation_result == "success":
+            self.table.edit_instance(new_instance, original_rack, original_rack_u)
+        else:
+            return InvalidInputsError(edit_validation_result)
+
         if type(new_instance) is InvalidInputsError:
             return new_instance
-        self.table.edit_instance(new_instance, original_rack, original_rack_position)
 
     def get_instances(self, filter, limit: int):
         model_name = filter.get("model")

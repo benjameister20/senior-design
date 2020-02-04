@@ -72,17 +72,18 @@ class InstanceManager:
     def edit_instance(self, instance_data):
         print("INSTANCE DATA")
         print(instance_data)
-        original_rack = instance_data.get("rackOriginal")
-        original_rack_u = instance_data.get("rack_uOriginal")
-        if original_rack is None or original_rack_u is None:
-            raise InvalidInputsError("Unable to find the instance to edit.")
+        try:
+            original_rack = instance_data.get("rackOriginal")
+            original_rack_u = instance_data.get("rack_uOriginal")
+            if original_rack is None or original_rack_u is None:
+                raise InvalidInputsError("Unable to find the instance to edit.")
 
-        new_instance = self.make_instance(instance_data)
-        edit_validation_result = self.validate.edit_instance_validation(
-            new_instance, original_rack, original_rack_u
-        )
-        # except InvalidInputsError as e:
-        #     return e.message
+            new_instance = self.make_instance(instance_data)
+            edit_validation_result = self.validate.edit_instance_validation(
+                new_instance, original_rack, original_rack_u
+            )
+        except InvalidInputsError as e:
+            return e.message
         if edit_validation_result == "success":
             self.table.edit_instance(new_instance, original_rack, original_rack_u)
         else:

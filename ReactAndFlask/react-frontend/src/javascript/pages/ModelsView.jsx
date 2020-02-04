@@ -60,7 +60,7 @@ export default class ModelsView extends React.Component {
                 'cpu':'',
                 'memory':'',
                 'storage':'',
-                'comments':'',
+                'comment':'',
             },
             createdVendor:'',
             createdModelNum:'',
@@ -104,7 +104,7 @@ export default class ModelsView extends React.Component {
                 'cpu':'',
                 'memory':'',
                 'storage':'',
-                'comments':'',
+                'comment':'',
             },
             originalVendor:'',
             originalModelNumber:'',
@@ -139,6 +139,7 @@ export default class ModelsView extends React.Component {
         this.chooseFile = this.chooseFile.bind(this);
         this.uploadFile = this.uploadFile.bind(this);
         this.sendUploadedFile = this.sendUploadedFile.bind(this);
+        this.initialize = this.initialize.bind(this);
 
         axios.defaults.headers.common['token'] = this.props.token;
         axios.defaults.headers.common['privilege'] = this.props.privilege;
@@ -157,7 +158,7 @@ export default class ModelsView extends React.Component {
                 'cpu':this.state.createdModel[ModelInput.CPU],
                 'memory':this.state.createdModel[ModelInput.Memory],
                 'storage':this.state.createdModel[ModelInput.Storage],
-                'comments':this.state.createdModel[ModelInput.Comment],
+                'comment':this.state.createdModel[ModelInput.Comment],
             }
             ).then(
                 response => {
@@ -177,7 +178,7 @@ export default class ModelsView extends React.Component {
                                 'cpu':'',
                                 'memory':'',
                                 'storage':'',
-                                'comments':'',
+                                'comment':'',
                             },
                             showCreateModal:false,
                         });
@@ -206,7 +207,7 @@ export default class ModelsView extends React.Component {
                 'cpu':this.state.detailedValues[ModelInput.CPU],
                 'memory':this.state.detailedValues[ModelInput.Memory],
                 'storage':this.state.detailedValues[ModelInput.Storage],
-                'comments':this.state.detailedValues[ModelInput.Comment],
+                'comment':this.state.detailedValues[ModelInput.Comment],
             }
             ).then(
                 response => {
@@ -228,7 +229,7 @@ export default class ModelsView extends React.Component {
                                 'cpu':'',
                                 'memory':'',
                                 'storage':'',
-                                'comments':'',
+                                'comment':'',
                             },
                             showDetailedView:false
                         });
@@ -253,7 +254,7 @@ export default class ModelsView extends React.Component {
                     if (response.data.message === 'success') {
                         this.setState({
                             showStatus: true,
-                            statusMessage:'success',
+                            statusSeverity:'success',
                             statusMessage: "Successfully deleted model",
                             detailedValues : {
                                 'vendor':'',
@@ -265,7 +266,7 @@ export default class ModelsView extends React.Component {
                                 'cpu':'',
                                 'memory':'',
                                 'storage':'',
-                                'comments':'',
+                                'comment':'',
                             },
                             showDetailedView:false
                         });
@@ -414,11 +415,16 @@ export default class ModelsView extends React.Component {
         this.setState({ importedFile: event.target.files[0] })
     }
 
+    initialize() {
+        this.searchModels();
+        this.getVendorList();
+    }
+
     render() {
         return (
             <div>
                 <ErrorBoundray>
-                {(this.state.madeVendorQuery) ? null: this.getVendorList()}
+                {(this.state.madeVendorQuery) ? null: this.initialize()}
                 <StatusDisplay
                     open={this.state.showStatus}
                     severity={this.state.statusSeverity}

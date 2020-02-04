@@ -17,17 +17,18 @@ class ModelValidator:
         print(result)
         if result is not None:
             return "This vendor and model number combination already exists."
-
         pattern = re.compile("[0-9]+")
         if pattern.fullmatch(str(model.height)) is None:
             return "The value for model height must be a positive integer."
         if (
             model.ethernet_ports != ""
+            and model.ethernet_ports != None
             and pattern.fullmatch(str(model.ethernet_ports)) is None
         ):
             return "The value for ethernet ports must be a positive integer."
         if (
             model.power_ports != ""
+            and model.power_ports != None
             and pattern.fullmatch(str(model.power_ports)) is None
         ):
             return "The value for power ports must be a positive integer."
@@ -50,7 +51,11 @@ class ModelValidator:
             and pattern.fullmatch(str(model.power_ports)) is None
         ):
             return "The value for ethernet ports must be a positive integer."
-        if model.memory != "" and pattern.fullmatch(str(model.memory)) is None:
+        if (
+            model.memory != ""
+            and model.memory != None
+            and pattern.fullmatch(str(model.memory)) is None
+        ):
             return "The value for memory must be a positive integer in terms of GB."
 
         return "success"

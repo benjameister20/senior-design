@@ -15,8 +15,8 @@ class InstanceEntry(db.Model):
     hostname = db.Column(db.String(80))
     rack_label = db.Column(db.String(80))
     rack_u = db.Column(db.Integer)
-    owner = db.Column(db.String(80))
-    comment = db.Column(db.String(80))
+    owner = db.Column(db.String(80), nullable=True)
+    comment = db.Column(db.String(80), nullable=True)
 
     def __init__(self, instance: Instance):
         self.model_id = instance.model_id

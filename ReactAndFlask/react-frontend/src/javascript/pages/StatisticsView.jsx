@@ -152,7 +152,7 @@ export default class StatisticsView extends React.Component {
                                 <TableBody>
                                 {this.state.tableValues[key].map(row => (
                                     <TableRow>
-                                        {row.map(column => (<TableCell><span id={column}>{column}</span></TableCell>))}
+                                        {row.map(column => (<TableCell><span id={column}>{column + "%"}</span></TableCell>))}
                                     </TableRow>
                                 ))}
                                 </TableBody>

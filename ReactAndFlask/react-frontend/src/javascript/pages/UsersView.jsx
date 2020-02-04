@@ -86,6 +86,8 @@ export default class UsersView extends React.Component {
                 'privilege':'',
             },
             originalUsername:'',
+
+            initialized:false,
         };
 
         this.createUser = this.createUser.bind(this);
@@ -103,6 +105,7 @@ export default class UsersView extends React.Component {
         this.updateUserCreator = this.updateUserCreator.bind(this);
         this.updateUserEdited = this.updateUserEdited.bind(this);
         this.closeShowStatus = this.closeShowStatus.bind(this);
+        this.initialized = this.initialized.bind(this);
 
         axios.defaults.headers.common['token'] = this.props.token;
         axios.defaults.headers.common['privilege'] = this.props.privilege;
@@ -221,6 +224,8 @@ export default class UsersView extends React.Component {
                 }
             }
             ).then(response => this.setState({ items: (response.data['users']==null) ? [] : response.data['users'] }));
+
+        this.setState({ initialized: true})
     }
 
     search(filters) {
@@ -283,9 +288,14 @@ export default class UsersView extends React.Component {
         this.setState({ showStatus: false })
     }
 
+    initialized() {
+        this.searchUsers();
+    }
+
     render() {
         return (
             <div>
+                {(this.state.initialized) ? null: this.initialized()}
                 <ErrorBoundray>
                 <StatusDisplay
                     open={this.state.showStatus}

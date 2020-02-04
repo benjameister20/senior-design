@@ -117,6 +117,7 @@ export default class InstancesView extends React.Component {
         this.uploadFile = this.uploadFile.bind(this);
         this.sendUploadedFile = this.sendUploadedFile.bind(this);
         this.downloadTable = this.downloadTable.bind(this);
+        this.initialize = this.initialize.bind(this);
 
         axios.defaults.headers.common['token'] = this.props.token;
         axios.defaults.headers.common['privilege'] = this.props.privilege;
@@ -294,6 +295,7 @@ export default class InstancesView extends React.Component {
     }
 
     openCreateModal() {
+        this.getModelList();
         this.setState({showCreateModal: true});
     }
 
@@ -352,11 +354,16 @@ export default class InstancesView extends React.Component {
         this.setState({ importedFile: event.target.files[0] })
     }
 
+    initialize() {
+        this.searchInstances();
+        this.getModelList();
+    }
+
     render() {
         return (
             <div>
                 <ErrorBoundray>
-                {(this.state.madeModelQuery) ? null: this.getModelList()}
+                {(this.state.madeModelQuery) ? null: this.initialize()}
                 <StatusDisplay
                     open={this.state.showStatus}
                     severity={this.state.statusSeverity}

@@ -73,14 +73,17 @@ class InstanceValidator:
         if self.rack_table.get_rack(instance.rack_label) is None:
             return "The requested rack does not exist. Instances must be created on preexisting racks"
 
+        print("INSTANCE HOSTNAME")
+        print(instance.hostname)
         duplicate_hostname_list = self.instance_table.get_instance_by_hostname(
             instance.hostname
         )
+        print(duplicate_hostname_list)
 
         # print("DUPLICATE LIST LEN")
         # print(len(duplicate_hostname_list))
 
-        if len(duplicate_hostname_list) > 1:
+        if len(duplicate_hostname_list) >= 1:
             return f"An instance with hostname {duplicate_hostname_list[0].hostname} exists at location {duplicate_hostname_list[0].rack_label} U{duplicate_hostname_list[0].rack_u}"
 
         if len(instance.hostname) > 64:
@@ -95,7 +98,7 @@ class InstanceValidator:
             return "The model does not exist."
 
         pattern = re.compile("[0-9]+")
-        if pattern.fullmatch(instance.rack_u) is None:
+        if pattern.fullmatch(str(instance.rack_u)) is None:
             return "The value for Rack U must be a positive integer."
 
         if instance.owner != "" and self.user_table.get_user(instance.owner) is None:

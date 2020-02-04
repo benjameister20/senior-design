@@ -8,5 +8,5 @@ export enum ModelInput {
     CPU = 'cpu',
     Memory = 'memory',
     Storage = 'storage',
-    Comment = 'comments'
+    Comment = 'comment'
 }

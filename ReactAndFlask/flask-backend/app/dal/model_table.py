@@ -102,7 +102,7 @@ class ModelTable:
     def add_model(self, model: Model) -> None:
         """ Adds a model to the database """
         model_entry: ModelEntry = ModelEntry(model=model)
-        print("adding model")
+
         try:
             db.session.add(model_entry)
             db.session.commit()

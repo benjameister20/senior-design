@@ -46,7 +46,7 @@ The instances table has 8 columns:
 - `hostname` - host name
 - `row_letter` - row letter of rack
 - `row_number` - row number of rack
-- `rack_u` - vertical position in rack
+- `rack_position` - vertical position in rack
 - `owner` - owner username
 - `comment` - comment
 

@@ -23,7 +23,7 @@ class InstanceValidator:
         )
 
         if duplicate_hostname is not None:
-            return f"An instance with hostname {duplicate_hostname.hostname} exists at location {duplicate_hostname.rack_label} U{duplicate_hostname.rack_u}"
+            return f"An instance with hostname {duplicate_hostname.hostname} exists at location {duplicate_hostname.rack_label} U{duplicate_hostname.rack_position}"
 
         if len(instance.hostname) > 64:
             return "Hostnames must be 64 characters or less"
@@ -37,13 +37,13 @@ class InstanceValidator:
             return "The model does not exist."
 
         pattern = re.compile("[0-9]+")
-        if pattern.fullmatch(instance.rack_u) is None:
+        if pattern.fullmatch(instance.rack_position) is None:
             return "The value for Rack U must be a positive integer."
 
         if instance.owner != "" and self.user_table.get_user(instance.owner) is None:
             return "The owner must be an existing user on the system. Please enter the username of an existing user."
 
-        instance_bottom = int(instance.rack_u)
+        instance_bottom = int(instance.rack_position)
         instance_top = instance_bottom + int(model_template.height) - 1
 
         if instance_top > self.rack_height:
@@ -55,10 +55,10 @@ class InstanceValidator:
 
         for current_instance in instance_list:
             model = self.model_table.get_model(instance.model_id)
-            current_instance_top = current_instance.rack_u + model.height - 1
+            current_instance_top = current_instance.rack_position + model.height - 1
             if (
-                current_instance.rack_u >= instance_bottom
-                and current_instance.rack_u <= instance_top
+                current_instance.rack_position >= instance_bottom
+                and current_instance.rack_position <= instance_top
             ):
                 return self.return_conflict(current_instance)
             elif (
@@ -137,5 +137,5 @@ class InstanceValidator:
 
     def return_conflict(self, current_instance):
         result = f"The instance placement conflicts with instance with hostname {current_instance.hostname} "
-        result += f"on rack {current_instance.rack_label} at height U{current_instance.rack_u}."
+        result += f"on rack {current_instance.rack_label} at height U{current_instance.rack_position}."
         return result

@@ -11,7 +11,7 @@ class Instance:
         model_id (int): id of a model
         hostname (str): host name
         rack_label (str): label of rack of instance
-        rack_u (int): vertical position on rack
+        rack_position (int): vertical position on rack
         owner (Optional[str]): username of owner
         comment (Optional[str]): comment
     """
@@ -21,24 +21,25 @@ class Instance:
         model_id: int,
         hostname: str,
         rack_label: str,
-        rack_u: int,
+        rack_position: int,
         owner: Optional[str],
         comment: Optional[str],
     ) -> None:
         self.model_id: int = model_id
         self.hostname: str = hostname
         self.rack_label: str = rack_label
-        self.rack_u: int = rack_u
+        self.rack_position: int = rack_position
         self.owner: Optional[str] = owner
         self.comment: Optional[str] = comment
 
     @classmethod
     def headers(cls) -> List[str]:
         return [
-            "model_id",
             "hostname",
-            "rack_label",
-            "rack_u",
+            "rack",
+            "rack_position",
+            "vendor",
+            "model_number",
             "owner",
             "comment",
         ]
@@ -48,7 +49,7 @@ class Instance:
             "model": self.model_id,
             "hostname": self.hostname,
             "rack": f"{self.rack_label}",
-            "rack_u": self.rack_u,
+            "rack_position": self.rack_position,
             "owner": self.owner,
             "comment": self.comment,
         }
@@ -58,7 +59,7 @@ class Instance:
             "model": model_name,
             "hostname": self.hostname,
             "rack": f"{self.rack_label}",
-            "rack_u": self.rack_u,
+            "rack_position": self.rack_position,
             "owner": self.owner,
             "comment": self.comment,
         }
@@ -71,17 +72,21 @@ class Instance:
             model_id=csv_row["model_id"],
             hostname=csv_row["hostname"],
             rack_label=csv_row["rack"],
-            rack_u=csv_row["rack_position"],
+            rack_position=csv_row["rack_position"],
             owner=csv_row["owner"],
             comment=csv_row["comment"],
         )
 
-    def to_csv(self) -> str:
+    def to_csv(self, vendor: str, model_number: str) -> str:
         """ Get the model as a csv row """
         json_data: JSON = self.make_json()
-        values: List[str] = list(map(lambda x: str(json_data[x]), Instance.headers()))
+        json_data["vendor"] = vendor
+        json_data["model_number"] = model_number
 
-        return ",".join(values)
+        values: List[str] = list(map(lambda x: str(json_data[x]), Instance.headers()))
+        clean_values: List[str] = list(map(lambda x: "" if x == "None" else x, values))
+
+        return ",".join(clean_values)
 
     def __repr__(self) -> str:
         return f"Instance {self.hostname} {self.rack_label}"

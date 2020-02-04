@@ -175,7 +175,6 @@ def import_instances_csv():
     except (RackDoesNotExistError, ModelDoesNotExistError) as e:
         return {"message": f"{e.message}"}
     except DBWriteException:
-        raise
         return {"message": "Error writing to database."}
 
     return {"message": "success"}

@@ -62,14 +62,12 @@ def delete():
 @requires_auth(request)
 def search():
     """ Route for searching instances """
-
     global INSTANCE_MANAGER
     global instancesArr
     returnJSON = createJSON()
 
     filter = request.json["filter"]
-    print("FILTER")
-    print(filter)
+
     try:
         limit = int(request.json["limit"])
     except:
@@ -88,7 +86,6 @@ def search():
                 )
             ),
         )
-        print(returnJSON)
         return returnJSON
     except InvalidInputsError as e:
         return addMessageToJSON(returnJSON, e.message)
@@ -99,14 +96,11 @@ def search():
 @requires_role(request, "admin")
 def edit():
     """ Route for editing instances """
-
     global INSTANCE_MANAGER
     returnJSON = createJSON()
 
-    # try:
     instance_data = request.get_json()
-    print("REQUEST")
-    print(instance_data)
+
     error = INSTANCE_MANAGER.edit_instance(instance_data)
     if error is not None:
         return addMessageToJSON(returnJSON, error.message)

@@ -76,9 +76,11 @@ export default class RacksView extends React.Component {
                 console.log(response);
                 if (response.data.message === 'success') {
                     this.setState({ showStatus: true, statusMessage: "Success", statusSeverity:"success", showConfirmationBox:false });
-                    const win = window.open(response.data.link, '_blank');
-                    if (win != null) {
-                        win.focus();
+                    if (command == RackCommand.GET_RACK_DETAILS) {
+                        const win = window.open(response.data.link, '_blank');
+                        if (win != null) {
+                            win.focus();
+                        }
                     }
                 } else {
                     this.setState({ showStatus: true, statusMessage: response.data.message, statusSeverity:"error" })

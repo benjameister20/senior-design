@@ -79,10 +79,11 @@ class InstanceValidator:
             instance.hostname
         )
 
+        print(duplicate_hostname)
         if duplicate_hostname is not None:
             is_self = (
                 duplicate_hostname.rack_label == original_rack
-                and duplicate_hostname.rack_u == original_rack_u
+                and duplicate_hostname.rack_position == original_rack_u
             )
             if not is_self:
                 return f"An instance with hostname {duplicate_hostname.hostname} exists at location {duplicate_hostname.rack_label} U{duplicate_hostname.rack_u}"
@@ -99,13 +100,13 @@ class InstanceValidator:
             return "The model does not exist."
 
         pattern = re.compile("[0-9]+")
-        if pattern.fullmatch(str(instance.rack_u)) is None:
+        if pattern.fullmatch(str(instance.rack_position)) is None:
             return "The value for Rack U must be a positive integer."
 
         if instance.owner != "" and self.user_table.get_user(instance.owner) is None:
             return "The owner must be an existing user on the system. Please enter the username of an existing user."
 
-        instance_bottom = int(instance.rack_u)
+        instance_bottom = int(instance.rack_position)
         instance_top = instance_bottom + int(model_template.height) - 1
 
         if instance_top > self.rack_height:
@@ -117,14 +118,14 @@ class InstanceValidator:
 
         for current_instance in instance_list:
             if not (
-                current_instance.rack_u == original_rack_u
+                current_instance.rack_position == original_rack_u
                 and current_instance.rack_label == original_rack
             ):
                 model = self.model_table.get_model(instance.model_id)
-                current_instance_top = current_instance.rack_u + model.height - 1
+                current_instance_top = current_instance.rack_position + model.height - 1
                 if (
-                    current_instance.rack_u >= instance_bottom
-                    and current_instance.rack_u <= instance_top
+                    current_instance.rack_position >= instance_bottom
+                    and current_instance.rack_position <= instance_top
                 ):
                     return self.return_conflict(current_instance)
                 elif (

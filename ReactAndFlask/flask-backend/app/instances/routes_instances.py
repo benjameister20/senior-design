@@ -62,14 +62,12 @@ def delete():
 @requires_auth(request)
 def search():
     """ Route for searching instances """
-
     global INSTANCE_MANAGER
     global instancesArr
     returnJSON = createJSON()
 
     filter = request.json["filter"]
-    print("FILTER")
-    print(filter)
+
     try:
         limit = int(request.json["limit"])
     except:
@@ -100,7 +98,6 @@ def search():
 @requires_role(request, "admin")
 def edit():
     """ Route for editing instances """
-
     global INSTANCE_MANAGER
     returnJSON = createJSON()
 

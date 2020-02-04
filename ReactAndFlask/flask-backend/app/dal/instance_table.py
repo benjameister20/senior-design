@@ -106,7 +106,7 @@ class InstanceTable:
         # instance_entry: InstanceEntry = InstanceEntry(instance=instance)
         print("ORIG + ORIG_U")
         print(original_rack)
-        print(original_rack_u)
+        print(original_rack_position)
         try:
             # InstanceEntry.query.filter_by(
             #     rack_label=original_rack, rack_position=original_rack_position

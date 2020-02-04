@@ -43,6 +43,10 @@ export default class PageSelector extends React.Component {
       loggedIn:false,
     });
 
+    sessionStorage.removeItem(storedToken, token);
+    sessionStorage.removeItem(storedPrivilege, privilege);
+    sessionStorage.removeItem(storedLoggedIn, true);
+
     window.location.reload();
   }
 

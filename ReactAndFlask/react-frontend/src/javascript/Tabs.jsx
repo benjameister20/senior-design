@@ -12,20 +12,17 @@ import Typography from '@material-ui/core/Typography';
 import { Privilege } from './enums/privilegeTypes.ts'
 import ErrorBoundry from './errors/ErrorBoundry';
 
-const storedTab = 'currTab';
-
 export default class TabViewer extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            currentTabID:sessionStorage.getItem(storedTab) || 0,
+            currentTabID:0,
         };
         this.handleChange = this.handleChange.bind(this);
     }
 
     handleChange(event, newValue) {
-        sessionStorage.setItem(storedTab, newValue);
         this.setState({ currentTabID: newValue })
     }
 

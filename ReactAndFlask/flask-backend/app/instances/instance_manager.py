@@ -164,9 +164,14 @@ class InstanceManager:
         if hostname == "":
             return InvalidInputsError("Must provide a hostname")
         if rack == "":
-            return InvalidInputsError("Must provide a rack location")
+            return InvalidInputsError("Must provide a rack")
         if rack_position == "":
             return InvalidInputsError("Must provide a rack location")
+
+        try:
+            rack_position = int(rack_position)
+        except:
+            return InvalidInputsError("Rack position must be a number")
 
         print("about to make instance")
         return Instance(model_id, hostname, rack, rack_position, owner, comment)

@@ -13,20 +13,16 @@ class ModelManager:
 
     def create_model(self, model_data):
         try:
-            print("making model")
-            print("model data")
-            print(model_data)
-            new_model = self.make_model(model_data)
+            new_model: Model = self.make_model(model_data)
             create_validation_result = self.validate.create_model_validation(new_model)
             if create_validation_result == "success":
-                print("made model")
                 self.table.add_model(new_model)
-                print("model added to table")
             else:
                 raise InvalidInputsError(create_validation_result)
         except InvalidInputsError as e:
             raise InvalidInputsError(e.message)
         except:
+            raise
             raise InvalidInputsError("Unable to add the new model")
 
     def delete_model(self, model_data):
@@ -140,61 +136,9 @@ class ModelManager:
 
     def make_model(self, model_data):
         try:
-            print("getting values")
-            vendor = self.check_null(model_data.get("vendor"))
-            print(vendor)
-            model_number = self.check_null(model_data.get("model_number"))
-            print(model_number)
-            height = self.check_null(model_data.get("height"))
-            print(height)
-            display_color = self.check_null(model_data.get("display_color"))
-            print(display_color)
-            ethernet_ports = self.check_null(model_data.get("ethernet_ports"))
-            print(ethernet_ports)
-            if ethernet_ports != "":
-                ethernet_ports = ethernet_ports
-            pow_ports = self.check_null(model_data.get("power_ports"))
-            print(pow_ports)
-            if pow_ports != "":
-                pow_ports = pow_ports
-            cpu = self.check_null(model_data.get("cpu"))
-            print(cpu)
-            memory = self.check_null(model_data.get("memory"))
-            print(memory)
-            if memory != "":
-                memory = memory
-            storage = self.check_null(model_data.get("storage"))
-            print(storage)
-            comment = self.check_null(model_data.get("comment"))
-            print(comment)
-
-            print("got values")
+            return Model.from_json(json=model_data)
         except:
-            raise InvalidInputsError(
-                "Could not read data fields correctly. Client-server error occurred."
-            )
-
-        print("checking inputs")
-        if vendor == "":
-            raise InvalidInputsError("Must provide a vendor")
-        if model_number == "":
-            raise InvalidInputsError("Must provide a model number")
-        if height == "":
-            raise InvalidInputsError("Must provide a height")
-
-        print("inputs validated")
-        return Model(
-            vendor=vendor,
-            model_number=model_number,
-            height=height,
-            display_color=display_color,
-            ethernet_ports=ethernet_ports,
-            power_ports=pow_ports,
-            cpu=cpu,
-            memory=memory,
-            storage=storage,
-            comment=comment,
-        )
+            raise
 
     def check_null(self, val):
         if val is None:

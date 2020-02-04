@@ -100,16 +100,11 @@ def edit():
     try:
         model_data = request.get_json()
         error = MODEL_MANAGER.edit_model(model_data)
+
         if error is not None:
-            print("RETURN JSON")
-            print(returnJSON)
             return addMessageToJSON(returnJSON, error.message)
         return addMessageToJSON(returnJSON, "success")
-        print("RETURN JSON")
-        print(returnJSON)
     except InvalidInputsError as e:
-        print("RETURN JSON")
-        print(returnJSON)
         return addMessageToJSON(returnJSON, e.message)
 
 

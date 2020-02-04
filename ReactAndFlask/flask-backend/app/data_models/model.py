@@ -1,5 +1,6 @@
 from typing import Any, Dict, List, Optional
 
+from app.exceptions.InvalidInputsException import InvalidInputsError
 from app.main.types import JSON
 
 
@@ -90,6 +91,59 @@ class Model:
             memory=csv_row["memory"] if csv_row["memory"] != "" else None,
             storage=csv_row["storage"],
             comment=csv_row["comment"],
+        )
+
+    @classmethod
+    def from_json(cls, json: JSON) -> "Model":
+        vendor: str = json["vendor"]
+        model_number: str = json["model_number"]
+        height: int = int(json["height"])
+
+        if vendor == "":
+            raise InvalidInputsError("Must provide a vendor")
+        if model_number == "":
+            raise InvalidInputsError("Must provide a model number")
+        if height == "":
+            raise InvalidInputsError("Must provide a height")
+
+        display_color: Optional[str] = json.get("display_color", None)
+        display_color = None if display_color == "" else display_color
+
+        ethernet_str: Optional[str] = json.get("ethernet_ports", None)
+        ethernet_ports: Optional[
+            int
+        ] = None if ethernet_str == "" or ethernet_str is None else int(ethernet_str)
+
+        power_str: Optional[str] = json.get("power_ports", None)
+        power_ports: Optional[
+            int
+        ] = None if power_str == "" or power_str is None else int(power_str)
+
+        cpu: Optional[str] = json.get("cpu", None)
+        cpu = None if cpu == "" else cpu
+
+        memory_str: Optional[str] = json.get("memory", None)
+        memory: Optional[int] = None if memory_str == "" or memory_str is None else int(
+            memory_str
+        )
+
+        storage: Optional[str] = json.get("storage", None)
+        storage = None if storage == "" else storage
+
+        comment: Optional[str] = json.get("comment", None)
+        comment = None if comment == "" else comment
+
+        return Model(
+            vendor=vendor,
+            model_number=model_number,
+            height=height,
+            display_color=display_color,
+            ethernet_ports=ethernet_ports,
+            power_ports=power_ports,
+            cpu=cpu,
+            memory=memory,
+            storage=storage,
+            comment=comment,
         )
 
     def to_csv(self) -> str:

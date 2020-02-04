@@ -58,16 +58,16 @@ class InstanceManager:
         rack = self.check_null(instance_data["rack"])
         rack_position = self.check_null(instance_data["rack_position"])
 
-        # try:
-        print("Get these things")
-        print(rack)
-        print(rack_position)
-        instance = self.table.get_instance_by_rack_location(rack, rack_position)
-        return instance
-        # except:
-        #     raise InvalidInputsError(
-        #         "An error occured while retrieving data for this instance."
-        #     )
+        try:
+            print("Get these things")
+            print(rack)
+            print(rack_position)
+            instance = self.table.get_instance_by_rack_location(rack, rack_position)
+            return instance
+        except:
+            raise InvalidInputsError(
+                "An error occured while retrieving data for this instance."
+            )
 
     def edit_instance(self, instance_data):
         print("INSTANCE DATA")
@@ -174,36 +174,6 @@ class InstanceManager:
         return Instance(model_id, hostname, rack, rack_position, owner, comment)
 
     def get_model_id_from_name(self, model_name):
-        # data = model_name.split(" ")
-        # print(data)
-        # if len(data) == 0:
-        #     return None
-        # if len(data) != 2:
-        #     return -1
-
-        # vendor = data[0]
-        # model_number = data[1]
-        # # if len(data) > 2:
-        # #     raise InvalidInputsError("Invalid model name.")
-        # # vendor = data[0]
-        # # model_number = ""
-        # # if len(data) > 1:
-        # #     model_number = data[1]
-
-        # try:
-        #     model_id = self.model_table.get_model_id_by_vendor_number(
-        #         vendor, model_number
-        #     )
-        #     if model_id is None:
-        #         # raise InvalidInputsError("Invalid model name.")
-        #         model_id = -1
-
-        #     return model_id
-        # except:
-        #     raise InvalidInputsError(
-        #         "An error occurred while trying to retrieve model info corresponding to the instance."
-        #     )
-        print("GET_MODEL_ID_FROM_NAME")
         try:
             model_list = self.model_table.get_all_models()
             print("MODEL_LIST")

@@ -68,7 +68,7 @@ class ModelTable:
             display_color=model.display_color,
         )
 
-    def get_model_by_vendor_number(self, vendor: str, modelNumber: str):
+    def get_model_by_vendor_number(self, vendor: str, model_number: str):
         model: ModelEntry = ModelEntry.query.filter_by(
             vendor=vendor, model_number=model_number
         ).first()

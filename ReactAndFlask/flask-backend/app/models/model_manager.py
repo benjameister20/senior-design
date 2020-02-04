@@ -22,7 +22,6 @@ class ModelManager:
         except InvalidInputsError as e:
             raise InvalidInputsError(e.message)
         except:
-            raise
             raise InvalidInputsError("Unable to add the new model")
 
     def delete_model(self, model_data):

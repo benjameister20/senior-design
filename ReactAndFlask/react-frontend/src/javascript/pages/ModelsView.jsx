@@ -331,7 +331,7 @@ export default class ModelsView extends React.Component {
     }
 
     downloadTable() {
-        axios.post(
+        axios.get(
             getURL(modelsMainPath, ModelCommand.EXPORT_FILE),
             {
                 'filter':{

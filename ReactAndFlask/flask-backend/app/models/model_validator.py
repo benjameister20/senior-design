@@ -13,6 +13,8 @@ class ModelValidator:
         result = self.model_table.get_model_id_by_vendor_number(
             model.vendor, model.model_number
         )
+        print("RESULT")
+        print(result)
         if result is not None:
             return "This vendor and model number combination already exists."
 
@@ -28,7 +30,7 @@ class ModelValidator:
             model.power_ports != ""
             and pattern.fullmatch(str(model.power_ports)) is None
         ):
-            return "The value for ethernet ports must be a positive integer."
+            return "The value for power ports must be a positive integer."
         if model.memory != "" and pattern.fullmatch(str(model.memory)) is None:
             return "The value for memory must be a positive integer in terms of GB."
 

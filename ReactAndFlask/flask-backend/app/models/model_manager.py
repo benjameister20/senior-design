@@ -24,6 +24,8 @@ class ModelManager:
                 print("model added to table")
             else:
                 raise InvalidInputsError(create_validation_result)
+        except InvalidInputsError as e:
+            raise InvalidInputsError(e.message)
         except:
             raise InvalidInputsError("Unable to add the new model")
 
@@ -141,24 +143,24 @@ class ModelManager:
             print(vendor)
             model_number = self.check_null(model_data.get("model_number"))
             print(model_number)
-            height = int(self.check_null(model_data.get("height")))
+            height = self.check_null(model_data.get("height"))
             print(height)
             display_color = self.check_null(model_data.get("display_color"))
             print(display_color)
             ethernet_ports = self.check_null(model_data.get("ethernet_ports"))
             print(ethernet_ports)
             if ethernet_ports != "":
-                ethernet_ports = int(ethernet_ports)
+                ethernet_ports = ethernet_ports
             pow_ports = self.check_null(model_data.get("power_ports"))
             print(pow_ports)
             if pow_ports != "":
-                pow_ports = int(pow_ports)
+                pow_ports = pow_ports
             cpu = self.check_null(model_data.get("cpu"))
             print(cpu)
             memory = self.check_null(model_data.get("memory"))
             print(memory)
             if memory != "":
-                memory = int(memory)
+                memory = memory
             storage = self.check_null(model_data.get("storage"))
             print(storage)
             comments = self.check_null(model_data.get("comments"))

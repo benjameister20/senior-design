@@ -3,6 +3,7 @@ import re
 from app.dal.instance_table import InstanceTable
 from app.dal.model_table import ModelTable
 from app.dal.rack_table import RackTable
+from app.dal.user_table import UserTable
 
 
 class InstanceValidator:
@@ -10,6 +11,7 @@ class InstanceValidator:
         self.instance_table = InstanceTable()
         self.model_table = ModelTable()
         self.rack_table = RackTable()
+        self.user_table = UserTable()
         self.rack_height = 42
 
     def create_instance_validation(self, instance):
@@ -36,6 +38,9 @@ class InstanceValidator:
         pattern = re.compile("[0-9]+")
         if pattern.fullmatch(instance.rack_u) is None:
             return "The value for Rack U must be a positive integer."
+
+        if instance.owner != "" and self.user_table.get_user(instance.owner) is None:
+            return "The owner must be an existing user on the system. Please enter the username of an existing user."
 
         instance_bottom = int(instance.rack_u)
         instance_top = instance_bottom + int(model_template.height) - 1

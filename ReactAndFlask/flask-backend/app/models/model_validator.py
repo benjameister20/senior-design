@@ -41,6 +41,8 @@ class ModelValidator:
 
     def delete_model_validation(self, vendor, model_number):
         model_id = self.model_table.get_model_id_by_vendor_number(vendor, model_number)
+        print("MODEL_ID")
+        print(model_id)
         if self.instance_table.get_instances_by_model_id(model_id) is None:
             return "success"
         else:

@@ -139,7 +139,7 @@ class InstanceTable:
             raise
         except:
             raise DBWriteException(
-                message="Failed to udpate instance {instance.rack_label} {instance.rack_u}"
+                message=f"Failed to udpate instance {instance.rack_label} {instance.rack_u}"
             )
 
     def delete_instance(self, instance: Instance) -> None:
@@ -183,11 +183,11 @@ class InstanceTable:
     def get_instances_by_model_id(self, model_id):
         instance_entries: List[InstanceEntry] = InstanceEntry.query.filter_by(
             model_id=model_id
-        )
+        ).all()
         print("INSTANCE ENTRIES")
         print(instance_entries)
         print(model_id)
-        if instance_entries is None:
+        if instance_entries is None or len(instance_entries) == 0:
             return None
 
         return [entry.make_instance() for entry in instance_entries]

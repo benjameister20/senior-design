@@ -84,6 +84,8 @@ class InstanceManager:
             )
         except InvalidInputsError as e:
             return e.message
+        except:
+            return "Unsuccessful"
         if edit_validation_result == "success":
             self.table.edit_instance(new_instance, original_rack, original_rack_u)
         else:

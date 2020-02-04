@@ -18,12 +18,12 @@ class InstanceValidator:
         if self.rack_table.get_rack(instance.rack_label) is None:
             return "The requested rack does not exist. Instances must be created on preexisting racks"
 
-        duplicate_hostname_list = self.instance_table.get_instance_by_hostname(
+        duplicate_hostname = self.instance_table.get_instance_by_hostname(
             instance.hostname
         )
 
-        if duplicate_hostname_list is not None and len(duplicate_hostname_list) > 0:
-            return f"An instance with hostname {duplicate_hostname_list[0].hostname} exists at location {duplicate_hostname_list[0].rack_label} U{duplicate_hostname_list[0].rack_u}"
+        if duplicate_hostname is not None:
+            return f"An instance with hostname {duplicate_hostname.hostname} exists at location {duplicate_hostname.rack_label} U{duplicate_hostname.rack_u}"
 
         if len(instance.hostname) > 64:
             return "Hostnames must be 64 characters or less"
@@ -75,16 +75,17 @@ class InstanceValidator:
 
         print("INSTANCE HOSTNAME")
         print(instance.hostname)
-        duplicate_hostname_list = self.instance_table.get_instance_by_hostname(
+        duplicate_hostname = self.instance_table.get_instance_by_hostname(
             instance.hostname
         )
-        print(duplicate_hostname_list)
 
-        # print("DUPLICATE LIST LEN")
-        # print(len(duplicate_hostname_list))
-
-        if len(duplicate_hostname_list) >= 1:
-            return f"An instance with hostname {duplicate_hostname_list[0].hostname} exists at location {duplicate_hostname_list[0].rack_label} U{duplicate_hostname_list[0].rack_u}"
+        if duplicate_hostname is not None:
+            is_self = (
+                duplicate_hostname.rack_label == original_rack
+                and duplicate_hostname.rack_u == original_rack_u
+            )
+            if not is_self:
+                return f"An instance with hostname {duplicate_hostname.hostname} exists at location {duplicate_hostname.rack_label} U{duplicate_hostname.rack_u}"
 
         if len(instance.hostname) > 64:
             return "Hostnames must be 64 characters or less"

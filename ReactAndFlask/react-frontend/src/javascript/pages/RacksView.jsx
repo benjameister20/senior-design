@@ -75,7 +75,7 @@ export default class RacksView extends React.Component {
             }
             ).then(response => {
                 if (response.data.message === 'success') {
-                    this.setState({ showStatus: true, statusMessage: "Success", statusSeverity:"success" });
+                    this.setState({ showStatus: true, statusMessage: "Success", statusSeverity:"success", showConfirmationBox:false });
                     if (command == RackCommand.GET_RACK_DETAILS) {
                         this.setState({ items: response.data.racks });
                     }

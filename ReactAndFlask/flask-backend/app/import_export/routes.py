@@ -56,7 +56,7 @@ def _get_csv():
         raise FileNotFoundError
 
     # Convert to string stream and return csv reader object
-    stream: io.StringIO = io.StringIO(f.stream.read().decode("UTF8"), newline=None)
+    stream: io.StringIO = io.StringIO(f.stream.read().decode("UTF-8-SIG"), newline=None)
     return csv.reader(stream)
 
 
@@ -170,12 +170,13 @@ def import_instances_csv():
     except (RackDoesNotExistError, ModelDoesNotExistError) as e:
         return {"message": f"{e.message}"}
     except DBWriteException:
+        raise
         return {"message": "Error writing to database."}
 
     return {"message": "Success"}
 
 
-@import_export.route("/models/export")
+@import_export.route("/models/export", methods=["POST"])
 def export_models():
     """ Export models with given filters """
     data: JSON = request.get_json()
@@ -195,10 +196,10 @@ def export_models():
     for model in all_models:
         text += model.to_csv() + "\n"
 
-    return {"data": text}
+    return {"csvData": text}
 
 
-@import_export.route("/instances/export")
+@import_export.route("/instances/export", methods=["POST"])
 def export_instances():
     """ Export instances with given filters """
     data: JSON = request.get_json()
@@ -218,6 +219,9 @@ def export_instances():
     text: str = ",".join(Instance.headers()) + "\n"
 
     for instance in all_instances:
-        text += instance.to_csv() + "\n"
+        model: Model = ModelTable().get_model(identifier=instance.model_id)
+        text += (
+            instance.to_csv(vendor=model.vendor, model_number=model.model_number) + "\n"
+        )
 
-    return text
+    return {"csvData": text}

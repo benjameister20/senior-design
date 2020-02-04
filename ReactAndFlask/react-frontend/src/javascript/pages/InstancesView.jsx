@@ -19,7 +19,7 @@ const inputs = [
     'model',
     'hostname',
     'rack',
-    'rack_u',
+    'rack_position',
     'owner',
     'comment',
 ]
@@ -28,7 +28,7 @@ const columns = [
     'model',
     'hostname',
     'rack',
-    'rack_u',
+    'rack_position',
 ]
 
 const instancesMainPath = 'instances/';
@@ -54,7 +54,7 @@ export default class InstancesView extends React.Component {
                 'model':'',
                 'hostname':'',
                 'rack':'',
-                'rack_u':'',
+                'rack_position':'',
                 'owner':'',
                 'comment':'',
             },
@@ -65,11 +65,11 @@ export default class InstancesView extends React.Component {
 
             // vals for deleting an instance
             deleteInstanceRack:'',
-            deleteInstancerack_u:'',
+            deleteInstancerack_position:'',
 
             // vals for viewing an instance
             viewInstanceRack:'',
-            viewInstancerack_u:'',
+            viewInstancerack_position:'',
 
             searchModel:'',
             searchHostname:'',
@@ -87,12 +87,12 @@ export default class InstancesView extends React.Component {
                 'model':'',
                 'hostname':'',
                 'rack':'',
-                'rack_u':'',
+                'rack_position':'',
                 'owner':'',
                 'comment':'',
             },
             originalRack:'',
-            originalrack_u:'',
+            originalrack_position:'',
             modelList:[],
             madeModelQuery: false,
         };
@@ -131,7 +131,7 @@ export default class InstancesView extends React.Component {
                 'model':this.state.createdInstance[InstanceInput.Model],
                 'hostname':this.state.createdInstance[InstanceInput.Hostname],
                 'rack':this.state.createdInstance[InstanceInput.Rack],
-                'rack_u':this.state.createdInstance[InstanceInput.RackU],
+                'rack_position':this.state.createdInstance[InstanceInput.RackU],
                 'owner':this.state.createdInstance[InstanceInput.Owner],
                 'comment':this.state.createdInstance[InstanceInput.Comment],
             }
@@ -145,7 +145,7 @@ export default class InstancesView extends React.Component {
                             'model':'',
                             'hostname':'',
                             'rack':'',
-                            'rack_u':'',
+                            'rack_position':'',
                             'owner':'',
                             'comment':'',
                         },
@@ -163,11 +163,11 @@ export default class InstancesView extends React.Component {
             getURL(instancesMainPath, InstanceCommand.edit),
             {
                 'rackOriginal':this.state.originalRack,
-                'rack_uOriginal':this.state.originalrack_u,
+                'rack_positionOriginal':this.state.originalrack_position,
                 'model':this.state.detailedValues[InstanceInput.Model],
                 'hostname':this.state.detailedValues[InstanceInput.Hostname],
                 'rack':this.state.detailedValues[InstanceInput.Rack],
-                'rack_u':this.state.detailedValues[InstanceInput.RackU],
+                'rack_position':this.state.detailedValues[InstanceInput.RackU],
                 'owner':this.state.detailedValues[InstanceInput.Owner],
                 'comment':this.state.detailedValues[InstanceInput.Comment],
             }
@@ -181,7 +181,7 @@ export default class InstancesView extends React.Component {
                             'model':'',
                             'hostname':'',
                             'rack':'',
-                            'rack_u':'',
+                            'rack_position':'',
                             'owner':'',
                             'comment':'',
                         },
@@ -201,7 +201,7 @@ export default class InstancesView extends React.Component {
             getURL(instancesMainPath, InstanceCommand.delete),
             {
                 'rack':this.state.originalRack,
-                'rack_u':this.state.originalrack_u,
+                'rack_position':this.state.originalrack_position,
             }
             ).then(response => {
                 if (response.data.message === 'success') {
@@ -210,7 +210,7 @@ export default class InstancesView extends React.Component {
                         statusMessage: "Successfully deleted instance",
                         statusSeverity:"success",
                         originalRack:'',
-                        originalrack_u:'',
+                        originalrack_position:'',
                         showDetailedView:false
                     });
                     this.searchInstances();
@@ -220,12 +220,12 @@ export default class InstancesView extends React.Component {
             });
     }
 
-    detailViewInstance(rack, rack_u) {
+    detailViewInstance(rack, rack_position) {
         axios.post(
             getURL(instancesMainPath, InstanceCommand.detailView),
             {
                 'rack':rack,
-                'rack_u':rack_u,
+                'rack_position':rack_position,
             }
             ).then(response => this.setState({ detailedValues: response.data['instances'][0], detailViewLoading:false}));
 
@@ -242,7 +242,7 @@ export default class InstancesView extends React.Component {
                     'model':this.state.searchModel,
                     'hostname':this.state.searchHostname,
                     'rack':this.state.searchRack,
-                    'rack_u':this.state.searchRackU,
+                    'rack_position':this.state.searchRackU,
                 }
             }
             ).then(response => this.setState({ items: response.data['instances'] }));
@@ -273,19 +273,19 @@ export default class InstancesView extends React.Component {
             searchModel:filters['model'],
             searchHostname:filters['hostname'],
             searchRack:filters['rack'],
-            searchRackU:filters['rack_u'],
+            searchRackU:filters['rack_position'],
         }, this.searchInstances);
     }
 
     downloadTable() {
-        axios.get(
+        axios.post(
             getURL(instancesMainPath, InstanceCommand.EXPORT_FILE),
             {
                 'filter':{
                     'model':this.state.searchModel,
                     'hostname':this.state.searchHostname,
                     'rack':this.state.searchRack,
-                    'rack_u':this.state.searchRackU,
+                    'rack_position':this.state.searchRackU,
                 }
             }
             ).then(response => {
@@ -308,15 +308,15 @@ export default class InstancesView extends React.Component {
             showDetailedView: true,
             detailViewLoading:true,
             originalRack: this.state.items[id]['rack'],
-            originalrack_u: this.state.items[id]['rack_u'],
+            originalrack_position: this.state.items[id]['rack_position'],
         });
 
         var model = this.state.items[id]['model'];
         var hostname = this.state.items[id]['hostname'];
         var rack = this.state.items[id]['rack'];
-        var rack_u = this.state.items[id]['rack_u'];
+        var rack_position = this.state.items[id]['rack_position'];
 
-        this.detailViewInstance(rack, rack_u);
+        this.detailViewInstance(rack, rack_position);
     }
 
     closeCreateModal() {

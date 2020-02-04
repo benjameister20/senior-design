@@ -108,7 +108,7 @@ def new_instance():
         model_id: int = int(data["model_id"])
         hostname: str = data["hostname"]
         rack_label: str = data["rack_label"]
-        rack_u: int = int(data["rack_u"])
+        rack_position: int = int(data["rack_position"])
         owner: Optional[str] = data.get("owner")
         comment: Optional[str] = data.get("comment")
 
@@ -116,7 +116,7 @@ def new_instance():
             model_id=model_id,
             hostname=hostname,
             rack_label=rack_label,
-            rack_u=rack_u,
+            rack_position=rack_position,
             owner=owner,
             comment=comment,
         )

@@ -53,14 +53,14 @@ class StatsManager:
             self.space_by_owner, total_space_used
         )
 
-        rack_usage_json = json.dumps(self.space_by_rack, sort_keys=True)
+        rack_positionsage_json = json.dumps(self.space_by_rack, sort_keys=True)
         vendor_usage_json = json.dumps(self.space_by_vendor, sort_keys=True)
         model_usage_json = json.dumps(self.space_by_model, sort_keys=True)
         owner_usage_json = json.dumps(self.space_by_owner, sort_keys=True)
 
         returnJSON = {
             "totalUsage": percent_total_used,
-            "spaceUsage": rack_usage_json,
+            "spaceUsage": rack_positionsage_json,
             "vendorUsage": vendor_usage_json,
             "modelUsage": model_usage_json,
             "ownerUsage": owner_usage_json,

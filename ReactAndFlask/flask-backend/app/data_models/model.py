@@ -80,10 +80,14 @@ class Model:
             model_number=csv_row["model_number"],
             height=csv_row["height"],
             display_color=csv_row["display_color"],
-            ethernet_ports=csv_row["ethernet_ports"],
-            power_ports=csv_row["power_ports"],
+            ethernet_ports=csv_row["ethernet_ports"]
+            if csv_row["ethernet_ports"] != ""
+            else None,
+            power_ports=csv_row["power_ports"]
+            if csv_row["power_ports"] != ""
+            else None,
             cpu=csv_row["cpu"],
-            memory=csv_row["memory"],
+            memory=csv_row["memory"] if csv_row["memory"] != "" else None,
             storage=csv_row["storage"],
             comment=csv_row["comment"],
         )
@@ -92,8 +96,9 @@ class Model:
         """ Get the model as a csv row """
         json_data: JSON = self.make_json()
         values: List[str] = list(map(lambda x: str(json_data[x]), Model.headers()))
+        clean_values: List[str] = list(map(lambda x: "" if x == "None" else x, values))
 
-        return ",".join(values)
+        return ",".join(clean_values)
 
     def __repr__(self) -> str:
         return "Model {self.vendor} {self.model_number}"

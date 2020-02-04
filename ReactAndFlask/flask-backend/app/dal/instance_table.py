@@ -4,6 +4,7 @@ from app.dal.database import DBWriteException, db
 from app.dal.exceptions.ChangeModelDBException import ChangeModelDBException
 from app.dal.rack_table import RackEntry
 from app.data_models.instance import Instance
+from app.main.types import JSON
 from sqlalchemy import and_
 
 
@@ -14,7 +15,7 @@ class InstanceEntry(db.Model):
     model_id = db.Column(db.Integer)
     hostname = db.Column(db.String(80))
     rack_label = db.Column(db.String(80))
-    rack_u = db.Column(db.Integer)
+    rack_position = db.Column(db.Integer)
     owner = db.Column(db.String(80), nullable=True)
     comment = db.Column(db.String(80), nullable=True)
 
@@ -22,7 +23,7 @@ class InstanceEntry(db.Model):
         self.model_id = instance.model_id
         self.hostname = instance.hostname
         self.rack_label = instance.rack_label
-        self.rack_u = instance.rack_u
+        self.rack_position = instance.rack_position
         self.owner = instance.owner
         self.comment = instance.comment
 
@@ -32,10 +33,20 @@ class InstanceEntry(db.Model):
             model_id=self.model_id,
             hostname=self.hostname,
             rack_label=self.rack_label,
-            rack_u=self.rack_u,
+            rack_position=self.rack_position,
             owner=self.owner,
             comment=self.comment,
         )
+
+    def make_json(self) -> JSON:
+        return {
+            "model_id": self.model_id,
+            "hostname": self.hostname,
+            "rack_label": self.rack_label,
+            "rack_position": self.rack_position,
+            "owner": self.owner,
+            "comment": self.comment,
+        }
 
 
 class RackDoesNotExistError(Exception):
@@ -58,10 +69,10 @@ class InstanceTable:
 
         return instance_entry.make_instance()
 
-    def get_instance_by_rack_location(self, rack_label, rack_u):
+    def get_instance_by_rack_location(self, rack_label, rack_position):
         """ Get the instance for the given rack location """
         instance_entry: InstanceEntry = InstanceEntry.query.filter_by(
-            rack_label=rack_label, rack_u=rack_u,
+            rack_label=rack_label, rack_position=rack_position,
         ).first()
         if instance_entry is None:
             return None
@@ -88,21 +99,23 @@ class InstanceTable:
         except:
             print(f"Failed to add instance {instance.hostname} {instance.rack_label}")
 
-    def edit_instance(self, instance: Instance, original_rack, original_rack_u) -> None:
+    def edit_instance(
+        self, instance: Instance, original_rack, original_rack_position
+    ) -> None:
         """ Updates a model to the database """
         # instance_entry: InstanceEntry = InstanceEntry(instance=instance)
 
         try:
             # InstanceEntry.query.filter_by(
-            #     rack_label=original_rack, rack_u=original_rack_u
+            #     rack_label=original_rack, rack_position=original_rack_position
             # ).update(instance_entry)
             old_entry = InstanceEntry.query.filter_by(
-                rack_label=original_rack, rack_u=original_rack_u
+                rack_label=original_rack, rack_position=original_rack_position
             ).first()
             old_entry.model_id = instance.model_id
             old_entry.hostname = instance.hostname
             old_entry.rack_label = instance.rack_label
-            old_entry.rack_u = instance.rack_u
+            old_entry.rack_position = instance.rack_position
             old_entry.owner = instance.owner
             old_entry.comment = instance.comment
             db.session.commit()
@@ -117,13 +130,13 @@ class InstanceTable:
 
         try:
             result: InstanceEntry = InstanceEntry.query.filter_by(
-                rack_label=instance.rack_label, rack_u=instance.rack_u
+                rack_label=instance.rack_label, rack_position=instance.rack_position
             ).first()
 
             if result is not None:
                 InstanceEntry.query.filter_by(
-                    rack_label=instance.rack_label, rack_u=instance.rack_u
-                ).update(instance_entry)
+                    rack_label=instance.rack_label, rack_position=instance.rack_position
+                ).update(instance_entry.make_json())
             else:
                 # Add new instance to database, only if rack exists
                 rack_result: RackEntry = RackEntry.query.filter_by(
@@ -139,7 +152,7 @@ class InstanceTable:
             raise
         except:
             raise DBWriteException(
-                message=f"Failed to udpate instance {instance.rack_label} {instance.rack_u}"
+                message=f"Failed to udpate instance {instance.rack_label} {instance.rack_position}"
             )
 
     def delete_instance(self, instance: Instance) -> None:
@@ -148,7 +161,7 @@ class InstanceTable:
             InstanceEntry.query.filter_by(
                 hostname=instance.hostname,
                 rack_label=instance.rack_label,
-                rack_u=instance.rack_u,
+                rack_position=instance.rack_position,
             ).delete()
             db.session.commit()
         except:
@@ -156,11 +169,13 @@ class InstanceTable:
                 f"Failed to delete instance {instance.hostname} {instance.rack_label}"
             )
 
-    def delete_instance_by_rack_location(self, rack_label: str, rack_u: int) -> None:
+    def delete_instance_by_rack_location(
+        self, rack_label: str, rack_position: int
+    ) -> None:
         """ Removes an instance from the database """
         try:
             InstanceEntry.query.filter_by(
-                rack_label=rack_label, rack_u=rack_u,
+                rack_label=rack_label, rack_position=rack_position,
             ).delete()
             db.session.commit()
         except:
@@ -197,7 +212,7 @@ class InstanceTable:
         model_id: Optional[int],
         hostname: Optional[str],
         rack_label: Optional[str],
-        rack_u: Optional[int],
+        rack_position: Optional[int],
         limit: int,
     ) -> List[Instance]:
         """ Get a list of all instances containing the given filter """
@@ -208,8 +223,8 @@ class InstanceTable:
             conditions.append(InstanceEntry.hostname == hostname)
         if rack_label is not None and rack_label != "":
             conditions.append(InstanceEntry.rack_label == rack_label)
-        if rack_u is not None and rack_u != "":
-            conditions.append(InstanceEntry.rack_u == rack_u)
+        if rack_position is not None and rack_position != "":
+            conditions.append(InstanceEntry.rack_position == rack_position)
 
         filtered_instances: List[InstanceEntry] = InstanceEntry.query.filter(
             and_(*conditions)

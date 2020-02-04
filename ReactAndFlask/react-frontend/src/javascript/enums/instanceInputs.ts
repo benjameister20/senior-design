@@ -2,7 +2,7 @@ export enum InstanceInput {
     Model = 'model',
     Hostname = 'hostname',
     Rack = 'rack',
-    RackU = 'rack_u',
+    RackU = 'rack_position',
     Owner = 'owner',
     Comment = 'comment',
 }

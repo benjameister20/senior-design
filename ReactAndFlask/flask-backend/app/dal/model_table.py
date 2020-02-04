@@ -13,13 +13,13 @@ class ModelEntry(db.Model):
     vendor = db.Column(db.String(80))
     model_number = db.Column(db.String(80))
     height = db.Column(db.Integer)
-    display_color = db.Column(db.String(80))
-    ethernet_ports = db.Column(db.Integer)
-    power_ports = db.Column(db.Integer)
-    cpu = db.Column(db.String(80))
-    memory = db.Column(db.Integer)
-    storage = db.Column(db.String(80))
-    comment = db.Column(db.String(80))
+    display_color = db.Column(db.String(80), nullable=True)
+    ethernet_ports = db.Column(db.Integer, nullable=True)
+    power_ports = db.Column(db.Integer, nullable=True)
+    cpu = db.Column(db.String(80), nullable=True)
+    memory = db.Column(db.Integer, nullable=True)
+    storage = db.Column(db.String(80), nullable=True)
+    comment = db.Column(db.String(80), nullable=True)
 
     def __init__(self, model: Model):
         self.vendor = model.vendor

@@ -35,6 +35,7 @@ def create():
         print("made model")
         return addMessageToJSON(returnJSON, "success")
     except InvalidInputsError as e:
+        raise
         return addMessageToJSON(returnJSON, e.message)
 
 

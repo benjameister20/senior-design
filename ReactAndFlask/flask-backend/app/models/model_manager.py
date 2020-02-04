@@ -25,6 +25,7 @@ class ModelManager:
             else:
                 raise InvalidInputsError(create_validation_result)
         except:
+            raise
             raise InvalidInputsError("Unable to add the new model")
 
     def delete_model(self, model_data):
@@ -147,18 +148,24 @@ class ModelManager:
             print(display_color)
             ethernet_ports = self.check_null(model_data.get("ethernet_ports"))
             print(ethernet_ports)
-            if ethernet_ports != "":
+            try:
                 ethernet_ports = int(ethernet_ports)
+            except:
+                ethernet_ports = None
             pow_ports = self.check_null(model_data.get("power_ports"))
             print(pow_ports)
-            if pow_ports != "":
+            try:
                 pow_ports = int(pow_ports)
+            except:
+                pow_ports = None
             cpu = self.check_null(model_data.get("cpu"))
             print(cpu)
             memory = self.check_null(model_data.get("memory"))
             print(memory)
-            if memory != "":
+            try:
                 memory = int(memory)
+            except:
+                memory = None
             storage = self.check_null(model_data.get("storage"))
             print(storage)
             comments = self.check_null(model_data.get("comments"))

@@ -39,15 +39,15 @@ class InstanceManager:
 
     def delete_instance(self, instance_data):
         rack = self.check_null(instance_data["rack"])
-        rack_position = self.check_null(instance_data["rack_position"])
+        rack_u = self.check_null(instance_data["rack_u"])
 
         if rack == "":
             raise InvalidInputsError("Must provide a vendor")
-        if rack_position == "":
+        if rack_u == "":
             raise InvalidInputsError("Must provide a model number")
 
         try:
-            self.table.delete_instance_by_rack_location(rack, rack_position)
+            self.table.delete_instance_by_rack_location(rack, rack_u)
         except:
             raise InvalidInputsError(
                 "An error occurred when trying to delete the specified instance."
@@ -56,13 +56,13 @@ class InstanceManager:
     def detail_view(self, instance_data):
         print(instance_data)
         rack = self.check_null(instance_data["rack"])
-        rack_position = self.check_null(instance_data["rack_position"])
+        rack_u = self.check_null(instance_data["rack_u"])
 
         # try:
         print("Get these things")
         print(rack)
-        print(rack_position)
-        instance = self.table.get_instance_by_rack_location(rack, rack_position)
+        print(rack_u)
+        instance = self.table.get_instance_by_rack_location(rack, rack_u)
         return instance
         # except:
         #     raise InvalidInputsError(
@@ -84,8 +84,6 @@ class InstanceManager:
             )
         except InvalidInputsError as e:
             return e.message
-        except:
-            return "Unsuccessful"
         if edit_validation_result == "success":
             self.table.edit_instance(new_instance, original_rack, original_rack_u)
         else:
@@ -98,7 +96,7 @@ class InstanceManager:
         model_name = filter.get("model")
 
         try:
-            if model_name is not None:
+            if model_name is not None and model_name != "":
                 model_id = self.get_model_id_from_name(model_name)
             else:
                 model_id = None
@@ -109,14 +107,14 @@ class InstanceManager:
 
         hostname = filter.get("hostname")
         rack_label = filter.get("rack")
-        rack_position = filter.get("rack_position")
+        rack_u = filter.get("rack_u")
 
         try:
             instance_list = self.table.get_instances_with_filters(
                 model_id=model_id,
                 hostname=hostname,
                 rack_label=rack_label,
-                rack_position=rack_position,
+                rack_position=rack_u,
                 limit=limit,
             )
             return instance_list
@@ -153,7 +151,7 @@ class InstanceManager:
         try:
             hostname = self.check_null(instance_data["hostname"])
             rack = self.check_null(instance_data["rack"])
-            rack_position = self.check_null(instance_data["rack_position"])
+            rack_u = self.check_null(instance_data["rack_u"])
             owner = self.check_null(instance_data["owner"])
             comment = self.check_null(instance_data["comment"])
         except:
@@ -164,17 +162,12 @@ class InstanceManager:
         if hostname == "":
             return InvalidInputsError("Must provide a hostname")
         if rack == "":
-            return InvalidInputsError("Must provide a rack")
-        if rack_position == "":
+            return InvalidInputsError("Must provide a rack location")
+        if rack_u == "":
             return InvalidInputsError("Must provide a rack location")
 
-        try:
-            rack_position = int(rack_position)
-        except:
-            return InvalidInputsError("Rack position must be a number")
-
         print("about to make instance")
-        return Instance(model_id, hostname, rack, rack_position, owner, comment)
+        return Instance(model_id, hostname, rack, rack_u, owner, comment)
 
     def get_model_id_from_name(self, model_name):
         data = model_name.split(" ")

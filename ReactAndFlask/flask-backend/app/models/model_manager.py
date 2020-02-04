@@ -145,14 +145,20 @@ class ModelManager:
             print(height)
             display_color = self.check_null(model_data.get("display_color"))
             print(display_color)
-            ethernet_ports = int(self.check_null(model_data.get("ethernet_ports")))
+            ethernet_ports = self.check_null(model_data.get("ethernet_ports"))
             print(ethernet_ports)
-            pow_ports = int(self.check_null(model_data.get("power_ports")))
+            if ethernet_ports != "":
+                ethernet_ports = int(ethernet_ports)
+            pow_ports = self.check_null(model_data.get("power_ports"))
             print(pow_ports)
+            if pow_ports != "":
+                pow_ports = int(pow_ports)
             cpu = self.check_null(model_data.get("cpu"))
             print(cpu)
-            memory = int(self.check_null(model_data.get("memory")))
+            memory = self.check_null(model_data.get("memory"))
             print(memory)
+            if memory != "":
+                memory = int(memory)
             storage = self.check_null(model_data.get("storage"))
             print(storage)
             comments = self.check_null(model_data.get("comments"))

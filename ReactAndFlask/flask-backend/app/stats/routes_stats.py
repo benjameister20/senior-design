@@ -28,6 +28,8 @@ def generate_report():
         report = STATS_MANAGER.create_report()
         addMessageToJSON(returnJSON, "success")
         return report
+    except ValueError as e:
+        return addMessageToJSON(returnJSON, str(e))
     except:
         return addMessageToJSON(returnJSON, "Error generating usage report")
 

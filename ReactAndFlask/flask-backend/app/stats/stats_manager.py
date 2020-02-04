@@ -23,6 +23,11 @@ class StatsManager:
         rack_list = self.rack_table.get_all_racks()
         num_racks = len(rack_list)
 
+        if num_racks == 0:
+            raise ValueError(
+                "Reports require existing racks. Please create some and try again."
+            )
+
         for rack in rack_list:
             instance_list = self.instance_table.get_instances_by_rack(rack.label)
             self.iterate_instance(instance_list, rack.label)

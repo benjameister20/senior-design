@@ -139,6 +139,7 @@ export default class ModelsView extends React.Component {
         this.chooseFile = this.chooseFile.bind(this);
         this.uploadFile = this.uploadFile.bind(this);
         this.sendUploadedFile = this.sendUploadedFile.bind(this);
+        this.initialize = this.initialize.bind(this);
 
         axios.defaults.headers.common['token'] = this.props.token;
         axios.defaults.headers.common['privilege'] = this.props.privilege;
@@ -414,11 +415,16 @@ export default class ModelsView extends React.Component {
         this.setState({ importedFile: event.target.files[0] })
     }
 
+    initialize() {
+        this.searchInstances();
+        this.getVendorList();
+    }
+
     render() {
         return (
             <div>
                 <ErrorBoundray>
-                {(this.state.madeVendorQuery) ? null: this.getVendorList()}
+                {(this.state.madeVendorQuery) ? null: this.initialize()}
                 <StatusDisplay
                     open={this.state.showStatus}
                     severity={this.state.statusSeverity}

@@ -88,6 +88,7 @@ def search():
                 )
             ),
         )
+        print("RETURN JSON")
         print(returnJSON)
         return returnJSON
     except InvalidInputsError as e:

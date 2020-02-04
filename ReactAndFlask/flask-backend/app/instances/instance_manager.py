@@ -99,6 +99,8 @@ class InstanceManager:
 
         try:
             if model_name is not None and model_name != "":
+                print("MODEL_NAME")
+                print(model_name)
                 model_id = self.get_model_id_from_name(model_name)
             else:
                 model_id = None
@@ -172,31 +174,55 @@ class InstanceManager:
         return Instance(model_id, hostname, rack, rack_position, owner, comment)
 
     def get_model_id_from_name(self, model_name):
-        data = model_name.split(" ")
-        print(data)
-        if len(data) == 0:
-            return None
-        if len(data) != 2:
-            return -1
+        # data = model_name.split(" ")
+        # print(data)
+        # if len(data) == 0:
+        #     return None
+        # if len(data) != 2:
+        #     return -1
 
-        vendor = data[0]
-        model_number = data[1]
-        # if len(data) > 2:
-        #     raise InvalidInputsError("Invalid model name.")
         # vendor = data[0]
-        # model_number = ""
-        # if len(data) > 1:
-        #     model_number = data[1]
+        # model_number = data[1]
+        # # if len(data) > 2:
+        # #     raise InvalidInputsError("Invalid model name.")
+        # # vendor = data[0]
+        # # model_number = ""
+        # # if len(data) > 1:
+        # #     model_number = data[1]
 
+        # try:
+        #     model_id = self.model_table.get_model_id_by_vendor_number(
+        #         vendor, model_number
+        #     )
+        #     if model_id is None:
+        #         # raise InvalidInputsError("Invalid model name.")
+        #         model_id = -1
+
+        #     return model_id
+        # except:
+        #     raise InvalidInputsError(
+        #         "An error occurred while trying to retrieve model info corresponding to the instance."
+        #     )
+        print("GET_MODEL_ID_FROM_NAME")
         try:
-            model_id = self.model_table.get_model_id_by_vendor_number(
-                vendor, model_number
-            )
-            if model_id is None:
-                # raise InvalidInputsError("Invalid model name.")
-                model_id = -1
+            model_list = self.model_table.get_all_models()
+            print("MODEL_LIST")
+            print(model_list)
+            for model in model_list:
+                if model.vendor + " " + model.model_number == model_name:
+                    print("FOUND MATCH")
+                    model_id = self.model_table.get_model_id_by_vendor_number(
+                        model.vendor, model.model_number
+                    )
+                    if model_id is None:
+                        print("MODEL_ID = -1")
+                        # raise InvalidInputsError("Invalid model name.")
+                        model_id = -1
 
-            return model_id
+                    print("MODEL_ID")
+                    print(model_id)
+                    return model_id
+            return -1
         except:
             raise InvalidInputsError(
                 "An error occurred while trying to retrieve model info corresponding to the instance."

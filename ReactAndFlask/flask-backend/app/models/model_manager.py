@@ -14,6 +14,8 @@ class ModelManager:
     def create_model(self, model_data):
         try:
             print("making model")
+            print("model data")
+            print(model_data)
             new_model = self.make_model(model_data)
             create_validation_result = self.validate.create_model_validation(new_model)
             if create_validation_result == "success":

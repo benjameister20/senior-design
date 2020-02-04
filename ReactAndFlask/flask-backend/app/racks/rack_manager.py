@@ -1,8 +1,8 @@
 import string
-from typing import Any, Callable, List
+from typing import Any, Callable, List, Optional
 
 from app.dal.database import DBWriteException
-from app.dal.instance_table import InstanceTable
+from app.dal.instance_table import InstanceTable, RackDoesNotExistError
 from app.dal.model_table import ModelTable
 from app.dal.rack_table import RackTable
 from app.data_models.instance import Instance
@@ -36,6 +36,11 @@ def _delete_rack_modifier(rack: Rack) -> None:
 
 def _get_rack_modifier(rack: Rack) -> JSON:
     """ Get rack details """
+    # Make sure rack exists
+    rack_entry: Optional[Rack] = RackTable().get_rack(label=rack.label)
+    if rack_entry is None:
+        raise RackDoesNotExistError(rack_label=rack.label)
+
     instance_entries = InstanceTable().get_instances_by_rack(rack_label=rack.label)
 
     return {
@@ -83,7 +88,7 @@ def _modify_rack_range(
             for number in range(start_number, stop_number + 1):
                 rack: Rack = Rack(label=f"{letter}{number}")
                 results.append(modifier(rack))
-    except (DBWriteException, RackNotEmptyError):
+    except (DBWriteException, RackNotEmptyError, RackDoesNotExistError):
         raise
 
     return results

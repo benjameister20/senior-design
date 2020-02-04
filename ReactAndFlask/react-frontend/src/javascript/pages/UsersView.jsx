@@ -155,7 +155,7 @@ export default class UsersView extends React.Component {
                 if (response.data.message === 'success') {
                     this.setState({
                         showStatus: true,
-                        statusMessage: "Successfully created user",
+                        statusMessage: "Successfully edited user",
                         statusSeverity:"success",
                         originalUsername:'',
                         detailedValues : {
@@ -184,7 +184,7 @@ export default class UsersView extends React.Component {
                 if (response.data.message === 'success') {
                     this.setState({
                         showStatus: true,
-                        statusMessage: "Successfully created user",
+                        statusMessage: "Successfully deleted user",
                         statusSeverity:"success",
                         deleteUsername:'',
                         showDetailedView:false,

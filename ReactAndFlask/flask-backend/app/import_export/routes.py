@@ -46,7 +46,7 @@ class ModelDoesNotExistError(Exception):
     """
 
     def __init__(self, vendor: str, model_number: str):
-        self.message: str = f"Model {vendor} {model_number}"
+        self.message: str = f"Model {vendor} {model_number} does not exist."
 
 
 def _get_csv():
@@ -146,22 +146,15 @@ def import_models_csv():
         csv_input = _get_csv()
         _parse_model_csv(csv_input=csv_input)
     except FileNotFoundError:
-        return {"message": "No CSV file"}, HTTPStatus.NOT_FOUND
+        return {"message": "No CSV file"}
     except InvalidFormatError as e:
-        return {"message": f"{e.message}"}, HTTPStatus.BAD_REQUEST
+        return {"message": f"{e.message}"}
     except TooFewInputsError as e:
-        return (
-            {"message": f"Too few inputs in CSV line {e.message}"},
-            HTTPStatus.BAD_REQUEST,
-        )
+        return {"message": f"Too few inputs in CSV line {e.message}"}
     except DBWriteException:
-        raise
-        return (
-            {"message": "Error writing to database."},
-            HTTPStatus.INTERNAL_SERVER_ERROR,
-        )
+        return {"message": "Error writing to database."}
 
-    return {"message": "success"}, HTTPStatus.OK
+    return {"message": "success"}
 
 
 @import_export.route("/instances/import", methods=["POST"])
@@ -171,21 +164,15 @@ def import_instances_csv():
         csv_input = _get_csv()
         _parse_instance_csv(csv_input=csv_input)
     except FileNotFoundError:
-        return {"message": "No CSV file"}, HTTPStatus.NOT_FOUND
+        return {"message": "No CSV file"}
     except TooFewInputsError as e:
-        return (
-            {"message": f"Too few inputs in CSV line {e.message}"},
-            HTTPStatus.BAD_REQUEST,
-        )
+        return {"message": f"Too few inputs in CSV line {e.message}"}
     except (RackDoesNotExistError, ModelDoesNotExistError) as e:
-        return {"message": f"{e.message}"}, HTTPStatus.BAD_REQUEST
+        return {"message": f"{e.message}"}
     except DBWriteException:
-        return (
-            {"message": "Error writing to database."},
-            HTTPStatus.INTERNAL_SERVER_ERROR,
-        )
+        return {"message": "Error writing to database."}
 
-    return {"message": "Success"}, HTTPStatus.OK
+    return {"message": "Success"}
 
 
 @import_export.route("/models/export")

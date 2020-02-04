@@ -19,7 +19,7 @@ const inputs = [
     'model_number',
     'height',
     'display_color',
-    'eth_ports',
+    'ethernet_ports',
     'power_ports',
     'cpu',
     'memory',
@@ -55,7 +55,7 @@ export default class ModelsView extends React.Component {
                 'model_number':'',
                 'height':'',
                 'display_color':'',
-                'eth_ports':'',
+                'ethernet_ports':'',
                 'power_ports':'',
                 'cpu':'',
                 'memory':'',
@@ -99,7 +99,7 @@ export default class ModelsView extends React.Component {
                 'model_number':'',
                 'height':'',
                 'display_color':'',
-                'eth_ports':'',
+                'ethernet_ports':'',
                 'power_ports':'',
                 'cpu':'',
                 'memory':'',
@@ -152,7 +152,7 @@ export default class ModelsView extends React.Component {
                 'model_number':this.state.createdModel[ModelInput.model_number],
                 'height':this.state.createdModel[ModelInput.Height],
                 'display_color':this.state.createdModel[ModelInput.display_color],
-                'eth_ports':this.state.createdModel[ModelInput.eth_ports],
+                'ethernet_ports':this.state.createdModel[ModelInput.ethernet_ports],
                 'power_ports':this.state.createdModel[ModelInput.power_ports],
                 'cpu':this.state.createdModel[ModelInput.CPU],
                 'memory':this.state.createdModel[ModelInput.Memory],
@@ -172,7 +172,7 @@ export default class ModelsView extends React.Component {
                                 'model_number':'',
                                 'height':'',
                                 'display_color':'',
-                                'eth_ports':'',
+                                'ethernet_ports':'',
                                 'power_ports':'',
                                 'cpu':'',
                                 'memory':'',
@@ -201,7 +201,7 @@ export default class ModelsView extends React.Component {
                 'model_number':this.state.detailedValues[ModelInput.model_number],
                 'height':this.state.detailedValues[ModelInput.Height],
                 'display_color':this.state.detailedValues[ModelInput.display_color],
-                'eth_ports':this.state.detailedValues[ModelInput.eth_ports],
+                'ethernet_ports':this.state.detailedValues[ModelInput.ethernet_ports],
                 'power_ports':this.state.detailedValues[ModelInput.power_ports],
                 'cpu':this.state.detailedValues[ModelInput.CPU],
                 'memory':this.state.detailedValues[ModelInput.Memory],
@@ -223,7 +223,7 @@ export default class ModelsView extends React.Component {
                                 'model_number':'',
                                 'height':'',
                                 'display_color':'',
-                                'eth_ports':'',
+                                'ethernet_ports':'',
                                 'power_ports':'',
                                 'cpu':'',
                                 'memory':'',
@@ -260,7 +260,7 @@ export default class ModelsView extends React.Component {
                                 'model_number':'',
                                 'height':'',
                                 'display_color':'',
-                                'eth_ports':'',
+                                'ethernet_ports':'',
                                 'power_ports':'',
                                 'cpu':'',
                                 'memory':'',
@@ -322,7 +322,7 @@ export default class ModelsView extends React.Component {
             getURL(modelsMainPath, ModelCommand.UPLOAD_FILE), data
             ).then(response => {
                 if (response.data.message === 'success') {
-                    this.setState({ showStatus: true, statusMessage: 'Successfully added data', })
+                    this.setState({ showStatus: true, statusMessage: 'Successfully added models', statusSeverity:'success', showImportModal: false,})
                     this.searchModels();
                 } else {
                     this.setState({ showStatus: true, statusMessage: response.data.message, statusSeverity:"error" })
@@ -331,7 +331,7 @@ export default class ModelsView extends React.Component {
     }
 
     downloadTable() {
-        axios.post(
+        axios.get(
             getURL(modelsMainPath, ModelCommand.EXPORT_FILE),
             {
                 'filter':{

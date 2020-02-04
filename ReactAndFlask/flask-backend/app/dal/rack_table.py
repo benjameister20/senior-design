@@ -2,6 +2,7 @@ from typing import List, Optional
 
 from app.dal.database import DBWriteException, db
 from app.data_models.rack import Rack
+from sqlalchemy.exc import IntegrityError
 
 
 class RackEntry(db.Model):
@@ -33,6 +34,9 @@ class RackTable:
         try:
             db.session.add(rack_entry)
             db.session.commit()
+        except IntegrityError:
+            print(f"Unable to add duplicate rack {rack_entry.label}")
+            raise DBWriteException(f"Unable to add duplicate rack {rack_entry.label}")
         except:
             print(f"Failed to add rack {rack_entry.label}")
             raise DBWriteException

@@ -1,10 +1,12 @@
 from typing import List
 
 from app.dal.database import DBWriteException
+from app.dal.instance_table import RackDoesNotExistError
 from app.dal.rack_table import RackTable
 from app.data_models.rack import Rack
 from app.decorators.auth import requires_auth, requires_role
 from app.main.types import JSON
+from app.racks.diagram_manager import DiagramManager
 from app.racks.rack_manager import (
     InvalidRangeError,
     RackNotEmptyError,
@@ -93,17 +95,16 @@ def get_rack_details():
             stop_number=stop_number,
         )
 
-        returnJSON = {}
-        returnJSON["racks"] = racks
-
-        return addMessageToJSON(returnJSON, "success")
+        pdf_file: str = DiagramManager().generate_diagram(rack_details=racks)
+        return {"message": "success", "link": pdf_file}
     except KeyError:
-        return addMessageToJSON(returnJSON, "Unable to retrieve rack data.")
+        return {"message": "Unable to retrieve rack data."}
     except InvalidRangeError:
-        return addMessageToJSON(
-            returnJSON,
-            "Invalid range of racks to add. Please make sure you provide a valid rack range.",
-        )
+        return {
+            "message": "Invalid range of racks to add. Please make sure you provide a valid rack range."
+        }
+    except RackDoesNotExistError as e:
+        return {"message": e.message}
 
 
 @racks.route("/delete", methods=["POST"])

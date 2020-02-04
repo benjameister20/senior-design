@@ -178,7 +178,7 @@ def import_instances_csv():
         raise
         return {"message": "Error writing to database."}
 
-    return {"message": "Success"}
+    return {"message": "success"}
 
 
 @import_export.route("/models/export", methods=["POST"])

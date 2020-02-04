@@ -17,7 +17,6 @@ import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ErrorBoundray from '../errors/ErrorBoundry';
 
-
 const racksMainPath = 'racks/';
 
 export default class RacksView extends React.Component {
@@ -74,10 +73,12 @@ export default class RacksView extends React.Component {
                 'stop_number':this.state.endingRackNumber,
             }
             ).then(response => {
+                console.log(response);
                 if (response.data.message === 'success') {
                     this.setState({ showStatus: true, statusMessage: "Success", statusSeverity:"success", showConfirmationBox:false });
-                    if (command == RackCommand.GET_RACK_DETAILS) {
-                        this.setState({ items: response.data.racks });
+                    const win = window.open(response.data.link, '_blank');
+                    if (win != null) {
+                        win.focus();
                     }
                 } else {
                     this.setState({ showStatus: true, statusMessage: response.data.message, statusSeverity:"error" })

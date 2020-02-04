@@ -116,6 +116,7 @@ export default class InstancesView extends React.Component {
         this.chooseFile = this.chooseFile.bind(this);
         this.uploadFile = this.uploadFile.bind(this);
         this.sendUploadedFile = this.sendUploadedFile.bind(this);
+        this.downloadTable = this.downloadTable.bind(this);
 
         axios.defaults.headers.common['token'] = this.props.token;
         axios.defaults.headers.common['privilege'] = this.props.privilege;

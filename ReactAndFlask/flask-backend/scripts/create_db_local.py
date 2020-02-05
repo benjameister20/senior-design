@@ -1,0 +1,43 @@
+""" A script to create the databases """
+
+import os  # isort:skip
+import sys  # isort:skip
+
+# Add root directory to Python path
+sys.path.append(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+)  # isort:skip
+
+from application import application, init  # isort:skip
+from app.dal.database import db
+from app.dal.instance_table import InstanceEntry  # noqa
+from app.dal.model_table import ModelEntry  # noqa
+from app.dal.model_table import ModelTable
+from app.dal.rack_table import RackEntry  # noqa
+from app.dal.user_table import UserEntry, UserTable  # noqa
+from app.data_models.model import Model
+from app.data_models.user import User
+from app.users.authentication import AuthManager
+
+application.debug = True  # isort:skip
+init()  # isort:skip
+
+
+# Create all tables
+with application.app_context():
+    db.create_all()
+    db.session.commit()
+
+    encrypted_password = AuthManager().encrypt_pw(password="P8ssw0rd1!@")
+
+    user: User = User(
+        username="admin",
+        display_name="Admin",
+        email="admin@email.com",
+        password=encrypted_password,
+        privilege="admin",
+    )
+    UserTable().add_user(user=user)
+
+    model: Model = Model(vendor="dell", model_number="1234", height=3)
+    ModelTable().add_model(model=model)

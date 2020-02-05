@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List, Optional, Tuple
 
 from app.dal.database import DBWriteException, db
 from app.dal.exceptions.ChangeModelDBException import ChangeModelDBException
@@ -103,14 +103,7 @@ class InstanceTable:
         self, instance: Instance, original_rack, original_rack_position
     ) -> None:
         """ Updates a model to the database """
-        # instance_entry: InstanceEntry = InstanceEntry(instance=instance)
-        print("ORIG + ORIG_U")
-        print(original_rack)
-        print(original_rack_position)
         try:
-            # InstanceEntry.query.filter_by(
-            #     rack_label=original_rack, rack_position=original_rack_position
-            # ).update(instance_entry)
             old_entry = InstanceEntry.query.filter_by(
                 rack_label=original_rack, rack_position=original_rack_position
             ).first()
@@ -126,7 +119,7 @@ class InstanceTable:
                 f"Failed to udpate instance {instance.model_id}"
             )
 
-    def add_or_update(self, instance: Instance) -> None:
+    def add_or_update(self, instance: Instance) -> Tuple[int, int, int]:
         """" Adds a model or updates it if it already exists """
         instance_entry: InstanceEntry = InstanceEntry(instance=instance)
 
@@ -135,10 +128,16 @@ class InstanceTable:
                 rack_label=instance.rack_label, rack_position=instance.rack_position
             ).first()
 
+            add, update, ignore = False, False, False
             if result is not None:
-                InstanceEntry.query.filter_by(
-                    rack_label=instance.rack_label, rack_position=instance.rack_position
-                ).update(instance_entry.make_json())
+                if result.make_instance() == instance:
+                    ignore = True
+                else:
+                    InstanceEntry.query.filter_by(
+                        rack_label=instance.rack_label,
+                        rack_position=instance.rack_position,
+                    ).update(instance_entry.make_json())
+                    update = True
             else:
                 # Add new instance to database, only if rack exists
                 rack_result: RackEntry = RackEntry.query.filter_by(
@@ -148,8 +147,10 @@ class InstanceTable:
                     db.session.add(instance_entry)
                 else:
                     raise RackDoesNotExistError(rack_label=instance.rack_label)
-
+                add = True
             db.session.commit()
+
+            return int(add), int(update), int(ignore)
         except RackDoesNotExistError:
             raise
         except:

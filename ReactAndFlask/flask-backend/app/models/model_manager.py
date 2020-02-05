@@ -111,6 +111,7 @@ class ModelManager:
             )
             return model_list
         except:
+            raise
             raise InvalidInputsError(
                 "A failure occured while searching with the given filters."
             )

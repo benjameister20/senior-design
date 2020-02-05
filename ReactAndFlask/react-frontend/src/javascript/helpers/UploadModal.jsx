@@ -7,9 +7,7 @@ export default class UploadModal extends React.Component {
     constructor(props) {
         super(props);
 
-        this.state = {
-
-        };
+        this.state = {};
     }
 
     render() {
@@ -22,7 +20,12 @@ export default class UploadModal extends React.Component {
                 onClose={this.props.closeImportModal}
             >
                 <div>
-                    <input type='file' accept=".csv" onChange={this.props.chooseFile} />
+                    <div>
+                    <input
+                        type='file'
+                        accept=".csv"
+                        onChange={this.props.chooseFile}
+                    />
                     <Button
                         variant="contained"
                         color="primary"
@@ -30,6 +33,12 @@ export default class UploadModal extends React.Component {
                     >
                         Upload
                     </Button>
+                    </div>
+                    <p
+                        style={{color: `white`}}
+                    >
+                        {this.props.textDescription}
+                    </p>
                 </div>
             </Modal>
         )

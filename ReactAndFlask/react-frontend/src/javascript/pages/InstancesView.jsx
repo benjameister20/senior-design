@@ -245,7 +245,9 @@ export default class InstancesView extends React.Component {
                     'rack_position':this.state.searchRackU,
                 }
             }
-            ).then(response => this.setState({ items: response.data['instances'] }));
+            ).then(response => {
+                this.setState({ items: response.data['instances'] });
+            });
     }
 
     getModelList() {
@@ -260,7 +262,7 @@ export default class InstancesView extends React.Component {
             getURL(instancesMainPath, InstanceCommand.UPLOAD_FILE), data
             ).then(response => {
                 if (response.data.message === 'success') {
-                    this.setState({ showStatus: true, statusMessage: "Successfully added instances", statusSeverity:'success', showImportModal: false,})
+                    this.setState({ showStatus: true, statusMessage: response.data.summary, statusSeverity:'success', showImportModal: false,})
                     this.searchInstances();
                 } else {
                     this.setState({ showStatus: true, statusMessage: response.data.message, statusSeverity:"error" })
@@ -398,6 +400,7 @@ export default class InstancesView extends React.Component {
                     closeImportModal={this.closeImportModal}
                     uploadFile={this.uploadFile}
                     chooseFile={this.chooseFile}
+                    textDescription="The following format should be used for each row: hostname,rack,rack_position,vendor,model_number,owner,comment"
                 /></div>):null
             }
                 <Filters

@@ -303,7 +303,9 @@ export default class ModelsView extends React.Component {
                     'height':this.state.searchHeight,
                 }
             }
-            ).then(response => this.setState({ items: response.data['models'] }));
+            ).then(response => {
+                this.setState({ items: response.data['models'] })
+            });
 
         this.setState({
             searchText:'',
@@ -323,7 +325,7 @@ export default class ModelsView extends React.Component {
             getURL(modelsMainPath, ModelCommand.UPLOAD_FILE), data
             ).then(response => {
                 if (response.data.message === 'success') {
-                    this.setState({ showStatus: true, statusMessage: 'Successfully added models', statusSeverity:'success', showImportModal: false,})
+                    this.setState({ showStatus: true, statusMessage: response.data.summary, statusSeverity:'success', showImportModal: false,})
                     this.searchModels();
                 } else {
                     this.setState({ showStatus: true, statusMessage: response.data.message, statusSeverity:"error" })
@@ -458,6 +460,7 @@ export default class ModelsView extends React.Component {
                     closeImportModal={this.closeImportModal}
                     uploadFile={this.uploadFile}
                     chooseFile={this.chooseFile}
+                    textDescription="The following format should be used for each row: vendor,model_number,height,display_color,ethernet_ports,power_ports,cpu,memory,storage,comment"
                 /></div>):null
                 }
                 <Filters

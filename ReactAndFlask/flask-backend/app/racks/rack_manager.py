@@ -18,9 +18,15 @@ class RackNotEmptyError(Exception):
     """ Raised when a nonempty rack is being deleted """
 
 
-def _add_rack_modifier(rack: Rack) -> None:
+def _add_rack_modifier(rack: Rack) -> JSON:
     """ Add a rack """
+    rack_db: Optional[Rack] = RackTable().get_rack(label=rack.label)
+    if rack_db is not None:
+        return {"message": f"Rack {rack.label} already exists!"}
+
     RackTable().add_rack(rack=rack)
+
+    return {}
 
 
 def _delete_rack_modifier(rack: Rack) -> None:
@@ -109,13 +115,17 @@ def add_rack_range(
     start_letter: str, stop_letter: str, start_number: int, stop_number: int,
 ) -> None:
     """ Add a range of racks """
-    _modify_rack_range(
+    messages: List[JSON] = _modify_rack_range(
         start_letter=start_letter,
         stop_letter=stop_letter,
         start_number=start_number,
         stop_number=stop_number,
         modifier=_add_rack_modifier,
     )
+
+    for message in messages:
+        if "message" in message:
+            raise DBWriteException(message=message["message"])
 
 
 def delete_rack_range(

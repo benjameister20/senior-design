@@ -68,3 +68,7 @@ clean:
 	rm -rf __pycache__
 	rm -rf .pytest_cache
 	find ReactAndFlask/flask-backend -type f -name '*.py[co]' -delete -o -type d -name __pycache__ -delete
+
+.PHONY: clean-diagrams
+clean-diagrams:
+	find ReactAndFlask/flask-backend/static -type f -name '*.pdf' -delete

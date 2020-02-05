@@ -46,21 +46,19 @@ def _get_rack_modifier(rack: Rack) -> JSON:
     return {
         rack.label: list(
             map(
-                lambda x: x.make_json_with_model_name(
-                    _get_model_name_from_id(x.model_id)
-                ),
+                lambda x: x.make_json_with_model(_get_model_from_id(x.model_id)),
                 instance_entries,
             )
         ),
     }
 
 
-def _get_model_name_from_id(model_id):
+def _get_model_from_id(model_id):
     model = ModelTable().get_model(model_id)
     if model is None:
         raise DBWriteException
 
-    return model.vendor + " " + model.model_number
+    return model
 
 
 def _modify_rack_range(

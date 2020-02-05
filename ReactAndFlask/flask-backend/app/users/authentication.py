@@ -13,8 +13,8 @@ dirname = os.path.dirname(__file__)
 class AuthManager:
     def __init__(self) -> None:
         self.TOKEN_SECRET_KEY = os.getenv("TOKEN_SECRET_KEY", "my_precious")
-        self.TOKEN_EXP_DAYS = 0
-        self.TOKEN_EXP_HOURS = 2
+        self.TOKEN_EXP_DAYS = 14
+        self.TOKEN_EXP_HOURS = 0
         self.TOKEN_EXP_MINUTES = 0
         self.TOKEN_EXP_SECONDS = 0
         self.SESSION_EXPIRED = "Session expired. Please log in again."

@@ -28,7 +28,7 @@ class InstanceValidator:
         if len(instance.hostname) > 64:
             return "Hostnames must be 64 characters or less"
 
-        host_pattern = re.compile("[a-zA-Z]+[A-Za-z0-9-.]+[A-Za-z0-9]")
+        host_pattern = re.compile("[a-zA-Z]+[A-Za-z0-9-]+[A-Za-z0-9]")
         if host_pattern.fullmatch(instance.hostname) is None:
             return "Hostnames must start with a letter, only contain letters, numbers, periods, and hyphens, and end with a letter or number."
 

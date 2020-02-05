@@ -79,8 +79,8 @@ def search():
             addMessageToJSON(returnJSON, "success"),
             list(
                 map(
-                    lambda x: x.make_json_with_model_name(
-                        INSTANCE_MANAGER.get_model_name_from_id(x.model_id)
+                    lambda x: x.make_json_with_model(
+                        INSTANCE_MANAGER.get_model_from_id(x.model_id)
                     ),
                     instance_list,
                 )
@@ -128,8 +128,8 @@ def detail_view():
         return addInstancesTOJSON(
             addMessageToJSON(returnJSON, "success"),
             [
-                instance.make_json_with_model_name(
-                    INSTANCE_MANAGER.get_model_name_from_id(instance.model_id)
+                instance.make_json_with_model(
+                    INSTANCE_MANAGER.get_model_from_id(instance.model_id)
                 )
             ],
         )

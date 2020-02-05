@@ -198,14 +198,14 @@ class InstanceManager:
                 "An error occurred while trying to retrieve model info corresponding to the instance."
             )
 
-    def get_model_name_from_id(self, model_id):
+    def get_model_from_id(self, model_id):
         model = self.model_table.get_model(model_id)
         if model is None:
             raise InvalidInputsError(
                 "An error occurred while trying to retrieve model info corresponding to the instance."
             )
 
-        return model.vendor + " " + model.model_number
+        return model
 
     def check_null(self, val):
         if val is None:

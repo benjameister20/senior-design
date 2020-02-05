@@ -28,17 +28,17 @@ def create():
     global INSTANCE_MANAGER
     returnJSON = createJSON()
 
-    # try:
-    instance_data = request.get_json()
-    error = INSTANCE_MANAGER.create_instance(instance_data)
-    print(type(error))
-    if error is not None:
-        print(error.message)
-        print("YEEHAW")
-        return addMessageToJSON(returnJSON, error.message)
-    return addMessageToJSON(returnJSON, "success")
-    # except InvalidInputsError as e:
-    #     return addMessageToJSON(returnJSON, e.message)
+    try:
+        instance_data = request.get_json()
+        error = INSTANCE_MANAGER.create_instance(instance_data)
+        print(type(error))
+        if error is not None:
+            print(error.message)
+            print("YEEHAW")
+            return addMessageToJSON(returnJSON, error.message)
+        return addMessageToJSON(returnJSON, "success")
+    except InvalidInputsError as e:
+        return addMessageToJSON(returnJSON, e.message)
 
 
 @instances.route("/instances/delete", methods=["POST"])
@@ -86,6 +86,8 @@ def search():
                 )
             ),
         )
+        print("RETURN JSON")
+        print(returnJSON)
         return returnJSON
     except InvalidInputsError as e:
         return addMessageToJSON(returnJSON, e.message)
@@ -99,14 +101,16 @@ def edit():
     global INSTANCE_MANAGER
     returnJSON = createJSON()
 
-    instance_data = request.get_json()
-
-    error = INSTANCE_MANAGER.edit_instance(instance_data)
-    if error is not None:
-        return addMessageToJSON(returnJSON, error.message)
-    return addMessageToJSON(returnJSON, "success")
-    # except InvalidInputsError as e:
-    #     return addMessageToJSON(returnJSON, e.message)
+    try:
+        instance_data = request.get_json()
+        print("REQUEST")
+        print(instance_data)
+        error = INSTANCE_MANAGER.edit_instance(instance_data)
+        if error is not None:
+            return addMessageToJSON(returnJSON, error.message)
+        return addMessageToJSON(returnJSON, "success")
+    except InvalidInputsError as e:
+        return addMessageToJSON(returnJSON, e.message)
 
 
 @instances.route("/instances/detailView", methods=["POST"])

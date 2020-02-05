@@ -67,8 +67,8 @@ def create_racks():
         return addMessageToJSON(returnJSON, "success")
     except KeyError:
         return addMessageToJSON(returnJSON, "Unable to create racks.")
-    except DBWriteException:
-        return addMessageToJSON(returnJSON, "Unable to create and save racks.")
+    except DBWriteException as e:
+        return addMessageToJSON(returnJSON, e.message)
     except InvalidRangeError:
         return addMessageToJSON(
             returnJSON,

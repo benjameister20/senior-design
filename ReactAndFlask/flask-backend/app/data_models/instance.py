@@ -66,9 +66,10 @@ class Instance:
             "comment": self.comment,
         }
 
-    def make_json_with_model_name(self, model_name):
+    def make_json_with_model(self, model):
         return {
-            "model": model_name,
+            "model": f"{model.vendor} {model.model_number}",
+            "height": f"{model.height}",
             "hostname": self.hostname,
             "rack": f"{self.rack_label}",
             "rack_position": self.rack_position,

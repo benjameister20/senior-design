@@ -28,11 +28,9 @@ def create():
     returnJSON = createJSON()
 
     try:
-        print("entering making")
         model_data = request.get_json()
-        print("got json")
         MODEL_MANAGER.create_model(model_data)
-        print("made model")
+
         return addMessageToJSON(returnJSON, "success")
     except InvalidInputsError as e:
         return addMessageToJSON(returnJSON, e.message)

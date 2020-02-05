@@ -16,7 +16,7 @@ class InstanceValidator:
 
     def create_instance_validation(self, instance):
         if self.rack_table.get_rack(instance.rack_label) is None:
-            return "The requested rack does not exist. Instances must be created on preexisting racks"
+            return f"Rack {instance.rack_label} does not exist. Instances must be created on preexisting racks"
 
         duplicate_hostname = self.instance_table.get_instance_by_hostname(
             instance.hostname
@@ -28,9 +28,9 @@ class InstanceValidator:
         if len(instance.hostname) > 64:
             return "Hostnames must be 64 characters or less"
 
-        host_pattern = re.compile("[a-zA-Z]+[A-Za-z0-9-]+[A-Za-z0-9]")
+        host_pattern = re.compile("[a-zA-Z]+[A-Za-z0-9-.]+[A-Za-z0-9]")
         if host_pattern.fullmatch(instance.hostname) is None:
-            return "Hostnames must start with a letter, only contain letters, numbers, and hyphens, and end with a letter or number."
+            return "Hostnames must start with a letter, only contain letters, numbers, periods, and hyphens, and end with a letter or number."
 
         model_template = self.model_table.get_model(instance.model_id)
         if model_template is None:
@@ -41,7 +41,7 @@ class InstanceValidator:
             return "The value for Rack U must be a positive integer."
 
         if instance.owner != "" and self.user_table.get_user(instance.owner) is None:
-            return "The owner must be an existing user on the system. Please enter the username of an existing user."
+            return f"The owner {instance.owner} is not an existing user. Please enter the username of an existing user."
 
         instance_bottom = int(instance.rack_position)
         instance_top = instance_bottom + int(model_template.height) - 1

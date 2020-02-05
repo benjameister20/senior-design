@@ -32,6 +32,18 @@ class Instance:
         self.owner: Optional[str] = owner
         self.comment: Optional[str] = comment
 
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, Instance):
+            return NotImplemented
+        return (
+            str(self.model_id) == str(other.model_id)
+            and self.hostname == other.hostname
+            and self.rack_label == other.rack_label
+            and str(self.rack_position) == str(other.rack_position)
+            and self.owner == other.owner
+            and self.comment == other.comment
+        )
+
     @classmethod
     def headers(cls) -> List[str]:
         return [
@@ -66,8 +78,10 @@ class Instance:
 
     @classmethod
     def from_csv(cls, csv_row: Dict[str, Any]) -> "Instance":
-        print("CSV_ROW")
-        print(csv_row)
+        for key in csv_row.keys():
+            if csv_row[key] == "None":
+                csv_row[key] = ""
+
         return Instance(
             model_id=csv_row["model_id"],
             hostname=csv_row["hostname"],
@@ -77,13 +91,31 @@ class Instance:
             comment=csv_row["comment"],
         )
 
+    def _format_csv_entry(self, entry: str) -> str:
+        if '"' not in entry and "\n" not in entry:
+            return entry
+
+        new_entry: str = ""
+        for character in entry:
+            if character == '"':
+                new_entry += '""'
+            else:
+                new_entry += character
+
+        return f'"{new_entry}"'
+
     def to_csv(self, vendor: str, model_number: str) -> str:
         """ Get the model as a csv row """
         json_data: JSON = self.make_json()
         json_data["vendor"] = vendor
         json_data["model_number"] = model_number
 
-        values: List[str] = list(map(lambda x: str(json_data[x]), Instance.headers()))
+        values: List[str] = list(
+            map(
+                lambda x: self._format_csv_entry(entry=str(json_data[x])),
+                Instance.headers(),
+            )
+        )
         clean_values: List[str] = list(map(lambda x: "" if x == "None" else x, values))
 
         return ",".join(clean_values)

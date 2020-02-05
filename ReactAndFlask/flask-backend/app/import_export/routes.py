@@ -1,7 +1,7 @@
 import csv
 import io
 from http import HTTPStatus
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Tuple
 
 from app.dal.database import DBWriteException
 from app.dal.instance_table import InstanceTable, RackDoesNotExistError
@@ -9,8 +9,10 @@ from app.dal.model_table import ModelTable
 from app.data_models.instance import Instance
 from app.data_models.model import Model
 from app.instances.instance_manager import InstanceManager
+from app.instances.instance_validator import InstanceValidator
 from app.main.types import JSON
 from app.models.model_manager import ModelManager
+from app.models.model_validator import ModelValidator
 from flask import Blueprint, request
 
 import_export = Blueprint("import_export", __name__)
@@ -60,8 +62,9 @@ def _get_csv():
     return csv.reader(stream)
 
 
-def _parse_model_csv(csv_input) -> None:
+def _parse_model_csv(csv_input) -> Tuple[int, int, int]:
     model_table: ModelTable = ModelTable()
+    model_validator: ModelValidator = ModelValidator()
 
     # Extract header row
     try:
@@ -69,6 +72,7 @@ def _parse_model_csv(csv_input) -> None:
     except StopIteration:
         raise InvalidFormatError(message="No header row.")
 
+    models: List[Model] = []
     for row in csv_input:
         # Ensure proper input length of csv row
         if len(row) != len(headers):
@@ -85,29 +89,43 @@ def _parse_model_csv(csv_input) -> None:
         except KeyError:
             raise InvalidFormatError(message="Columns are missing.")
 
+        validation: str = model_validator.create_model_validation(model=model)
+        if (
+            validation != "success"
+            and validation != "This vendor and model number combination already exists."
+        ):
+            raise InvalidFormatError(message=validation)
+
+        # Append to list to write to database
+        models.append(model)
+
+    added, updated, ignored = 0, 0, 0
+    for model in models:
         # Write to database
         try:
-            model_table.add_or_update(model=model)
+            add, update, ignore = model_table.add_or_update(model=model)
+            added += add
+            updated += update
+            ignored += ignore
         except DBWriteException:
             raise
 
+    return added, updated, ignored
 
-def _parse_instance_csv(csv_input) -> None:
+
+def _parse_instance_csv(csv_input) -> Tuple[int, int, int]:
     instance_table: InstanceTable = InstanceTable()
     model_table: ModelTable = ModelTable()
-    print("CSV_INPUT")
-    print(csv_input)
+    instance_validator: InstanceValidator = InstanceValidator()
+
     # Extract header row
     try:
         headers: List[str] = next(csv_input)
-        print("HEADERS")
-        print(headers)
     except StopIteration:
         raise InvalidFormatError(message="No header row.")
 
+    instances: List[Instance] = []
     for row in csv_input:
-        print("ROW")
-        print(row)
         # Ensure proper input length of csv row
         if len(row) != len(headers):
             raise TooFewInputsError(message=",".join(row))
@@ -123,25 +141,42 @@ def _parse_instance_csv(csv_input) -> None:
             vendor=vendor, model_number=model_number
         )
 
-        # If model does not exist, create it
+        # If model does not exist, throw error
         if model_id is None:
             raise ModelDoesNotExistError(vendor=vendor, model_number=model_number)
 
         values["model_id"] = model_id
 
         # Create the instance; Raise an exception if some columns are missing
-        # try:
-        instance: Instance = Instance.from_csv(csv_row=values)
-        # except KeyError:
-        #     raise InvalidFormatError(message="Columns are missing.")
+        try:
+            instance: Instance = Instance.from_csv(csv_row=values)
+        except KeyError:
+            raise InvalidFormatError(message="Columns are missing.")
 
+        validation: str = instance_validator.create_instance_validation(
+            instance=instance
+        )
+        if (
+            validation != "success"
+            and validation
+            != f"An instance with hostname {instance.hostname} exists at location {instance.rack_label} U{instance.rack_position}"
+        ):
+            raise InvalidFormatError(message=validation)
+
+        instances.append(instance)
+
+    added, updated, ignored = 0, 0, 0
+    for instance in instances:
         # Write to database
         try:
-            instance_table.add_or_update(instance=instance)
-        except RackDoesNotExistError:
+            add, update, ignore = instance_table.add_or_update(instance=instance)
+            added += add
+            updated += update
+            ignored += ignore
+        except (RackDoesNotExistError, DBWriteException):
             raise
-        except DBWriteException:
-            raise
+
+    return added, updated, ignored
 
 
 @import_export.route("/models/import", methods=["POST"])
@@ -149,7 +184,7 @@ def import_models_csv():
     """ Bulk import models from a csv file """
     try:
         csv_input = _get_csv()
-        _parse_model_csv(csv_input=csv_input)
+        added, updated, ignored = _parse_model_csv(csv_input=csv_input)
     except FileNotFoundError:
         return {"message": "No CSV file"}
     except InvalidFormatError as e:
@@ -157,9 +192,13 @@ def import_models_csv():
     except TooFewInputsError as e:
         return {"message": f"Too few inputs in CSV line {e.message}"}
     except DBWriteException:
+        raise
         return {"message": "Error writing to database."}
 
-    return {"message": "success"}
+    return {
+        "message": "success",
+        "summary": f"{added} models added, {updated} models updated, and {ignored} models ignored.",
+    }
 
 
 @import_export.route("/instances/import", methods=["POST"])
@@ -167,17 +206,20 @@ def import_instances_csv():
     """ Bulk import instances from a csv file """
     try:
         csv_input = _get_csv()
-        _parse_instance_csv(csv_input=csv_input)
+        added, updated, ignored = _parse_instance_csv(csv_input=csv_input)
     except FileNotFoundError:
         return {"message": "No CSV file"}
     except TooFewInputsError as e:
         return {"message": f"Too few inputs in CSV line {e.message}"}
-    except (RackDoesNotExistError, ModelDoesNotExistError) as e:
+    except (RackDoesNotExistError, ModelDoesNotExistError, InvalidFormatError) as e:
         return {"message": f"{e.message}"}
     except DBWriteException:
         return {"message": "Error writing to database."}
 
-    return {"message": "success"}
+    return {
+        "message": "success",
+        "summary": f"{added} instances added, {updated} instances updated, and {ignored} instances ignored.",
+    }
 
 
 @import_export.route("/models/export", methods=["POST"])

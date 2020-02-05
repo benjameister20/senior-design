@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List, Optional, Tuple
 
 from app.dal.database import DBWriteException, db
 from app.data_models.model import Model
@@ -47,6 +47,20 @@ class ModelEntry(db.Model):
             "comment": self.comment,
         }
 
+    def make_model(self) -> Model:
+        return Model(
+            vendor=self.vendor,
+            model_number=self.model_number,
+            height=self.height,
+            ethernet_ports=self.ethernet_ports,
+            power_ports=self.power_ports,
+            cpu=self.cpu,
+            memory=self.memory,
+            storage=self.storage,
+            comment=self.comment,
+            display_color=self.display_color,
+        )
+
 
 class ModelTable:
     def get_model(self, identifier: int) -> Optional[Model]:
@@ -55,18 +69,7 @@ class ModelTable:
         if model is None:
             return None
 
-        return Model(
-            vendor=model.vendor,
-            model_number=model.model_number,
-            height=model.height,
-            ethernet_ports=model.ethernet_ports,
-            power_ports=model.power_ports,
-            cpu=model.cpu,
-            memory=model.memory,
-            storage=model.storage,
-            comment=model.comment,
-            display_color=model.display_color,
-        )
+        return model.make_model()
 
     def get_model_by_vendor_number(self, vendor: str, model_number: str):
         model: ModelEntry = ModelEntry.query.filter_by(
@@ -75,18 +78,7 @@ class ModelTable:
         if model is None:
             return None
 
-        return Model(
-            vendor=model.vendor,
-            model_number=model.model_number,
-            height=model.height,
-            ethernet_ports=model.ethernet_ports,
-            power_ports=model.power_ports,
-            cpu=model.cpu,
-            memory=model.memory,
-            storage=model.storage,
-            comment=model.comment,
-            display_color=model.display_color,
-        )
+        return model.make_model()
 
     def get_model_id_by_vendor_number(
         self, vendor: str, model_number: str
@@ -125,7 +117,7 @@ class ModelTable:
                 message="Failed to udpate model {model.vendor} {model.model_number}"
             )
 
-    def add_or_update(self, model: Model) -> None:
+    def add_or_update(self, model: Model) -> Tuple[int, int, int]:
         """" Adds a model or updates it if it already exists """
         model_entry: ModelEntry = ModelEntry(model=model)
 
@@ -134,14 +126,22 @@ class ModelTable:
                 vendor=model.vendor, model_number=model.model_number
             ).first()
 
+            add, update, ignore = False, False, False
             if result is not None:
-                ModelEntry.query.filter_by(
-                    vendor=model.vendor, model_number=model.model_number
-                ).update(values=model_entry.make_json())
+                if result.make_model() == model:
+                    ignore = True
+                else:
+                    ModelEntry.query.filter_by(
+                        vendor=model.vendor, model_number=model.model_number
+                    ).update(values=model_entry.make_json())
+                    update = True
             else:
                 db.session.add(model_entry)
+                add = True
 
             db.session.commit()
+
+            return int(add), int(update), int(ignore)
         except:
             raise DBWriteException(
                 message="Failed to udpate model {model.vendor} {model.model_number}"
@@ -174,21 +174,7 @@ class ModelTable:
         """ Get a list of all models """
         all_models: List[ModelEntry] = ModelEntry.query.all()
 
-        return [
-            Model(
-                vendor=model.vendor,
-                model_number=model.model_number,
-                height=model.height,
-                ethernet_ports=model.ethernet_ports,
-                power_ports=model.power_ports,
-                cpu=model.cpu,
-                memory=model.memory,
-                storage=model.storage,
-                comment=model.comment,
-                display_color=model.display_color,
-            )
-            for model in all_models
-        ]
+        return [model.make_model() for model in all_models]
 
     def get_models_with_filter(
         self,
@@ -210,21 +196,7 @@ class ModelTable:
             and_(*conditions)
         ).limit(limit)
 
-        return [
-            Model(
-                vendor=model.vendor,
-                model_number=model.model_number,
-                height=model.height,
-                ethernet_ports=model.ethernet_ports,
-                power_ports=model.power_ports,
-                cpu=model.cpu,
-                memory=model.memory,
-                storage=model.storage,
-                comment=model.comment,
-                display_color=model.display_color,
-            )
-            for model in filtered_models
-        ]
+        return [model.make_model() for model in filtered_models]
 
     def get_distinct_vendors(self):
         model_list: List[ModelEntry] = ModelEntry.query.with_entities(

@@ -30,7 +30,10 @@ fix:
 
 .PHONY: runall
 runall:
-	cd ReactAndFlask/react-frontend && yarn build
+	cd ReactAndFlask/reactfrontend && yarn build
+	rm -rf ReactAndFlask/flask-backend/static/* && rm -rf ReactAndFlask/flask-backend/templates/index.html
+	cp -r ReactAndFlask/reactfrontend/build/static/* ReactAndFlask/flask-backend/static/
+	cp ReactAndFlask/reactfrontend/build/index.html ReactAndFlask/flask-backend/templates/index.html
 	python ./ReactAndFlask/flask-backend/application.py
 
 .PHONY: run-back

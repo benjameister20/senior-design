@@ -28,7 +28,7 @@ dependencies:
 fix:
 	pre-commit run --all-files
 
-.PHONY: runall
+.PHONY: run-all
 runall:
 	cd ReactAndFlask/reactfrontend && yarn build
 	rm -rf ReactAndFlask/flask-backend/static/* && rm -rf ReactAndFlask/flask-backend/templates/index.html
@@ -42,7 +42,7 @@ run-back:
 
 .PHONY: run-front
 run-front:
-	cd ReactAndFlask/react-frontend && npm build && npm start
+	cd ReactAndFlask/reactfrontend && yarn start
 
 .PHONY: run-local
 run-local:

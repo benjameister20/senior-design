@@ -154,7 +154,7 @@ class InstanceManager:
 
         try:
             hostname = self.check_null(instance_data["hostname"])
-            rack = self.check_null(instance_data["rack"])
+            rack = self.check_null(instance_data["rack"].upper())
             rack_position = self.check_null(instance_data["rack_position"])
             owner = self.check_null(instance_data["owner"])
             comment = self.check_null(instance_data["comment"])

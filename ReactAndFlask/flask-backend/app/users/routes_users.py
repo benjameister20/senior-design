@@ -227,7 +227,7 @@ def authenticate():
 
     user = USER_TABLE.get_user(username)
     if user is None:
-        return add_message_to_JSON(answer, f"User <{username}> does not exist")
+        return add_message_to_JSON(answer, f"User \"{username}\" does not exist")
 
     auth_success = AUTH_MANAGER.compare_pw(attempted_password, user.password)
     if not auth_success:

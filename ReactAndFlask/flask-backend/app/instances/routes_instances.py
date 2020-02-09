@@ -18,6 +18,42 @@ def test():
     return "test"
 
 
+@instances.route("/instances/search/", methods=["POST"])
+@requires_auth(request)
+def search():
+    """ Route for searching instances """
+
+    global INSTANCE_MANAGER
+    global instancesArr
+    returnJSON = createJSON()
+
+    filter = request.json["filter"]
+    print("FILTER")
+    print(filter)
+    try:
+        limit = int(request.json["limit"])
+    except:
+        limit = 1000
+
+    try:
+        instance_list = INSTANCE_MANAGER.get_instances(filter, limit)
+        returnJSON = addInstancesTOJSON(
+            addMessageToJSON(returnJSON, "success"),
+            list(
+                map(
+                    lambda x: x.make_json_with_model_name(
+                        INSTANCE_MANAGER.get_model_name_from_id(x.model_id)
+                    ),
+                    instance_list,
+                )
+            ),
+        )
+        print(returnJSON)
+        return returnJSON
+    except InvalidInputsError as e:
+        return addMessageToJSON(returnJSON, e.message)
+
+
 @instances.route("/instances/create", methods=["POST"])
 @requires_auth(request)
 @requires_role(request, "admin")
@@ -54,42 +90,6 @@ def delete():
         instance_data = request.get_json()
         INSTANCE_MANAGER.delete_instance(instance_data)
         return addMessageToJSON(returnJSON, "success")
-    except InvalidInputsError as e:
-        return addMessageToJSON(returnJSON, e.message)
-
-
-@instances.route("/instances/search/", methods=["POST"])
-@requires_auth(request)
-def search():
-    """ Route for searching instances """
-
-    global INSTANCE_MANAGER
-    global instancesArr
-    returnJSON = createJSON()
-
-    filter = request.json["filter"]
-    print("FILTER")
-    print(filter)
-    try:
-        limit = int(request.json["limit"])
-    except:
-        limit = 1000
-
-    try:
-        instance_list = INSTANCE_MANAGER.get_instances(filter, limit)
-        returnJSON = addInstancesTOJSON(
-            addMessageToJSON(returnJSON, "success"),
-            list(
-                map(
-                    lambda x: x.make_json_with_model_name(
-                        INSTANCE_MANAGER.get_model_name_from_id(x.model_id)
-                    ),
-                    instance_list,
-                )
-            ),
-        )
-        print(returnJSON)
-        return returnJSON
     except InvalidInputsError as e:
         return addMessageToJSON(returnJSON, e.message)
 

@@ -17,7 +17,7 @@ install:
 		pip install -r requirements.txt &&\
 		pre-commit install &&\
 		pre-commit autoupdate &&\
-		cd ReactAndFlask/react-frontend && yarn install
+		cd ReactAndFlask/reactfrontend && yarn install
 
 .PHONY: dependencies
 dependencies:
@@ -29,9 +29,10 @@ fix:
 	pre-commit run --all-files
 
 .PHONY: run-all
-runall:
+run-all:
 	cd ReactAndFlask/reactfrontend && yarn build
 	rm -rf ReactAndFlask/flask-backend/static/* && rm -rf ReactAndFlask/flask-backend/templates/index.html
+	#mkdir ReactAndFlask/flask-backend/static/ && mkdir ReactAndFlask/flask-backend/templates/
 	cp -r ReactAndFlask/reactfrontend/build/static/* ReactAndFlask/flask-backend/static/
 	cp ReactAndFlask/reactfrontend/build/index.html ReactAndFlask/flask-backend/templates/index.html
 	python ./ReactAndFlask/flask-backend/application.py

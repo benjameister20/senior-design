@@ -29,7 +29,7 @@ def search()
             "model":"MODEL",
             "hostname":"HOSTNAME",
             "rack":"RACK",
-            "rack_u":"RACK_U"
+            "rack_position":"RACK_U"
         }
     "limit":OPTIONAL_LIMIT
 }
@@ -42,25 +42,43 @@ def search()
             "model":"MODEL",
             "hostname":"HOSTNAME",
             "rack":"RACK",
-            "rack_u":"RACK_U",
+            "rack_position":"RACK_U",
             "owner":"OWNER",
             "comment":"COMMENT"
+            "datacenter_id": "DATACENTER",
+            "tags": "TAGS",
+            "mac_address": "MAC ADDRESSES,
+            "network_connections": "NETWORK CONNECTIONS",
+            "power_connections": "POWER CONNECTIONS",
+            "asset_number": "ASSET NUMBER",            
         },
         {
             "model":"MODEL",
             "hostname":"HOSTNAME",
             "rack":"RACK",
-            "rack_u":"RACK_U",
+            "rack_position":"RACK_U",
             "owner":"OWNER",
             "comment":"COMMENT"
+            "datacenter_id": "DATACENTER",
+            "tags": "TAGS",
+            "mac_address": "MAC ADDRESSES,
+            "network_connections": "NETWORK CONNECTIONS",
+            "power_connections": "POWER CONNECTIONS",
+            "asset_number": "ASSET NUMBER",                 
         },
         {
             "model":"MODEL",
             "hostname":"HOSTNAME",
             "rack":"RACK",
-            "rack_u":"RACK_U",
+            "rack_position":"RACK_U",
             "owner":"OWNER",
             "comment":"COMMENT"
+            "datacenter_id": "DATACENTER",
+            "tags": "TAGS",
+            "mac_address": "MAC ADDRESSES,
+            "network_connections": "NETWORK CONNECTIONS",
+            "power_connections": "POWER CONNECTIONS",
+            "asset_number": "ASSET NUMBER",                 
         }
     ]
 }
@@ -78,9 +96,15 @@ def create()
     "model":"MODEL",
     "hostname":"HOSTNAME",
     "rack":"RACK",
-    "rack_u":"RACK_U",
+    "rack_position":"RACK_U",
     "owner":"OWNER",
     "comment":"COMMENT"
+    "datacenter_id": "DATACENTER",
+    "tags": "TAGS",
+    "mac_address": "MAC ADDRESSES,
+    "network_connections": "NETWORK CONNECTIONS",
+    "power_connections": "POWER CONNECTIONS",
+    "asset_number": "ASSET NUMBER",     
 }
 ```
 - Returns:
@@ -99,8 +123,7 @@ def delete()
 - Arguments:
 ```language=json
 {
-    "rack":"RACK",
-    "rack_u":"RACK_U"
+    "asset_number": "ASSET NUMBER", 
 }
 ```
 - Returns:
@@ -119,14 +142,19 @@ def edit()
 - Arguments:
 ```language=json
 {
-    "rackOriginal":"RACK_ORIGINAL",
-    "rack_uOriginal":"RACK_U_ORIGINAL",
+    "asset_numberOriginal": "ORIGINAL ASSET NUMBER"
     "model":"MODEL",
     "hostname":"HOSTNAME",
     "rack":"RACK",
-    "rack_u":"RACK_U",
+    "rack_position":"RACK_U",
     "owner":"OWNER",
     "comment":"COMMENT"
+    "datacenter_id": "DATACENTER",
+    "tags": "TAGS",
+    "mac_address": "MAC ADDRESSES,
+    "network_connections": "NETWORK CONNECTIONS",
+    "power_connections": "POWER CONNECTIONS",
+    "asset_number": "ASSET NUMBER",    
 }
 ```
 - Returns:
@@ -145,9 +173,7 @@ def detail_view()
 - Arguments:
 ```language=json
 {
-    "rack": "RACK",
-    "rack_u":"RACK_U"
-
+    "asset_number": "ASSET NUMBER", 
 }
 ```
 - Returns:
@@ -159,9 +185,15 @@ def detail_view()
             "model": "MODEL",
             "hostname": "HOSTNAME",
             "rack": "RACK",
-            "rack_u": "RACK_U",
+            "rack_position": "RACK_U",
             "owner": "OWNER",
             "comment": "COMMENT"
+            "datacenter_id": "DATACENTER",
+            "tags": "TAGS",
+            "mac_address": "MAC ADDRESSES,
+            "network_connections": "NETWORK CONNECTIONS",
+            "power_connections": "POWER CONNECTIONS",
+            "asset_number": "ASSET NUMBER",    
         },
     ]
 }

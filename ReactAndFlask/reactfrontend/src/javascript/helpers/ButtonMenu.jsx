@@ -18,13 +18,6 @@ export default class ButtonMenu extends React.Component {
                 <Button
                     variant="contained"
                     color="primary"
-                    onClick={this.props.openCreateModal}
-                >
-                    Create
-                </Button>
-                <Button
-                    variant="contained"
-                    color="primary"
                     startIcon={<CloudUploadIcon />}
                     onClick={this.props.openImportModal}
                 >

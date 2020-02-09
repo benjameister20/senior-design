@@ -1,9 +1,13 @@
 import React from 'react';
-import Modal from '@material-ui/core/Modal';
 import TextField from "@material-ui/core/TextField";
 import Button from '@material-ui/core/Button';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import { palette } from '@material-ui/system';
+import ExpansionPanel from '@material-ui/core/ExpansionPanel';
+import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
+import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
+import Typography from '@material-ui/core/Typography';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import '../../stylesheets/Models.css';
 
 export default class CreateModal extends React.Component {
     constructor(props) {
@@ -17,14 +21,14 @@ export default class CreateModal extends React.Component {
     render() {
         return (
         <div>
-            <Modal
-                style={{top: `50%`,left: `50%`,transform: `translate(-50%, -50%)`, background:'#AAAAAA'}}
-                aria-labelledby="simple-modal-title"
-                aria-describedby="simple-modal-description"
-                open={this.props.showCreateModal}
-                onClose={this.props.closeCreateModal}
-            >
-                <div>
+            <ExpansionPanel class="create-expansion-tab">
+                    <ExpansionPanelSummary
+                        expandIcon={<ExpandMoreIcon />}
+                    >
+                        <Typography>Create</Typography>
+                    </ExpansionPanelSummary>
+                    <ExpansionPanelDetails class="create-expansion-tab">
+                    <div>
                     {this.props.inputs.map((input, index) => (
                         (index===0 && this.props.useAutocomplete) ? <Autocomplete
                             id="combo-box-demo"
@@ -45,7 +49,8 @@ export default class CreateModal extends React.Component {
                         Create
                     </Button>
                 </div>
-            </Modal>
+                    </ExpansionPanelDetails>
+                </ExpansionPanel>
         </div>
         );
     }

@@ -77,7 +77,7 @@ clean-diagrams:
 	find ReactAndFlask/flask-backend/static -type f -name '*.pdf' -delete
 
 .PHONY: deploy-heroku
-deploy-heroku
+deploy-heroku:
 	cd ReactAndFlask/reactfrontend && yarn install && yarn build
 	rm -rf ReactAndFlask/flask-backend/static/* && rm -rf ReactAndFlask/flask-backend/templates/index.html
 	cp -r ReactAndFlask/reactfrontend/build/static/* ReactAndFlask/flask-backend/static/

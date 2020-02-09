@@ -12,6 +12,7 @@ from app.users.authentication import AuthManager
 from app.users.routes_users import users
 from flask import Flask, jsonify, render_template
 from flask_heroku import Heroku
+from settings import TEST_DB_URL
 
 application = Flask(__name__)
 heroku = Heroku(app=application)
@@ -67,7 +68,7 @@ def _register_routes() -> None:
 def init() -> None:
     application.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     if application.debug:
-        application.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://localhost/test"
+        application.config["SQLALCHEMY_DATABASE_URI"] = TEST_DB_URL
 
     db.init_app(app=application)
 

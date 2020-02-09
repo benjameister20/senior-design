@@ -1,0 +1,8 @@
+.create-expansion-tab {
+    max-width: 50%;
+    width:50%;
+    flex-grow: 1;
+    font-size: large;
+    font-family: Arial, Helvetica, sans-serif;
+    background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)';
+}

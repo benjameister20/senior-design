@@ -1,18 +1,23 @@
 import React from 'react';
 import axios from 'axios';
-import { ModelCommand } from '../enums/modelCommands.ts'
-import { ModelInput } from '../enums/modelInputs.ts'
-import { Privilege } from '../enums/privilegeTypes.ts'
-import TableView from '../helpers/TableView';
 import { CSVLink } from "react-csv";
-import ButtonMenu from '../helpers/ButtonMenu';
-import Filters from '../helpers/Filters';
-import UploadModal from '../helpers/UploadModal';
-import getURL from '../helpers/functions/GetURL';
-import DetailedView from '../helpers/DetailedView';
-import CreateModal from '../helpers/CreateModal';
-import StatusDisplay from '../helpers/StatusDisplay';
-import ErrorBoundray from '../errors/ErrorBoundry';
+
+import { ModelCommand } from '../enums/ModelCommands.ts'
+import { ModelInput } from '../enums/ModelInputs.ts'
+
+import ButtonsModel from '../helpers/ButtonsModel';
+import FilterModel from '../helpers/FilterModel';
+import DetailModel from '../helpers/DetailModel';
+import CreateModel from '../helpers/CreateModel';
+
+import { Privilege } from '../../enums/privilegeTypes.ts'
+
+import UploadModal from '../../helpers/UploadModal';
+import getURL from '../../helpers/functions/GetURL';
+import TableView from '../../helpers/TableView';
+import StatusDisplay from '../../helpers/StatusDisplay';
+
+import ErrorBoundray from '../../errors/ErrorBoundry';
 
 const inputs = [
     'vendor',
@@ -434,7 +439,7 @@ export default class ModelsView extends React.Component {
                     message={this.state.statusMessage}
                 />
                 {(this.props.privilege == Privilege.ADMIN) ?
-                    (<div><ButtonMenu
+                    (<div><ButtonsModel
                     openCreateModal={this.openCreateModal}
                     openImportModal={this.openImportModal}
                     downloadTable={this.downloadTable}
@@ -446,7 +451,7 @@ export default class ModelsView extends React.Component {
                     ref={(r) => this.csvLink = r}
                     target="_blank"
                 />
-                <CreateModal
+                <CreateModel
                     showCreateModal={this.state.showCreateModal}
                     closeCreateModal={this.closeCreateModal}
                     createModel={this.createModel}
@@ -463,7 +468,7 @@ export default class ModelsView extends React.Component {
                     textDescription="The following format should be used for each row: vendor,model_number,height,display_color,ethernet_ports,power_ports,cpu,memory,storage,comment"
                 /></div>):null
                 }
-                <Filters
+                <FilterModel
                     updateSearchText={this.updateSearchText}
                     search={this.search}
                     filters={columns}
@@ -475,7 +480,7 @@ export default class ModelsView extends React.Component {
                     showDetailedView={this.showDetailedView}
                     filters={columns}
                 />
-                <DetailedView
+                <DetailModel
                     showDetailedView={this.state.showDetailedView}
                     closeDetailedView={this.closeDetailedView}
                     inputs={inputs}

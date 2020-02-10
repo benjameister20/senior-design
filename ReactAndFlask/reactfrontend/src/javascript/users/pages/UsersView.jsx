@@ -1,22 +1,24 @@
 import React from 'react';
 import axios from 'axios';
-import { UserCommand } from '../enums/userCommands.ts'
-import { UserInput } from '../enums/userInputs.ts'
-import { Privilege } from '../enums/privilegeTypes.ts'
-import TableView from '../helpers/TableView';
-import { CSVLink } from "react-csv";
-import ButtonMenu from '../helpers/ButtonMenu';
-import Filters from '../helpers/Filters';
-import UploadModal from '../helpers/UploadModal';
-import getURL from '../helpers/functions/GetURL';
-import DetailedView from '../helpers/DetailedView';
-import CreateModal from '../helpers/CreateModal';
-import * as Constants from '../Constants';
-import MuiAlert from '@material-ui/lab/Alert';
-import StatusDisplay from '../helpers/StatusDisplay';
 import Button from '@material-ui/core/Button';
-import ErrorBoundray from '../errors/ErrorBoundry';
 
+import { UserCommand } from '../enums/UserCommands.ts'
+import { UserInput } from '../enums/UserInputs.ts'
+
+
+import ButtonsUser from '../helpers/ButtonsUser';
+import FilterUser from '../helpers/FilterUser';
+import DetailUser from '../helpers/DetailUser';
+import CreateUser from '../helpers/CreateUser';
+
+import UploadModal from '../../helpers/UploadModal';
+import getURL from '../../helpers/functions/GetURL';
+import TableView from '../../helpers/TableView';
+import StatusDisplay from '../../helpers/StatusDisplay';
+
+import { Privilege } from '../../enums/privilegeTypes.ts'
+
+import ErrorBoundray from '../../errors/ErrorBoundry';
 
 const inputs = [
     'username',
@@ -312,7 +314,7 @@ export default class UsersView extends React.Component {
                 >
                     Create
                 </Button>
-                <CreateModal
+                <CreateUser
                     showCreateModal={this.state.showCreateModal}
                     closeCreateModal={this.closeCreateModal}
                     createModel={this.createUser}
@@ -326,7 +328,7 @@ export default class UsersView extends React.Component {
                     closeImportModal={this.closeImportModal}
                 /></div>):null
             }
-                <Filters
+                <FilterUser
                     updateSearchText={this.updateSearchText}
                     search={this.search}
                     filters={columns}
@@ -338,7 +340,7 @@ export default class UsersView extends React.Component {
                     showDetailedView={this.showDetailedView}
                     filters={columns}
                 />
-                <DetailedView
+                <DetailUser
                     showDetailedView={this.state.showDetailedView}
                     closeDetailedView={this.closeDetailedView}
                     inputs={columns}

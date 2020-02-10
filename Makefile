@@ -79,6 +79,6 @@ clean-diagrams:
 .PHONY: deploy-heroku
 deploy-heroku:
 	cd ReactAndFlask/reactfrontend && yarn install && yarn build
-	rm -rf ReactAndFlask/flask-backend/static/* && rm -rf ReactAndFlask/flask-backend/templates/index.html
+	mkdir ReactAndFlask/flask-backend/static/* && mkdir ReactAndFlask/flask-backend/templates/
 	cp -r ReactAndFlask/reactfrontend/build/static/* ReactAndFlask/flask-backend/static/
 	cp ReactAndFlask/reactfrontend/build/index.html ReactAndFlask/flask-backend/templates/index.html

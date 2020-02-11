@@ -290,7 +290,13 @@ export default class ModelsView extends React.Component {
                 'vendor':vendor,
                 'model_number':modelNum,
             }, this.props.headers
-            ).then(response => this.setState({ detailedValues: response.data['models'][0], detailViewLoading:false}));
+            ).then(response => {
+                console.log("response data");
+                console.log(response.data['models'][0]);
+                console.log("original detailed values");
+                console.log(this.state.detailedValues);
+                this.setState({ detailedValues: response.data['models'][0], detailViewLoading:false},() => console.log(this.state.detailedValues))
+            });
 
         this.setState({
             viewVendor:'',
@@ -396,7 +402,19 @@ export default class ModelsView extends React.Component {
 
     updateModelCreator(event) {
         this.state.createdModel[event.target.name] = event.target.value;
-        this.forceUpdate()
+        this.forceUpdate();
+    }
+
+    updateModelColor = (color) => {
+        console.log("updating color to " + color);
+        this.state.createdModel['display_color'] = color;
+        this.forceUpdate();
+    }
+
+    updateModelColorDetails = (color) => {
+        console.log("updating color to " + color);
+        this.state.detailViewModel['display_color'] = color;
+        this.forceUpdate();
     }
 
     updateModelEdited(event) {
@@ -459,6 +477,7 @@ export default class ModelsView extends React.Component {
                     inputs={inputs}
                     options={this.state.vendorsList}
                     useAutocomplete={true}
+                    updateModelColor={this.updateModelColor}
                 />
                 <UploadModal
                     showImportModal={this.state.showImportModal}
@@ -490,6 +509,9 @@ export default class ModelsView extends React.Component {
                     edit={this.editModel}
                     delete={this.deleteModel}
                     disabled={this.props.privilege==Privilege.USER}
+                    options={this.state.vendorsList}
+                    useAutocomplete={true}
+                    updateModelColorDetails={this.updateModelColorDetails}
                 />
             </ErrorBoundray>
             </div>

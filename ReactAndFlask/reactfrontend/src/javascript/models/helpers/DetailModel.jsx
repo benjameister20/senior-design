@@ -9,6 +9,24 @@ import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import Autocomplete from '@material-ui/lab/Autocomplete';
+import { CompactPicker } from 'react-color';
+
+function createInputs(name, label) {
+    return {label, name};
+}
+
+const inputs = {
+    "vendor":createInputs('vendor', "Vendor", ),
+    "modelNumber":createInputs('model_number', "Model Number"),
+    "height":createInputs('height', "Height"),
+    "displayColor":createInputs('display_color', "Display Color"),
+    "powerPorts":createInputs('power_ports', "Power Ports"),
+    "cpu":createInputs('cpu', "CPU"),
+    "memory":createInputs('memory', "Memory"),
+    "storage":createInputs('storage', "Storage"),
+    "comments":createInputs('comments', "Comments"),
+}
 
 export default class DetailModel extends React.Component {
     constructor(props) {
@@ -16,6 +34,7 @@ export default class DetailModel extends React.Component {
 
         this.state = {
             showConfirmationBox:false,
+            color:null,
         };
 
         this.closeModal = this.closeModal.bind(this);
@@ -36,6 +55,11 @@ export default class DetailModel extends React.Component {
         this.props.delete();
     }
 
+    updateColor = (color) => {
+        this.setState({ color: color });
+        this.props.updateModelColorDetails(color.hex);
+    }
+
     render() {
         return (
         <div>
@@ -44,15 +68,77 @@ export default class DetailModel extends React.Component {
                     <ExpansionPanelSummary
                         expandIcon={<ExpandMoreIcon />}
                     >
-                        <Typography>Create</Typography>
+                        <Typography>Model Details</Typography>
                     </ExpansionPanelSummary>
                     <ExpansionPanelDetails>
                     {
                 this.props.loading ? <CircularProgress /> :
                 <div>
-                    {this.props.inputs.map(input => (
-                        <TextField name={input} disabled={this.props.disabled} id="standard-basic" label={input} onChange={this.props.updateModelEdited} defaultValue={this.props.defaultValues[input]}/>
-                    ))}
+                    <Autocomplete
+                            id="select-vendor"
+                            options={this.props.options}
+                            includeInputInList
+                            freeSolo
+                            defaultValue={this.props.defaultValues[inputs.vendor.name]}
+                            renderInput={params => (
+                            <TextField {...params}
+                                label={inputs.vendor.label}
+                                name={inputs.vendor.name}
+                                onChange={this.props.updateModelCreator}
+                                onBlur={this.props.updateModelCreator}
+                                variant="outlined" fullWidth
+                                disabled={this.props.disabled}
+                            />
+                            )}
+                        />
+                        <TextField id="standard-basic" variant="outlined"
+                            label={inputs.modelNumber.label} name={inputs.modelNumber.name}
+                            onChange={this.props.updateModelCreator}
+                            disabled={this.props.disabled}
+                            defaultValue={this.props.defaultValues[inputs.modelNumber.name]}
+                        />
+                        <TextField id="standard-basic" variant="outlined"
+                            label={inputs.height.label} name={inputs.height.name}
+                            onChange={this.props.updateModelCreator}
+                            disabled={this.props.disabled}
+                            defaultValue={this.props.defaultValues[inputs.height.name]}
+                        />
+                        <CompactPicker
+                            color={this.state.color || this.props.defaultValues["display_color"]}
+                            onChange={this.updateColor}
+
+                        />
+                        <TextField id="standard-basic" variant="outlined"
+                            label={inputs.powerPorts.label} name={inputs.powerPorts.name}
+                            onChange={this.props.updateModelCreator}
+                            disabled={this.props.disabled}
+                            defaultValue={this.props.defaultValues[inputs.powerPorts.name]}
+                        />
+                        <TextField id="standard-basic" variant="outlined"
+                            label={inputs.cpu.label} name={inputs.cpu.name}
+                            onChange={this.props.updateModelCreator}
+                            disabled={this.props.disabled}
+                            defaultValue={this.props.defaultValues[inputs.cpu.name]}
+                        />
+                        <TextField id="standard-basic" variant="outlined"
+                            label={inputs.memory.label} name={inputs.memory.name}
+                            onChange={this.props.updateModelCreator}
+                            disabled={this.props.disabled}
+                            defaultValue={this.props.defaultValues[inputs.memory.name]}
+                        />
+                        <TextField id="standard-basic" variant="outlined"
+                            label={inputs.storage.label} name={inputs.storage.name}
+                            onChange={this.props.updateModelCreator}
+                            disabled={this.props.disabled}
+                            defaultValue={this.props.defaultValues[inputs.storage.name]}
+                        />
+                        <TextField id="standard-basic" variant="outlined"
+                            label={inputs.comments.label} name={inputs.comments.name}
+                            onChange={this.props.updateModelCreator}
+                            disabled={this.props.disabled}
+                            defaultValue={this.props.defaultValues[inputs.comments.name]}
+                        />
+
                     {this.props.disabled ? null:
                     <div>
                         <Button

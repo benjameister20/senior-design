@@ -37,12 +37,12 @@ export default class Login extends React.Component {
                 var valid = response.data['message'];
                 if (valid == 'success') {
                     this.setState({ message: '' });
-                    this.props.loginFunc(response.data['token'], response.data['privilege']);
+                    this.props.loginFunc(response.data['token'], response.data['privilege'], this.state.username);
                 } else {
                     this.setState({ showStatus:true, statusMessage:response.data['message'] });
                 }
             });
-        this.props.loginFunc('token', Privilege.ADMIN);
+        this.props.loginFunc('token', "Administrator", Privilege.ADMIN);
     }
 
     updateUsername(event) {

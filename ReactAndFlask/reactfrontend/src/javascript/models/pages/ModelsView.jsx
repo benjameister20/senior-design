@@ -420,15 +420,24 @@ export default class ModelsView extends React.Component {
         this.setState({ searchText: event.target.value})
     }
 
-    closeShowStatus = () => {
+    closeShowStatus = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
         this.setState({ showStatus: false })
     }
 
-    createStatusClose = () => {
+    createStatusClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
         this.setState({ createStatusOpen: false })
     }
 
-    detailStatusClose = () => {
+    detailStatusClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
         this.setState({ detailStatusOpen: false })
     }
 
@@ -457,6 +466,7 @@ export default class ModelsView extends React.Component {
                     severity={this.state.statusSeverity}
                     closeStatus={this.closeShowStatus}
                     message={this.state.statusMessage}
+                    autoHideDuration={6000}
                 />
                 {(this.props.privilege == Privilege.ADMIN) ?
                     (<div><ButtonsModel

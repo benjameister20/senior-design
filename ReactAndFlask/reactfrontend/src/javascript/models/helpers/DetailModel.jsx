@@ -76,6 +76,7 @@ export default class DetailModel extends React.Component {
                             severity={this.props.statusSeverity}
                             closeStatus={this.props.statusClose}
                             message={this.props.statusMessage}
+                            autoHideDuration={6000}
                         />
                     {
                 this.props.loading ? <CircularProgress /> :

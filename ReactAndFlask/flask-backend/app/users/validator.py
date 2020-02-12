@@ -1,6 +1,11 @@
 import re
 
 from app.dal.user_table import UserTable
+from app.exceptions.UserExceptions import (
+    InvalidPrivilegeError,
+    InvalidUsernameError,
+    UsernameTakenError,
+)
 
 # TODO: implement error class to return from validator functions so can provide error messages for each situation
 
@@ -90,18 +95,21 @@ class Validator:
         reg = "^(?=.{4,20}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$"
         pattern = re.compile(reg)
         is_valid = bool(re.search(pattern, username))
+        if not is_valid:
+            raise InvalidUsernameError(f"Username {username} is not valid")
 
         user = USER_TABLE.get_user(username)
-        if user is None:
-            not_already_taken = True
-        else:
-            not_already_taken = False
+        if user is not None:
+            raise UsernameTakenError(f"Username {username} is already taken")
 
-        return is_valid and not_already_taken
+        return True
 
-    def validate_privilege(self, privilege: str) -> bool:
+    def validate_privilege(self, privilege: str, username: str) -> bool:
 
-        if privilege == "admin" or privilege == "user":
-            return True
+        if not (privilege == "admin" or privilege == "user"):
+            raise InvalidPrivilegeError("Privilege levels are 'admin' and 'user'")
 
-        return False
+        if username == "admin" and privilege != "admin":
+            raise InvalidPrivilegeError("Cannot demote admin to 'user' privilege")
+
+        return True

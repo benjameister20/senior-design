@@ -285,6 +285,10 @@ export default class UsersView extends React.Component {
         this.forceUpdate()
     }
 
+    closeShowStatus = () => {
+        this.setState({ showStatus: false })
+    }
+
     createStatusClose = () => {
         this.setState({ createStatusOpen: false })
     }

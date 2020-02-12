@@ -10,6 +10,7 @@ import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { CompactPicker } from 'react-color';
+import StatusDisplay from '../../helpers/StatusDisplay';
 
 function createInputs(name, label) {
     return {label, name};
@@ -70,6 +71,12 @@ export default class DetailModel extends React.Component {
                         <Typography>Model Details</Typography>
                     </ExpansionPanelSummary>
                     <ExpansionPanelDetails>
+                        <StatusDisplay
+                            open={this.props.statusOpen}
+                            severity={this.props.statusSeverity}
+                            closeStatus={this.props.statusClose}
+                            message={this.props.statusMessage}
+                        />
                     {
                 this.props.loading ? <CircularProgress /> :
                 <div>

@@ -11,6 +11,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { CompactPicker } from 'react-color';
 
 import '../stylesheets/ModelStyles.css';
+import StatusDisplay from '../../helpers/StatusDisplay';
 
 function createInputs(name, label) {
     return {label, name};
@@ -54,6 +55,12 @@ export default class CreateModel extends React.Component {
                         <Typography>Create Model</Typography>
                     </ExpansionPanelSummary>
                     <ExpansionPanelDetails>
+                        <StatusDisplay
+                            open={this.props.statusOpen}
+                            severity={this.props.statusSeverity}
+                            closeStatus={this.props.statusClose}
+                            message={this.props.statusMessage}
+                        />
                     <div>
                         <Autocomplete
                             id="select-vendor"

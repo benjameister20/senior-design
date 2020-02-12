@@ -8,6 +8,7 @@ import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import '../../../stylesheets/Models.css';
+import StatusDisplay from '../../helpers/StatusDisplay';
 
 export default class CreateInstance extends React.Component {
     constructor(props) {
@@ -28,6 +29,12 @@ export default class CreateInstance extends React.Component {
                         <Typography>Create</Typography>
                     </ExpansionPanelSummary>
                     <ExpansionPanelDetails class="create-expansion-tab">
+                        <StatusDisplay
+                            open={this.props.statusOpen}
+                            severity={this.props.statusSeverity}
+                            closeStatus={this.props.statusClose}
+                            message={this.props.statusMessage}
+                        />
                     <div>
                     {this.props.inputs.map((input, index) => (
                         (index===0 && this.props.useAutocomplete) ? <Autocomplete

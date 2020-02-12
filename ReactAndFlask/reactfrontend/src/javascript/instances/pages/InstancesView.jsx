@@ -13,6 +13,7 @@ import CreateInstance from '../helpers/CreateInstance';
 import StatusDisplay from '../../helpers/StatusDisplay';
 import TableView from '../../helpers/TableView';
 import ErrorBoundary from '../../errors/ErrorBoundry';
+import * as InstanceConstants from "../InstanceConstants";
 
 const inputs = [
     'model',
@@ -58,9 +59,15 @@ export default class InstancesView extends React.Component {
                 'comment':'',
             },
 
-            showStatus:false,
-            statusMessage:'',
+            statusOpen:false,
             statusSeverity:'',
+            statusMessage:'',
+            detailStatusOpen:false,
+            detailStatusSeverity:'',
+            detailStatusMessage:'',
+            createStatusOpen:false,
+            createStatusSeverity:'',
+            createStatusMessage:'',
 
             // vals for deleting an instance
             deleteInstanceRack:'',
@@ -96,28 +103,6 @@ export default class InstancesView extends React.Component {
             madeModelQuery: false,
         };
 
-        this.createInstance = this.createInstance.bind(this);
-        this.editInstance = this.editInstance.bind(this);
-        this.deleteInstance = this.deleteInstance.bind(this);
-        this.detailViewInstance = this.detailViewInstance.bind(this);
-        this.searchInstances = this.searchInstances.bind(this);
-        this.search = this.search.bind(this);
-        this.openCreateModal = this.openCreateModal.bind(this);
-        this.openImportModal = this.openImportModal.bind(this);
-        this.showDetailedView = this.showDetailedView.bind(this);
-        this.closeCreateModal = this.closeCreateModal.bind(this);
-        this.closeImportModal = this.closeImportModal.bind(this);
-        this.closeDetailedView = this.closeDetailedView.bind(this);
-        this.updateInstanceCreator = this.updateInstanceCreator.bind(this);
-        this.updateInstanceEdited = this.updateInstanceEdited.bind(this);
-        this.closeShowStatus = this.closeShowStatus.bind(this);
-        this.getModelList = this.getModelList.bind(this);
-        this.chooseFile = this.chooseFile.bind(this);
-        this.uploadFile = this.uploadFile.bind(this);
-        this.sendUploadedFile = this.sendUploadedFile.bind(this);
-        this.downloadTable = this.downloadTable.bind(this);
-        this.initialize = this.initialize.bind(this);
-
         axios.defaults.headers.common['token'] = this.props.token;
         axios.defaults.headers.common['privilege'] = this.props.privilege;
 
@@ -152,9 +137,11 @@ export default class InstancesView extends React.Component {
                     });
                     this.searchInstances();
                 } else {
-                    this.setState({ showStatus: true, statusMessage: response.data.message, statusSeverity:"error" })
+                    this.setState({ createStatusOpen: true, createStatusMessage: response.data.message, createStatusSeverity:"error" })
                 }
-            });
+            }).catch(
+                this.setState({ createStatusOpen: true, createStatusMessage: InstanceConstants.GENERAL_INSTANCE_ERROR, createStatusSeverity:"error" })
+            );
     }
 
     editInstance() {
@@ -189,9 +176,11 @@ export default class InstancesView extends React.Component {
                     this.searchInstances();
 
                 } else {
-                    this.setState({ showStatus: true, statusMessage: response.data.message, statusSeverity:"error" })
+                    this.setState({ detailStatusOpen: true, detailStatusMessage: response.data.message, detailStatusSeverity:"error" })
                 }
-            });
+            }).catch(
+                this.setState({ detailStatusOpen: true, detailStatusMessage: InstanceConstants.GENERAL_INSTANCE_ERROR, detailStatusSeverity:"error" })
+            );
     }
 
 
@@ -216,7 +205,9 @@ export default class InstancesView extends React.Component {
                 } else {
                     this.setState({ showStatus: true, statusMessage: response.data.message, statusSeverity:"error" })
                 }
-            });
+            }).catch(
+                this.setState({ showStatus: true, statusMessage: InstanceConstants.GENERAL_INSTANCE_ERROR, statusSeverity:"error" })
+            );
     }
 
     detailViewInstance(rack, rack_position) {
@@ -226,7 +217,10 @@ export default class InstancesView extends React.Component {
                 'rack':rack,
                 'rack_position':rack_position,
             }
-            ).then(response => this.setState({ detailedValues: response.data['instances'][0], detailViewLoading:false}));
+            ).then(response => this.setState({ detailedValues: response.data['instances'][0], detailViewLoading:false})
+            ).catch(
+                this.setState({ showStatus: true, statusMessage: InstanceConstants.GENERAL_INSTANCE_ERROR, statusSeverity:"error" })
+            );
 
         this.setState({
             viewInstanceRack:'',
@@ -341,8 +335,17 @@ export default class InstancesView extends React.Component {
         this.state.detailedValues[event.target.name] = event.target.value;
         this.forceUpdate()
     }
-    closeShowStatus() {
+
+    closeShowStatus = () => {
         this.setState({ showStatus: false })
+    }
+
+    createStatusClose = () => {
+        this.setState({ createStatusOpen: false })
+    }
+
+    detailStatusClose = () => {
+        this.setState({ detailStatusOpen: false })
     }
 
     uploadFile() {
@@ -386,6 +389,11 @@ export default class InstancesView extends React.Component {
                     target="_blank"
                 />
                 <CreateInstance
+                    statusOpen={this.state.createStatusOpen}
+                    statusSeverity={this.state.createStatusSeverity}
+                    statusClose={this.createStatusClose}
+                    statusMessage={this.state.createStatusMessage}
+
                     showCreateModal={this.state.showCreateModal}
                     closeCreateModal={this.closeCreateModal}
                     createModel={this.createInstance}
@@ -415,6 +423,11 @@ export default class InstancesView extends React.Component {
                     filters={columns}
                 />
                 <DetailInstance
+                    statusOpen={this.state.detailStatusOpen}
+                    statusSeverity={this.state.detailStatusSeverity}
+                    statusClose={this.detailStatusClose}
+                    statusMessage={this.state.detailStatusMessage}
+
                     showDetailedView={this.state.showDetailedView}
                     closeDetailedView={this.closeDetailedView}
                     inputs={inputs}

@@ -19,6 +19,7 @@ import StatusDisplay from '../../helpers/StatusDisplay';
 import { Privilege } from '../../enums/privilegeTypes.ts'
 
 import ErrorBoundray from '../../errors/ErrorBoundry';
+import * as UserConstants from "../UserConstants";
 
 const inputs = [
     'username',
@@ -60,9 +61,15 @@ export default class UsersView extends React.Component {
                 'privilege':'',
             },
 
-            showStatus:false,
-            statusMessage:'',
+            statusOpen:false,
             statusSeverity:'',
+            statusMessage:'',
+            detailStatusOpen:false,
+            detailStatusSeverity:'',
+            detailStatusMessage:'',
+            createStatusOpen:false,
+            createStatusSeverity:'',
+            createStatusMessage:'',
 
             searchUsernm:'',
             searchEml:'',
@@ -92,29 +99,12 @@ export default class UsersView extends React.Component {
             initialized:false,
         };
 
-        this.createUser = this.createUser.bind(this);
-        this.editUser = this.editUser.bind(this);
-        this.deleteUser = this.deleteUser.bind(this);
-        this.detailViewUser = this.detailViewUser.bind(this);
-        this.searchUsers = this.searchUsers.bind(this);
-        this.search = this.search.bind(this);
-        this.openCreateModal = this.openCreateModal.bind(this);
-        this.openImportModal = this.openImportModal.bind(this);
-        this.showDetailedView = this.showDetailedView.bind(this);
-        this.closeCreateModal = this.closeCreateModal.bind(this);
-        this.closeImportModal = this.closeImportModal.bind(this);
-        this.closeDetailedView = this.closeDetailedView.bind(this);
-        this.updateUserCreator = this.updateUserCreator.bind(this);
-        this.updateUserEdited = this.updateUserEdited.bind(this);
-        this.closeShowStatus = this.closeShowStatus.bind(this);
-        this.initialized = this.initialized.bind(this);
-
         axios.defaults.headers.common['token'] = this.props.token;
         axios.defaults.headers.common['privilege'] = this.props.privilege;
 
     }
 
-    createUser() {
+    createUser = () => {
         axios.post(
             getURL(usersMainPath, UserCommand.create),
             {
@@ -127,9 +117,9 @@ export default class UsersView extends React.Component {
             ).then(response => {
                 if (response.data.message === 'success') {
                     this.setState({
-                        showStatus: true,
-                        statusMessage: "Successfully created user",
-                        statusSeverity:"success",
+                        createStatusOpen: true,
+                        createStatusMessage: "Successfully created user",
+                        createStatusSeverity:"success",
                         createdUser : {
                             'username':'',
                             'password':'',
@@ -141,12 +131,14 @@ export default class UsersView extends React.Component {
                     });
                     this.searchUsers();
                 } else {
-                    this.setState({ showStatus: true, statusMessage: response.data.message, statusSeverity:"error" })
+                    this.setState({ createStatusOpen: true, createStatusMessage: response.data.message, createStatusSeverity:"error" })
                 }
-            });
+            }).catch(
+                this.setState({ createStatusOpen: true, createStatusMessage: UserConstants.GENERAL_USER_ERROR, createStatusSeverity:"error" })
+            );
     }
 
-    editUser() {
+    editUser = () => {
         axios.post(
             getURL(usersMainPath, UserCommand.edit),
             {
@@ -159,9 +151,9 @@ export default class UsersView extends React.Component {
             ).then(response => {
                 if (response.data.message === 'success') {
                     this.setState({
-                        showStatus: true,
-                        statusMessage: "Successfully edited user",
-                        statusSeverity:"success",
+                        detailStatusOpen: true,
+                        detailStatusMessage: "Successfully edited user",
+                        detailStatusSeverity:"success",
                         originalUsername:'',
                         detailedValues : {
                             'username':'',
@@ -173,13 +165,15 @@ export default class UsersView extends React.Component {
                     });
                     this.searchUsers();
                 } else {
-                    this.setState({ showStatus: true, statusMessage: response.data.message, statusSeverity:"error" })
+                    this.setState({ detailStatusOpen: true, detailStatusMessage: response.data.message, detailStatusSeverity:"error" })
                 }
-            });
+            }).catch(
+                this.setState({ detailStatusOpen: true, detailStatusMessage: UserConstants.GENERAL_USER_ERROR, detailStatusSeverity:"error" })
+            );
     }
 
 
-    deleteUser() {
+    deleteUser = () => {
         axios.post(
             getURL(usersMainPath, UserCommand.delete),
             {
@@ -188,7 +182,7 @@ export default class UsersView extends React.Component {
             ).then(response => {
                 if (response.data.message === 'success') {
                     this.setState({
-                        showStatus: true,
+                        statusOpen: true,
                         statusMessage: "Successfully deleted user",
                         statusSeverity:"success",
                         deleteUsername:'',
@@ -198,23 +192,28 @@ export default class UsersView extends React.Component {
                 } else {
                     this.setState({ showStatus: true, statusMessage: response.data.message, statusSeverity:"error" })
                 }
-            });
+            }).catch(
+                this.setState({ showStatus: true, statusMessage: UserConstants.GENERAL_USER_ERROR, statusSeverity:"error" })
+            );
     }
 
-    detailViewUser(username) {
+    detailViewUser = (username) => {
         axios.post(
             getURL(usersMainPath, UserCommand.detailView),
             {
                 'username':username,
             }
-            ).then(response => this.setState({ detailedValues: response.data['user'], detailViewLoading:false}));
+            ).then(response => this.setState({ detailedValues: response.data['user'], detailViewLoading:false})
+            ).catch(
+                this.setState({ showStatus: true, statusMessage: UserConstants.GENERAL_USER_ERROR, statusSeverity:"error" })
+            );
 
         this.setState({
             viewUser:'',
         });
     }
 
-    searchUsers() {
+    searchUsers = () => {
         axios.post(
             getURL(usersMainPath, UserCommand.search),
             {
@@ -230,7 +229,7 @@ export default class UsersView extends React.Component {
         this.setState({ initialized: true})
     }
 
-    search(filters) {
+    search = (filters) => {
         this.setState({
             searchUsernm:filters['username'],
             searchEml:filters['email'],
@@ -239,19 +238,19 @@ export default class UsersView extends React.Component {
         }, this.searchUsers);
     }
 
-    downloadTable() {
+    downloadTable = () => {
         this.csvLink.link.click();
     }
 
-    openCreateModal() {
+    openCreateModal = () => {
         this.setState({showCreateModal: true});
     }
 
-    openImportModal() {
+    openImportModal = () => {
         this.setState({showImportModal: true});
     }
 
-    showDetailedView(id) {
+    showDetailedView = (id) => {
         this.setState({
             showDetailedView: true,
             detailViewLoading:true,
@@ -264,33 +263,37 @@ export default class UsersView extends React.Component {
         //this.setState({ detailedValues: Constants.testUserArray[id], detailViewLoading:false})
     }
 
-    closeCreateModal() {
+    closeCreateModal = () => {
         this.setState({showCreateModal: false});
     }
 
-    closeImportModal() {
+    closeImportModal = () => {
         this.setState({showImportModal: false});
     }
 
-    closeDetailedView() {
+    closeDetailedView = () => {
         this.setState({ showDetailedView: false })
     }
 
-    updateUserCreator(event) {
+    updateUserCreator = (event) => {
         this.state.createdUser[event.target.name] = event.target.value;
         this.forceUpdate()
     }
 
-    updateUserEdited(event) {
+    updateUserEdited = (event) => {
         this.state.detailedValues[event.target.name] = event.target.value;
         this.forceUpdate()
     }
 
-    closeShowStatus() {
-        this.setState({ showStatus: false })
+    createStatusClose = () => {
+        this.setState({ createStatusOpen: false })
     }
 
-    initialized() {
+    detailStatusClose = () => {
+        this.setState({ detailStatusOpen: false })
+    }
+
+    initialized = () => {
         this.searchUsers();
     }
 
@@ -307,14 +310,13 @@ export default class UsersView extends React.Component {
                 />
                 {(this.props.privilege == Privilege.ADMIN) ?
                     (<div>
-                <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={this.openCreateModal}
-                >
-                    Create
-                </Button>
                 <CreateUser
+                    statusOpen={this.state.createStatusOpen}
+                    statusSeverity={this.state.createStatusSeverity}
+                    statusClose={this.createStatusClose}
+                    statusMessage={this.state.createStatusMessage}
+
+                    showStatus={this.state.createStatus}
                     showCreateModal={this.state.showCreateModal}
                     closeCreateModal={this.closeCreateModal}
                     createModel={this.createUser}
@@ -341,6 +343,11 @@ export default class UsersView extends React.Component {
                     filters={columns}
                 />
                 <DetailUser
+                    statusOpen={this.state.detailStatusOpen}
+                    statusSeverity={this.state.detailStatusSeverity}
+                    statusClose={this.detailStatusClose}
+                    statusMessage={this.state.detailStatusMessage}
+
                     showDetailedView={this.state.showDetailedView}
                     closeDetailedView={this.closeDetailedView}
                     inputs={columns}

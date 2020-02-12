@@ -9,6 +9,7 @@ import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import StatusDisplay from '../../helpers/StatusDisplay';
 
 export default class DetailedView extends React.Component {
     constructor(props) {
@@ -47,6 +48,12 @@ export default class DetailedView extends React.Component {
                         <Typography>Create</Typography>
                     </ExpansionPanelSummary>
                     <ExpansionPanelDetails>
+                        <StatusDisplay
+                            open={this.props.statusOpen}
+                            severity={this.props.statusSeverity}
+                            closeStatus={this.props.statusClose}
+                            message={this.props.statusMessage}
+                        />
                     {
                 this.props.loading ? <CircularProgress /> :
                 <div>

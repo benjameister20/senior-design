@@ -413,7 +413,7 @@ export default class ModelsView extends React.Component {
 
     updateModelColorDetails = (color) => {
         console.log("updating color to " + color);
-        this.state.detailViewModel['display_color'] = color;
+        this.state.detailedValues['display_color'] = color;
         this.forceUpdate();
     }
 

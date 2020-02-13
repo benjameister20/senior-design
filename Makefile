@@ -32,7 +32,6 @@ fix:
 run-all:
 	cd ReactAndFlask/reactfrontend && yarn build
 	rm -rf ReactAndFlask/flask-backend/static/* && rm -rf ReactAndFlask/flask-backend/templates/index.html
-	#mkdir ReactAndFlask/flask-backend/static/ && mkdir ReactAndFlask/flask-backend/templates/
 	cp -r ReactAndFlask/reactfrontend/build/static/* ReactAndFlask/flask-backend/static/
 	cp ReactAndFlask/reactfrontend/build/index.html ReactAndFlask/flask-backend/templates/index.html
 	python ./ReactAndFlask/flask-backend/application.py
@@ -76,3 +75,12 @@ clean:
 .PHONY: clean-diagrams
 clean-diagrams:
 	find ReactAndFlask/flask-backend/static -type f -name '*.pdf' -delete
+
+.PHONY: deploy-heroku
+deploy-heroku:
+	cd ~/ReactAndFlask/reactfrontend && yarn install
+	cd ~/ReactAndFlask/reactfrontend && yarn build
+	mkdir ~/ReactAndFlask/flask-backend/static/
+	mkdir ~/ReactAndFlask/flask-backend/templates/
+	cp -r ~/ReactAndFlask/reactfrontend/build/static/* ~/ReactAndFlask/flask-backend/static/
+	cp ~/ReactAndFlask/reactfrontend/build/index.html ~/ReactAndFlask/flask-backend/templates/index.html

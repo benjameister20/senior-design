@@ -3,13 +3,16 @@ import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Button from '@material-ui/core/Button';
-import ModelsView from './pages/ModelsView';
-import UsersView from './pages/UsersView';
-import InstancesView from './pages/InstancesView';
-import RacksView from './pages/RacksView';
-import StatisticsView from './pages/StatisticsView';
 import Typography from '@material-ui/core/Typography';
+
+import ModelsView from './models/pages/ModelsView';
+import UsersView from './users/pages/UsersView';
+import InstancesView from './instances/pages/InstancesView';
+import RacksView from './racks/pages/RacksView';
+import StatisticsView from './statistics/pages/StatisticsView';
+
 import { Privilege } from './enums/privilegeTypes.ts'
+
 import ErrorBoundry from './errors/ErrorBoundry';
 
 export default class TabViewer extends React.Component {

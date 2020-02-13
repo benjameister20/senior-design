@@ -5,19 +5,19 @@ import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import getURL from '../helpers/functions/GetURL';
+import getURL from '../../helpers/functions/GetURL';
 import  Button from '@material-ui/core/Button';
-import { StatsCommand } from "../enums/statsCommands.ts";
-import JSONtoArr from "../helpers/functions/JSONtoArr";
+import { StatsCommand } from "../enums/StatsCommands.ts";
+import JSONtoArr from "../../helpers/functions/JSONtoArr";
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import StatusDisplay from '../helpers/StatusDisplay';
+import StatusDisplay from '../../helpers/StatusDisplay';
 import Paper from '@material-ui/core/Paper';
-import ErrorBoundray from '../errors/ErrorBoundry';
+import ErrorBoundray from '../../errors/ErrorBoundry';
 
 
 const statsMainPath = 'stats/';

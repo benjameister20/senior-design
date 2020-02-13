@@ -1,21 +1,24 @@
 import React from 'react';
 import axios from 'axios';
-import { Privilege } from '../enums/privilegeTypes.ts';
-import TableView from '../helpers/TableView';
-import getURL from '../helpers/functions/GetURL';
-import * as Constants from '../Constants';
-import StatusDisplay from '../helpers/StatusDisplay';
 import Select from '@material-ui/core/Select';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
 import { MenuItem, Button } from '@material-ui/core';
-import { RackCommand } from "../enums/rackCommands.ts";
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import ErrorBoundray from '../errors/ErrorBoundry';
+
+
+import { RackCommand } from "../enums/RackCommands.ts";
+import { Privilege } from '../../enums/privilegeTypes.ts';
+
+import getURL from '../../helpers/functions/GetURL';
+import * as Constants from '../../Constants';
+import StatusDisplay from '../../helpers/StatusDisplay';
+
+import ErrorBoundray from '../../errors/ErrorBoundry';
 
 const racksMainPath = 'racks/';
 

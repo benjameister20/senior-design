@@ -9,8 +9,8 @@ venv/
 .env
 *.log
 ReactAndFlask/reactfrontend/node_modules/
-ReactAndFlask/flask-backend/static/
-ReactAndFlask/flask-backend/templates/index.html
+#ReactAndFlask/flask-backend/static/
+#ReactAndFlask/flask-backend/templates/index.html
 ReactAndFlask/reactfrontend/build/
 
 /node_modules

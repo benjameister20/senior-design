@@ -1,19 +1,18 @@
 import React from 'react';
 import axios from 'axios';
-import { InstanceCommand } from '../enums/instanceCommands.ts'
-import { InstanceInput } from '../enums/instanceInputs.ts'
-import { Privilege } from '../enums/privilegeTypes.ts'
-import TableView from '../helpers/TableView';
+import { InstanceCommand } from '../enums/InstanceCommands.ts'
+import { InstanceInput } from '../enums/InstanceInputs.ts'
+import { Privilege } from '../../enums/privilegeTypes.ts'
 import { CSVLink } from "react-csv";
-import ButtonMenu from '../helpers/ButtonMenu';
-import Filters from '../helpers/Filters';
-import UploadModal from '../helpers/UploadModal';
-import getURL from '../helpers/functions/GetURL';
-import DetailedView from '../helpers/DetailedView';
-import CreateModal from '../helpers/CreateModal';
-import * as Constants from '../Constants';
-import StatusDisplay from '../helpers/StatusDisplay';
-import ErrorBoundray from '../errors/ErrorBoundry';
+import InstanceButtons from '../helpers/InstanceButtons';
+import FilterInstance from '../helpers/FilterInstance';
+import UploadModal from '../../helpers/UploadModal';
+import getURL from '../../helpers/functions/GetURL';
+import DetailInstance from '../helpers/DetailInstance';
+import CreateInstance from '../helpers/CreateInstance';
+import StatusDisplay from '../../helpers/StatusDisplay';
+import TableView from '../../helpers/TableView';
+import ErrorBoundary from '../../errors/ErrorBoundry';
 
 const inputs = [
     'model',
@@ -364,7 +363,7 @@ export default class InstancesView extends React.Component {
     render() {
         return (
             <div>
-                <ErrorBoundray>
+                <ErrorBoundary>
                 {(this.state.madeModelQuery) ? null: this.initialize()}
                 <StatusDisplay
                     open={this.state.showStatus}
@@ -374,7 +373,7 @@ export default class InstancesView extends React.Component {
                 />
                 {(this.props.privilege == Privilege.ADMIN) ?
                     (<div>
-                <ButtonMenu
+                <InstanceButtons
                     openCreateModal={this.openCreateModal}
                     openImportModal={this.openImportModal}
                     downloadTable={this.downloadTable}
@@ -386,7 +385,7 @@ export default class InstancesView extends React.Component {
                     ref={(r) => this.csvLink = r}
                     target="_blank"
                 />
-                <CreateModal
+                <CreateInstance
                     showCreateModal={this.state.showCreateModal}
                     closeCreateModal={this.closeCreateModal}
                     createModel={this.createInstance}
@@ -403,7 +402,7 @@ export default class InstancesView extends React.Component {
                     textDescription="The following format should be used for each row: hostname,rack,rack_position,vendor,model_number,owner,comment"
                 /></div>):null
             }
-                <Filters
+                <FilterInstance
                     updateSearchText={this.updateSearchText}
                     search={this.search}
                     filters={columns}
@@ -415,7 +414,7 @@ export default class InstancesView extends React.Component {
                     showDetailedView={this.showDetailedView}
                     filters={columns}
                 />
-                <DetailedView
+                <DetailInstance
                     showDetailedView={this.state.showDetailedView}
                     closeDetailedView={this.closeDetailedView}
                     inputs={inputs}
@@ -426,7 +425,7 @@ export default class InstancesView extends React.Component {
                     delete={this.deleteInstance}
                     disabled={this.props.privilege==Privilege.USER}
                 />
-            </ErrorBoundray>
+            </ErrorBoundary>
             </div>
         );
     }

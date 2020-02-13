@@ -74,9 +74,9 @@ export default class TabViewer extends React.Component {
                         open={this.state.isMenuOpen}
                         onClose={this.handleMenuClose}
                     >
-                        <MenuItem onClick={this.handleMenuClose}>{"Username: " + this.props.username}</MenuItem>
-                        <MenuItem onClick={this.handleMenuClose}>{"Privilege: " + this.props.privilege}</MenuItem>
-                        <MenuItem onClick={this.props.logout} >Logout</MenuItem>
+                        <MenuItem>{"Username: " + this.props.username}</MenuItem>
+                        <MenuItem>{"Privilege: " + this.props.privilege}</MenuItem>
+                        <MenuItem onClick={this.props.logout} >LOGOUT</MenuItem>
                     </Menu>
                 </div>
             </AppBar>

@@ -280,17 +280,14 @@ export default class ModelsView extends React.Component {
             {
                 'vendor':vendor,
                 'model_number':modelNum,
-            }, this.props.headers
-            ).then(response => {
-                console.log("response data");
-                console.log(response.data['models'][0]);
-                console.log("original detailed values");
-                console.log(this.state.detailedValues);
-                this.setState({ detailedValues: response.data['models'][0], detailViewLoading:false},() => console.log(this.state.detailedValues))
             }
-            ).catch(
-                this.setState({ showStatus: true, statusMessage: ModelConstants.GENERAL_MODEL_ERROR, statusSeverity:"error" })
-            );
+            ).then(response => {
+                this.setState({ detailedValues: response.data['models'][0], detailViewLoading:false});
+            }
+            ).catch(function(error) {
+                console.log(error);
+                this.setState({ showStatus: true, statusMessage: ModelConstants.GENERAL_MODEL_ERROR, statusSeverity:"error" });
+            });
 
         this.setState({
             viewVendor:'',
@@ -394,7 +391,7 @@ export default class ModelsView extends React.Component {
         this.setState({ showDetailedView: false })
     }
 
-    updateModelCreator(event) {
+    updateModelCreator = (event) => {
         this.state.createdModel[event.target.name] = event.target.value;
         this.forceUpdate();
     }

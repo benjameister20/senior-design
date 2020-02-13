@@ -108,7 +108,7 @@ export default class InstancesView extends React.Component {
 
     }
 
-    createInstance() {
+    createInstance = () => {
         axios.post(
             getURL(instancesMainPath, InstanceCommand.create),
             {
@@ -144,7 +144,7 @@ export default class InstancesView extends React.Component {
             );
     }
 
-    editInstance() {
+    editInstance = () => {
         axios.post(
             getURL(instancesMainPath, InstanceCommand.edit),
             {
@@ -184,7 +184,7 @@ export default class InstancesView extends React.Component {
     }
 
 
-    deleteInstance() {
+    deleteInstance = () => {
         axios.post(
             getURL(instancesMainPath, InstanceCommand.delete),
             {
@@ -210,7 +210,7 @@ export default class InstancesView extends React.Component {
             );
     }
 
-    detailViewInstance(rack, rack_position) {
+    detailViewInstance = (rack, rack_position) => {
         axios.post(
             getURL(instancesMainPath, InstanceCommand.detailView),
             {
@@ -227,7 +227,7 @@ export default class InstancesView extends React.Component {
         });
     }
 
-    searchInstances() {
+    searchInstances = () => {
         axios.post(
             getURL(instancesMainPath, InstanceCommand.search),
             {
@@ -243,14 +243,14 @@ export default class InstancesView extends React.Component {
             });
     }
 
-    getModelList() {
+    getModelList = () => {
         axios.get(
             getURL(instancesMainPath, InstanceCommand.GET_ALL_MODELS), {}
             ).then(response => this.setState({ modelList: response.data.results }));
         this.setState({ madeModelQuery: true });
     }
 
-    sendUploadedFile(data) {
+    sendUploadedFile = (data) => {
         axios.post(
             getURL(instancesMainPath, InstanceCommand.UPLOAD_FILE), data
             ).then(response => {
@@ -263,7 +263,7 @@ export default class InstancesView extends React.Component {
             });
     }
 
-    search(filters) {
+    search = (filters) => {
         this.setState({
             searchModel:filters['model'],
             searchHostname:filters['hostname'],
@@ -272,7 +272,7 @@ export default class InstancesView extends React.Component {
         }, this.searchInstances);
     }
 
-    downloadTable() {
+    downloadTable = () => {
         axios.post(
             getURL(instancesMainPath, InstanceCommand.EXPORT_FILE),
             {
@@ -289,16 +289,16 @@ export default class InstancesView extends React.Component {
             });
     }
 
-    openCreateModal() {
+    openCreateModal = () => {
         this.getModelList();
         this.setState({showCreateModal: true});
     }
 
-    openImportModal() {
+    openImportModal = () => {
         this.setState({showImportModal: true});
     }
 
-    showDetailedView(id) {
+    showDetailedView = (id) => {
         this.setState({
             showDetailedView: true,
             detailViewLoading:true,
@@ -314,24 +314,24 @@ export default class InstancesView extends React.Component {
         this.detailViewInstance(rack, rack_position);
     }
 
-    closeCreateModal() {
+    closeCreateModal = () => {
         this.setState({showCreateModal: false});
     }
 
-    closeImportModal() {
+    closeImportModal = () => {
         this.setState({showImportModal: false});
     }
 
-    closeDetailedView() {
+    closeDetailedView = () => {
         this.setState({ showDetailedView: false })
     }
 
-    updateInstanceCreator(event) {
+    updateInstanceCreator = (event) => {
         this.state.createdInstance[event.target.name] = event.target.value;
         this.forceUpdate()
     }
 
-    updateInstanceEdited(event) {
+    updateInstanceEdited = (event) => {
         this.state.detailedValues[event.target.name] = event.target.value;
         this.forceUpdate()
     }
@@ -348,17 +348,17 @@ export default class InstancesView extends React.Component {
         this.setState({ detailStatusOpen: false })
     }
 
-    uploadFile() {
+    uploadFile = () => {
         const data = new FormData();
         data.append('file', this.state.importedFile);
         this.sendUploadedFile(data);
     }
 
-    chooseFile(event) {
+    chooseFile = (event) => {
         this.setState({ importedFile: event.target.files[0] })
     }
 
-    initialize() {
+    initialize = () => {
         this.searchInstances();
         this.getModelList();
     }

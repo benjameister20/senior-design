@@ -5,8 +5,11 @@ from app.dal.user_table import UserTable
 from app.data_models.user import User
 from app.exceptions.InvalidInputsException import InvalidInputsError
 from app.exceptions.UserExceptions import (
+    IncorrectPasswordError,
     InvalidPrivilegeError,
     InvalidUsernameError,
+    NonexistantUserError,
+    UserException,
     UsernameTakenError,
 )
 from app.users.authentication import AuthManager
@@ -39,6 +42,16 @@ class UserManager:
         json["message"] = message
 
         return json
+
+    @staticmethod
+    def __make_user_from_json(json) -> User:
+        return User(
+            username=json.get("username"),
+            display_name=json.get("display_name"),
+            email=json.get("email"),
+            password=json.get("password"),
+            privilege=json.get("privilege"),
+        )
 
     def search(self, request):
         request_data = request.get_json()
@@ -99,23 +112,30 @@ class UserManager:
             )
 
         try:
-            self.VALIDATOR.validate_privilege(privilege, username)
-        except InvalidPrivilegeError as e:
-            raise e
+            user = self.__make_user_from_json(request_data)
+            self.VALIDATOR.validate_create_user(user)
+        except UserException as e:
+            raise UserException(e.message)
+        except:
+            raise UserException("Could not create user")
+        # try:
+        #     self.VALIDATOR.validate_privilege(privilege, username)
+        # except InvalidPrivilegeError as e:
+        #     raise e
 
-        try:
-            self.VALIDATOR.validate_username(username)
-        except (InvalidUsernameError, UsernameTakenError) as e:
-            return self.__add_message_to_JSON(response, e.message)
+        # try:
+        #     self.VALIDATOR.validate_username(username)
+        # except (InvalidUsernameError, UsernameTakenError) as e:
+        #     return self.__add_message_to_JSON(response, e.message)
 
-        if not self.VALIDATOR.validate_email(email):
-            return self.__add_message_to_JSON(response, "Invalid email address")
+        # if not self.VALIDATOR.validate_email(email):
+        #     return self.__add_message_to_JSON(response, "Invalid email address")
 
-        if not self.VALIDATOR.validate_password(password):
-            return self.__add_message_to_JSON(
-                response,
-                "Password too weak. Passwords must contain uppercase and lowercase characters, numbers, special characters, and be 8 to 20 characters long",
-            )
+        # if not self.VALIDATOR.validate_password(password):
+        #     return self.__add_message_to_JSON(
+        #         response,
+        #         "Password too weak. Passwords must contain uppercase and lowercase characters, numbers, special characters, and be 8 to 20 characters long",
+        #     )
 
         try:
             encrypted_password = self.AUTH_MANAGER.encrypt_pw(password)
@@ -123,14 +143,11 @@ class UserManager:
             user = User(username, display_name, email, encrypted_password, privilege)
             self.USER_TABLE.add_user(user)
         except:
-            return self.__add_message_to_JSON(
-                response, "Server error. Please try again later..."
-            )
+            raise UserException("Could not create user")
 
         return self.__add_message_to_JSON(response, "success")
 
     def delete(self, request):
-        # TESTED AND FUNCTIONAL
         """Route for deleting users
 
         Returns:
@@ -162,25 +179,32 @@ class UserManager:
         print("request:")
         print(request_data)
         username_original = request_data.get("username_original")
-        username = request_data.get("username")
-        email = request_data.get("email")
-        display_name = request_data.get("display_name")
-        privilege = request_data.get("privilege")
+        request_data.get("username")
+        request_data.get("email")
+        request_data.get("display_name")
+        request_data.get("privilege")
 
-        user = self.USER_TABLE.get_user(username_original)
-        if user is None:
-            return self.__add_message_to_JSON(
-                response, f"User <{username}> does not exist"
+        old_user = None
+        try:
+            user = self.__make_user_from_json(request_data)
+            updated_user, old_user = self.VALIDATOR.validate_edit_user(
+                user, username_original
             )
+        except UserException as e:
+            raise UserException(e.message)
+        except Exception as e:
+            print(e)
+            raise UserException("Could not edit user")
 
-        updated_user = User(
-            username=username,
-            display_name=display_name,
-            email=email,
-            password=user.password,
-            privilege=privilege,
-        )
-        self.USER_TABLE.delete_user(user)
+        # old_user = self.USER_TABLE.get_user(username_original)
+        # updated_user = User(
+        #     username=username,
+        #     display_name=display_name,
+        #     email=email,
+        #     password=old_user.password,
+        #     privilege=privilege,
+        # )
+        self.USER_TABLE.delete_user(old_user)
         self.USER_TABLE.add_user(updated_user)
 
         return self.__add_message_to_JSON(response, "success")
@@ -190,26 +214,18 @@ class UserManager:
         """ Route for authenticating users """
 
         answer = {}
-        print(request)
 
-        try:
-            request_data = request.get_json()
-            username = request_data["username"]
-            attempted_password = request_data["password"]
-        except:
-            return self.__add_message_to_JSON(
-                answer, "Connection error. Please try again later..."
-            )
+        request_data = request.get_json()
+        username = request_data.get("username")
+        attempted_password = request_data.get("password")
 
         user = self.USER_TABLE.get_user(username)
         if user is None:
-            return self.__add_message_to_JSON(
-                answer, f"User <{username}> does not exist"
-            )
+            raise NonexistantUserError(f"User '{username}' does not exist")
 
         auth_success = self.AUTH_MANAGER.compare_pw(attempted_password, user.password)
         if not auth_success:
-            return self.__add_message_to_JSON(answer, "Incorrect password")
+            raise IncorrectPasswordError("Incorrect password")
 
         answer["token"] = self.AUTH_MANAGER.encode_auth_token(username)
         answer["privilege"] = user.privilege
@@ -238,13 +254,11 @@ class UserManager:
         request_data = request.get_json()
         username = request_data.get("username")
         if username is None:
-            return self.__add_message_to_JSON(response, "Please provide a username")
+            raise InvalidUsernameError("Please provide a username")
 
         user = self.USER_TABLE.get_user(username)
         if user is None:
-            return self.__add_message_to_JSON(
-                response, f"User <{username}> does not exist"
-            )
+            raise NonexistantUserError(f"User <{username}> does not exist")
 
         response["user"] = user.make_json()
 

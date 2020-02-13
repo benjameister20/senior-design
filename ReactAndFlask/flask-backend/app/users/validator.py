@@ -1,9 +1,13 @@
 import re
 
 from app.dal.user_table import UserTable
+from app.data_models.user import User
 from app.exceptions.UserExceptions import (
+    InvalidEmailError,
+    InvalidPasswordError,
     InvalidPrivilegeError,
     InvalidUsernameError,
+    NoEditsError,
     UsernameTakenError,
 )
 
@@ -42,7 +46,12 @@ class Validator:
         pattern = re.compile(reg)
         is_valid = bool(re.search(pattern, password))
 
-        return is_valid
+        if not is_valid:
+            raise InvalidPasswordError(
+                "Password too weak. Passwords must contain uppercase and lowercase characters, numbers, special characters, and be 8 to 20 characters long"
+            )
+
+        return True
 
     def validate_email(self, email: str) -> bool:
         """ Validates email address using following criteria
@@ -64,15 +73,21 @@ class Validator:
         pattern = re.compile(reg, re.IGNORECASE)
         is_valid = bool(re.search(pattern, email))
 
+        if not is_valid:
+            raise InvalidEmailError(
+                f"Email '{email}' is invalid. Email addresses must comply with RFC 5322 Standard."
+            )
+
         user = USER_TABLE.get_user_by_email(email)
-        if user is None:
-            not_already_used = True
-        else:
-            not_already_used = False
 
-        return is_valid and not_already_used
+        if user is not None:
+            raise InvalidEmailError(
+                f"Email '{email}' is already associated with a user account."
+            )
 
-    def validate_username(self, username: str) -> bool:
+        return True
+
+    def validate_new_username(self, username: str) -> bool:
         """ Validates username using following criteria:
 
         Username Criteria:
@@ -96,13 +111,20 @@ class Validator:
         pattern = re.compile(reg)
         is_valid = bool(re.search(pattern, username))
         if not is_valid:
-            raise InvalidUsernameError(f"Username {username} is not valid")
+            raise InvalidUsernameError(f"Username '{username}' is not valid")
 
         user = USER_TABLE.get_user(username)
         if user is not None:
-            raise UsernameTakenError(f"Username {username} is already taken")
+            raise UsernameTakenError(f"Username '{username}' is already taken")
 
         return True
+
+    def validate_existing_username(self, username: str) -> User:
+        user = USER_TABLE.get_user(username)
+        if user is None:
+            raise InvalidUsernameError(f"User '{username}' does not exist")
+
+        return user
 
     def validate_privilege(self, privilege: str, username: str) -> bool:
 
@@ -110,6 +132,31 @@ class Validator:
             raise InvalidPrivilegeError("Privilege levels are 'admin' and 'user'")
 
         if username == "admin" and privilege != "admin":
-            raise InvalidPrivilegeError("Cannot demote admin to 'user' privilege")
+            raise InvalidPrivilegeError("Cannot edit admin privilege")
 
         return True
+
+    def validate_create_user(self, user: User):
+        self.validate_email(user.email)
+        self.validate_password(user.password)
+        self.validate_privilege(user.privilege, user.username)
+        self.validate_new_username(user.username)
+
+        return True
+
+    def validate_edit_user(self, user: User, original_username: str):
+        old_user = self.validate_existing_username(original_username)
+        if old_user == user:
+            raise NoEditsError("No edits made")
+
+        if not (user.email == old_user.email):
+            self.validate_email(user.email)
+        if user.password is not None:
+            self.validate_password(user.password)
+        self.validate_privilege(user.privilege, user.username)
+        if not (original_username == user.username):
+            self.validate_new_username(user.username)
+
+        user.password = old_user.password
+
+        return [user, old_user]

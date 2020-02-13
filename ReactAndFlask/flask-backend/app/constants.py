@@ -34,7 +34,6 @@ class Constants:
     RACK_KEY = "rack"
     RACK_POSITION_KEY = "rack_position"
     OWNER_KEY = "owner"
-    TAGS_KEY = "tags"
     MAC_ADDRESS_KEY = "mac_address"
     NETWORK_CONNECTIONS_KEY = "network_connections"
     POWER_CONNECTIONS_KEY = "power_connections"

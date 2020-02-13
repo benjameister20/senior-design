@@ -25,23 +25,21 @@ class Instance:
         owner: Optional[str],
         comment: Optional[str],
         datacenter_id: int,
-        tags: Optional[List[str]],
         mac_address: Optional[List[str]],
         network_connections: Optional[List[str]],
         power_connections: Optional[List[str]],
         asset_number: int,
     ) -> None:
         self.model_id: int = model_id
-        self.hostname: str = hostname
+        self.hostname: Optional[str] = hostname
         self.rack_label: str = rack_label
         self.rack_position: int = rack_position
         self.owner: Optional[str] = owner
         self.comment: Optional[str] = comment
         self.datacenter_id: int = datacenter_id
-        self.tags: Optional[List[str]] = tags
         self.mac_address: Optional[List[str]] = mac_address
         self.network_connections: Optional[List[str]] = network_connections
-        self.power_connections: Optional[List[str]]= power_connections
+        self.power_connections: Optional[List[str]] = power_connections
         self.asset_number: int = asset_number
 
     def __eq__(self, other: object) -> bool:
@@ -77,7 +75,6 @@ class Instance:
             "owner": self.owner,
             "comment": self.comment,
             "datacenter_id": self.datacenter_id,
-            "tags": self.tags,
             "mac_address": self.mac_address,
             "network_connections": self.network_connections,
             "power_connections": self.power_connections,
@@ -94,11 +91,10 @@ class Instance:
             "owner": self.owner,
             "comment": self.comment,
             "datacenter_id": datacenter,
-            "tags": self.tags,
             "mac_address": self.mac_address,
             "network_connections": self.network_connections,
             "power_connections": self.power_connections,
-            "asset_number": self.asset_number,            
+            "asset_number": self.asset_number,
         }
 
     @classmethod
@@ -114,6 +110,11 @@ class Instance:
             rack_position=csv_row["rack_position"],
             owner=csv_row["owner"],
             comment=csv_row["comment"],
+            datacenter_id=csv_row["datacenter_id"],
+            mac_address=csv_row["mac_address"],
+            network_connections=csv_row["network_connections"],
+            power_connections=csv_row["power_connections"],
+            asset_number=csv_row["asset_number"],
         )
 
     def _format_csv_entry(self, entry: str) -> str:

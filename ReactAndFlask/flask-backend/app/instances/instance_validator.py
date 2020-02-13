@@ -15,7 +15,10 @@ class InstanceValidator:
         self.rack_height = 42
 
     def create_instance_validation(self, instance):
-        if self.rack_table.get_rack(instance.rack_label) is None:
+        if (
+            self.rack_table.get_rack(instance.rack_label, instance.datacenter_id)
+            is None
+        ):
             return f"Rack {instance.rack_label} does not exist. Instances must be created on preexisting racks"
 
         duplicate_hostname = self.instance_table.get_instance_by_hostname(
@@ -49,7 +52,9 @@ class InstanceValidator:
         if instance_top > self.rack_height:
             return "The placement of the instance exceeds the height of the rack."
 
-        instance_list = self.instance_table.get_instances_by_rack(instance.rack_label)
+        instance_list = self.instance_table.get_instances_by_rack(
+            instance.rack_label, instance.datacenter_id
+        )
         if instance_list is None:
             return "success"
 
@@ -69,8 +74,11 @@ class InstanceValidator:
 
         return "success"
 
-    def edit_instance_validation(self, instance, original_rack, original_rack_u):
-        if self.rack_table.get_rack(instance.rack_label) is None:
+    def edit_instance_validation(self, instance, original_asset_number):
+        if (
+            self.rack_table.get_rack(instance.rack_label, instance.datacenter_id)
+            is None
+        ):
             return "The requested rack does not exist. Instances must be created on preexisting racks"
 
         print("INSTANCE HOSTNAME")
@@ -81,10 +89,7 @@ class InstanceValidator:
 
         print(duplicate_hostname)
         if duplicate_hostname is not None:
-            is_self = (
-                duplicate_hostname.rack_label == original_rack
-                and duplicate_hostname.rack_position == original_rack_u
-            )
+            is_self = duplicate_hostname.asset_number == original_asset_number
             if not is_self:
                 return f"An instance with hostname {duplicate_hostname.hostname} exists at location {duplicate_hostname.rack_label} U{duplicate_hostname.rack_u}"
 
@@ -112,27 +117,25 @@ class InstanceValidator:
         if instance_top > self.rack_height:
             return "The placement of the instance exceeds the height of the rack."
 
-        instance_list = self.instance_table.get_instances_by_rack(instance.rack_label)
+        instance_list = self.instance_table.get_instances_by_rack(
+            instance.rack_label, instance.datacenter_id
+        )
         if instance_list is None:
             return "success"
 
         for current_instance in instance_list:
-            if not (
-                current_instance.rack_position == original_rack_u
-                and current_instance.rack_label == original_rack
+            model = self.model_table.get_model(instance.model_id)
+            current_instance_top = current_instance.rack_position + model.height - 1
+            if (
+                current_instance.rack_position >= instance_bottom
+                and current_instance.rack_position <= instance_top
             ):
-                model = self.model_table.get_model(instance.model_id)
-                current_instance_top = current_instance.rack_position + model.height - 1
-                if (
-                    current_instance.rack_position >= instance_bottom
-                    and current_instance.rack_position <= instance_top
-                ):
-                    return self.return_conflict(current_instance)
-                elif (
-                    current_instance_top >= instance_bottom
-                    and current_instance_top <= instance_top
-                ):
-                    return self.return_conflict(current_instance)
+                return self.return_conflict(current_instance)
+            elif (
+                current_instance_top >= instance_bottom
+                and current_instance_top <= instance_top
+            ):
+                return self.return_conflict(current_instance)
 
         return "success"
 

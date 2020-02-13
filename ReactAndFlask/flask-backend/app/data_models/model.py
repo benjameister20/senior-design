@@ -27,7 +27,7 @@ class Model:
         model_number: str,
         height: int,
         display_color: Optional[str] = None,
-        ethernet_ports: Optional[str] = None,
+        ethernet_ports: Optional[List[str]] = None,
         power_ports: Optional[int] = None,
         cpu: Optional[str] = None,
         memory: Optional[int] = None,
@@ -38,7 +38,7 @@ class Model:
         self.model_number: str = model_number
         self.height: int = height
         self.display_color: Optional[str] = display_color
-        self.ethernet_ports: Optional[str] = ethernet_ports
+        self.ethernet_ports: Optional[List[str]] = ethernet_ports
         self.power_ports: Optional[int] = power_ports
         self.cpu: Optional[str] = cpu
         self.memory: Optional[int] = memory
@@ -129,9 +129,9 @@ class Model:
         display_color: Optional[str] = json.get("display_color", None)
         display_color = None if display_color == "" else display_color
 
-        ethernet_str: Optional[str] = json.get("ethernet_ports", None)
+        ethernet_str: Optional[List[str]] = json.get("ethernet_ports", None)
         ethernet_ports: Optional[
-            str
+            List[str]
         ] = None if ethernet_str == "" or ethernet_str is None else ethernet_str
 
         power_str: Optional[str] = json.get("power_ports", None)

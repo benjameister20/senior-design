@@ -9,14 +9,14 @@ class Rack:
         label (str): row letter and number
     """
 
-    def __init__(self, label: str, datacenter: str) -> None:
+    def __init__(self, label: str, datacenter_id: int) -> None:
         self.label = label
-        self.datacenter = datacenter
+        self.datacenter_id = datacenter_id
 
     def make_json(self) -> JSON:
         return {
             "label": self.label,
-            "datacenter": self.datacenter,
+            "datacenter_id": self.datacenter_id,
         }
 
     def __repr__(self) -> str:

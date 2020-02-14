@@ -47,3 +47,7 @@ class Constants:
     STOP_LETTER_KEY = "stop_letter"
     STOP_NUMBER_KEY = "stop_number"
     RACK_HEIGHT = 42
+
+    # Datacenter Keys
+    DC_ABRV_KEY = "abbreviation"
+    DC_NAME_KEY = "name"

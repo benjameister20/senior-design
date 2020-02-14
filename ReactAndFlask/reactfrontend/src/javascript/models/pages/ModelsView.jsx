@@ -457,7 +457,7 @@ export default class ModelsView extends React.Component {
         return (
             <div>
                 <ErrorBoundray>
-                {(this.state.madeVendorQuery) ? null: this.initialize()}
+                {(this.state.madeVendorQuery) ? null : this.initialize()}
                 <StatusDisplay
                     open={this.state.showStatus}
                     severity={this.state.statusSeverity}

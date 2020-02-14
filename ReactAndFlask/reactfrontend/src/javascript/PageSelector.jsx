@@ -1,5 +1,6 @@
 import React from "react";
 import Login from "./Login";
+import ShibLogin from "./ShibLogin";
 import TabViewer from "./Tabs";
 import axios from 'axios';
 import getURL from './helpers/functions/GetURL';
@@ -59,7 +60,7 @@ export default class PageSelector extends React.Component {
   render() {
     return (
       <div>
-        {this.state.loggedIn ?  <TabViewer token={this.state.token} username={this.state.username} privilege={this.state.privilege} logout={this.logout} /> : <Login loginFunc={this.login} />}
+        {this.state.loggedIn ?  <TabViewer token={this.state.token} username={this.state.username} privilege={this.state.privilege} logout={this.logout} /> : <Login loginFunc={this.login} shib={this.props.redirected}/>}
       </div>
     );
   }

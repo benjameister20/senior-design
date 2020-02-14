@@ -19,4 +19,15 @@ export const RackX = [
 ]
 
 
-export const SHIBBOLETH_LOGIN = "https://oauth.oit.duke.edu/oauth/authorize.php?client_id=ParselTonguesUserAuth&client_secret=LpUwB*eiK4Iw#1gaCu5jYp1u5uRF3ERsdmuNUGoKYNzn7rHm7b&redirect_uri=" + serverEndpoint + "&response_type=token&state=1129&scope=basic";
+export const CLIENT_ID = "ParselTonguesUserAuth";
+export const CLIENT_SECRET = "LpUwB*eiK4Iw#1gaCu5jYp1u5uRF3ERsdmuNUGoKYNzn7rHm7b";
+export const SCOPE = "basic";
+
+export const SHIBBOLETH_LOGIN =
+    "https://oauth.oit.duke.edu/oauth/authorize.php?"
+     + "client_id=" + encodeURIComponent(CLIENT_ID)
+     + "&client_secret=" + encodeURIComponent(CLIENT_SECRET)
+     + "&redirect_uri=" + encodeURIComponent('http://localhost:3000/')
+     + "&response_type=token"
+     + "&state=1129"
+     + "&scope=" + encodeURIComponent(SCOPE);

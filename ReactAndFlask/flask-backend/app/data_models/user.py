@@ -33,3 +33,11 @@ class User:
 
     def __repr__(self) -> str:
         return f"Username: {self.username}\nPassword: {self.password}\nDisplay Name: {self.display_name}\nEmail: {self.email}\nPrivilege: {self.privilege}"
+
+    def __eq__(self, user):
+        is_username = self.username == user.username
+        is_email = self.email == user.email
+        is_display_name = self.display_name == user.display_name
+        is_privilege = self.privilege == user.privilege
+
+        return is_username and is_email and is_display_name and is_privilege

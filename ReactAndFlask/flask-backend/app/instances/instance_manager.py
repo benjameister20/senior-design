@@ -1,3 +1,5 @@
+from app.constants import Constants
+from app.dal.datacenter_table import DatacenterTable
 from app.dal.instance_table import InstanceTable
 from app.dal.model_table import ModelTable
 from app.data_models.instance import Instance
@@ -9,6 +11,7 @@ class InstanceManager:
     def __init__(self):
         self.table = InstanceTable()
         self.model_table = ModelTable()
+        self.dc_table = DatacenterTable()
         self.validate = InstanceValidator()
 
     def create_instance(self, instance_data):
@@ -38,56 +41,48 @@ class InstanceManager:
             )
 
     def delete_instance(self, instance_data):
-        rack = self.check_null(instance_data["rack"])
-        rack_position = self.check_null(instance_data["rack_position"])
+        asset_number = self.check_null(instance_data[Constants.ASSET_NUMBER_KEY])
 
-        if rack == "":
-            raise InvalidInputsError("Must provide a vendor")
-        if rack_position == "":
-            raise InvalidInputsError("Must provide a model number")
+        if asset_number == "":
+            raise InvalidInputsError("Must provide an asset number")
 
         try:
-            self.table.delete_instance_by_rack_location(rack, rack_position)
+            self.table.delete_instance_by_asset_number(asset_number)
         except:
             raise InvalidInputsError(
-                "An error occurred when trying to delete the specified instance."
+                "An error occurred when trying to delete the specified asset."
             )
 
     def detail_view(self, instance_data):
         print(instance_data)
-        rack = self.check_null(instance_data["rack"])
-        rack_position = self.check_null(instance_data["rack_position"])
+        asset_number = instance_data.get(Constants.ASSET_NUMBER_KEY)
 
         try:
             print("Get these things")
-            print(rack)
-            print(rack_position)
-            instance = self.table.get_instance_by_rack_location(rack, rack_position)
+            print(asset_number)
+            instance = self.table.get_instance_by_asset_number(asset_number)
             return instance
         except:
             raise InvalidInputsError(
-                "An error occured while retrieving data for this instance."
+                "An error occured while retrieving data for this asset."
             )
 
     def edit_instance(self, instance_data):
         print("INSTANCE DATA")
         print(instance_data)
         try:
-            original_rack = instance_data.get("rackOriginal")
-            original_rack_position = instance_data.get("rack_positionOriginal")
-            if original_rack is None or original_rack_position is None:
-                raise InvalidInputsError("Unable to find the instance to edit.")
+            original_asset_number = instance_data.get(Constants.ASSET_NUMBER_ORIG_KEY)
+            if original_asset_number is None:
+                raise InvalidInputsError("Unable to find the asset to edit.")
 
             new_instance = self.make_instance(instance_data)
             edit_validation_result = self.validate.edit_instance_validation(
-                new_instance, original_rack, original_rack_position
+                new_instance, original_asset_number
             )
         except InvalidInputsError as e:
             return e.message
         if edit_validation_result == "success":
-            self.table.edit_instance(
-                new_instance, original_rack, original_rack_position
-            )
+            self.table.edit_instance(new_instance, original_asset_number)
         else:
             return InvalidInputsError(edit_validation_result)
 
@@ -149,29 +144,52 @@ class InstanceManager:
     def make_instance(self, instance_data):
         print("instance data")
         print(instance_data)
-        model_name = self.check_null(instance_data["model"])
+        model_name = self.check_null(instance_data[Constants.MODEL_KEY])
         model_id = self.get_model_id_from_name(model_name)
 
+        datacenter_name = self.check_null(instance_data[Constants.DATACENTER_KEY])
+        datacenter_id = self.get_datacenter_id_from_name(datacenter_name)
+
         try:
-            hostname = self.check_null(instance_data["hostname"])
-            rack = self.check_null(instance_data["rack"])
-            rack_position = self.check_null(instance_data["rack_position"])
-            owner = self.check_null(instance_data["owner"])
-            comment = self.check_null(instance_data["comment"])
+            hostname = self.check_null(instance_data[Constants.HOSTNAME_KEY])
+            rack = self.check_null(instance_data[Constants.RACK_KEY].upper())
+            rack_position = self.check_null(instance_data[Constants.RACK_POSITION_KEY])
+            owner = self.check_null(instance_data[Constants.OWNER_KEY])
+            comment = self.check_null(instance_data[Constants.COMMENT_KEY])
+            mac_address = self.check_null(instance_data[Constants.MAC_ADDRESS_KEY])
+            network_connections = self.check_null(
+                instance_data[Constants.NETWORK_CONNECTIONS_KEY]
+            )
+            power_connections = self.check_null(
+                instance_data[Constants.POWER_CONNECTIONS_KEY]
+            )
+            asset_number = self.check_null(instance_data[Constants.ASSET_NUMBER_KEY])
         except:
             raise InvalidInputsError(
                 "Could not read data fields correctly. Client-server error occurred."
             )
 
-        if hostname == "":
-            return InvalidInputsError("Must provide a hostname")
         if rack == "":
             return InvalidInputsError("Must provide a rack location")
         if rack_position == "":
             return InvalidInputsError("Must provide a rack location")
+        if asset_number == "":
+            return InvalidInputsError("Must provide an asset number")
 
         print("about to make instance")
-        return Instance(model_id, hostname, rack, rack_position, owner, comment)
+        return Instance(
+            model_id,
+            hostname,
+            rack,
+            rack_position,
+            owner,
+            comment,
+            datacenter_id,
+            mac_address,
+            network_connections,
+            power_connections,
+            asset_number,
+        )
 
     def get_model_id_from_name(self, model_name):
         try:
@@ -196,6 +214,17 @@ class InstanceManager:
         except:
             raise InvalidInputsError(
                 "An error occurred while trying to retrieve model info corresponding to the instance."
+            )
+
+    def get_datacenter_id_from_name(self, datacenter_name):
+        try:
+            datacenter_id = self.dc_table.get_datacenter_id_by_name(datacenter_name)
+            if datacenter_id is None:
+                return -1
+            return datacenter_id
+        except:
+            raise InvalidInputsError(
+                "An error occurred while trying to retrieve datacenter info corresponding to the instance."
             )
 
     def get_model_from_id(self, model_id):

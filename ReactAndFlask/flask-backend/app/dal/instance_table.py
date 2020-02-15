@@ -6,6 +6,7 @@ from app.dal.rack_table import RackEntry
 from app.data_models.instance import Instance
 from app.main.types import JSON
 from sqlalchemy import and_
+from sqlalchemy.dialects import postgresql as pg
 
 
 class InstanceEntry(db.Model):
@@ -13,11 +14,16 @@ class InstanceEntry(db.Model):
 
     identifier = db.Column(db.Integer, primary_key=True, unique=True)
     model_id = db.Column(db.Integer)
-    hostname = db.Column(db.String(80))
+    hostname = db.Column(db.String(80), nullable=True)
     rack_label = db.Column(db.String(80))
     rack_position = db.Column(db.Integer)
     owner = db.Column(db.String(80), nullable=True)
     comment = db.Column(db.String(80), nullable=True)
+    datacenter_id = db.Column(db.Integer)
+    mac_addresses = db.Column(pg.ARRAY(db.String(50)), nullable=True)
+    network_connections = db.Column(pg.ARRAY(db.String(50)), nullable=True)
+    power_connections = db.Column(pg.ARRAY(db.String(50)), nullable=True)
+    asset_number = db.Column(db.Integer)
 
     def __init__(self, instance: Instance):
         self.model_id = instance.model_id
@@ -26,6 +32,11 @@ class InstanceEntry(db.Model):
         self.rack_position = instance.rack_position
         self.owner = instance.owner
         self.comment = instance.comment
+        self.datacenter_id = instance.datacenter_id
+        self.mac_addresses = instance.mac_address
+        self.network_connections = instance.network_connections
+        self.power_connections = instance.power_connections
+        self.asset_number = instance.asset_number
 
     def make_instance(self) -> Instance:
         """ Convert the database entry to an instance """
@@ -36,6 +47,11 @@ class InstanceEntry(db.Model):
             rack_position=self.rack_position,
             owner=self.owner,
             comment=self.comment,
+            datacenter_id=self.datacenter_id,
+            mac_address=self.mac_addresses,
+            network_connections=self.network_connections,
+            power_connections=self.power_connections,
+            asset_number=self.asset_number,
         )
 
     def make_json(self) -> JSON:
@@ -46,6 +62,11 @@ class InstanceEntry(db.Model):
             "rack_position": self.rack_position,
             "owner": self.owner,
             "comment": self.comment,
+            "datacenter_id": self.datacenter_id,
+            "mac_address": self.mac_addresses,
+            "network_connections": self.network_connections,
+            "power_connections": self.power_connections,
+            "asset_number": self.asset_number,
         }
 
 
@@ -69,10 +90,12 @@ class InstanceTable:
 
         return instance_entry.make_instance()
 
-    def get_instance_by_rack_location(self, rack_label, rack_position):
+    def get_instance_by_rack_location(self, rack_label, rack_position, datacenter_id):
         """ Get the instance for the given rack location """
         instance_entry: InstanceEntry = InstanceEntry.query.filter_by(
-            rack_label=rack_label, rack_position=rack_position,
+            rack_label=rack_label,
+            rack_position=rack_position,
+            datacenter_id=datacenter_id,
         ).first()
         if instance_entry is None:
             return None
@@ -89,6 +112,16 @@ class InstanceTable:
 
         return instance_entry
 
+    def get_instance_by_asset_number(self, asset_number):
+        """ Get the instance for the given hostname """
+        instance_entry: InstanceEntry = InstanceEntry.query.filter_by(
+            asset_number=asset_number
+        ).first()
+        if instance_entry is None:
+            return None
+
+        return instance_entry
+
     def add_instance(self, instance: Instance) -> None:
         """ Adds an instance to the database """
         instance_entry: InstanceEntry = InstanceEntry(instance=instance)
@@ -97,15 +130,13 @@ class InstanceTable:
             db.session.add(instance_entry)
             db.session.commit()
         except:
-            print(f"Failed to add instance {instance.hostname} {instance.rack_label}")
+            print(f"Failed to add asset {instance.hostname} {instance.rack_label}")
 
-    def edit_instance(
-        self, instance: Instance, original_rack, original_rack_position
-    ) -> None:
+    def edit_instance(self, instance: Instance, original_asset_number) -> None:
         """ Updates a model to the database """
         try:
             old_entry = InstanceEntry.query.filter_by(
-                rack_label=original_rack, rack_position=original_rack_position
+                asset_number=original_asset_number
             ).first()
             old_entry.model_id = instance.model_id
             old_entry.hostname = instance.hostname
@@ -113,11 +144,14 @@ class InstanceTable:
             old_entry.rack_position = instance.rack_position
             old_entry.owner = instance.owner
             old_entry.comment = instance.comment
+            old_entry.datacenter_id = instance.datacenter_id
+            old_entry.mac_addresses = instance.mac_address
+            old_entry.network_connections = instance.network_connections
+            old_entry.power_connections = instance.power_connections
+            old_entry.asset_number = instance.asset_number
             db.session.commit()
         except:
-            raise ChangeModelDBException(
-                f"Failed to udpate instance {instance.model_id}"
-            )
+            raise ChangeModelDBException(f"Failed to udpate asset {instance.model_id}")
 
     def add_or_update(self, instance: Instance) -> Tuple[int, int, int]:
         """" Adds a model or updates it if it already exists """
@@ -125,7 +159,9 @@ class InstanceTable:
 
         try:
             result: InstanceEntry = InstanceEntry.query.filter_by(
-                rack_label=instance.rack_label, rack_position=instance.rack_position
+                rack_label=instance.rack_label,
+                rack_position=instance.rack_position,
+                datacenter_id=instance.datacenter_id,
             ).first()
 
             add, update, ignore = False, False, False
@@ -136,12 +172,13 @@ class InstanceTable:
                     InstanceEntry.query.filter_by(
                         rack_label=instance.rack_label,
                         rack_position=instance.rack_position,
+                        datacenter_id=instance.datacenter_id,
                     ).update(instance_entry.make_json())
                     update = True
             else:
                 # Add new instance to database, only if rack exists
                 rack_result: RackEntry = RackEntry.query.filter_by(
-                    label=instance.rack_label
+                    label=instance.rack_label, datacenter_id=instance.datacenter_id
                 ).first()
                 if rack_result is not None:
                     db.session.add(instance_entry)
@@ -155,39 +192,48 @@ class InstanceTable:
             raise
         except:
             raise DBWriteException(
-                message=f"Failed to udpate instance {instance.rack_label} {instance.rack_position}"
+                message=f"Failed to udpate asset {instance.rack_label} {instance.rack_position}"
             )
 
     def delete_instance(self, instance: Instance) -> None:
         """ Removes an instance from the database """
         try:
             InstanceEntry.query.filter_by(
-                hostname=instance.hostname,
                 rack_label=instance.rack_label,
                 rack_position=instance.rack_position,
+                datacenter_id=instance.datacenter_id,
             ).delete()
             db.session.commit()
         except:
-            print(
-                f"Failed to delete instance {instance.hostname} {instance.rack_label}"
-            )
+            print(f"Failed to delete asset {instance.hostname} {instance.rack_label}")
 
     def delete_instance_by_rack_location(
-        self, rack_label: str, rack_position: int
+        self, rack_label: str, rack_position: int, datacenter_id: int
     ) -> None:
         """ Removes an instance from the database """
         try:
             InstanceEntry.query.filter_by(
-                rack_label=rack_label, rack_position=rack_position,
+                rack_label=rack_label,
+                rack_position=rack_position,
+                datacenter_id=datacenter_id,
             ).delete()
             db.session.commit()
         except:
-            print(f"Failed to delete instance {rack_label}")
+            print(f"Failed to delete asset {rack_label}")
 
-    def get_instances_by_rack(self, rack_label: str) -> List[Instance]:
+    def delete_instance_by_asset_number(self, asset_number):
+        try:
+            InstanceEntry.query.filter_by(asset_number=asset_number).delete()
+            db.session.commit()
+        except:
+            print(f"Failed to delete asset {asset_number}")
+
+    def get_instances_by_rack(
+        self, rack_label: str, datacenter_id: int
+    ) -> List[Instance]:
         """ Get all instances for the given rack label """
         instance_entries: List[InstanceEntry] = InstanceEntry.query.filter_by(
-            rack_label=rack_label
+            rack_label=rack_label, datacenter_id=datacenter_id
         ).all()
 
         return [entry.make_instance() for entry in instance_entries]

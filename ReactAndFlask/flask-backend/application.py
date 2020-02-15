@@ -3,6 +3,7 @@ from http import HTTPStatus
 from app.dal.database import db
 from app.dal.routes import database
 from app.data_models.user import User
+from app.datacenters.routes_datacenters import datacenters
 from app.import_export.routes import import_export
 from app.instances.routes_instances import instances
 from app.logging.routes_logging import logs
@@ -65,6 +66,7 @@ def _register_routes() -> None:
     application.register_blueprint(stats)
     application.register_blueprint(import_export)
     application.register_blueprint(logs)
+    application.register_blueprint(datacenters)
 
 
 def init() -> None:

@@ -4,6 +4,7 @@ from app.dal.database import DBWriteException, db
 from app.data_models.model import Model
 from app.main.types import JSON
 from sqlalchemy import and_
+from sqlalchemy.dialects import postgresql as pg
 
 
 class ModelEntry(db.Model):
@@ -14,7 +15,7 @@ class ModelEntry(db.Model):
     model_number = db.Column(db.String(80))
     height = db.Column(db.Integer)
     display_color = db.Column(db.String(80), nullable=True)
-    ethernet_ports = db.Column(db.Integer, nullable=True)
+    ethernet_ports = db.Column(pg.ARRAY(db.String(80)), nullable=True)
     power_ports = db.Column(db.Integer, nullable=True)
     cpu = db.Column(db.String(80), nullable=True)
     memory = db.Column(db.Integer, nullable=True)

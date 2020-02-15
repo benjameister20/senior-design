@@ -119,6 +119,18 @@ def authenticate():
     return response
 
 
+@users.route("users/oauth", methods=["POST"])
+def oauth():
+
+    response = {}
+    try:
+        response = USER_MANAGER.oauth(request)
+    except UserException as e:
+        return add_message_to_JSON(response, e.message)
+
+    return response
+
+
 @users.route("/users/logout", methods=["GET"])
 def logout():
 

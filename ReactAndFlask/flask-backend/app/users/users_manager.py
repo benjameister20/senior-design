@@ -1,6 +1,7 @@
 import json
 import os
 
+import requests
 from app.dal.user_table import UserTable
 from app.data_models.user import User
 from app.exceptions.InvalidInputsException import InvalidInputsError
@@ -261,5 +262,27 @@ class UserManager:
             raise NonexistantUserError(f"User <{username}> does not exist")
 
         response["user"] = user.make_json()
+
+        return response
+
+    def oauth(self, request):
+
+        response = {}
+        request_data = request.get_json()
+
+        username = request_data.get("username")
+        request_data.get("email")
+        request_data.get("display_name")
+
+        client_id = request_data.get("client_id")
+        token = request_data.get("token")
+
+        headers = {"x-api-key": client_id, "Authorization": f"Bearer {token}"}
+        duke_response = requests.get(
+            "https://api.colab.duke.edu/identity/v1/", headers=headers
+        )
+
+        response["token"] = self.AUTH_MANAGER.encode_auth_token(username)
+        response["privilege"] = "user"
 
         return response

@@ -3,6 +3,8 @@ export enum AssetInput {
     HOSTNAME = 'hostname',
     RACK = 'rack',
     RACK_U = 'rack_position',
+    RACK_ORIGINAL = 'rackOriginal',
+    RACK_U_ORIGINAL = 'rack_positionOriginal',
     OWNER = 'owner',
     COMMENT = 'comment',
     DATACENTER = 'datacenter_id',

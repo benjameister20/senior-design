@@ -31,6 +31,8 @@ const columns = [
 
 const assetsMainPath = 'assets/';
 const assetDownloadFileName = 'assets.csv';
+const successToken = "success";
+const errorToken = "error";
 
 export default class AssetsView extends React.Component {
     constructor(props) {
@@ -78,85 +80,85 @@ export default class AssetsView extends React.Component {
         axios.post(
             getURL(assetsMainPath, AssetCommand.create),this.state.createdAsset.getAssetAsJSON()
             ).then(response => {
-                if (response.data.message === 'success') {
+                if (response.data.message === successToken) {
                     this.setState({
                         showStatus: true,
                         statusMessage: "Successfully created asset",
-                        statusSeverity:"success",
+                        statusSeverity:successToken,
                         createdAsset : new Asset(),
                         showCreate:false,
                     });
                     this.searchAssets();
                 } else {
-                    this.setState({ createStatusOpen: true, createStatusMessage: response.data.message, createStatusSeverity:"error" })
+                    this.setState({ createStatusOpen: true, createStatusMessage: response.data.message, createStatusSeverity:errorToken })
                 }
             }).catch(
-                this.setState({ createStatusOpen: true, createStatusMessage: AssetConstants.GENERAL_ASSET_ERROR, createStatusSeverity:"error" })
+                this.setState({ createStatusOpen: true, createStatusMessage: AssetConstants.GENERAL_ASSET_ERROR, createStatusSeverity:errorToken })
             );
     }
 
     editAsset = () => {
         let body = this.state.detailedValues.getAssetAsJSON();
-        body['rackOriginal'] = this.state.originalRack;
-        body['rack_positionOriginal'] = this.state.originalrack_position;
+        body[AssetInput.RACK_ORIGINAL] = this.state.originalRack;
+        body[AssetInput.RACK_U_ORIGINAL] = this.state.originalrack_position;
         axios.post(
             getURL(assetsMainPath, AssetCommand.edit),body
             ).then(response => {
-                if (response.data.message === 'success') {
+                if (response.data.message === successToken) {
                     this.setState({
                         showStatus: true,
                         statusMessage: "Successfully edited asset",
-                        statusSeverity:"success",
+                        statusSeverity:successToken,
                         detailedValues : new Asset(),
                         showDetailedView:false,
                     });
                     this.searchAssets();
 
                 } else {
-                    this.setState({ detailStatusOpen: true, detailStatusMessage: response.data.message, detailStatusSeverity:"error" })
+                    this.setState({ detailStatusOpen: true, detailStatusMessage: response.data.message, detailStatusSeverity:errorToken })
                 }
             }).catch(
-                this.setState({ detailStatusOpen: true, detailStatusMessage: AssetConstants.GENERAL_ASSET_ERROR, detailStatusSeverity:"error" })
+                this.setState({ detailStatusOpen: true, detailStatusMessage: AssetConstants.GENERAL_ASSET_ERROR, detailStatusSeverity:errorToken })
             );
     }
 
 
     deleteAsset = () => {
+        var body = {};
+        body[AssetInput.RACK] = this.state.originalRack;
+        body[AssetInput.RACK_U] = this.state.originalrack_position;
+
         axios.post(
-            getURL(assetsMainPath, AssetCommand.delete),
-            {
-                'rack':this.state.originalRack,
-                'rack_position':this.state.originalrack_position,
-            }
+            getURL(assetsMainPath, AssetCommand.delete), body
             ).then(response => {
-                if (response.data.message === 'success') {
+                if (response.data.message === successToken) {
                     this.setState({
                         showStatus: true,
                         statusMessage: "Successfully deleted asset",
-                        statusSeverity:"success",
+                        statusSeverity:successToken,
                         originalRack:'',
                         originalrack_position:'',
                         showDetailedView:false
                     });
                     this.searchAssets();
                 } else {
-                    this.setState({ showStatus: true, statusMessage: response.data.message, statusSeverity:"error" })
+                    this.setState({ showStatus: true, statusMessage: response.data.message, statusSeverity:errorToken })
                 }
             }).catch(
-                this.setState({ showStatus: true, statusMessage: AssetConstants.GENERAL_ASSET_ERROR, statusSeverity:"error" })
+                this.setState({ showStatus: true, statusMessage: AssetConstants.GENERAL_ASSET_ERROR, statusSeverity:errorToken })
             );
     }
 
     detailViewAsset = (rack, rack_position) => {
+        var body = {};
+        body[AssetInput.RACK] = rack;
+        body[AssetInput.RACK_U] = rack_position;
+
         axios.post(
-            getURL(assetsMainPath, AssetCommand.detailView),
-            {
-                'rack':rack,
-                'rack_position':rack_position,
-            }
+            getURL(assetsMainPath, AssetCommand.detailView), body
             ).then(response => this.setState({ detailedValues: response.data['assets'][0], detailViewLoading:false})
             ).catch(
-                this.setState({ showStatus: true, statusMessage: AssetConstants.GENERAL_ASSET_ERROR, statusSeverity:"error" })
+                this.setState({ showStatus: true, statusMessage: AssetConstants.GENERAL_ASSET_ERROR, statusSeverity:errorToken })
             );
 
         this.setState({
@@ -190,22 +192,21 @@ export default class AssetsView extends React.Component {
         axios.post(
             getURL(assetsMainPath, AssetCommand.UPLOAD_FILE), data
             ).then(response => {
-                if (response.data.message === 'success') {
-                    this.setState({ showStatus: true, statusMessage: response.data.summary, statusSeverity:'success', showImport: false,})
+                if (response.data.message === successToken) {
+                    this.setState({ showStatus: true, statusMessage: response.data.summary, statusSeverity:successToken, showImport: false,})
                     this.searchAssets();
                 } else {
-                    this.setState({ showStatus: true, statusMessage: response.data.message, statusSeverity:"error" })
+                    this.setState({ showStatus: true, statusMessage: response.data.message, statusSeverity:errorToken })
                 }
             });
     }
 
     search = (filters) => {
-        this.setState({
-            searchModel:filters['model'],
-            searchHostname:filters['hostname'],
-            searchRack:filters['rack'],
-            searchRackU:filters['rack_position'],
-        }, this.searchAssets);
+        Object.keys(filters).map(function(key) {
+            this.state.searchedAsset.updateVal(key, filters[key]);
+        });
+
+        this.searchAssets();
     }
 
     downloadTable = () => {
@@ -230,12 +231,12 @@ export default class AssetsView extends React.Component {
         this.setState({
             showDetailedView: true,
             detailViewLoading:true,
-            originalRack: this.state.items[id]['rack'],
-            originalrack_position: this.state.items[id]['rack_position'],
+            originalRack: this.state.items[id][AssetInput.RACK],
+            originalrack_position: this.state.items[id][AssetInput.RACK_U],
         });
 
-        var rack = this.state.items[id]['rack'];
-        var rack_position = this.state.items[id]['rack_position'];
+        var rack = this.state.items[id][AssetInput.RACK];
+        var rack_position = this.state.items[id][AssetInput.RACK_U];
 
         this.detailViewAsset(rack, rack_position);
     }
@@ -254,7 +255,7 @@ export default class AssetsView extends React.Component {
 
     updateAssetCreator = (event) => {
         this.state.createdAsset.updateVal(event.target.value);
-        this.forceUpdate()
+        this.forceUpdate();
     }
 
     updateAssetEdited = (event) => {

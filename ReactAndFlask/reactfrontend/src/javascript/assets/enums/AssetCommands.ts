@@ -6,6 +6,7 @@ export enum AssetCommand {
     detailView = 'detailView/',
     search = 'search/',
     GET_ALL_MODELS = 'assistedmodel/',
+    GET_ALL_OWNERS = 'assistedowner/',
     UPLOAD_FILE = 'import/',
     EXPORT_FILE = 'export/',
 }

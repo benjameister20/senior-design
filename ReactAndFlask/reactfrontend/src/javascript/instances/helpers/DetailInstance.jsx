@@ -1,5 +1,5 @@
 import React from 'react';
-import Modal from '@material-ui/core/Modal';
+
 import TextField from "@material-ui/core/TextField";
 import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -8,7 +8,24 @@ import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import Autocomplete from '@material-ui/lab/Autocomplete';
+
+import { CompactPicker } from 'react-color';
+
 import StatusDisplay from '../../helpers/StatusDisplay';
+
+function createInputs(name, label) {
+    return {label, name};
+}
+
+const inputs = {
+    "model":createInputs('model', "Model", ),
+    "hostname":createInputs('hostname', "Hostname"),
+    "rack":createInputs('rack', "Height"),
+    "rack_position":createInputs('rack_position', "Rack Position"),
+    "owner":createInputs('owner', "Owner"),
+    "comment":createInputs('comment', "Comments"),
+}
 
 export default class DetailInstance extends React.Component {
     constructor(props) {
@@ -16,22 +33,19 @@ export default class DetailInstance extends React.Component {
 
         this.state = {
             showConfirmationBox:false,
+            color:null,
         };
-
-        this.closeModal = this.closeModal.bind(this);
-        this.confirmDelete = this.confirmDelete.bind(this);
-        this.deleteItem = this.deleteItem.bind(this);
     }
 
-    confirmDelete() {
+    confirmDelete = () => {
         this.setState({ showConfirmationBox: true });
     }
 
-    closeModal() {
+    closeModal = () => {
         this.setState({showConfirmationBox:false,});
     }
 
-    deleteItem() {
+    deleteItem = () => {
         this.setState({ showConfirmationBox: false });
         this.props.delete();
     }
@@ -44,7 +58,7 @@ export default class DetailInstance extends React.Component {
                     <ExpansionPanelSummary
                         expandIcon={<ExpandMoreIcon />}
                     >
-                        <Typography>Create</Typography>
+                        <Typography>Instance Details</Typography>
                     </ExpansionPanelSummary>
                     <ExpansionPanelDetails>
                         <StatusDisplay
@@ -52,13 +66,76 @@ export default class DetailInstance extends React.Component {
                             severity={this.props.statusSeverity}
                             closeStatus={this.props.statusClose}
                             message={this.props.statusMessage}
+                            autoHideDuration={6000}
                         />
                     {
                 this.props.loading ? <CircularProgress /> :
                 <div>
-                    {this.props.inputs.map(input => (
-                        <TextField name={input} disabled={this.props.disabled} id="standard-basic" label={input} onChange={this.props.updateModelEdited} defaultValue={this.props.defaultValues[input]}/>
-                    ))}
+                    <Autocomplete
+                            id="select-vendor"
+                            options={this.props.options}
+                            includeInputInList
+                            freeSolo
+                            defaultValue={this.props.defaultValues[inputs.vendor.name]}
+                            renderInput={params => (
+                            <TextField {...params}
+                                label={inputs.vendor.label}
+                                name={inputs.vendor.name}
+                                onChange={this.props.updateModelCreator}
+                                onBlur={this.props.updateModelCreator}
+                                variant="outlined" fullWidth
+                                disabled={this.props.disabled}
+                            />
+                            )}
+                        />
+                        <TextField id="standard-basic" variant="outlined"
+                            label={inputs.modelNumber.label} name={inputs.modelNumber.name}
+                            onChange={this.props.updateModelCreator}
+                            disabled={this.props.disabled}
+                            defaultValue={this.props.defaultValues[inputs.modelNumber.name]}
+                        />
+                        <TextField id="standard-basic" variant="outlined"
+                            label={inputs.height.label} name={inputs.height.name}
+                            onChange={this.props.updateModelCreator}
+                            disabled={this.props.disabled}
+                            defaultValue={this.props.defaultValues[inputs.height.name]}
+                        />
+                        <CompactPicker
+                            color={this.state.color || this.props.defaultValues["display_color"]}
+                            onChange={this.updateColor}
+
+                        />
+                        <TextField id="standard-basic" variant="outlined"
+                            label={inputs.powerPorts.label} name={inputs.powerPorts.name}
+                            onChange={this.props.updateModelCreator}
+                            disabled={this.props.disabled}
+                            defaultValue={this.props.defaultValues[inputs.powerPorts.name]}
+                        />
+                        <TextField id="standard-basic" variant="outlined"
+                            label={inputs.cpu.label} name={inputs.cpu.name}
+                            onChange={this.props.updateModelCreator}
+                            disabled={this.props.disabled}
+                            defaultValue={this.props.defaultValues[inputs.cpu.name]}
+                        />
+                        <TextField id="standard-basic" variant="outlined"
+                            label={inputs.memory.label} name={inputs.memory.name}
+                            onChange={this.props.updateModelCreator}
+                            disabled={this.props.disabled}
+                            defaultValue={this.props.defaultValues[inputs.memory.name]}
+                        />
+                        <TextField id="standard-basic" variant="outlined"
+                            label={inputs.storage.label} name={inputs.storage.name}
+                            onChange={this.props.updateModelCreator}
+                            disabled={this.props.disabled}
+                            defaultValue={this.props.defaultValues[inputs.storage.name]}
+                        />
+                        <TextField id="standard-basic" variant="outlined"
+                            label={inputs.comments.label} name={inputs.comments.name}
+                            onChange={this.props.updateModelCreator}
+                            disabled={this.props.disabled}
+                            defaultValue={this.props.defaultValues[inputs.comments.name]}
+                        />
+
                     {this.props.disabled ? null:
                     <div>
                         <Button

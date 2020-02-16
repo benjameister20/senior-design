@@ -3,7 +3,7 @@ import SearchIcon from '@material-ui/icons/Search';
 import InputBase from '@material-ui/core/InputBase';
 import Button from '@material-ui/core/Button';
 
-export default class FilterInstance extends React.Component {
+export default class FilterAsset extends React.Component {
     constructor(props) {
         super(props);
 

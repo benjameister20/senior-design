@@ -1,4 +1,4 @@
-export enum InstanceCommand {
+export enum AssetCommand {
     create = 'create/',
     delete = 'delete/',
     edit = 'edit/',

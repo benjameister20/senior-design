@@ -12,7 +12,7 @@ import AccountCircle from '@material-ui/icons/AccountCircle';
 
 import ModelsView from './models/pages/ModelsView';
 import UsersView from './users/pages/UsersView';
-import InstancesView from './instances/pages/InstancesView';
+import AssetsView from './assets/pages/AssetsView';
 import RacksView from './racks/pages/RacksView';
 import StatisticsView from './statistics/pages/StatisticsView';
 
@@ -87,7 +87,7 @@ export default class TabViewer extends React.Component {
                 centered
             >
                     <Tab value={0} style={{flexGrow: 1,}} label="Models"> </Tab>
-                    <Tab value={1} style={{flexGrow: 1,}} label="Instances" ></Tab>
+                    <Tab value={1} style={{flexGrow: 1,}} label="Assets" ></Tab>
                     {(this.props.privilege == Privilege.ADMIN) ? <Tab value={2} style={{flexGrow: 1,}} label="Users"></Tab> : null}
                     <Tab value={3} style={{flexGrow: 1,}} label="Racks" />
                     <Tab value={4} style={{flexGrow: 1,}} label="Statistics" />
@@ -108,7 +108,7 @@ export default class TabViewer extends React.Component {
                 id={`simple-tabpanel-0`}
                 aria-labelledby={`simple-tab-0`}
             >
-                <InstancesView token={this.props.token} privilege={this.props.privilege} />
+                <AssetsView token={this.props.token} privilege={this.props.privilege} />
             </Typography>
             <Typography
                 component="div"

@@ -10,7 +10,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import '../../../stylesheets/Models.css';
 import StatusDisplay from '../../helpers/StatusDisplay';
 
-export default class CreateInstance extends React.Component {
+export default class CreateAsset extends React.Component {
     constructor(props) {
         super(props);
 

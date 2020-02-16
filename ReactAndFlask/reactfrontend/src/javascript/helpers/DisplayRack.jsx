@@ -14,7 +14,7 @@ export default class DisplayRack extends React.Component {
     render() {
         return (
             <div className={classes.root}>
-                {this.props.instances}
+                {this.props.assets}
                 <Grid container spacing={3}>
                     <Grid item xs={20}>
                         <Paper>{this.props.rack}</Paper>

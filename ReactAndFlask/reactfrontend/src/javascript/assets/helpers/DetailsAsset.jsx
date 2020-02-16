@@ -27,7 +27,7 @@ const inputs = {
     "comment":createInputs('comment', "Comments"),
 }
 
-export default class DetailInstance extends React.Component {
+export default class DetailAsset extends React.Component {
     constructor(props) {
         super(props);
 
@@ -58,7 +58,7 @@ export default class DetailInstance extends React.Component {
                     <ExpansionPanelSummary
                         expandIcon={<ExpandMoreIcon />}
                     >
-                        <Typography>Instance Details</Typography>
+                        <Typography>Asset Details</Typography>
                     </ExpansionPanelSummary>
                     <ExpansionPanelDetails>
                         <StatusDisplay
@@ -68,8 +68,7 @@ export default class DetailInstance extends React.Component {
                             message={this.props.statusMessage}
                             autoHideDuration={6000}
                         />
-                    {
-                this.props.loading ? <CircularProgress /> :
+                {this.props.loading ? <CircularProgress /> :
                 <div>
                     <Autocomplete
                             id="select-vendor"

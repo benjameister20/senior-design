@@ -1,19 +1,19 @@
 import React from 'react';
 import axios from 'axios';
-import { InstanceCommand } from '../enums/InstanceCommands.ts'
-import { InstanceInput } from '../enums/InstanceInputs.ts'
+import { AssetCommand } from '../enums/AssetCommands.ts'
+import { AssetInput } from '../enums/AssetInputs.ts'
 import { Privilege } from '../../enums/privilegeTypes.ts'
 import { CSVLink } from "react-csv";
-import InstanceButtons from '../helpers/InstanceButtons';
-import FilterInstance from '../helpers/FilterInstance';
+import AssetButtons from '../helpers/ButtonsAsset';
+import FilterAsset from '../helpers/FilterAsset';
 import UploadModal from '../../helpers/UploadModal';
 import getURL from '../../helpers/functions/GetURL';
-import DetailInstance from '../helpers/DetailInstance';
-import CreateInstance from '../helpers/CreateInstance';
+import DetailAsset from '../helpers/DetailsAsset';
+import CreateAsset from '../helpers/CreateAsset';
 import StatusDisplay from '../../helpers/StatusDisplay';
 import TableView from '../../helpers/TableView';
 import ErrorBoundary from '../../errors/ErrorBoundry';
-import * as InstanceConstants from "../InstanceConstants";
+import * as AssetConstants from "../AssetConstants";
 
 const inputs = [
     'model',
@@ -31,12 +31,12 @@ const columns = [
     'rack_position',
 ]
 
-const instancesMainPath = 'instances/';
-const instanceDownloadFileName = 'instances.csv';
+const assetsMainPath = 'assets/';
+const assetDownloadFileName = 'assets.csv';
 
 
 
-export default class InstancesView extends React.Component {
+export default class AssetsView extends React.Component {
     constructor(props) {
         super(props);
 
@@ -47,10 +47,10 @@ export default class InstancesView extends React.Component {
             showImportModal:false,
 
             // table items
-            items:[], //Constants.testInstanceArray,
+            items:[], //Constants.testAssetArray,
 
-            // vals for creating a new instance
-            createdInstance : {
+            // vals for creating a new asset
+            createdAsset : {
                 'model':'',
                 'hostname':'',
                 'rack':'',
@@ -69,13 +69,13 @@ export default class InstancesView extends React.Component {
             createStatusSeverity:'',
             createStatusMessage:'',
 
-            // vals for deleting an instance
-            deleteInstanceRack:'',
-            deleteInstancerack_position:'',
+            // vals for deleting an asset
+            deleteAssetRack:'',
+            deleteAssetrack_position:'',
 
-            // vals for viewing an instance
-            viewInstanceRack:'',
-            viewInstancerack_position:'',
+            // vals for viewing an asset
+            viewAssetRack:'',
+            viewAssetrack_position:'',
 
             searchModel:'',
             searchHostname:'',
@@ -108,24 +108,24 @@ export default class InstancesView extends React.Component {
 
     }
 
-    createInstance = () => {
+    createAsset = () => {
         axios.post(
-            getURL(instancesMainPath, InstanceCommand.create),
+            getURL(assetsMainPath, AssetCommand.create),
             {
-                'model':this.state.createdInstance[InstanceInput.Model],
-                'hostname':this.state.createdInstance[InstanceInput.Hostname],
-                'rack':this.state.createdInstance[InstanceInput.Rack],
-                'rack_position':this.state.createdInstance[InstanceInput.RackU],
-                'owner':this.state.createdInstance[InstanceInput.Owner],
-                'comment':this.state.createdInstance[InstanceInput.Comment],
+                'model':this.state.createdAsset[AssetInput.Model],
+                'hostname':this.state.createdAsset[AssetInput.Hostname],
+                'rack':this.state.createdAsset[AssetInput.Rack],
+                'rack_position':this.state.createdAsset[AssetInput.RackU],
+                'owner':this.state.createdAsset[AssetInput.Owner],
+                'comment':this.state.createdAsset[AssetInput.Comment],
             }
             ).then(response => {
                 if (response.data.message === 'success') {
                     this.setState({
                         showStatus: true,
-                        statusMessage: "Successfully created instance",
+                        statusMessage: "Successfully created asset",
                         statusSeverity:"success",
-                        createdInstance : {
+                        createdAsset : {
                             'model':'',
                             'hostname':'',
                             'rack':'',
@@ -135,33 +135,33 @@ export default class InstancesView extends React.Component {
                         },
                         showCreateModal:false,
                     });
-                    this.searchInstances();
+                    this.searchAssets();
                 } else {
                     this.setState({ createStatusOpen: true, createStatusMessage: response.data.message, createStatusSeverity:"error" })
                 }
             }).catch(
-                this.setState({ createStatusOpen: true, createStatusMessage: InstanceConstants.GENERAL_INSTANCE_ERROR, createStatusSeverity:"error" })
+                this.setState({ createStatusOpen: true, createStatusMessage: AssetConstants.GENERAL_ASSET_ERROR, createStatusSeverity:"error" })
             );
     }
 
-    editInstance = () => {
+    editAsset = () => {
         axios.post(
-            getURL(instancesMainPath, InstanceCommand.edit),
+            getURL(assetsMainPath, AssetCommand.edit),
             {
                 'rackOriginal':this.state.originalRack,
                 'rack_positionOriginal':this.state.originalrack_position,
-                'model':this.state.detailedValues[InstanceInput.Model],
-                'hostname':this.state.detailedValues[InstanceInput.Hostname],
-                'rack':this.state.detailedValues[InstanceInput.Rack],
-                'rack_position':this.state.detailedValues[InstanceInput.RackU],
-                'owner':this.state.detailedValues[InstanceInput.Owner],
-                'comment':this.state.detailedValues[InstanceInput.Comment],
+                'model':this.state.detailedValues[AssetInput.Model],
+                'hostname':this.state.detailedValues[AssetInput.Hostname],
+                'rack':this.state.detailedValues[AssetInput.Rack],
+                'rack_position':this.state.detailedValues[AssetInput.RackU],
+                'owner':this.state.detailedValues[AssetInput.Owner],
+                'comment':this.state.detailedValues[AssetInput.Comment],
             }
             ).then(response => {
                 if (response.data.message === 'success') {
                     this.setState({
                         showStatus: true,
-                        statusMessage: "Successfully edited instance",
+                        statusMessage: "Successfully edited asset",
                         statusSeverity:"success",
                         detailedValues : {
                             'model':'',
@@ -173,20 +173,20 @@ export default class InstancesView extends React.Component {
                         },
                         showDetailedView:false,
                     });
-                    this.searchInstances();
+                    this.searchAssets();
 
                 } else {
                     this.setState({ detailStatusOpen: true, detailStatusMessage: response.data.message, detailStatusSeverity:"error" })
                 }
             }).catch(
-                this.setState({ detailStatusOpen: true, detailStatusMessage: InstanceConstants.GENERAL_INSTANCE_ERROR, detailStatusSeverity:"error" })
+                this.setState({ detailStatusOpen: true, detailStatusMessage: AssetConstants.GENERAL_ASSET_ERROR, detailStatusSeverity:"error" })
             );
     }
 
 
-    deleteInstance = () => {
+    deleteAsset = () => {
         axios.post(
-            getURL(instancesMainPath, InstanceCommand.delete),
+            getURL(assetsMainPath, AssetCommand.delete),
             {
                 'rack':this.state.originalRack,
                 'rack_position':this.state.originalrack_position,
@@ -195,41 +195,41 @@ export default class InstancesView extends React.Component {
                 if (response.data.message === 'success') {
                     this.setState({
                         showStatus: true,
-                        statusMessage: "Successfully deleted instance",
+                        statusMessage: "Successfully deleted asset",
                         statusSeverity:"success",
                         originalRack:'',
                         originalrack_position:'',
                         showDetailedView:false
                     });
-                    this.searchInstances();
+                    this.searchAssets();
                 } else {
                     this.setState({ showStatus: true, statusMessage: response.data.message, statusSeverity:"error" })
                 }
             }).catch(
-                this.setState({ showStatus: true, statusMessage: InstanceConstants.GENERAL_INSTANCE_ERROR, statusSeverity:"error" })
+                this.setState({ showStatus: true, statusMessage: AssetConstants.GENERAL_ASSET_ERROR, statusSeverity:"error" })
             );
     }
 
-    detailViewInstance = (rack, rack_position) => {
+    detailViewAsset = (rack, rack_position) => {
         axios.post(
-            getURL(instancesMainPath, InstanceCommand.detailView),
+            getURL(assetsMainPath, AssetCommand.detailView),
             {
                 'rack':rack,
                 'rack_position':rack_position,
             }
-            ).then(response => this.setState({ detailedValues: response.data['instances'][0], detailViewLoading:false})
+            ).then(response => this.setState({ detailedValues: response.data['assets'][0], detailViewLoading:false})
             ).catch(
-                this.setState({ showStatus: true, statusMessage: InstanceConstants.GENERAL_INSTANCE_ERROR, statusSeverity:"error" })
+                this.setState({ showStatus: true, statusMessage: AssetConstants.GENERAL_ASSET_ERROR, statusSeverity:"error" })
             );
 
         this.setState({
-            viewInstanceRack:'',
+            viewAssetRack:'',
         });
     }
 
-    searchInstances = () => {
+    searchAssets = () => {
         axios.post(
-            getURL(instancesMainPath, InstanceCommand.search),
+            getURL(assetsMainPath, AssetCommand.search),
             {
                 'filter':{
                     'model':this.state.searchModel,
@@ -239,24 +239,24 @@ export default class InstancesView extends React.Component {
                 }
             }
             ).then(response => {
-                this.setState({ items: response.data['instances'] });
+                this.setState({ items: response.data['assets'] });
             });
     }
 
     getModelList = () => {
         axios.get(
-            getURL(instancesMainPath, InstanceCommand.GET_ALL_MODELS), {}
+            getURL(assetsMainPath, AssetCommand.GET_ALL_MODELS), {}
             ).then(response => this.setState({ modelList: response.data.results }));
         this.setState({ madeModelQuery: true });
     }
 
     sendUploadedFile = (data) => {
         axios.post(
-            getURL(instancesMainPath, InstanceCommand.UPLOAD_FILE), data
+            getURL(assetsMainPath, AssetCommand.UPLOAD_FILE), data
             ).then(response => {
                 if (response.data.message === 'success') {
                     this.setState({ showStatus: true, statusMessage: response.data.summary, statusSeverity:'success', showImportModal: false,})
-                    this.searchInstances();
+                    this.searchAssets();
                 } else {
                     this.setState({ showStatus: true, statusMessage: response.data.message, statusSeverity:"error" })
                 }
@@ -269,12 +269,12 @@ export default class InstancesView extends React.Component {
             searchHostname:filters['hostname'],
             searchRack:filters['rack'],
             searchRackU:filters['rack_position'],
-        }, this.searchInstances);
+        }, this.searchAssets);
     }
 
     downloadTable = () => {
         axios.post(
-            getURL(instancesMainPath, InstanceCommand.EXPORT_FILE),
+            getURL(assetsMainPath, AssetCommand.EXPORT_FILE),
             {
                 'filter':{
                     'model':this.state.searchModel,
@@ -311,7 +311,7 @@ export default class InstancesView extends React.Component {
         var rack = this.state.items[id]['rack'];
         var rack_position = this.state.items[id]['rack_position'];
 
-        this.detailViewInstance(rack, rack_position);
+        this.detailViewAsset(rack, rack_position);
     }
 
     closeCreateModal = () => {
@@ -326,12 +326,12 @@ export default class InstancesView extends React.Component {
         this.setState({ showDetailedView: false })
     }
 
-    updateInstanceCreator = (event) => {
-        this.state.createdInstance[event.target.name] = event.target.value;
+    updateAssetCreator = (event) => {
+        this.state.createdAsset[event.target.name] = event.target.value;
         this.forceUpdate()
     }
 
-    updateInstanceEdited = (event) => {
+    updateAssetEdited = (event) => {
         this.state.detailedValues[event.target.name] = event.target.value;
         this.forceUpdate()
     }
@@ -359,7 +359,7 @@ export default class InstancesView extends React.Component {
     }
 
     initialize = () => {
-        this.searchInstances();
+        this.searchAssets();
         this.getModelList();
     }
 
@@ -376,19 +376,19 @@ export default class InstancesView extends React.Component {
                 />
                 {(this.props.privilege == Privilege.ADMIN) ?
                     (<div>
-                <InstanceButtons
+                <AssetButtons
                     openCreateModal={this.openCreateModal}
                     openImportModal={this.openImportModal}
                     downloadTable={this.downloadTable}
                 />
                 <CSVLink
                     data={this.state.csvData}
-                    filename={instanceDownloadFileName}
+                    filename={assetDownloadFileName}
                     className="hidden"
                     ref={(r) => this.csvLink = r}
                     target="_blank"
                 />
-                <CreateInstance
+                <CreateAsset
                     statusOpen={this.state.createStatusOpen}
                     statusSeverity={this.state.createStatusSeverity}
                     statusClose={this.createStatusClose}
@@ -396,8 +396,8 @@ export default class InstancesView extends React.Component {
 
                     showCreateModal={this.state.showCreateModal}
                     closeCreateModal={this.closeCreateModal}
-                    createModel={this.createInstance}
-                    updateModelCreator={this.updateInstanceCreator}
+                    createModel={this.createAsset}
+                    updateModelCreator={this.updateAssetCreator}
                     inputs={inputs}
                     options={this.state.modelList}
                     useAutocomplete={true}
@@ -410,7 +410,7 @@ export default class InstancesView extends React.Component {
                     textDescription="The following format should be used for each row: hostname,rack,rack_position,vendor,model_number,owner,comment"
                 /></div>):null
             }
-                <FilterInstance
+                <FilterAsset
                     updateSearchText={this.updateSearchText}
                     search={this.search}
                     filters={columns}
@@ -422,7 +422,7 @@ export default class InstancesView extends React.Component {
                     showDetailedView={this.showDetailedView}
                     filters={columns}
                 />
-                <DetailInstance
+                <DetailAsset
                     statusOpen={this.state.detailStatusOpen}
                     statusSeverity={this.state.detailStatusSeverity}
                     statusClose={this.detailStatusClose}
@@ -431,11 +431,11 @@ export default class InstancesView extends React.Component {
                     showDetailedView={this.state.showDetailedView}
                     closeDetailedView={this.closeDetailedView}
                     inputs={inputs}
-                    updateModelEdited={this.updateInstanceEdited}
+                    updateModelEdited={this.updateAssetEdited}
                     defaultValues={this.state.detailedValues}
                     loading={this.state.detailViewLoading}
-                    edit={this.editInstance}
-                    delete={this.deleteInstance}
+                    edit={this.editAsset}
+                    delete={this.deleteAsset}
                     disabled={this.props.privilege==Privilege.USER}
                 />
             </ErrorBoundary>

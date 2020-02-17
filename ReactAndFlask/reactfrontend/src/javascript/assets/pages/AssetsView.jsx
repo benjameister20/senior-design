@@ -167,17 +167,19 @@ export default class AssetsView extends React.Component {
     }
 
     getModelList = () => {
+        this.setState({ madeModelQuery: true });
         axios.get(
             getURL(assetsMainPath, AssetCommand.GET_ALL_MODELS), {}
             ).then(response => this.setState({ modelList: response.data.results }));
-        this.setState({ madeModelQuery: true });
+
     }
 
     getUserList = () => {
+        this.setState({ madeOwnerQuery: true });
         axios.get(
             getURL(assetsMainPath, AssetCommand.GET_ALL_OWNERS)
             ).then(response => this.setState({ ownerList: response.data.results }));
-        this.setState({ madeOwnerQuery: true });
+
     }
 
     sendUploadedFile = (data) => {
@@ -277,11 +279,13 @@ export default class AssetsView extends React.Component {
         this.setState({ importedFile: event.target.files[0] })
     }
 
-    // componentDidMount() {
-    //     this.searchAssets();
-    //     this.getModelList();
-    //     this.getUserList();
-    // }
+    initialize = () => {
+        console.log(this.state.madeModelQuery);
+        console.log(this.state.madeOwnerQuery)
+        this.searchAssets();
+        this.getModelList();
+        this.getUserList();
+    }
 
     render() {
         return (

@@ -22,7 +22,7 @@ function createInputs(name, label, showTooltip, description) {
     return {label, name, showTooltip, description};
 }
 
-const assetsMainPath = 'assets/';
+const assetsMainPath = 'instances/';
 
 export default class CreateAsset extends React.Component {
     constructor(props) {
@@ -48,9 +48,9 @@ export default class CreateAsset extends React.Component {
         };
     }
 
-    // componentDidMount() {
-    //     this.getNextAssetNum();
-    // }
+    initialize = () => {
+        this.getNextAssetNum();
+    }
 
     getNextAssetNum = () => {
         axios.get(getURL(assetsMainPath, AssetCommand.ASSET_NUMBER)).then(response =>{
@@ -71,6 +71,7 @@ export default class CreateAsset extends React.Component {
     render() {
         return (
         <div>
+            {(this.state.loading) ? this.initialize() : null }
             <ExpansionPanel>
                     <ExpansionPanelSummary
                         expandIcon={<ExpandMoreIcon />}

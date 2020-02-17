@@ -54,6 +54,16 @@ class UserManager:
             privilege=json.get("privilege"),
         )
 
+    @staticmethod
+    def __match_oauth(request, response):
+        usernames_match = request.get("username") == response.get("username")
+        display_names_match = request.get("display_name") == response.get(
+            "display_name"
+        )
+        emails_match = request.get("email") == response.get("email")
+
+        return usernames_match and display_names_match and emails_match
+
     def search(self, request):
         request_data = request.get_json()
         filters = request_data.get("filter")
@@ -281,6 +291,12 @@ class UserManager:
         duke_response = requests.get(
             "https://api.colab.duke.edu/identity/v1/", headers=headers
         )
+
+        data_matches = self.__match_oauth(
+            request_data, duke_response.json().get("data")
+        )
+        if not data_matches:
+            raise UserException(f"Cannot confirm NetID user {username}")
 
         response["token"] = self.AUTH_MANAGER.encode_auth_token(username)
         response["privilege"] = "user"

@@ -2,10 +2,8 @@ import React from 'react';
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Menu from '@material-ui/core/Menu';
-import MenuIcon from '@material-ui/icons/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import IconButton from '@material-ui/core/IconButton';
 import AccountCircle from '@material-ui/icons/AccountCircle';
@@ -88,7 +86,7 @@ export default class TabViewer extends React.Component {
             >
                     <Tab value={0} style={{flexGrow: 1,}} label="Models"> </Tab>
                     <Tab value={1} style={{flexGrow: 1,}} label="Assets" ></Tab>
-                    {(this.props.privilege == Privilege.ADMIN) ? <Tab value={2} style={{flexGrow: 1,}} label="Users"></Tab> : null}
+                    {(this.props.privilege === Privilege.ADMIN) ? <Tab value={2} style={{flexGrow: 1,}} label="Users"></Tab> : null}
                     <Tab value={3} style={{flexGrow: 1,}} label="Racks" />
                     <Tab value={4} style={{flexGrow: 1,}} label="Statistics" />
             </Tabs>

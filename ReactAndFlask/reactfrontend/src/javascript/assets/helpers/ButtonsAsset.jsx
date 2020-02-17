@@ -19,7 +19,7 @@ export default class AssetButtons extends React.Component {
                     variant="contained"
                     color="primary"
                     startIcon={<CloudUploadIcon />}
-                    onClick={this.props.openImportModal}
+                    onClick={() => {this.props.openImportModal} }
                 >
                     Import
                 </Button>
@@ -27,7 +27,7 @@ export default class AssetButtons extends React.Component {
                     variant="contained"
                     color="primary"
                     startIcon={<CloudDownloadIcon />}
-                    onClick={this.props.downloadTable}
+                    onClick={() => {this.props.downloadTable}}
                 >
                     Export
                 </Button>

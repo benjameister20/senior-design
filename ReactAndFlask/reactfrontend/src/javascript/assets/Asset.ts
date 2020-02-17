@@ -54,4 +54,52 @@ export default class Asset {
 		return this.json;
 	}
 
+	getModel() {
+		return this.json.model;
+	}
+
+	getHostname() {
+		return this.json.hostname;
+	}
+
+	getRack() {
+		return this.json.rack;
+	}
+
+	getRackU() {
+		return this.json.getRackU;
+	}
+
+	getOwner() {
+		return this.json.owner;
+	}
+
+	getComment() {
+		return this.json.comment;
+	}
+
+	getDatacenter() {
+		return this.json.datacenter_id;
+	}
+
+	getTags() {
+		return this.json.tags;
+	}
+
+	getMacAddr() {
+		return this.json.mac_address;
+	}
+
+	getNetworkConn() {
+		return this.json.network_connections;
+	}
+
+	getPwrConn() {
+		return this.json.power_connections;
+	}
+
+	getAssetNum() {
+		return this.json.asset_number;
+	}
+
 }

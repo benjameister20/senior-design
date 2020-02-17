@@ -29,7 +29,7 @@ const columns = [
     'rack_position',
 ]
 
-const assetsMainPath = 'assets/';
+const assetsMainPath = 'instances/';
 const assetDownloadFileName = 'assets.csv';
 const successToken = "success";
 const errorToken = "error";
@@ -92,9 +92,7 @@ export default class AssetsView extends React.Component {
                 } else {
                     this.setState({ createStatusOpen: true, createStatusMessage: response.data.message, createStatusSeverity:errorToken })
                 }
-            }).catch(
-                this.setState({ createStatusOpen: true, createStatusMessage: AssetConstants.GENERAL_ASSET_ERROR, createStatusSeverity:errorToken })
-            );
+            });
     }
 
     editAsset = () => {
@@ -117,9 +115,7 @@ export default class AssetsView extends React.Component {
                 } else {
                     this.setState({ detailStatusOpen: true, detailStatusMessage: response.data.message, detailStatusSeverity:errorToken })
                 }
-            }).catch(
-                this.setState({ detailStatusOpen: true, detailStatusMessage: AssetConstants.GENERAL_ASSET_ERROR, detailStatusSeverity:errorToken })
-            );
+            });
     }
 
 
@@ -144,9 +140,7 @@ export default class AssetsView extends React.Component {
                 } else {
                     this.setState({ showStatus: true, statusMessage: response.data.message, statusSeverity:errorToken })
                 }
-            }).catch(
-                this.setState({ showStatus: true, statusMessage: AssetConstants.GENERAL_ASSET_ERROR, statusSeverity:errorToken })
-            );
+            });
     }
 
     detailViewAsset = (rack, rack_position) => {
@@ -157,8 +151,6 @@ export default class AssetsView extends React.Component {
         axios.post(
             getURL(assetsMainPath, AssetCommand.detailView), body
             ).then(response => this.setState({ detailedValues: response.data['assets'][0], detailViewLoading:false})
-            ).catch(
-                this.setState({ showStatus: true, statusMessage: AssetConstants.GENERAL_ASSET_ERROR, statusSeverity:errorToken })
             );
 
         this.setState({
@@ -183,7 +175,7 @@ export default class AssetsView extends React.Component {
 
     getUserList = () => {
         axios.get(
-            getURL(assetsMainPath, AssetCommand.GET_ALL_OWNERS), {}
+            getURL(assetsMainPath, AssetCommand.GET_ALL_OWNERS)
             ).then(response => this.setState({ ownerList: response.data.results }));
         this.setState({ madeOwnerQuery: true });
     }
@@ -285,25 +277,24 @@ export default class AssetsView extends React.Component {
         this.setState({ importedFile: event.target.files[0] })
     }
 
-    initialize = () => {
-        this.searchAssets();
-        this.getModelList();
-        this.getUserList();
-    }
+    // componentDidMount() {
+    //     this.searchAssets();
+    //     this.getModelList();
+    //     this.getUserList();
+    // }
 
     render() {
         return (
             <div class="root">
                 <ErrorBoundary>
                 <Paper elevation={3}>
-                {(this.state.madeModelQuery && this.state.madeOwnerQuery) ? null: this.initialize()}
                 <StatusDisplay
                     open={this.state.showStatus}
                     severity={this.state.statusSeverity}
                     closeStatus={this.closeShowStatus}
                     message={this.state.statusMessage}
                 />
-                {(this.props.privilege == Privilege.ADMIN) ?
+                {(this.props.privilege === Privilege.ADMIN) ?
                     (<div>
                         <AssetButtons
                             openCreateModal={this.openCreateModal}
@@ -354,7 +345,6 @@ export default class AssetsView extends React.Component {
                     statusSeverity={this.state.detailStatusSeverity}
                     statusClose={this.detailStatusClose}
                     statusMessage={this.state.detailStatusMessage}
-
                     showDetailedView={this.state.showDetailedView}
                     closeDetailedView={this.closeDetailedView}
                     updateModelEdited={this.updateAssetEdited}
@@ -362,7 +352,7 @@ export default class AssetsView extends React.Component {
                     loading={this.state.detailViewLoading}
                     edit={this.editAsset}
                     delete={this.deleteAsset}
-                    disabled={this.props.privilege==Privilege.USER}
+                    disabled={this.props.privilege===Privilege.USER}
                 />
             </Paper>
             </ErrorBoundary>

@@ -6,12 +6,11 @@ import axios from 'axios';
 import getURL from './helpers/functions/GetURL';
 import { Privilege } from './enums/privilegeTypes.ts'
 import StatusDisplay from './helpers/StatusDisplay';
-import ErrorBoundry from './errors/ErrorBoundry';
+import ErrorBoundary from './errors/ErrorBoundry';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import logo from '../images/logo.png';
-import Divider from '@material-ui/core/Divider';
 import ShibLogin from './ShibLogin';
 import * as Constants from "./Constants";
 
@@ -52,7 +51,7 @@ export default class Login extends React.Component {
                     this.setState({ showStatus:true, statusMessage:response.data['message'] });
                 }
             });
-        this.props.loginFunc('token', "Administrator", Privilege.ADMIN);
+        //this.props.loginFunc('token', "Administrator", Privilege.ADMIN);
     }
 
     updateUsername(event) {
@@ -133,6 +132,7 @@ export default class Login extends React.Component {
         return (
 
             <div>
+                <ErrorBoundary>
             { (this.state.oauth) ? <ShibLogin />:
             <Grid
                 container
@@ -179,7 +179,7 @@ export default class Login extends React.Component {
                                 </Grid>
                                 <Grid item xs={12}>
                                     <TextField
-                                        id="outlined-basic"
+                                        id="username-input"
                                         label="Username"
                                         variant="outlined"
                                         required={true}
@@ -190,7 +190,7 @@ export default class Login extends React.Component {
                                 </Grid>
                                 <Grid item xs={12}>
                                     <TextField
-                                        id="outlined-basic"
+                                        id="password-input"
                                         label="Password"
                                         variant="outlined"
                                         required={true}
@@ -239,7 +239,9 @@ export default class Login extends React.Component {
                     />
                 </Grid>
             </Grid>
-            }</div>
+            }
+            </ErrorBoundary>
+            </div>
         );
     }
 }

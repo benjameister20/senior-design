@@ -1,9 +1,7 @@
 import React from 'react';
-import Modal from '@material-ui/core/Modal';
 import TextField from "@material-ui/core/TextField";
 import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { palette } from '@material-ui/system';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';

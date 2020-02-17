@@ -16,7 +16,6 @@ import "../stylesheets/RackStyles.css";
 import getURL from '../../helpers/functions/GetURL';
 import * as Constants from '../../Constants';
 import StatusDisplay from '../../helpers/StatusDisplay';
-import * as RackConstants from "../RacksConstants";
 
 import ErrorBoundray from '../../errors/ErrorBoundry';
 
@@ -55,7 +54,7 @@ export default class RacksView extends React.Component {
                 } else {
                     this.setState({ showStatus: true, statusMessage: response.data.message, statusSeverity:"error" })
                 }
-            });//.catch(this.setState({ showStatus: true, statusMessage: RackConstants.GENERAL_RACK_ERROR, statusSeverity:"error" }));
+            });
     }
 
     updateRacks(command) {
@@ -71,7 +70,7 @@ export default class RacksView extends React.Component {
                 console.log(response);
                 if (response.data.message === 'success') {
                     this.setState({ showStatus: true, statusMessage: "Success", statusSeverity:"success", showConfirmationBox:false });
-                    if (command == RackCommand.GET_RACK_DETAILS) {
+                    if (command === RackCommand.GET_RACK_DETAILS) {
                         const win = window.open(response.data.link, '_blank');
                         if (win != null) {
                             win.focus();
@@ -80,7 +79,7 @@ export default class RacksView extends React.Component {
                 } else {
                     this.setState({ showStatus: true, statusMessage: response.data.message, statusSeverity:"error" })
                 }
-            });//.catch(this.setState({ showStatus: true, statusMessage: RackConstants.GENERAL_RACK_ERROR, statusSeverity:"error" }));
+            });
     }
 
     createRacks = () => {
@@ -184,7 +183,7 @@ export default class RacksView extends React.Component {
                     </Button>
                     </span>
                     <span class="button">
-                        {(this.props.privilege == Privilege.ADMIN) ?
+                        {(this.props.privilege === Privilege.ADMIN) ?
                         <Button
                             variant="contained"
                             color="primary"
@@ -195,7 +194,7 @@ export default class RacksView extends React.Component {
                         </Button> : null}
                     </span>
                     <span class="button">
-                        {(this.props.privilege == Privilege.ADMIN) ?
+                        {(this.props.privilege === Privilege.ADMIN) ?
                         <Button
                             variant="contained"
                             color="primary"

@@ -48,12 +48,15 @@ export default class CreateAsset extends React.Component {
         };
     }
 
+    // componentDidMount() {
+    //     this.getNextAssetNum();
+    // }
+
     getNextAssetNum = () => {
-        console.log("getting next asset num");
-        axios.get(getURL(assetsMainPath, AssetCommand.GET_NEXT_ASSET_NUM)).then(
-            response => this.setState({ loading:false, nextAssetNum:response.data.asset_number })).catch(
-                this.setState({ loading:false })
-        )
+        axios.get(getURL(assetsMainPath, AssetCommand.ASSET_NUMBER)).then(response =>{
+            console.log(response);
+            this.setState({ loading: false, nextAssetNum: response.asset_number });
+        } ).catch( this.setState({ loading: false}));
     }
 
     updateTooltip = (event) => {
@@ -61,25 +64,18 @@ export default class CreateAsset extends React.Component {
         this.forceUpdate();
     }
 
-    createAsset = () => {
+    create = () => {
         this.props.createAsset();
-        this.getNextAssetNum();
     }
 
     render() {
-        console.log("")
-        if (this.state.loading == true) {
-            this.getNextAssetNum();
-        }
-
         return (
         <div>
-
             <ExpansionPanel>
                     <ExpansionPanelSummary
                         expandIcon={<ExpandMoreIcon />}
                     >
-                        <Typography>Create Instance</Typography>
+                        <Typography>Create Asset</Typography>
                     </ExpansionPanelSummary>
                     <ExpansionPanelDetails>
                     {(this.state.loading) ? <CircularProgress /> : <span>
@@ -94,6 +90,7 @@ export default class CreateAsset extends React.Component {
                                     id="select-model"
                                     options={this.props.options}
                                     includeInputInList
+
                                     renderInput={params => (
                                     <TextField
                                         {...params}
@@ -126,6 +123,7 @@ export default class CreateAsset extends React.Component {
                                     onChange={this.props.updateAssetCreator}
                                     onBlur={this.updateTooltip}
                                     required
+
                                 />
                             </Tooltip>
                             <Tooltip placement="top" open={this.state.inputs.rack.Tooltip} title={this.state.inputs.rack.description}>
@@ -136,6 +134,7 @@ export default class CreateAsset extends React.Component {
                                     name={this.state.inputs.rack.name}
                                     onChange={this.props.updateAssetCreator}
                                     required
+
                                 />
                             </Tooltip>
                             <Tooltip placement="top" open={this.state.inputs.rackU.Tooltip} title={this.state.inputs.rackU.description}>
@@ -146,6 +145,7 @@ export default class CreateAsset extends React.Component {
                                     name={this.state.inputs.rackU.name}
                                     onChange={this.props.updateAssetCreator}
                                     required
+
                                 />
                             </Tooltip>
                             <Tooltip placement="top" open={this.state.inputs.owner.Tooltip} title={this.state.inputs.owner.description}>
@@ -153,7 +153,7 @@ export default class CreateAsset extends React.Component {
                                     id="select-owner"
                                     options={this.props.options}
                                     includeInputInList
-                                    freeSolo
+
                                     renderInput={params => (
                                     <TextField
                                         {...params}
@@ -175,6 +175,7 @@ export default class CreateAsset extends React.Component {
                                     label={this.state.inputs.macAddress.label}
                                     name={this.state.inputs.macAddress.name}
                                     onChange={this.props.updateAssetCreator}
+
                                 />
                             </Tooltip>
                             <Tooltip placement="top" open={this.state.inputs.networkConnections.Tooltip} title={this.state.inputs.networkConnections.description}>
@@ -184,6 +185,7 @@ export default class CreateAsset extends React.Component {
                                     label={this.state.inputs.networkConnections.label}
                                     name={this.state.inputs.networkConnections.name}
                                     onChange={this.props.updateAssetCreator}
+
                                 />
                             </Tooltip>
                             <Tooltip placement="top" open={this.state.inputs.powerConnections.Tooltip} title={this.state.inputs.powerConnections.description}>
@@ -193,6 +195,7 @@ export default class CreateAsset extends React.Component {
                                     label={this.state.inputs.powerConnections.label}
                                     name={this.state.inputs.powerConnections.name}
                                     onChange={this.props.updateAssetCreator}
+
                                 />
                             </Tooltip>
                             <Tooltip placement="top" open={this.state.inputs.assetNum.Tooltip} title={this.state.inputs.assetNum.description}>
@@ -204,6 +207,7 @@ export default class CreateAsset extends React.Component {
                                     onChange={this.props.updateAssetCreator}
                                     value={this.state.nextAssetNum}
                                     required
+
                                 />
                             </Tooltip>
                             <Tooltip placement="top" open={this.state.inputs.comment.Tooltip} title={this.state.inputs.comment.description}>
@@ -214,12 +218,13 @@ export default class CreateAsset extends React.Component {
                                     name={this.state.inputs.comment.name}
                                     onChange={this.props.updateAssetCreator}
                                     multiline={true}
+
                                 />
                             </Tooltip>
                             <Button
                                 variant="contained"
                                 color="primary"
-                                onClick={this.createAsset()}
+                                onClick={() => this.create()}
                             >
                                 Create
                             </Button></span>}

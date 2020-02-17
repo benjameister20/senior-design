@@ -20,19 +20,6 @@ import StatusDisplay from '../../helpers/StatusDisplay';
 import ErrorBoundray from '../../errors/ErrorBoundry';
 import * as ModelConstants from "../ModelConstants";
 
-const inputs = [
-    'vendor',
-    'model_number',
-    'height',
-    'display_color',
-    'ethernet_ports',
-    'power_ports',
-    'cpu',
-    'memory',
-    'storage',
-    'comments',
-]
-
 const columns = [
     'vendor',
     'model_number',
@@ -155,7 +142,6 @@ export default class ModelsView extends React.Component {
                     if (response.data.message === 'success') {
                         this.setState({
                             showStatus: true,
-                            statusMessage:'success',
                             statusMessage: "Successfully created model",
                             statusSeverity:"success",
                             createdModel : {
@@ -448,7 +434,7 @@ export default class ModelsView extends React.Component {
         this.setState({ importedFile: event.target.files[0] })
     }
 
-    initialize = () => {
+    componentDidMount() {
         this.searchModels();
         this.getVendorList();
     }
@@ -457,7 +443,6 @@ export default class ModelsView extends React.Component {
         return (
             <div>
                 <ErrorBoundray>
-                {(this.state.madeVendorQuery) ? null : this.initialize()}
                 <StatusDisplay
                     open={this.state.showStatus}
                     severity={this.state.statusSeverity}
@@ -465,7 +450,7 @@ export default class ModelsView extends React.Component {
                     message={this.state.statusMessage}
                     autoHideDuration={6000}
                 />
-                {(this.props.privilege == Privilege.ADMIN) ?
+                {(this.props.privilege === Privilege.ADMIN) ?
                     (<div><ButtonsModel
                     openCreateModal={this.openCreateModal}
                     openImportModal={this.openImportModal}
@@ -525,7 +510,7 @@ export default class ModelsView extends React.Component {
                     loading={this.state.detailViewLoading}
                     edit={this.editModel}
                     delete={this.deleteModel}
-                    disabled={this.props.privilege==Privilege.USER}
+                    disabled={this.props.privilege===Privilege.USER}
                     options={this.state.vendorsList}
                     useAutocomplete={true}
                     updateModelColorDetails={this.updateModelColorDetails}

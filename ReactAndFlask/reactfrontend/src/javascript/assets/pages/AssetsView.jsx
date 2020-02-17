@@ -279,7 +279,7 @@ export default class AssetsView extends React.Component {
         this.setState({ importedFile: event.target.files[0] })
     }
 
-    initialize = () => {
+    componentDidMount() {
         console.log(this.state.madeModelQuery);
         console.log(this.state.madeOwnerQuery)
         this.searchAssets();

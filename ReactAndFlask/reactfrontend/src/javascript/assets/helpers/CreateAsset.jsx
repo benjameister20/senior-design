@@ -30,7 +30,7 @@ export default class CreateAsset extends React.Component {
 
         this.state = {
             loading:true,
-            nextAssetNum:-1,
+            nextAssetNum:null,
 
             inputs: {
                 "model":createInputs(AssetInput.MODEL, "Model", false, "A reference to an existing model"),
@@ -48,7 +48,7 @@ export default class CreateAsset extends React.Component {
         };
     }
 
-    initialize = () => {
+    componentDidMount() {
         this.getNextAssetNum();
     }
 
@@ -71,7 +71,7 @@ export default class CreateAsset extends React.Component {
     render() {
         return (
         <div>
-            {(this.state.loading) ? this.initialize() : null }
+            {/*(this.state.loading) ? this.initialize() : null*/ }
             <ExpansionPanel>
                     <ExpansionPanelSummary
                         expandIcon={<ExpandMoreIcon />}

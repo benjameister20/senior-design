@@ -1,24 +1,30 @@
 from functools import wraps
 
-from app.logging.logger import LoggerConstants
+from app.logging.logger import Logger
+
+LOGGER = Logger()
 
 
-def log(f):
-    @wraps(f)
-    def wrapped(*args, **kwargs):
-        print("Before decorated function")
-        r = f(*args, **kwargs)
-        print(r)
-        print("After decorated function")
-        return r
+def log(request, resource, action):
+    def wrap(f):
+        @wraps(f)
+        def wrapped(*args, **kwargs):
+            print("Before decorated function")
+            LOGGER.log_request(request, resource, action)
+            response = f(*args, **kwargs)
+            LOGGER.log_response(response)
+            print("After decorated function")
+            return response
 
-    return wrapped
+        return wrapped
+
+    return wrap
 
 
-@log
+# @log
 def say_hello():
     print("hello world")
-    print(LoggerConstants.INSTANCES)
+    # print(LoggerConstants.INSTANCES)
 
 
 say_hello()

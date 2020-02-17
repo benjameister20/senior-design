@@ -3,13 +3,48 @@ import os
 from datetime import datetime
 
 
-class LoggerConstants:
-    MODELS = "model"
-    INSTANCES = "asset"
-    RACKS = "rack"
+class UserActions:
+    CREATE = "CREATE"
+    EDIT = "EDIT"
+    DELETE = "DELETE"
+    AUTHENTICATE = "AUTHENTICATE"
+    LOGOUT = "LOGOUT"
+    OAUTH = "OAUTH"
+
+
+class ModelActions:
+    CREATE = "CREATE"
+    EDIT = "EDIT"
+    DELETE = "DELETE"
+
+
+class InstanceActions:
+    CREATE = "CREATE"
+    EDIT = "EDIT"
+    DELETE = "DELETE"
+
+
+class RackActions:
+    CREATE = "CREATE"
+    EDIT = "EDIT"
+    DELETE = "DELETE"
+
+
+class Actions:
+    USERS = UserActions()
+    MODELS = ModelActions()
+    INSTANCES = InstanceActions()
+    RACKS = RackActions()
 
 
 class Logger:
+
+    MODELS = "model"
+    INSTANCES = "asset"
+    RACKS = "rack"
+    USERS = "users"
+    ACTIONS = Actions()
+
     def __init__(self):
         self.logfile = "/app.log"
         self.dirname = os.path.dirname(__file__)
@@ -24,15 +59,32 @@ class Logger:
         return None
 
     def __create_log_entry(self):
+
         pass
 
-    def __log_create(self, blueprint):
-        f"Create {blueprint}"
+    def __log_user_request(self, action):
+        if action == Actions.USERS.CREATE:
+            pass
+        if action == Actions.USERS.EDIT:
+            pass
+        if action == Actions.USERS.DELETE:
+            pass
+        if action == Actions.USERS.AUTHENTICATE:
+            pass
+        if action == Actions.USERS.LOGOUT:
+            pass
+        if action == Actions.USERS.OAUTH:
+            pass
 
-    def __log_edit(self, blueprint):
+        return
+
+    def __log_instance_request(self, action):
         pass
 
-    def __log_delete(self, blueprint):
+    def __log_model_request(self, action):
+        pass
+
+    def __log_rack_request(self, action):
         pass
 
     def __refresh(self):
@@ -43,11 +95,19 @@ class Logger:
         with open(self.dirname + self.logfile, "w+") as outfile:
             json.dump(self.LOG, outfile, indent=4)
 
-    def log_request(self):
-        pass
+    def log_request(self, request, resource, action):
+        self.__refresh()
+        if resource == Logger.USERS:
+            self.__log_user_request(request)
+        if resource == Logger.MODELS:
+            self.__log_model_request(request)
+        if resource == Logger.INSTANCES:
+            self.__log_instance_request(request)
+        if resource == Logger.RACKS:
+            self.__log_rack_request(request)
 
-    def log_response(self):
-        pass
+    def log_response(self, response):
+        self.__refresh()
 
 
-print(LoggerConstants.INSTANCES)
+print(Actions.RACKS.CREATE)

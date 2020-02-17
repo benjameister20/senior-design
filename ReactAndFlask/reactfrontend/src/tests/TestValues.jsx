@@ -57,7 +57,7 @@ export const testUserArray = [
     },
 ];
 
-export const testInstanceArray = [
+export const testAssetArray = [
     {
         'model':'a',
         'hostname':'a',

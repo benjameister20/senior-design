@@ -6,14 +6,16 @@ import axios from 'axios';
 import getURL from './helpers/functions/GetURL';
 import { Privilege } from './enums/privilegeTypes.ts'
 import StatusDisplay from './helpers/StatusDisplay';
-import ErrorBoundry from './errors/ErrorBoundry';
+import ErrorBoundary from './errors/ErrorBoundry';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import logo from '../images/logo.png';
-import Divider from '@material-ui/core/Divider';
+import ShibLogin from './ShibLogin';
+import * as Constants from "./Constants";
 
 const loginMainPath = 'users/';
+const queryString = require('query-string');
 
 export default class Login extends React.Component {
     constructor(props) {
@@ -25,6 +27,8 @@ export default class Login extends React.Component {
             statusMessage:'',
             showStatus:false,
             statusSeverity:'info',
+            initialized:false,
+            oauth:false,
         };
 
         this.closeShowStatus = this.closeShowStatus.bind(this);
@@ -42,12 +46,12 @@ export default class Login extends React.Component {
                 var valid = response.data['message'];
                 if (valid == 'success') {
                     this.setState({ message: '' });
-                    this.props.loginFunc(response.data['token'], response.data['privilege']);
+                    this.props.loginFunc(response.data['token'], this.state.username, response.data['privilege']);
                 } else {
                     this.setState({ showStatus:true, statusMessage:response.data['message'] });
                 }
             });
-        this.props.loginFunc('token', Privilege.ADMIN);
+        //this.props.loginFunc('token', "Administrator", Privilege.ADMIN);
     }
 
     updateUsername(event) {
@@ -71,8 +75,65 @@ export default class Login extends React.Component {
         }
     }
 
+    getDukeCredentials = (token) => {
+        axios.get('https://api.colab.duke.edu/identity/v1/', {
+            headers: {
+                'x-api-key': Constants.CLIENT_ID,
+                'Authorization': `Bearer ${token}`
+            }
+        }).then(response => {
+            console.log(response);
+            axios.post(
+                getURL(loginMainPath, 'oauth'),
+                {
+                    "username":response.data.netid,
+                    "email":response.data.mail,
+                    "display_name":response.data.displayName,
+                    "client_id":Constants.CLIENT_ID,
+                    "token":token,
+                }
+                ).then(response => {
+                    var valid = response.data['message'];
+                    if (valid == 'success') {
+                        this.setState({ message: '' });
+                        this.props.loginFunc(response.data['token'], this.state.username, response.data['privilege']);
+                    } else {
+                        this.setState({ showStatus:true, statusMessage:response.data['message'] });
+                    }
+            });
+        });
+    }
+
+    loginWithOAuth = () => {
+        window.location = Constants.SHIBBOLETH_LOGIN;
+    }
+
+    initialize = () => {
+        console.log(this.props.shib);
+        try {
+            var params = queryString.parse(window.location.hash.substring(1));
+            if (params.access_token != null) {
+                this.getDukeCredentials(params.access_token);
+                this.setState({ oauth: true });
+            }
+
+            console.log(params);
+        } catch(e) {
+            console.log("tried:")
+        }
+        this.setState({ initialized: true });
+    }
+
     render() {
+        if (!this.state.initialized) {
+            this.initialize();
+        }
+
         return (
+
+            <div>
+                <ErrorBoundary>
+            { (this.state.oauth) ? <ShibLogin />:
             <Grid
                 container
                 spacing={5}
@@ -118,7 +179,7 @@ export default class Login extends React.Component {
                                 </Grid>
                                 <Grid item xs={12}>
                                     <TextField
-                                        id="outlined-basic"
+                                        id="username-input"
                                         label="Username"
                                         variant="outlined"
                                         required={true}
@@ -129,7 +190,7 @@ export default class Login extends React.Component {
                                 </Grid>
                                 <Grid item xs={12}>
                                     <TextField
-                                        id="outlined-basic"
+                                        id="password-input"
                                         label="Password"
                                         variant="outlined"
                                         required={true}
@@ -158,7 +219,7 @@ export default class Login extends React.Component {
                                 </Grid>
                                 <Grid item xs={12}>
                                     <Button
-                                        onClick={this.submitCredentials}
+                                        onClick={this.loginWithOAuth}
                                         variant="contained"
                                         color="primary"
                                     >
@@ -178,7 +239,9 @@ export default class Login extends React.Component {
                     />
                 </Grid>
             </Grid>
-
+            }
+            </ErrorBoundary>
+            </div>
         );
     }
 }

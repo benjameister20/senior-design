@@ -1,8 +1,9 @@
 export default function jsonToArr(incomingJSON) {
+    var json = {};
     try {
-        var json = JSON.parse(incomingJSON);
+        json = JSON.parse(incomingJSON);
     } catch (e) {
-        var json = incomingJSON;
+        json = incomingJSON;
     }
 
     if (Object.entries(json).length === 0 && json.constructor === Object) {

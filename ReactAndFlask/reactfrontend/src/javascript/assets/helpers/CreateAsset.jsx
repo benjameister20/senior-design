@@ -1,5 +1,7 @@
 import React from 'react';
 
+import axios from 'axios';
+
 import TextField from "@material-ui/core/TextField";
 import Button from '@material-ui/core/Button';
 import Autocomplete from '@material-ui/lab/Autocomplete';
@@ -9,14 +11,18 @@ import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Tooltip from '@material-ui/core/Tooltip';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 import StatusDisplay from '../../helpers/StatusDisplay';
 import { AssetInput } from '../enums/AssetInputs.ts';
+import { AssetCommand } from '../enums/AssetCommands.ts'
+import getURL from '../../helpers/functions/GetURL';
 
 function createInputs(name, label, showTooltip, description) {
     return {label, name, showTooltip, description};
 }
 
+const assetsMainPath = 'assets/';
 
 export default class CreateAsset extends React.Component {
     constructor(props) {
@@ -24,6 +30,7 @@ export default class CreateAsset extends React.Component {
 
         this.state = {
             loading:true,
+            nextAssetNum:-1,
 
             inputs: {
                 "model":createInputs(AssetInput.MODEL, "Model", false, "A reference to an existing model"),
@@ -41,14 +48,33 @@ export default class CreateAsset extends React.Component {
         };
     }
 
+    getNextAssetNum = () => {
+        console.log("getting next asset num");
+        axios.get(getURL(assetsMainPath, AssetCommand.GET_NEXT_ASSET_NUM)).then(
+            response => this.setState({ loading:false, nextAssetNum:response.data.asset_number })).catch(
+                this.setState({ loading:false })
+        )
+    }
+
     updateTooltip = (event) => {
         this.state.inputs.showTooltip = !(this.state.inputs.showTooltip);
         this.forceUpdate();
     }
 
+    createAsset = () => {
+        this.props.createAsset();
+        this.getNextAssetNum();
+    }
+
     render() {
+        console.log("")
+        if (this.state.loading == true) {
+            this.getNextAssetNum();
+        }
+
         return (
         <div>
+
             <ExpansionPanel>
                     <ExpansionPanelSummary
                         expandIcon={<ExpandMoreIcon />}
@@ -56,6 +82,7 @@ export default class CreateAsset extends React.Component {
                         <Typography>Create Instance</Typography>
                     </ExpansionPanelSummary>
                     <ExpansionPanelDetails>
+                    {(this.state.loading) ? <CircularProgress /> : <span>
                         <StatusDisplay
                             open={this.props.statusOpen}
                             severity={this.props.statusSeverity}
@@ -175,6 +202,7 @@ export default class CreateAsset extends React.Component {
                                     label={this.state.inputs.assetNum.label}
                                     name={this.state.inputs.assetNum.name}
                                     onChange={this.props.updateAssetCreator}
+                                    value={this.state.nextAssetNum}
                                     required
                                 />
                             </Tooltip>
@@ -191,10 +219,10 @@ export default class CreateAsset extends React.Component {
                             <Button
                                 variant="contained"
                                 color="primary"
-                                onClick={this.props.createAsset}
+                                onClick={this.createAsset()}
                             >
                                 Create
-                            </Button>
+                            </Button></span>}
                     </ExpansionPanelDetails>
                 </ExpansionPanel>
         </div>

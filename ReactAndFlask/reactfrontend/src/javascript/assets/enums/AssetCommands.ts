@@ -9,4 +9,5 @@ export enum AssetCommand {
     GET_ALL_OWNERS = 'assistedowner/',
     UPLOAD_FILE = 'import/',
     EXPORT_FILE = 'export/',
+    GET_NEXT_ASSET_NUM = 'nextAssetNumber/',
 }

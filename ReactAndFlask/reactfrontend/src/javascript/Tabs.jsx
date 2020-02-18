@@ -1,12 +1,14 @@
 import React from 'react';
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
+import Toolbar from '@material-ui/core/Toolbar';
 import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import IconButton from '@material-ui/core/IconButton';
 import AccountCircle from '@material-ui/icons/AccountCircle';
+import { withStyles } from '@material-ui/core/styles';
 
 import ModelsView from './models/pages/ModelsView';
 import UsersView from './users/pages/UsersView';
@@ -20,7 +22,19 @@ import ErrorBoundry from './errors/ErrorBoundry';
 
 import '../stylesheets/TabStyles.css';
 
-export default class TabViewer extends React.Component {
+const useStyles = theme => ({
+    root: {
+      flexGrow: 1,
+    },
+    menuButton: {
+      marginRight: theme.spacing(2),
+    },
+    title: {
+      flexGrow: 1,
+    },
+  });
+
+class TabViewer extends React.Component {
     constructor(props) {
         super(props);
 
@@ -45,38 +59,41 @@ export default class TabViewer extends React.Component {
     };
 
     render() {
+        const { classes } = this.props;
+
         return (
-        <div>
+        <div className={classes.root}>
             <ErrorBoundry>
             <AppBar position="static">
-                <div class="root">
-                    <Typography class="title" variant="h3">
+                <Toolbar>
+                    <Typography variant="h6" className={classes.title}>
                         Hyposoft Server Management
                     </Typography>
-                    <span class="grow"/>
-                    <IconButton
-                        aria-label="account of current user"
-                        aria-controls="menu-appbar"
-                        aria-haspopup="true"
-                        color="inherit"
-                        onClick={this.handleProfileMenuOpen}
-                    >
-                        <AccountCircle />
-                    </IconButton>
-                    <Menu
-                        anchorEl={this.state.anchorEl}
-                        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-                        id='primary-search-account-menu'
-                        keepMounted
-                        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-                        open={this.state.isMenuOpen}
-                        onClose={this.handleMenuClose}
-                    >
-                        <MenuItem>{"Username: " + this.props.username}</MenuItem>
-                        <MenuItem>{"Privilege: " + this.props.privilege}</MenuItem>
-                        <MenuItem onClick={this.props.logout} >LOGOUT</MenuItem>
-                    </Menu>
-                </div>
+                    <div>
+                        <IconButton
+                            aria-label="account of current user"
+                            aria-controls="menu-appbar"
+                            aria-haspopup="true"
+                            color="inherit"
+                            onClick={this.handleProfileMenuOpen}
+                        >
+                            <AccountCircle />
+                        </IconButton>
+                        <Menu
+                            anchorEl={this.state.anchorEl}
+                            anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+                            id='primary-search-account-menu'
+                            keepMounted
+                            transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+                            open={this.state.isMenuOpen}
+                            onClose={this.handleMenuClose}
+                        >
+                            <MenuItem>{"Username: " + this.props.username}</MenuItem>
+                            <MenuItem>{"Privilege: " + this.props.privilege}</MenuItem>
+                            <MenuItem onClick={this.props.logout} >LOGOUT</MenuItem>
+                        </Menu>
+                    </div>
+                </Toolbar>
             </AppBar>
 
             <Tabs value={this.state.currentTabID} onChange={this.handleChange}
@@ -139,3 +156,6 @@ export default class TabViewer extends React.Component {
         </div>);
     }
 }
+
+
+export default withStyles(useStyles)(TabViewer);

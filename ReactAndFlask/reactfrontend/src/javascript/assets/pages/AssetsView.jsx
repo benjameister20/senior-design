@@ -4,11 +4,12 @@ import axios from 'axios';
 import { CSVLink } from "react-csv";
 
 import Paper from '@material-ui/core/Paper';
+import Grid from '@material-ui/core/Grid';
 
 import { AssetCommand } from '../enums/AssetCommands.ts'
 import { AssetInput } from '../enums/AssetInputs.ts'
 import { Privilege } from '../../enums/privilegeTypes.ts'
-import AssetButtons from '../helpers/ButtonsAsset';
+import ImpExpAsset from '../helpers/ImpExpAsset';
 import FilterAsset from '../helpers/FilterAsset';
 import UploadModal from '../../helpers/UploadModal';
 import getURL from '../../helpers/functions/GetURL';
@@ -18,7 +19,6 @@ import StatusDisplay from '../../helpers/StatusDisplay';
 import TableView from '../../helpers/TableView';
 import ErrorBoundary from '../../errors/ErrorBoundry';
 import Asset from "../Asset.ts";
-
 import * as AssetConstants from "../AssetConstants";
 import "../stylesheets/AssetStyles.css";
 
@@ -29,20 +29,13 @@ const columns = [
     'rack_position',
 ]
 
-const assetsMainPath = 'instances/';
-const assetDownloadFileName = 'assets.csv';
-const successToken = "success";
-const errorToken = "error";
-
 export default class AssetsView extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            showCreate:false,
             showImport:false,
             items:[],
-            createdAsset: new Asset(),
             searchedAsset: new Asset(),
             statusOpen:false,
             statusSeverity:'',
@@ -50,9 +43,6 @@ export default class AssetsView extends React.Component {
             detailStatusOpen:false,
             detailStatusSeverity:'',
             detailStatusMessage:'',
-            createStatusOpen:false,
-            createStatusSeverity:'',
-            createStatusMessage:'',
             deleteAssetRack:'',
             deleteAssetrack_position:'',
             viewAssetRack:'',
@@ -76,23 +66,8 @@ export default class AssetsView extends React.Component {
 
     }
 
-    createAsset = () => {
-        axios.post(
-            getURL(assetsMainPath, AssetCommand.create),this.state.createdAsset.getAssetAsJSON()
-            ).then(response => {
-                if (response.data.message === successToken) {
-                    this.setState({
-                        showStatus: true,
-                        statusMessage: "Successfully created asset",
-                        statusSeverity:successToken,
-                        createdAsset : new Asset(),
-                        showCreate:false,
-                    });
-                    this.searchAssets();
-                } else {
-                    this.setState({ createStatusOpen: true, createStatusMessage: response.data.message, createStatusSeverity:errorToken })
-                }
-            });
+    componentDidMount() {
+        this.searchAssets();
     }
 
     editAsset = () => {
@@ -100,20 +75,20 @@ export default class AssetsView extends React.Component {
         body[AssetInput.RACK_ORIGINAL] = this.state.originalRack;
         body[AssetInput.RACK_U_ORIGINAL] = this.state.originalrack_position;
         axios.post(
-            getURL(assetsMainPath, AssetCommand.edit),body
+            getURL(AssetConstants.ASSETS_MAIN_PATH, AssetCommand.edit),body
             ).then(response => {
-                if (response.data.message === successToken) {
+                if (response.data.message === AssetConstants.SUCCESS_TOKEN) {
                     this.setState({
                         showStatus: true,
                         statusMessage: "Successfully edited asset",
-                        statusSeverity:successToken,
+                        statusSeverity:AssetConstants.SUCCESS_TOKEN,
                         detailedValues : new Asset(),
                         showDetailedView:false,
                     });
                     this.searchAssets();
 
                 } else {
-                    this.setState({ detailStatusOpen: true, detailStatusMessage: response.data.message, detailStatusSeverity:errorToken })
+                    this.setState({ detailStatusOpen: true, detailStatusMessage: response.data.message, detailStatusSeverity:AssetConstants.ERROR_TOKEN })
                 }
             });
     }
@@ -125,20 +100,20 @@ export default class AssetsView extends React.Component {
         body[AssetInput.RACK_U] = this.state.originalrack_position;
 
         axios.post(
-            getURL(assetsMainPath, AssetCommand.delete), body
+            getURL(AssetConstants.ASSETS_MAIN_PATH, AssetCommand.delete), body
             ).then(response => {
-                if (response.data.message === successToken) {
+                if (response.data.message === AssetConstants.SUCCESS_TOKEN) {
                     this.setState({
                         showStatus: true,
                         statusMessage: "Successfully deleted asset",
-                        statusSeverity:successToken,
+                        statusSeverity:AssetConstants.SUCCESS_TOKEN,
                         originalRack:'',
                         originalrack_position:'',
                         showDetailedView:false
                     });
                     this.searchAssets();
                 } else {
-                    this.setState({ showStatus: true, statusMessage: response.data.message, statusSeverity:errorToken })
+                    this.setState({ showStatus: true, statusMessage: response.data.message, statusSeverity:AssetConstants.ERROR_TOKEN })
                 }
             });
     }
@@ -149,7 +124,7 @@ export default class AssetsView extends React.Component {
         body[AssetInput.RACK_U] = rack_position;
 
         axios.post(
-            getURL(assetsMainPath, AssetCommand.detailView), body
+            getURL(AssetConstants.ASSETS_MAIN_PATH, AssetCommand.detailView), body
             ).then(response => this.setState({ detailedValues: response.data['assets'][0], detailViewLoading:false})
             );
 
@@ -158,63 +133,26 @@ export default class AssetsView extends React.Component {
         });
     }
 
-    searchAssets = () => {
-        axios.post(
-            getURL(assetsMainPath, AssetCommand.search),{ 'filter':this.state.searchedAsset.getAssetAsJSON() }
-            ).then(response => {
-                this.setState({ items: response.data['assets'] });
-            });
-    }
-
-    getModelList = () => {
-        this.setState({ madeModelQuery: true });
-        axios.get(
-            getURL(assetsMainPath, AssetCommand.GET_ALL_MODELS), {}
-            ).then(response => this.setState({ modelList: response.data.results }));
-
-    }
-
-    getUserList = () => {
-        this.setState({ madeOwnerQuery: true });
-        axios.get(
-            getURL(assetsMainPath, AssetCommand.GET_ALL_OWNERS)
-            ).then(response => this.setState({ ownerList: response.data.results }));
-
-    }
-
     sendUploadedFile = (data) => {
         axios.post(
-            getURL(assetsMainPath, AssetCommand.UPLOAD_FILE), data
+            getURL(AssetConstants.ASSETS_MAIN_PATH, AssetCommand.UPLOAD_FILE), data
             ).then(response => {
-                if (response.data.message === successToken) {
-                    this.setState({ showStatus: true, statusMessage: response.data.summary, statusSeverity:successToken, showImport: false,})
+                if (response.data.message === AssetConstants.SUCCESS_TOKEN) {
+                    this.setState({ showStatus: true, statusMessage: response.data.summary, statusSeverity:AssetConstants.SUCCESS_TOKEN, showImport: false,})
                     this.searchAssets();
                 } else {
-                    this.setState({ showStatus: true, statusMessage: response.data.message, statusSeverity:errorToken })
+                    this.setState({ showStatus: true, statusMessage: response.data.message, statusSeverity:AssetConstants.ERROR_TOKEN })
                 }
             });
-    }
-
-    search = (filters) => {
-        Object.keys(filters).map(function(key) {
-            this.state.searchedAsset.updateVal(key, filters[key]);
-        });
-
-        this.searchAssets();
-    }
+        }
 
     downloadTable = () => {
         axios.post(
-            getURL(assetsMainPath, AssetCommand.EXPORT_FILE), { 'filter':this.state.searchedAsset.getAssetAsJSON() }
+            getURL(AssetConstants.ASSETS_MAIN_PATH, AssetCommand.EXPORT_FILE), { 'filter':this.state.searchedAsset.getAssetAsJSON() }
             ).then(response => {
                 this.setState({ csvData: response.data.csvData });
                 this.csvLink.link.click();
             });
-    }
-
-    openCreateModal = () => {
-        this.getModelList();
-        this.setState({showCreate: true});
     }
 
     openImportModal = () => {
@@ -235,21 +173,12 @@ export default class AssetsView extends React.Component {
         this.detailViewAsset(rack, rack_position);
     }
 
-    closeCreateModal = () => {
-        this.setState({showCreate: false});
-    }
-
     closeImportModal = () => {
         this.setState({showImport: false});
     }
 
     closeDetailedView = () => {
         this.setState({ showDetailedView: false })
-    }
-
-    updateAssetCreator = (event) => {
-        this.state.createdAsset.updateVal(event.target.value);
-        this.forceUpdate();
     }
 
     updateAssetEdited = (event) => {
@@ -259,10 +188,6 @@ export default class AssetsView extends React.Component {
 
     closeShowStatus = () => {
         this.setState({ showStatus: false })
-    }
-
-    createStatusClose = () => {
-        this.setState({ createStatusOpen: false })
     }
 
     detailStatusClose = () => {
@@ -279,87 +204,77 @@ export default class AssetsView extends React.Component {
         this.setState({ importedFile: event.target.files[0] })
     }
 
-    componentDidMount() {
-        console.log(this.state.madeModelQuery);
-        console.log(this.state.madeOwnerQuery)
-        this.searchAssets();
-        this.getModelList();
-        this.getUserList();
-    }
-
     render() {
         return (
             <div class="root">
                 <ErrorBoundary>
-                <Paper elevation={3}>
-                <StatusDisplay
-                    open={this.state.showStatus}
-                    severity={this.state.statusSeverity}
-                    closeStatus={this.closeShowStatus}
-                    message={this.state.statusMessage}
-                />
-                {(this.props.privilege === Privilege.ADMIN) ?
-                    (<div>
-                        <AssetButtons
-                            openCreateModal={this.openCreateModal}
-                            openImportModal={this.openImportModal}
-                            downloadTable={this.downloadTable}
+                    <Paper elevation={3}>
+                        <StatusDisplay
+                            open={this.state.showStatus}
+                            severity={this.state.statusSeverity}
+                            closeStatus={this.closeShowStatus}
+                            message={this.state.statusMessage}
                         />
-                        <CSVLink
-                            data={this.state.csvData}
-                            filename={assetDownloadFileName}
-                            className="hidden"
-                            ref={(r) => this.csvLink = r}
-                            target="_blank"
-                        />
-                        <CreateAsset
-                            statusOpen={this.state.createStatusOpen}
-                            statusSeverity={this.state.createStatusSeverity}
-                            statusClose={this.createStatusClose}
-                            statusMessage={this.state.createStatusMessage}
-
-                            showCreate={this.state.showCreate}
-                            closeCreateModal={this.closeCreateModal}
-                            createAsset={this.createAsset}
-                            updateAssetCreator={this.updateAssetCreator}
-                            options={this.state.modelList}
-                            useAutocomplete={true}
-                        />
-                        <UploadModal
-                            showImport={this.state.showImport}
-                            closeImportModal={this.closeImportModal}
-                            uploadFile={this.uploadFile}
-                            chooseFile={this.chooseFile}
-                            textDescription="The following format should be used for each row: hostname,rack,rack_position,vendor,model_number,owner,comment"
-                        />
-                        </div>):null}
-                {/*<FilterAsset
-                    search={this.search}
-                    filters={columns}
-                />*/}
-                <TableView
-                    columns={columns}
-                    vals={this.state.items}
-                    keys={columns}
-                    showDetailedView={this.showDetailedView}
-                    filters={columns}
-                />
-                <DetailAsset
-                    statusOpen={this.state.detailStatusOpen}
-                    statusSeverity={this.state.detailStatusSeverity}
-                    statusClose={this.detailStatusClose}
-                    statusMessage={this.state.detailStatusMessage}
-                    showDetailedView={this.state.showDetailedView}
-                    closeDetailedView={this.closeDetailedView}
-                    updateModelEdited={this.updateAssetEdited}
-                    defaultValues={this.state.detailedValues}
-                    loading={this.state.detailViewLoading}
-                    edit={this.editAsset}
-                    delete={this.deleteAsset}
-                    disabled={this.props.privilege===Privilege.USER}
-                />
-            </Paper>
-            </ErrorBoundary>
+                        <Grid container spacing={3}>
+                                <Grid item xs={12}>
+                                    {(this.props.privilege === Privilege.ADMIN) ?
+                                    <CreateAsset
+                                        search={this.search}
+                                    />:null}
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <FilterAsset
+                                        search={this.search}
+                                        filters={columns}
+                                    />
+                                </Grid>
+                                <Grid item xs={6}>
+                                    {(this.props.privilege === Privilege.ADMIN) ?
+                                    <span>
+                                        <ImpExpAsset
+                                            downloadTable={this.downloadTable}
+                                        />
+                                        <CSVLink
+                                            data={this.state.csvData}
+                                            filename={AssetConstants.ASSET_DOWNLOAD_FILE_NAME}
+                                            className="hidden"
+                                            ref={(r) => this.csvLink = r}
+                                            target="_blank"
+                                        />
+                                        <UploadModal
+                                            showImport={this.state.showImport}
+                                            closeImportModal={this.closeImportModal}
+                                            uploadFile={this.uploadFile}
+                                            chooseFile={this.chooseFile}
+                                        />
+                                    </span>:null}
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <TableView
+                                        columns={columns}
+                                        vals={this.state.items}
+                                        keys={columns}
+                                        showDetailedView={this.showDetailedView}
+                                        filters={columns}
+                                    />
+                                    <DetailAsset
+                                        statusOpen={this.state.detailStatusOpen}
+                                        statusSeverity={this.state.detailStatusSeverity}
+                                        statusClose={this.detailStatusClose}
+                                        statusMessage={this.state.detailStatusMessage}
+                                        showDetailedView={this.state.showDetailedView}
+                                        closeDetailedView={this.closeDetailedView}
+                                        updateModelEdited={this.updateAssetEdited}
+                                        defaultValues={this.state.detailedValues}
+                                        loading={this.state.detailViewLoading}
+                                        edit={this.editAsset}
+                                        delete={this.deleteAsset}
+                                        disabled={this.props.privilege===Privilege.USER}
+                                    />
+                                </Grid>
+                            </Grid>
+                    </Paper>
+                </ErrorBoundary>
             </div>
         );
     }

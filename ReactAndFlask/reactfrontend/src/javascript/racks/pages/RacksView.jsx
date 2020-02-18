@@ -39,12 +39,15 @@ export default class RacksView extends React.Component {
             showConfirmationBox:false,
 
             racksList:[],
-            madeRacksQuery:false,
         };
 
         axios.defaults.headers.common['token'] = this.props.token;
         axios.defaults.headers.common['privilege'] = this.props.privilege;
 
+    }
+
+    componentDidMount() {
+        this.getAllRacks();
     }
 
     getAllRacks = () => {
@@ -114,17 +117,11 @@ export default class RacksView extends React.Component {
         this.setState({ showStatus: false })
     }
 
-    initialize = () => {
-        this.getAllRacks();
-        this.setState({ madeRacksQuery: true });
-    }
-
     render() {
         return (
             <div class="root">
                 <ErrorBoundray>
                 <Paper elevation={3}>
-                {(this.state.madeRacksQuery) ? null : this.initialize()}
                 <StatusDisplay
                     open={this.state.showStatus}
                     severity={this.state.statusSeverity}

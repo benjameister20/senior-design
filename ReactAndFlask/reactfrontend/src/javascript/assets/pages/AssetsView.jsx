@@ -18,7 +18,6 @@ import CreateAsset from '../helpers/CreateAsset';
 import StatusDisplay from '../../helpers/StatusDisplay';
 import TableView from '../../helpers/TableView';
 import ErrorBoundary from '../../errors/ErrorBoundry';
-import Asset from "../Asset.ts";
 import * as AssetConstants from "../AssetConstants";
 import "../stylesheets/AssetStyles.css";
 
@@ -34,15 +33,15 @@ export default class AssetsView extends React.Component {
         super(props);
 
         this.state = {
-            showImport:false,
-            items:[],
-            searchedAsset: new Asset(),
-            statusOpen:false,
+            tableItems:[],
+
             statusSeverity:'',
             statusMessage:'',
+
             detailStatusOpen:false,
             detailStatusSeverity:'',
             detailStatusMessage:'',
+
             deleteAssetRack:'',
             deleteAssetrack_position:'',
             viewAssetRack:'',
@@ -51,7 +50,7 @@ export default class AssetsView extends React.Component {
             importedFile:null,
             showDetailedView: false,
             detailViewLoading:false,
-            detailedValues : new Asset(),
+            detailedValues : null,
             originalRack:'',
             originalrack_position:'',
 
@@ -67,7 +66,7 @@ export default class AssetsView extends React.Component {
     }
 
     componentDidMount() {
-        this.searchAssets();
+
     }
 
     editAsset = () => {
@@ -82,11 +81,9 @@ export default class AssetsView extends React.Component {
                         showStatus: true,
                         statusMessage: "Successfully edited asset",
                         statusSeverity:AssetConstants.SUCCESS_TOKEN,
-                        detailedValues : new Asset(),
+                        detailedValues : null,
                         showDetailedView:false,
                     });
-                    this.searchAssets();
-
                 } else {
                     this.setState({ detailStatusOpen: true, detailStatusMessage: response.data.message, detailStatusSeverity:AssetConstants.ERROR_TOKEN })
                 }
@@ -111,7 +108,6 @@ export default class AssetsView extends React.Component {
                         originalrack_position:'',
                         showDetailedView:false
                     });
-                    this.searchAssets();
                 } else {
                     this.setState({ showStatus: true, statusMessage: response.data.message, statusSeverity:AssetConstants.ERROR_TOKEN })
                 }
@@ -139,7 +135,6 @@ export default class AssetsView extends React.Component {
             ).then(response => {
                 if (response.data.message === AssetConstants.SUCCESS_TOKEN) {
                     this.setState({ showStatus: true, statusMessage: response.data.summary, statusSeverity:AssetConstants.SUCCESS_TOKEN, showImport: false,})
-                    this.searchAssets();
                 } else {
                     this.setState({ showStatus: true, statusMessage: response.data.message, statusSeverity:AssetConstants.ERROR_TOKEN })
                 }
@@ -252,7 +247,7 @@ export default class AssetsView extends React.Component {
                                 <Grid item xs={12}>
                                     <TableView
                                         columns={columns}
-                                        vals={this.state.items}
+                                        vals={this.state.tableItems}
                                         keys={columns}
                                         showDetailedView={this.showDetailedView}
                                         filters={columns}

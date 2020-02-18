@@ -1,7 +1,6 @@
 import React from 'react';
 import Button from '@material-ui/core/Button';
 import Modal from '@material-ui/core/Modal';
-import { palette } from '@material-ui/system';
 
 export default class UploadModal extends React.Component {
     constructor(props) {

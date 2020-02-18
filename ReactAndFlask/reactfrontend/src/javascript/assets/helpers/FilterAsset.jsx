@@ -4,14 +4,11 @@ import axios from 'axios';
 
 import SearchIcon from '@material-ui/icons/Search';
 import InputBase from '@material-ui/core/InputBase';
-import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 
 import createAssetJSON from "./functions/createAssetJSON";
-import { AssetInput } from '../enums/AssetInputs.ts';
 import { AssetCommand } from '../enums/AssetCommands.ts'
 import getURL from '../../helpers/functions/GetURL';
-import Asset from "../Asset.ts";
 import * as AssetConstants from "../AssetConstants";
 
 export default class FilterAsset extends React.Component {
@@ -31,6 +28,10 @@ export default class FilterAsset extends React.Component {
             power_connections:"",
             asset_number:-1,
         };
+    }
+
+    componentDidMount() {
+        this.search();
     }
 
     updateModel = (event, newValue) => {

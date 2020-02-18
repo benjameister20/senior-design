@@ -1,6 +1,5 @@
 import React from "react";
 import Login from "./Login";
-import ShibLogin from "./ShibLogin";
 import TabViewer from "./Tabs";
 import axios from 'axios';
 import getURL from './helpers/functions/GetURL';

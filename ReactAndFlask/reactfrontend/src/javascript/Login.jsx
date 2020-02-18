@@ -35,6 +35,22 @@ export default class Login extends React.Component {
         this.submitCredentials = this.submitCredentials.bind(this);
     }
 
+    componentDidMount() {
+        console.log(this.props.shib);
+        try {
+            var params = queryString.parse(window.location.hash.substring(1));
+            if (params.access_token != null) {
+                this.getDukeCredentials(params.access_token);
+                this.setState({ oauth: true });
+            }
+
+            console.log(params);
+        } catch(e) {
+            console.log("tried:")
+        }
+        this.setState({ initialized: true });
+    }
+
     submitCredentials() {
         axios.post(
             getURL(loginMainPath, 'authenticate'),
@@ -44,7 +60,7 @@ export default class Login extends React.Component {
             }
             ).then(response => {
                 var valid = response.data['message'];
-                if (valid == 'success') {
+                if (valid === 'success') {
                     this.setState({ message: '' });
                     this.props.loginFunc(response.data['token'], this.state.username, response.data['privilege']);
                 } else {
@@ -94,7 +110,7 @@ export default class Login extends React.Component {
                 }
                 ).then(response => {
                     var valid = response.data['message'];
-                    if (valid == 'success') {
+                    if (valid === 'success') {
                         this.setState({ message: '' });
                         this.props.loginFunc(response.data['token'], this.state.username, response.data['privilege']);
                     } else {
@@ -108,29 +124,10 @@ export default class Login extends React.Component {
         window.location = Constants.SHIBBOLETH_LOGIN;
     }
 
-    initialize = () => {
-        console.log(this.props.shib);
-        try {
-            var params = queryString.parse(window.location.hash.substring(1));
-            if (params.access_token != null) {
-                this.getDukeCredentials(params.access_token);
-                this.setState({ oauth: true });
-            }
 
-            console.log(params);
-        } catch(e) {
-            console.log("tried:")
-        }
-        this.setState({ initialized: true });
-    }
 
     render() {
-        if (!this.state.initialized) {
-            this.initialize();
-        }
-
         return (
-
             <div>
                 <ErrorBoundary>
             { (this.state.oauth) ? <ShibLogin />:
@@ -143,13 +140,11 @@ export default class Login extends React.Component {
                 onKeyDown={(e) => this.onKeyPressed(e)}
                 style={{
                     "minHeight": "102vh",
-                    "background": "#56ab2f",
-                    "background": "-webkit-linear-gradient(to top, #a8e063, #56ab2f)",
                     "background": "linear-gradient(to top, #a8e063, #56ab2f)",
                 }}
             >
                 <Grid item xs={12}>
-                    <img src={logo} style={{height: "200px", "marginTop": "50px"}} />
+                    <img src={logo} alt="" style={{height: "200px", "marginTop": "50px"}} />
                 </Grid>
                 <Grid item xs={12}>
                     <Card

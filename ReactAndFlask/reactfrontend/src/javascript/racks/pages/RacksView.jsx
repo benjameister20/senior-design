@@ -119,7 +119,7 @@ export default class RacksView extends React.Component {
 
     render() {
         return (
-            <div class="root">
+            <div>
                 <ErrorBoundray>
                 <Paper elevation={3}>
                 <StatusDisplay

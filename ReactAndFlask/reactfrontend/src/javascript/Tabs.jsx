@@ -1,4 +1,5 @@
 import React from 'react';
+
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -9,6 +10,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import IconButton from '@material-ui/core/IconButton';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import { withStyles } from '@material-ui/core/styles';
+import Container from '@material-ui/core/Container';
 
 import ModelsView from './models/pages/ModelsView';
 import UsersView from './users/pages/UsersView';
@@ -32,6 +34,14 @@ const useStyles = theme => ({
     title: {
       flexGrow: 1,
     },
+    tab:{
+        flexGrow:'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        maxWidth: "100%",
+        width:"100%",
+        margin:"0 auto",
+    }
   });
 
 class TabViewer extends React.Component {
@@ -114,7 +124,7 @@ class TabViewer extends React.Component {
                 id={`simple-tabpanel-0`}
                 aria-labelledby={`simple-tab-0`}
             >
-                <ModelsView token={this.props.token} privilege={this.props.privilege} />
+                <Container className={classes.tab} ><ModelsView token={this.props.token} privilege={this.props.privilege} /></Container>
             </Typography>
             <Typography
                 component="div"
@@ -123,7 +133,7 @@ class TabViewer extends React.Component {
                 id={`simple-tabpanel-0`}
                 aria-labelledby={`simple-tab-0`}
             >
-                <AssetsView token={this.props.token} privilege={this.props.privilege} />
+                <Container className={classes.tab} ><AssetsView token={this.props.token} privilege={this.props.privilege} /></Container>
             </Typography>
             <Typography
                 component="div"
@@ -132,7 +142,7 @@ class TabViewer extends React.Component {
                 id={`simple-tabpanel-0`}
                 aria-labelledby={`simple-tab-0`}
             >
-                <UsersView token={this.props.token} privilege={this.props.privilege} />
+                <Container className={classes.tab} ><UsersView token={this.props.token} privilege={this.props.privilege} /></Container>
             </Typography>
             <Typography
                 component="div"
@@ -141,7 +151,7 @@ class TabViewer extends React.Component {
                 id={`simple-tabpanel-0`}
                 aria-labelledby={`simple-tab-0`}
             >
-                <RacksView token={this.props.token} privilege={this.props.privilege} />
+                <Container className={classes.tab} ><RacksView token={this.props.token} privilege={this.props.privilege} /></Container>
             </Typography>
             <Typography
                 component="div"
@@ -150,7 +160,7 @@ class TabViewer extends React.Component {
                 id={`simple-tabpanel-0`}
                 aria-labelledby={`simple-tab-0`}
             >
-                <StatisticsView token={this.props.token} privilege={this.props.privilege} />
+                <Container className={classes.tab} ><StatisticsView token={this.props.token} privilege={this.props.privilege} /></Container>
             </Typography>
             </ErrorBoundry>
         </div>);

@@ -5,11 +5,9 @@ import axios from 'axios';
 import TextField from "@material-ui/core/TextField";
 import Button from '@material-ui/core/Button';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import ExpansionPanel from '@material-ui/core/ExpansionPanel';
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
-import Typography from '@material-ui/core/Typography';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import Modal from '@material-ui/core/Modal';
+import Backdrop from '@material-ui/core/Backdrop';
+import Fade from '@material-ui/core/Fade';
 import Tooltip from '@material-ui/core/Tooltip';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Grid from '@material-ui/core/Grid';
@@ -31,11 +29,19 @@ const useStyles = theme => ({
     root: {
       flexGrow: 1,
     },
-    paper: {
-      padding: theme.spacing(2),
-      textAlign: 'center',
-      color: theme.palette.text.secondary,
-    },
+    modal: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        maxWidth: "80%",
+        margin:"0 auto",
+      },
+      paper: {
+        backgroundColor: theme.palette.background.paper,
+        border: '2px solid #000',
+        boxShadow: theme.shadows[5],
+        padding: theme.spacing(2, 4, 3),
+      },
 });
 
 class CreateAsset extends React.Component {
@@ -68,6 +74,8 @@ class CreateAsset extends React.Component {
             statusOpen: false,
             statusMessage: "",
             statusSeverity:"",
+
+            showModal:false,
 
             inputs: {
                 "model":createInputs(AssetInput.MODEL, "Model", false, "A reference to an existing model"),
@@ -191,6 +199,7 @@ class CreateAsset extends React.Component {
                         statusOpen: true,
                         statusMessage: "Successfully created asset",
                         statusSeverity:AssetConstants.SUCCESS_TOKEN,
+                        showModal:false,
 
                         model:"",
                         hostname:"",
@@ -210,25 +219,48 @@ class CreateAsset extends React.Component {
             });
     }
 
+    showModal = () => {
+        this.setState({ showModal: true });
+    }
+
+    closeModal = () => {
+        this.setState({ showModal: false });
+    }
+
+
     render() {
         const { classes } = this.props;
 
         return (
-        <div className={classes.root}>
+        <span>
             <StatusDisplay
                 open={this.statusOpen}
                 severity={this.statusSeverity}
                 closeStatus={this.statusClose}
                 message={this.statusMessage}
             />
-            <ExpansionPanel>
-                    <ExpansionPanelSummary
-                        expandIcon={<ExpandMoreIcon />}
-                    >
-                        <Typography>Create Asset</Typography>
-                    </ExpansionPanelSummary>
-                    <ExpansionPanelDetails>
-                        {(this.state.loading) ? <CircularProgress /> :
+            <Button
+                variant="contained"
+                color="primary"
+                onClick={() => {this.showModal()} }
+            >
+                Create Asset
+            </Button>
+            <Modal
+                    aria-labelledby="transition-modal-title"
+                    aria-describedby="transition-modal-description"
+                    className={classes.modal}
+                    open={this.state.showModal}
+                    onClose={this.closeModal}
+                    closeAfterTransition
+                    BackdropComponent={Backdrop}
+                    BackdropProps={{
+                    timeout: 500,
+                    }}
+                >
+                    <Fade in={this.state.showModal}>
+                    <div className={classes.paper}>
+                    {(false) ? <CircularProgress /> :
                         <form>
                         <Grid container spacing={3}>
                             <Grid item xs={3}>
@@ -452,9 +484,10 @@ class CreateAsset extends React.Component {
                                 </Button>
                             </Grid>
                         </Grid></form>}
-                    </ExpansionPanelDetails>
-                </ExpansionPanel>
-        </div>
+                    </div>
+                    </Fade>
+                </Modal>
+        </span>
         );
     }
 }

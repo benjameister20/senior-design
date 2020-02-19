@@ -96,7 +96,7 @@ class CreateAsset extends React.Component {
             comment:"",
             datacenter_id:"",
             tags:[],
-            network_connections:[],
+            network_connections:null,
             power_connections:[],
             asset_number:1,
 
@@ -252,8 +252,28 @@ class CreateAsset extends React.Component {
         this.setState({ tags: newValue });
     }
 
-    updateNetworkConnections = (event, newValue) => {
-        this.setState({ network_connections: newValue });
+    updateNetworkMac = (event, port) => {
+        this.setState(network_connections => {
+            let port = Object.assign({}, network_connections.port);
+            port.mac_address = event.target.value;
+            return { port };
+          });
+    }
+
+    updateNetworkPort = (event, port) => {
+        this.setState(network_connections => {
+            let port = Object.assign({}, network_connections.port);
+            port.connection_port = event.target.value;
+            return { port };
+          });
+    }
+
+    updateNetworkHostname = (event, port) => {
+        this.setState(network_connections => {
+            let port = Object.assign({}, network_connections.port);
+            port.connection_hostname = event.target.value;
+            return { port };
+          });
     }
 
     updatePowerConnections = (event, newValue) => {
@@ -461,35 +481,31 @@ class CreateAsset extends React.Component {
                                         <Typography>{networkPort + ": "}</Typography>
                                     </Grid>
                                     <Grid item xs={3}>
-                                        <Tooltip placement="top" open={this.state.inputs.macAddress.Tooltip} title={this.state.inputs.macAddress.description}>
-                                            <TextField
-                                                id="input-mac-address"
-                                                variant="outlined"
-                                                label={this.state.inputs.macAddress.label}
-                                                name={this.state.inputs.macAddress.name}
-                                                onChange={(event) => this.updateMacAddr(event, networkPort)}
-                                                fullWidth
-                                            />
-                                        </Tooltip>
+                                        <TextField
+                                            id="input-mac-address"
+                                            variant="outlined"
+                                            label={this.state.inputs.macAddress.label}
+                                            name={this.state.inputs.macAddress.name}
+                                            onChange={() => this.updateNetworkMac(networkPort)}
+                                            fullWidth
+                                        />
                                     </Grid>
                                     <Grid item xs={3}>
-                                        <Tooltip placement="top" open={this.state.inputs.networkConnections.Tooltip} title={this.state.inputs.networkConnections.description}>
-                                            <Autocomplete
-                                                id="input-network-ports"
-                                                options={this.state.assetNumList}
-                                                includeInputInList
-                                                renderInput={params => (
-                                                    <TextField
-                                                        {...params}
-                                                        label={"Connection Hostname"}
-                                                        name={"Connection Hostname"}
-                                                        onBlur={(event) => this.updateSelectedConnection(event, networkPort)}
-                                                        variant="outlined"
-                                                        fullWidth
-                                                    />
-                                                )}
-                                            />
-                                        </Tooltip>
+                                        <Autocomplete
+                                            id="input-network-ports"
+                                            options={this.state.assetNumList}
+                                            includeInputInList
+                                            renderInput={params => (
+                                                <TextField
+                                                    {...params}
+                                                    label={"Connection Hostname"}
+                                                    name={"Connection Hostname"}
+                                                    onBlur={() => this.updateNetworkHostname(networkPort)}
+                                                    variant="outlined"
+                                                    fullWidth
+                                                />
+                                            )}
+                                        />
                                     </Grid>
                                     <Grid item xs={3}>
                                         <Tooltip placement="top" open={this.state.inputs.networkConnections.Tooltip} title={this.state.inputs.networkConnections.description}>
@@ -502,7 +518,7 @@ class CreateAsset extends React.Component {
                                                         {...params}
                                                         label={"Connection Port"}
                                                         name={"Connection Port"}
-                                                        onBlur={(event) => this.updateSelectedPort(event, networkPort)}
+                                                        onBlur={() => this.updateNetworkPort(networkPort)}
                                                         variant="outlined"
                                                         fullWidth
                                                     />

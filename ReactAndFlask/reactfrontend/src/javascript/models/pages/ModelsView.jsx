@@ -141,6 +141,7 @@ export default class ModelsView extends React.Component {
                 'memory':this.state.createdModel[ModelInput.Memory],
                 'storage':this.state.createdModel[ModelInput.Storage],
                 'comment':this.state.createdModel[ModelInput.Comment],
+                'ethernet_ports':["eth0", "eth1", "eth2", "eth3"],
             }
             ).then(
                 response => {

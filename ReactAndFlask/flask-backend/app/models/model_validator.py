@@ -14,12 +14,12 @@ class ModelValidator:
         pattern = re.compile("[0-9]+")
         if pattern.fullmatch(str(model.height)) is None:
             return "The value for model height must be a positive integer."
-        if (
-            model.ethernet_ports != ""
-            and model.ethernet_ports != None
-            and pattern.fullmatch(str(model.ethernet_ports)) is None
-        ):
-            return "The value for ethernet ports must be a positive integer."
+        # if (
+        #     model.ethernet_ports != ""
+        #     and model.ethernet_ports != None
+        #     and pattern.fullmatch(str(model.ethernet_ports)) is None
+        # ):
+        #     return "The value for ethernet ports must be a positive integer."
         if (
             model.power_ports != ""
             and model.power_ports != None

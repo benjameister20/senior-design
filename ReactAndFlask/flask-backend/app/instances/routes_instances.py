@@ -161,7 +161,7 @@ def get_next_asset_number():
     global INSTANCE_MANAGER
     returnJSON = createJSON()
 
-    returnJSON["asset_number"] = 100000
+    returnJSON["asset_number"] = 583965
     return addMessageToJSON(returnJSON, "success")
 
 

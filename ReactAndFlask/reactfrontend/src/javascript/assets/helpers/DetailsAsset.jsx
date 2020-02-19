@@ -20,6 +20,7 @@ import { AssetInput } from '../enums/AssetInputs.ts';
 import { AssetCommand } from '../enums/AssetCommands.ts'
 import getURL from '../../helpers/functions/GetURL';
 import * as AssetConstants from "../AssetConstants";
+import * as Constants from "../../Constants";
 
 function createInputs(name, label, showTooltip, description) {
     return {label, name, showTooltip, description};
@@ -112,9 +113,22 @@ class DetailAsset extends React.Component {
     }
 
     getOwnerList = () => {
-        axios.get(
-            getURL(AssetConstants.ASSETS_MAIN_PATH, AssetCommand.GET_ALL_OWNERS)).then(
-            response => this.setState({ loadingOwners: false, ownerList: response.data.results }));
+        axios.post(
+            getURL(Constants.USERS_MAIN_PATH, "search/"),
+            {
+                "filter": {
+                        "model":"",
+                        "hostname":"",
+                        "rack":"",
+                        "rack_position":""
+                    }
+            }
+            ).then(
+            response => {
+                var users = [];
+                response.data.results.map(user => users.push(user.username));
+                this.setState({ loadingOwners: false, ownerList: users });
+            });
     }
 
     getDatacenterList = () => {

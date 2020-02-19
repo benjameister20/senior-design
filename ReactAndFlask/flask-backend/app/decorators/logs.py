@@ -19,12 +19,3 @@ def log(request, resource, action):
         return wrapped
 
     return wrap
-
-
-# # @log
-# def say_hello():
-#     print("hello world")
-#     # print(LoggerConstants.INSTANCES)
-
-
-# say_hello()

@@ -20,10 +20,20 @@ import { AssetInput } from '../enums/AssetInputs.ts';
 import { AssetCommand } from '../enums/AssetCommands.ts'
 import getURL from '../../helpers/functions/GetURL';
 import * as AssetConstants from "../AssetConstants";
+import * as Constants from "../../Constants";
+import { Typography } from '@material-ui/core';
 
 function createInputs(name, label, showTooltip, description) {
     return {label, name, showTooltip, description};
 }
+
+const emptySearch = {
+    "filters":{
+
+    }
+}
+
+const searchPath = "search/";
 
 const useStyles = theme => ({
     root: {
@@ -42,6 +52,12 @@ const useStyles = theme => ({
         boxShadow: theme.shadows[5],
         padding: theme.spacing(2, 4, 3),
       },
+      progress: {
+        display: 'flex',
+        '& > * + *': {
+          marginLeft: theme.spacing(2),
+        },
+      },
 });
 
 class CreateAsset extends React.Component {
@@ -49,15 +65,27 @@ class CreateAsset extends React.Component {
         super(props);
 
         this.state = {
+            // next available asset number
             loadingAssetNumber:true,
+
+            // model information
             loadingModels:true,
             modelList:[],
+            networkList:null,
+            powerPortList:null,
+
+            // owner information
             loadingOwners:true,
             ownerList:[],
+
+            // datacenter information
             loadingDatacenters:true,
             datacenterList:[],
+
+            // hostname information
             loadingHostnames:true,
-            hostnameList:[],
+            assetNumList:[],
+            assetNumToModelList:null,
 
             model:"",
             hostname:"",
@@ -70,6 +98,8 @@ class CreateAsset extends React.Component {
             network_connections:[],
             power_connections:[],
             asset_number:1,
+
+            selectedConnection:null,
 
             statusOpen: false,
             statusMessage: "",
@@ -94,39 +124,69 @@ class CreateAsset extends React.Component {
     }
 
     componentDidMount() {
-        this.getNextAssetNum();
         this.getModelList();
         this.getOwnerList();
-    }
-
-    getNextAssetNum = () => {
-        axios.get(
-            getURL(AssetConstants.ASSETS_MAIN_PATH, AssetCommand.GET_NEXT_ASSET_NUM)).then(
-            response => this.setState({ loadingAssetNumber: false, asset_number: response.asset_number }));
+        this.getDatacenterList();
+        this.getNextAssetNum();
+        this.getAssetList();
     }
 
     getModelList = () => {
         axios.get(
-            getURL(AssetConstants.ASSETS_MAIN_PATH, AssetCommand.GET_ALL_MODELS)).then(
-            response => this.setState({ loadingModels: false, modelList: response.data.results }));
+            getURL(Constants.MODELS_MAIN_PATH, searchPath), emptySearch).then(
+            response => {
+                var models = response.data.results;
+
+                var modelNames = [];
+                var networkNames = {};
+                var powerPortNames = {};
+
+                models.map(model => {
+                    var modelKey = model.vendor + " " + model.model_number;
+                    modelNames.push(modelKey);
+                    networkNames[modelKey] = model.ethernet_ports;
+                    powerPortNames[modelKey] = parseInt(model.power_ports);
+                });
+
+                this.setState({ loadingModels: false, modelList: modelNames, networkList: networkNames, powerPortList: powerPortNames })
+            });
     }
 
     getOwnerList = () => {
         axios.get(
-            getURL(AssetConstants.ASSETS_MAIN_PATH, AssetCommand.GET_ALL_OWNERS)).then(
-            response => this.setState({ loadingOwners: false, ownerList: response.data.results }));
+            getURL(Constants.USERS_MAIN_PATH, searchPath), emptySearch).then(
+            response => {
+                this.setState({ loadingOwners: false, ownerList: response.data.results })
+            });
     }
 
     getDatacenterList = () => {
         axios.get(
-            getURL(AssetConstants.ASSETS_MAIN_PATH, AssetCommand.GET_ALL_DATACENTERS)).then(
+            getURL(Constants.RACKS_MAIN_PATH, "assisteddatacenters/")).then(
             response => this.setState({ loadingDatacenters: false, datacenterList: response.data.results }));
     }
 
-    getHostnameList = () => {
+    getNextAssetNum = () => {
         axios.get(
-            getURL(AssetConstants.ASSETS_MAIN_PATH, AssetCommand.GET_ALL_HOSTNAME)).then(
-            response => this.setState({ loadingHostnames: false, hostnameList: response.data.results }));
+            getURL(Constants.ASSETS_MAIN_PATH, AssetCommand.GET_NEXT_ASSET_NUM)).then(
+            response => this.setState({ loadingAssetNumber: false, asset_number: response.data.asset_number }));
+    }
+
+    getAssetList = () => {
+        axios.get(
+            getURL(Constants.ASSETS_MAIN_PATH, searchPath), emptySearch).then(
+            response => {
+                var instances = response.data.results;
+
+                var assetNums = [];
+                var assetNumToModel = {};
+                instances.map(instance => {
+                    assetNums.push(instance.asset_number);
+                    assetNumToModel[instance.asset_number] = instance.model;
+                })
+
+                this.setState({ loadingHostnames: false, assetNumList: assetNums, assetNumToModelList: assetNumToModel });
+            });
     }
 
     updateModel = (event, newValue) => {
@@ -260,7 +320,14 @@ class CreateAsset extends React.Component {
                 >
                     <Fade in={this.state.showModal}>
                     <div className={classes.paper}>
-                    {(false) ? <CircularProgress /> :
+                    {(
+                    (this.state.loadingAssetNumber
+                    || this.state.loadingDatacenters
+                    || this.state.loadingModels
+                    || this.state.loadingHostnames
+                    || this.state.loadingOwners)
+                    && false
+                    ) ? <div className={classes.progress}><CircularProgress /></div> :
                         <form>
                         <Grid container spacing={3}>
                             <Grid item xs={3}>
@@ -346,6 +413,8 @@ class CreateAsset extends React.Component {
                                     <TextField
                                         id="input-rackU"
                                         variant="outlined"
+                                        type="number"
+                                        InputProps={{ inputProps: { min: 1, max:42} }}
                                         label={this.state.inputs.rackU.label}
                                         name={this.state.inputs.rackU.name}
                                         onChange={this.updateRackU}
@@ -359,6 +428,8 @@ class CreateAsset extends React.Component {
                                     <TextField
                                         id="input-asset-number"
                                         variant="outlined"
+                                        type="number"
+                                        InputProps={{ inputProps: { min: 100000, max:999999} }}
                                         label={this.state.inputs.assetNum.label}
                                         name={this.state.inputs.assetNum.name}
                                         onChange={this.updateAssetNumber}
@@ -382,18 +453,11 @@ class CreateAsset extends React.Component {
                             </Grid>
 
                             <Grid item xs={12}>
-                                <Grid container spacing={3}>
+                                {(!this.state.networkList) ? null:
+                                this.state.networkList[this.state.model].map(networkPort => (
+                                    <Grid container spacing={3}>
                                     <Grid item xs={3}>
-                                        <Tooltip placement="top" open={this.state.inputs.networkConnections.Tooltip} title={this.state.inputs.networkConnections.description}>
-                                            <TextField
-                                                id="input-network-ports"
-                                                variant="outlined"
-                                                label={"Network Port Name"}
-                                                name={"Network Port Name"}
-                                                onChange={this.props.updateAssetCreator}
-                                                fullWidth
-                                            />
-                                        </Tooltip>
+                                        <Typography>{networkPort + ": "}</Typography>
                                     </Grid>
                                     <Grid item xs={3}>
                                         <Tooltip placement="top" open={this.state.inputs.macAddress.Tooltip} title={this.state.inputs.macAddress.description}>
@@ -402,62 +466,83 @@ class CreateAsset extends React.Component {
                                                 variant="outlined"
                                                 label={this.state.inputs.macAddress.label}
                                                 name={this.state.inputs.macAddress.name}
-                                                onChange={this.props.updateAssetCreator}
+                                                onChange={(event) => this.updateMacAddr(event, networkPort)}
                                                 fullWidth
                                             />
                                         </Tooltip>
                                     </Grid>
                                     <Grid item xs={3}>
                                         <Tooltip placement="top" open={this.state.inputs.networkConnections.Tooltip} title={this.state.inputs.networkConnections.description}>
-                                            <TextField
+                                            <Autocomplete
                                                 id="input-network-ports"
-                                                variant="outlined"
-                                                label={"Connection Hostname"}
-                                                name={"Connection Hostname"}
-                                                onChange={this.props.updateAssetCreator}
-                                                fullWidth
+                                                options={this.state.assetNumList}
+                                                includeInputInList
+                                                renderInput={params => (
+                                                    <TextField
+                                                        {...params}
+                                                        label={"Connection Hostname"}
+                                                        name={"Connection Hostname"}
+                                                        onBlur={(event) => this.updateSelectedConnection(event, networkPort)}
+                                                        variant="outlined"
+                                                        fullWidth
+                                                    />
+                                                )}
                                             />
                                         </Tooltip>
                                     </Grid>
                                     <Grid item xs={3}>
                                         <Tooltip placement="top" open={this.state.inputs.networkConnections.Tooltip} title={this.state.inputs.networkConnections.description}>
-                                            <TextField
+                                            <Autocomplete
                                                 id="input-network-ports"
-                                                variant="outlined"
-                                                label={"Connection Port"}
-                                                name={"Connection Port"}
-                                                onChange={this.props.updateAssetCreator}
-                                                fullWidth
+                                                options={this.state.networkList[this.state.assetNumToModel[this.state.selectedConnection[networkPort]]]}
+                                                includeInputInList
+                                                renderInput={params => (
+                                                    <TextField
+                                                        {...params}
+                                                        label={"Connection Port"}
+                                                        name={"Connection Port"}
+                                                        onBlur={(event) => this.updateSelectedPort(event, networkPort)}
+                                                        variant="outlined"
+                                                        fullWidth
+                                                    />
+                                                )}
                                             />
                                         </Tooltip>
                                     </Grid>
                                 </Grid>
+                                ))}
                             </Grid>
-                            <Grid item xs={3}>
-                                <Tooltip placement="top" open={this.state.inputs.networkConnections.Tooltip} title={this.state.inputs.networkConnections.description}>
-                                    <FormControl>
-                                            <TextField
-                                                id="starting-num-selector"
-                                                type="number"
-                                                value={1}
-                                                InputProps={{ inputProps: { min: 0} }}
-                                            />
-                                            <FormHelperText>Left Power Port</FormHelperText>
-                                    </FormControl>
-                                </Tooltip>
-                            </Grid>
-                            <Grid item xs={9}>
-                                <Tooltip placement="top" open={this.state.inputs.macAddress.Tooltip} title={this.state.inputs.macAddress.description}>
-                                    <FormControl>
-                                            <TextField
-                                                id="starting-num-selector"
-                                                type="number"
-                                                value={1}
-                                                InputProps={{ inputProps: { min: 0} }}
-                                            />
-                                            <FormHelperText>Right Power Port</FormHelperText>
-                                    </FormControl>
-                                </Tooltip>
+
+                            <Grid item xs={12}>
+                                <Grid container spacing={3}>
+                                    <Grid item xs={3}>
+                                        <Tooltip placement="top" open={this.state.inputs.networkConnections.Tooltip} title={this.state.inputs.networkConnections.description}>
+                                            <FormControl>
+                                                    <TextField
+                                                        id="starting-num-selector"
+                                                        type="number"
+                                                        value={1}
+                                                        InputProps={{ inputProps: { min: 0} }}
+                                                    />
+                                                    <FormHelperText>Left Power Port</FormHelperText>
+                                            </FormControl>
+                                        </Tooltip>
+                                    </Grid>
+                                    <Grid item xs={9}>
+                                        <Tooltip placement="top" open={this.state.inputs.macAddress.Tooltip} title={this.state.inputs.macAddress.description}>
+                                            <FormControl>
+                                                    <TextField
+                                                        id="starting-num-selector"
+                                                        type="number"
+                                                        value={1}
+                                                        InputProps={{ inputProps: { min: 0} }}
+                                                    />
+                                                    <FormHelperText>Right Power Port</FormHelperText>
+                                            </FormControl>
+                                        </Tooltip>
+                                    </Grid>
+
+                                </Grid>
                             </Grid>
                             <Grid item xs={6}>
                                 <Tooltip placement="top" open={this.state.inputs.comment.Tooltip} title={this.state.inputs.comment.description}>
@@ -472,8 +557,9 @@ class CreateAsset extends React.Component {
                                     />
                                 </Tooltip>
                             </Grid>
+                            <Grid item xs={6} />
 
-                            <Grid item xs={12}>
+                            <Grid item xs={1}>
                                 <Button
                                     variant="contained"
                                     color="primary"
@@ -481,6 +567,16 @@ class CreateAsset extends React.Component {
                                     onClick={() => this.createAsset()}
                                 >
                                     Create
+                                </Button>
+                            </Grid>
+                            <Grid item xs={9}>
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    type="submit"
+                                    onClick={() => this.cancelCreation()}
+                                >
+                                    Cancel
                                 </Button>
                             </Grid>
                         </Grid></form>}

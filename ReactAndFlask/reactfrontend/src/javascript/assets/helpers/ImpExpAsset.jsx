@@ -28,6 +28,9 @@ const useStyles = theme => ({
       boxShadow: theme.shadows[5],
       padding: theme.spacing(2, 4, 3),
     },
+    button: {
+        margin: theme.spacing(2, 4, 3),
+    }
   });
 
 class ImpExpAsset extends React.Component {
@@ -141,8 +144,16 @@ class ImpExpAsset extends React.Component {
                             variant="contained"
                             color="primary"
                             onClick={() => {this.uploadFile()}}
+                            className={classes.button}
                         >
                             Upload
+                        </Button>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={() => {this.uploadFile()}}
+                        >
+                            Cancel
                         </Button>
                     </div>
                     </Fade>

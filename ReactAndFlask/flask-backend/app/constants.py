@@ -7,6 +7,7 @@ class Constants:
     DATACENTER_KEY = "datacenter_id"
 
     # User Keys
+    OLD_USERNAME_KEY = "old_username"
     USERNAME_KEY = "username"
     PASSWORD_KEY = "password"
     EMAIL_KEY = "email"

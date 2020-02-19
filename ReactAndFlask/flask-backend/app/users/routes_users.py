@@ -1,5 +1,7 @@
 from app.decorators.auth import requires_auth, requires_role
+from app.decorators.logs import log
 from app.exceptions.UserExceptions import UserException
+from app.logging.logger import Logger
 from app.users.users_manager import UserManager
 from flask import Blueprint, request
 
@@ -8,6 +10,7 @@ users = Blueprint(
 )
 
 USER_MANAGER = UserManager()
+LOGGER = Logger()
 
 
 @users.route("/users/test", methods=["GET"])
@@ -36,6 +39,7 @@ def search():
 @users.route("/users/create", methods=["POST"])
 @requires_auth(request)
 @requires_role(request, "admin")
+@log(request, LOGGER.USERS, LOGGER.ACTIONS.USERS.CREATE)
 def create():
     # TESTED AND FUNCTIONAL
     """Route for creating users
@@ -106,6 +110,7 @@ def edit():
 
 
 @users.route("/users/authenticate", methods=["POST"])
+@log(request, LOGGER.USERS, LOGGER.ACTIONS.USERS.AUTHENTICATE)
 def authenticate():
     # TESTED AND FUNCTIONAL
     """ Route for authenticating users """

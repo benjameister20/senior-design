@@ -21,19 +21,20 @@ class InstanceValidator:
         ):
             return f"Rack {instance.rack_label} does not exist. Instances must be created on preexisting racks"
 
-        duplicate_hostname = self.instance_table.get_instance_by_hostname(
-            instance.hostname
-        )
+        if instance.hostname != "" and instance.hostname is not None:
+            duplicate_hostname = self.instance_table.get_instance_by_hostname(
+                instance.hostname
+            )
 
-        if duplicate_hostname is not None:
-            return f"An instance with hostname {duplicate_hostname.hostname} exists at location {duplicate_hostname.rack_label} U{duplicate_hostname.rack_position}"
+            if duplicate_hostname is not None:
+                return f"An instance with hostname {duplicate_hostname.hostname} exists at location {duplicate_hostname.rack_label} U{duplicate_hostname.rack_position}"
 
-        if len(instance.hostname) > 64:
-            return "Hostnames must be 64 characters or less"
+            if len(instance.hostname) > 64:
+                return "Hostnames must be 64 characters or less"
 
-        host_pattern = re.compile("[a-zA-Z]+[A-Za-z0-9-]+[A-Za-z0-9]")
-        if host_pattern.fullmatch(instance.hostname) is None:
-            return "Hostnames must start with a letter, only contain letters, numbers, periods, and hyphens, and end with a letter or number."
+            host_pattern = re.compile("[a-zA-Z]*[A-Za-z0-9-]*[A-Za-z0-9]")
+            if host_pattern.fullmatch(instance.hostname) is None:
+                return "Hostnames must start with a letter, only contain letters, numbers, periods, and hyphens, and end with a letter or number."
 
         model_template = self.model_table.get_model(instance.model_id)
         if model_template is None:
@@ -83,22 +84,23 @@ class InstanceValidator:
 
         print("INSTANCE HOSTNAME")
         print(instance.hostname)
-        duplicate_hostname = self.instance_table.get_instance_by_hostname(
-            instance.hostname
-        )
 
-        print(duplicate_hostname)
-        if duplicate_hostname is not None:
-            is_self = duplicate_hostname.asset_number == original_asset_number
-            if not is_self:
-                return f"An instance with hostname {duplicate_hostname.hostname} exists at location {duplicate_hostname.rack_label} U{duplicate_hostname.rack_u}"
+        if instance.hostname != "" and instance.hostname is not None:
+            duplicate_hostname = self.instance_table.get_instance_by_hostname(
+                instance.hostname
+            )
 
-        if len(instance.hostname) > 64:
-            return "Hostnames must be 64 characters or less"
+            if duplicate_hostname is not None:
+                is_self = duplicate_hostname.asset_number == original_asset_number
+                if not is_self:
+                    return f"An instance with hostname {duplicate_hostname.hostname} exists at location {duplicate_hostname.rack_label} U{duplicate_hostname.rack_u}"
 
-        host_pattern = re.compile("[a-zA-Z]+[A-Za-z0-9-]+[A-Za-z0-9]")
-        if host_pattern.fullmatch(instance.hostname) is None:
-            return "Hostnames must start with a letter, only contain letters, numbers, and hyphens, and end with a letter or number."
+            if len(instance.hostname) > 64:
+                return "Hostnames must be 64 characters or less"
+
+            host_pattern = re.compile("[a-zA-Z]*[A-Za-z0-9-]*[A-Za-z0-9]")
+            if host_pattern.fullmatch(instance.hostname) is None:
+                return "Hostnames must start with a letter, only contain letters, numbers, and hyphens, and end with a letter or number."
 
         model_template = self.model_table.get_model(instance.model_id)
         if model_template is None:

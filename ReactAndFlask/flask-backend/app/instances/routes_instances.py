@@ -55,8 +55,8 @@ def search():
 
 
 @instances.route("/instances/create", methods=["POST"])
-# @requires_auth(request)
-# @requires_role(request, "admin")
+@requires_auth(request)
+@requires_role(request, "admin")
 def create():
     """ Route for creating instances """
     print("REQUEST")
@@ -151,6 +151,18 @@ def assisted_model_input():
         return returnJSON
     except InvalidInputsError as e:
         return addMessageToJSON(returnJSON, e.message)
+
+
+@instances.route("/instances/nextAssetNumber", methods=["GET"])
+@requires_auth(request)
+@requires_role(request, "admin")
+def get_next_asset_number():
+    """ Route to get next valid asset number"""
+    global INSTANCE_MANAGER
+    returnJSON = createJSON()
+
+    returnJSON["asset_number"] = 100000
+    return addMessageToJSON(returnJSON, "success")
 
 
 def createJSON() -> dict:

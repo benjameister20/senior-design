@@ -34,7 +34,6 @@ const columns = [
 ]
 
 const usersMainPath = 'users/';
-const userDownloadFileName = 'users.csv';
 
 export default class UsersView extends React.Component {
     constructor(props) {
@@ -99,6 +98,10 @@ export default class UsersView extends React.Component {
         axios.defaults.headers.common['token'] = this.props.token;
         axios.defaults.headers.common['privilege'] = this.props.privilege;
 
+    }
+
+    componentDidMount() {
+        this.searchUsers();
     }
 
     createUser = () => {
@@ -221,7 +224,7 @@ export default class UsersView extends React.Component {
                     'privilege':this.state.searchPriv,
                 }
             }
-            ).then(response => this.setState({ items: (response.data['users']==null) ? [] : response.data['users'] }));
+            ).then(response => this.setState({ items: (response.data['users']===null) ? [] : response.data['users'] }));
 
         this.setState({ initialized: true})
     }
@@ -294,10 +297,6 @@ export default class UsersView extends React.Component {
         this.setState({ detailStatusOpen: false })
     }
 
-    initialized = () => {
-        this.searchUsers();
-    }
-
     render() {
         return (
             <div>
@@ -308,8 +307,6 @@ export default class UsersView extends React.Component {
                     closeStatus={this.closeShowStatus}
                     message={this.state.statusMessage}
                 />
-
-
                 <Grid
                     container
                     spacing={5}

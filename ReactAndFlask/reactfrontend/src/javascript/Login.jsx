@@ -35,6 +35,22 @@ export default class Login extends React.Component {
         this.submitCredentials = this.submitCredentials.bind(this);
     }
 
+    componentDidMount() {
+        console.log(this.props.shib);
+        try {
+            var params = queryString.parse(window.location.hash.substring(1));
+            if (params.access_token != null) {
+                this.getDukeCredentials(params.access_token);
+                this.setState({ oauth: true });
+            }
+
+            console.log(params);
+        } catch(e) {
+            console.log("tried:")
+        }
+        this.setState({ initialized: true });
+    }
+
     submitCredentials() {
         const usernameKey = loginKeys.username;
         const passwordKey = loginKeys.password;
@@ -45,7 +61,7 @@ export default class Login extends React.Component {
                 passwordKey: this.state.password,
             }).then(response => {
                 var valid = response.data['message'];
-                if (valid == 'success') {
+                if (valid === 'success') {
                     this.setState({ message: '' });
                     this.props.loginFunc(response.data['token'], this.state.username, response.data['privilege']);
                 } else {
@@ -94,7 +110,7 @@ export default class Login extends React.Component {
                 }
                 ).then(response => {
                     var valid = response.data['message'];
-                    if (valid == 'success') {
+                    if (valid === 'success') {
                         this.setState({ message: '' });
                         this.props.loginFunc(response.data['token'], this.state.username, response.data['privilege']);
                     } else {
@@ -108,27 +124,9 @@ export default class Login extends React.Component {
         window.location = Constants.SHIBBOLETH_LOGIN;
     }
 
-    initialize = () => {
-        console.log(this.props.shib);
-        try {
-            var params = queryString.parse(window.location.hash.substring(1));
-            if (params.access_token != null) {
-                this.getDukeCredentials(params.access_token);
-                this.setState({ oauth: true });
-            }
 
-            console.log(params);
-        } catch(e) {
-            console.log("tried:")
-        }
-        this.setState({ initialized: true });
-    }
 
     render() {
-        if (!this.state.initialized) {
-            this.initialize();
-        }
-
         return (
             <div>
                 { (this.state.oauth) ? <ShibLogin /> :

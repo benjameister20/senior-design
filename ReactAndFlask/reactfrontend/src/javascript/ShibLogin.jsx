@@ -32,13 +32,11 @@ export default class ShibLogin extends React.Component {
                 onKeyDown={(e) => this.onKeyPressed(e)}
                 style={{
                     "minHeight": "102vh",
-                    "background": "#56ab2f",
-                    "background": "-webkit-linear-gradient(to top, #a8e063, #56ab2f)",
                     "background": "linear-gradient(to top, #a8e063, #56ab2f)",
                 }}
             >
                 <Grid item xs={12}>
-                    <img src={logo} style={{height: "200px", "marginTop": "50px"}} />
+                    <img src={logo} alt="" style={{height: "200px", "marginTop": "50px"}} />
                 </Grid>
                 <Grid item xs={12}>
                     <Card

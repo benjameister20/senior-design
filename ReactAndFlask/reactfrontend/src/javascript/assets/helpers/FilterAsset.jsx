@@ -97,7 +97,7 @@ class FilterAsset extends React.Component {
             asset_number:-1,
 
             startingRackNumber:1,
-            endingRackNumber:null,
+            endingRackNumber:1,
         };
     }
 
@@ -210,7 +210,12 @@ class FilterAsset extends React.Component {
                     </Grid>
                     <Grid item xs={1}>
                         <FormControl>
-                                <Select id="starting-letter-selector" value={this.state.startingRackLetter} onChange={this.changeStartingLetter}>
+                                <Select
+                                    id="starting-letter-selector"
+                                    value={this.state.startingRackLetter}
+                                    onChange={this.changeStartingLetter}
+                                    defaultValue={Constants.RackX[0]}
+                                >
                                     {Constants.RackX.map(val => (<MenuItem value={val}>{val}</MenuItem>))}
                                 </Select>
                                 <FormHelperText>Starting Letter</FormHelperText>
@@ -218,7 +223,12 @@ class FilterAsset extends React.Component {
                     </Grid>
                     <Grid item xs={1}>
                         <FormControl>
-                                <Select id="ending-letter-selector" value={this.state.endingRackLetter} onChange={this.changeEndingLetter}>
+                                <Select
+                                    id="ending-letter-selector"
+                                    value={this.state.endingRackLetter}
+                                    onChange={this.changeEndingLetter}
+                                    defaultValue={Constants.RackX[0]}
+                                >
                                     {Constants.RackX.map(val => (<MenuItem value={val}>{val}</MenuItem>))}
                                 </Select>
                                 <FormHelperText>Ending Letter</FormHelperText>

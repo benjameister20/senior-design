@@ -14,6 +14,7 @@ import Grid from '@material-ui/core/Grid';
 import { withStyles } from '@material-ui/core/styles';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
+import Switch from '@material-ui/core/Switch';
 
 import StatusDisplay from '../../helpers/StatusDisplay';
 import { AssetInput } from '../enums/AssetInputs.ts';
@@ -162,7 +163,7 @@ class CreateAsset extends React.Component {
 
     getDatacenterList = () => {
         axios.get(
-            getURL(Constants.RACKS_MAIN_PATH, "assisteddatacenters/")).then(
+            getURL(Constants.DATACENTERS_MAIN_PATH, "all/")).then(
             response => this.setState({ loadingDatacenters: false, datacenterList: response.data.results }));
     }
 
@@ -186,6 +187,36 @@ class CreateAsset extends React.Component {
                 })
 
                 this.setState({ loadingHostnames: false, assetNumList: assetNums, assetNumToModelList: assetNumToModel });
+            });
+    }
+
+    createAsset = () => {
+        axios.post(
+            getURL(AssetConstants.ASSETS_MAIN_PATH, AssetCommand.create),
+            this.createJSON()).then(
+                response => {
+                if (response.data.message === AssetConstants.SUCCESS_TOKEN) {
+                    this.setState({
+                        statusOpen: true,
+                        statusMessage: "Successfully created asset",
+                        statusSeverity:AssetConstants.SUCCESS_TOKEN,
+                        showModal:false,
+
+                        model:"",
+                        hostname:"",
+                        rack:"",
+                        rackU:-1,
+                        owner:"",
+                        comment:"",
+                        datacenter_id:"",
+                        tags:[],
+                        network_connections:[],
+                        power_connections:[],
+                        asset_number:-1,
+                    }, this.props.search());
+                } else {
+                    this.setState({ statusOpen: true, statusMessage: response.data.message, statusSeverity:AssetConstants.ERROR_TOKEN })
+                }
             });
     }
 
@@ -249,35 +280,7 @@ class CreateAsset extends React.Component {
         }
     }
 
-    createAsset = () => {
-        axios.post(
-            getURL(AssetConstants.ASSETS_MAIN_PATH, AssetCommand.create),
-            this.createJSON()).then(
-                response => {
-                if (response.data.message === AssetConstants.SUCCESS_TOKEN) {
-                    this.setState({
-                        statusOpen: true,
-                        statusMessage: "Successfully created asset",
-                        statusSeverity:AssetConstants.SUCCESS_TOKEN,
-                        showModal:false,
 
-                        model:"",
-                        hostname:"",
-                        rack:"",
-                        rackU:-1,
-                        owner:"",
-                        comment:"",
-                        datacenter_id:"",
-                        tags:[],
-                        network_connections:[],
-                        power_connections:[],
-                        asset_number:-1,
-                    }, this.props.search());
-                } else {
-                    this.setState({ statusOpen: true, statusMessage: response.data.message, statusSeverity:AssetConstants.ERROR_TOKEN })
-                }
-            });
-    }
 
     showModal = () => {
         this.setState({ showModal: true });
@@ -342,8 +345,7 @@ class CreateAsset extends React.Component {
                                             {...params}
                                             label={this.state.inputs.model.label}
                                             name={this.state.inputs.model.name}
-                                            onChange={this.updateModel}
-                                            onBlur={this.updateModel}
+                                            onBlur={() => this.updateModel}
                                             variant="outlined"
                                             fullWidth
                                             required
@@ -363,8 +365,7 @@ class CreateAsset extends React.Component {
                                             {...params}
                                             label={this.state.inputs.owner.label}
                                             name={this.state.inputs.owner.name}
-                                            onChange={this.updateOwner}
-                                            onBlur={this.updateOwner}
+                                            onBlur={() => this.updateOwner}
                                             variant="outlined"
                                             fullWidth
                                             required
@@ -402,7 +403,7 @@ class CreateAsset extends React.Component {
                                         variant="outlined"
                                         label={this.state.inputs.rack.label}
                                         name={this.state.inputs.rack.name}
-                                        onChange={this.updateRack}
+                                        onChange={() => this.updateRack}
                                         required
                                         fullWidth
                                     />
@@ -453,9 +454,9 @@ class CreateAsset extends React.Component {
                             </Grid>
 
                             <Grid item xs={12}>
-                                {(!this.state.networkList) ? null:
+                                {(!(this.state.networkList && this.state.networkList[this.state.model]) || (this.state.hostname==="")) ? null:
                                 this.state.networkList[this.state.model].map(networkPort => (
-                                    <Grid container spacing={3}>
+                                <Grid container spacing={3}>
                                     <Grid item xs={3}>
                                         <Typography>{networkPort + ": "}</Typography>
                                     </Grid>
@@ -515,33 +516,26 @@ class CreateAsset extends React.Component {
 
                             <Grid item xs={12}>
                                 <Grid container spacing={3}>
-                                    <Grid item xs={3}>
-                                        <Tooltip placement="top" open={this.state.inputs.networkConnections.Tooltip} title={this.state.inputs.networkConnections.description}>
-                                            <FormControl>
+                                    {(!(this.state.powerPortList && this.state.powerPortList[this.state.model])) ? null :
+                                        Array.from( { length: this.state.powerPortList[this.state.model] }, (_, k) => (
+                                            <Grid item xs={3}>
+                                                <Tooltip placement="top" open={this.state.inputs.networkConnections.Tooltip} title={this.state.inputs.networkConnections.description}>
                                                     <TextField
                                                         id="starting-num-selector"
                                                         type="number"
                                                         value={1}
-                                                        InputProps={{ inputProps: { min: 0} }}
+                                                        InputProps={{ inputProps: { min: 0, max: 24} }}
                                                     />
-                                                    <FormHelperText>Left Power Port</FormHelperText>
-                                            </FormControl>
-                                        </Tooltip>
-                                    </Grid>
-                                    <Grid item xs={9}>
-                                        <Tooltip placement="top" open={this.state.inputs.macAddress.Tooltip} title={this.state.inputs.macAddress.description}>
-                                            <FormControl>
-                                                    <TextField
-                                                        id="starting-num-selector"
-                                                        type="number"
-                                                        value={1}
-                                                        InputProps={{ inputProps: { min: 0} }}
+                                                    <Switch
+                                                        checked={true}
+                                                        value="checkedB"
+                                                        color="primary"
+                                                        inputProps={{ 'aria-label': 'primary checkbox' }}
                                                     />
-                                                    <FormHelperText>Right Power Port</FormHelperText>
-                                            </FormControl>
-                                        </Tooltip>
-                                    </Grid>
-
+                                                </Tooltip>
+                                            </Grid>
+                                        ))
+                                    }
                                 </Grid>
                             </Grid>
                             <Grid item xs={6}>

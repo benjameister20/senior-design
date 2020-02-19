@@ -22,6 +22,7 @@ export const ASSETS_MAIN_PATH = 'instances/';
 export const MODELS_MAIN_PATH = "models/";
 export const USERS_MAIN_PATH = "users/";
 export const RACKS_MAIN_PATH = "racks/";
+export const DATACENTERS_MAIN_PATH = "datacenters/";
 
 export const CLIENT_ID = "ParselTonguesUserAuth";
 export const CLIENT_SECRET = "LpUwB*eiK4Iw#1gaCu5jYp1u5uRF3ERsdmuNUGoKYNzn7rHm7b";

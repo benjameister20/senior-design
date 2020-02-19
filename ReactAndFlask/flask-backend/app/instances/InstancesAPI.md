@@ -116,8 +116,23 @@ def create()
     "comment":"COMMENT"
     "datacenter_id": "DATACENTER",
     "tags": "TAGS",
-    "mac_address": "MAC ADDRESSES,
-    "network_connections": "NETWORK CONNECTIONS",
+    "network_connections": {
+        PORT_NAME_1: {
+            "mac_address":MAC_ADDRESS,
+            "connection_hostname":HOSTNAME,
+            "connection_port":CONNECTION_PORT_NAME,
+        },
+        PORT_NAME_2: {
+            "mac_address":MAC_ADDRESS,
+            "connection_hostname":HOSTNAME,
+            "connection_port":CONNECTION_PORT_NAME,
+        },
+        PORT_NAME_3: {
+            "mac_address":MAC_ADDRESS,
+            "connection_hostname":HOSTNAME,
+            "connection_port":CONNECTION_PORT_NAME,
+        }
+    }
     "power_connections": "POWER CONNECTIONS",
     "asset_number": "ASSET NUMBER",  
 }

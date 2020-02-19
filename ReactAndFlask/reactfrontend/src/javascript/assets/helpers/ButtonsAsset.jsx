@@ -3,7 +3,7 @@ import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
 import Button from '@material-ui/core/Button';
 
-export default class InstanceButtons extends React.Component {
+export default class AssetButtons extends React.Component {
     constructor(props) {
         super(props);
 
@@ -19,7 +19,7 @@ export default class InstanceButtons extends React.Component {
                     variant="contained"
                     color="primary"
                     startIcon={<CloudUploadIcon />}
-                    onClick={this.props.openImportModal}
+                    onClick={() => {this.props.openImportModal()} }
                 >
                     Import
                 </Button>
@@ -27,7 +27,7 @@ export default class InstanceButtons extends React.Component {
                     variant="contained"
                     color="primary"
                     startIcon={<CloudDownloadIcon />}
-                    onClick={this.props.downloadTable}
+                    onClick={() => {this.props.downloadTable()}}
                 >
                     Export
                 </Button>

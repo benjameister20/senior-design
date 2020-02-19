@@ -16,6 +16,21 @@ def test()
 ```
 -----------------------------
 ```language=python
+def get_next_asset_number()
+```
+- Path: '/instances/nextAssetNumber/'
+- REST Type: 'get'
+- Authentication Required: yes
+- Roled required: admin
+- Arguments: none
+- Returns:
+```language=json
+{
+    "asset_number":ASSET_NUMBER_AS_INTEGER
+}
+```
+-----------------------------
+```language=python
 def search()
 ```
 - REST Type: 'post'
@@ -50,7 +65,7 @@ def search()
             "mac_address": "MAC ADDRESSES,
             "network_connections": "NETWORK CONNECTIONS",
             "power_connections": "POWER CONNECTIONS",
-            "asset_number": "ASSET NUMBER",            
+            "asset_number": "ASSET NUMBER",  
         },
         {
             "model":"MODEL",
@@ -64,7 +79,7 @@ def search()
             "mac_address": "MAC ADDRESSES,
             "network_connections": "NETWORK CONNECTIONS",
             "power_connections": "POWER CONNECTIONS",
-            "asset_number": "ASSET NUMBER",                 
+            "asset_number": "ASSET NUMBER",  
         },
         {
             "model":"MODEL",
@@ -78,7 +93,7 @@ def search()
             "mac_address": "MAC ADDRESSES,
             "network_connections": "NETWORK CONNECTIONS",
             "power_connections": "POWER CONNECTIONS",
-            "asset_number": "ASSET NUMBER",                 
+            "asset_number": "ASSET NUMBER",  
         }
     ]
 }
@@ -104,7 +119,7 @@ def create()
     "mac_address": "MAC ADDRESSES,
     "network_connections": "NETWORK CONNECTIONS",
     "power_connections": "POWER CONNECTIONS",
-    "asset_number": "ASSET NUMBER",     
+    "asset_number": "ASSET NUMBER",  
 }
 ```
 - Returns:
@@ -123,7 +138,7 @@ def delete()
 - Arguments:
 ```language=json
 {
-    "asset_number": "ASSET NUMBER", 
+    "asset_number": "ASSET NUMBER",
 }
 ```
 - Returns:
@@ -154,7 +169,7 @@ def edit()
     "mac_address": "MAC ADDRESSES,
     "network_connections": "NETWORK CONNECTIONS",
     "power_connections": "POWER CONNECTIONS",
-    "asset_number": "ASSET NUMBER",    
+    "asset_number": "ASSET NUMBER",  
 }
 ```
 - Returns:
@@ -173,7 +188,7 @@ def detail_view()
 - Arguments:
 ```language=json
 {
-    "asset_number": "ASSET NUMBER", 
+    "asset_number": "ASSET NUMBER",
 }
 ```
 - Returns:
@@ -193,7 +208,7 @@ def detail_view()
             "mac_address": "MAC ADDRESSES,
             "network_connections": "NETWORK CONNECTIONS",
             "power_connections": "POWER CONNECTIONS",
-            "asset_number": "ASSET NUMBER",    
+            "asset_number": "ASSET NUMBER",  
         },
     ]
 }

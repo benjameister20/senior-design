@@ -17,9 +17,7 @@ export default class Filters extends React.Component {
             this.state.filters[event.target.id] = event.target.value;
             this.forceUpdate();
         } else {
-            var value = (event.target.value == null) ? '' : event.target.value;
             this.state.filters[event.target.id] = event.target.value;
-            //this.state.filters.push({ key:event.target.id, value: value});
             this.forceUpdate();
         }
     }

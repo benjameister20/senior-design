@@ -3,7 +3,7 @@ import SearchIcon from '@material-ui/icons/Search';
 import InputBase from '@material-ui/core/InputBase';
 import Button from '@material-ui/core/Button';
 
-export default class FilterInstance extends React.Component {
+export default class FilterAsset extends React.Component {
     constructor(props) {
         super(props);
 
@@ -19,12 +19,12 @@ export default class FilterInstance extends React.Component {
         } else {
             var value = (event.target.value == null) ? '' : event.target.value;
             this.state.filters[event.target.id] = event.target.value;
-            //this.state.filters.push({ key:event.target.id, value: value});
             this.forceUpdate();
         }
+        this.search();
     }
 
-    search() {
+    search = () => {
         this.props.search(this.state.filters);
     }
 
@@ -43,13 +43,6 @@ export default class FilterInstance extends React.Component {
                     </div>
                 ))
                 }
-                <div>
-                    <Button
-                        onClick={this.search.bind(this)}
-                    >
-                        Search
-                    </Button>
-                </div>
                 Click the search button to populate table. Searching with empty filters searches over all values. Click on row values to see detailed view.
             </div>
         );

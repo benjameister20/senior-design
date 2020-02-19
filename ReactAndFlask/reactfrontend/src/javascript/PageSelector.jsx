@@ -30,6 +30,9 @@ export default class PageSelector extends React.Component {
     sessionStorage.setItem(storedLoggedIn, true);
     sessionStorage.setItem(storedUsername, username);
 
+    axios.defaults.headers.common['token'] = this.props.token;
+    axios.defaults.headers.common['privilege'] = this.props.privilege;
+
     this.setState({
       token:token,
       privilege:privilege,

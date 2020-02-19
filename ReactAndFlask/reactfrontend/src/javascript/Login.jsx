@@ -6,12 +6,11 @@ import axios from 'axios';
 import getURL from './helpers/functions/GetURL';
 import { Privilege } from './enums/privilegeTypes.ts'
 import StatusDisplay from './helpers/StatusDisplay';
-import ErrorBoundry from './errors/ErrorBoundry';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import logo from '../images/logo.png';
-import Divider from '@material-ui/core/Divider';
+import { loginKeys } from './JSONKeys';
 
 const loginMainPath = 'users/';
 
@@ -32,13 +31,14 @@ export default class Login extends React.Component {
     }
 
     submitCredentials() {
+        const usernameKey = loginKeys.username;
+        const passwordKey = loginKeys.password;
+
         axios.post(
-            getURL(loginMainPath, 'authenticate'),
-            {
-                "username":this.state.username,
-                "password":this.state.password,
-            }
-            ).then(response => {
+            getURL(loginMainPath, 'authenticate'), {
+                usernameKey: this.state.username,
+                passwordKey: this.state.password,
+            }).then(response => {
                 var valid = response.data['message'];
                 if (valid == 'success') {
                     this.setState({ message: '' });
@@ -63,7 +63,6 @@ export default class Login extends React.Component {
     }
 
     onKeyPressed(event) {
-        console.log("key down");
         if (event.key === 'Enter') {
             event.preventDefault();
             event.stopPropagation();
@@ -178,7 +177,6 @@ export default class Login extends React.Component {
                     />
                 </Grid>
             </Grid>
-
         );
     }
 }

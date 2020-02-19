@@ -11,14 +11,14 @@ import FilterUser from '../helpers/FilterUser';
 import DetailUser from '../helpers/DetailUser';
 import CreateUser from '../helpers/CreateUser';
 
-import UploadModal from '../../helpers/UploadModal';
 import getURL from '../../helpers/functions/GetURL';
 import TableView from '../../helpers/TableView';
 import StatusDisplay from '../../helpers/StatusDisplay';
 
 import { Privilege } from '../../enums/privilegeTypes.ts'
 
-import ErrorBoundray from '../../errors/ErrorBoundry';
+import { Typography } from '@material-ui/core';
+import Grid from '@material-ui/core/Grid';
 
 const inputs = [
     'username',
@@ -29,10 +29,10 @@ const inputs = [
 ]
 
 const columns = [
-    'username',
-    'email',
-    'display_name',
-    'privilege',
+    'Username',
+    'Email',
+    'Display Name',
+    'Privilege',
 ]
 
 const usersMainPath = 'users/';
@@ -298,60 +298,72 @@ export default class UsersView extends React.Component {
         return (
             <div>
                 {(this.state.initialized) ? null: this.initialized()}
-                <ErrorBoundray>
                 <StatusDisplay
                     open={this.state.showStatus}
                     severity={this.state.statusSeverity}
                     closeStatus={this.closeShowStatus}
                     message={this.state.statusMessage}
                 />
-                {(this.props.privilege == Privilege.ADMIN) ?
-                    (<div>
-                <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={this.openCreateModal}
+
+
+                <Grid
+                    container
+                    spacing={5}
+                    direction="row"
+                    justify="flex-start"
+                    alignItems="center"
+                    style={{margin: "0px", maxWidth: "100vw"}}
                 >
-                    Create
-                </Button>
-                <CreateUser
-                    showCreateModal={this.state.showCreateModal}
-                    closeCreateModal={this.closeCreateModal}
-                    createModel={this.createUser}
-                    updateModelCreator={this.updateUserCreator}
-                    inputs={inputs}
-                    options={[]}
-                    useAutocomplete={false}
-                />
-                <UploadModal
-                    showImportModal={this.state.showImportModal}
-                    closeImportModal={this.closeImportModal}
-                /></div>):null
-            }
-                <FilterUser
-                    updateSearchText={this.updateSearchText}
-                    search={this.search}
-                    filters={columns}
-                />
-                <TableView
-                    columns={columns}
-                    vals={this.state.items}
-                    keys={columns}
-                    showDetailedView={this.showDetailedView}
-                    filters={columns}
-                />
-                <DetailUser
-                    showDetailedView={this.state.showDetailedView}
-                    closeDetailedView={this.closeDetailedView}
-                    inputs={columns}
-                    updateModelEdited={this.updateUserEdited}
-                    defaultValues={this.state.detailedValues}
-                    loading={this.state.detailViewLoading}
-                    edit={this.editUser}
-                    delete={this.deleteUser}
-                    disabled={this.props.privilege==Privilege.USER}
-                />
-                </ErrorBoundray>
+                    <Grid item xs={12}>
+                        <Typography variant="h4">
+                            Users
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={6} md={4} lg={3}>
+                        {(this.props.privilege == Privilege.ADMIN) ?
+                        (<div>
+                            <CreateUser
+                                showCreateModal={this.state.showCreateModal}
+                                closeCreateModal={this.closeCreateModal}
+                                createModel={this.createUser}
+                                updateModelCreator={this.updateUserCreator}
+                                inputs={inputs}
+                                options={[]}
+                                useAutocomplete={false}
+                                style={{width: "100vw"}}
+                            />
+                        </div>) : null}
+                    </Grid>
+                    <Grid item xs={12} sm={6} md={4} lg={3}>
+                        <FilterUser
+                            updateSearchText={this.updateSearchText}
+                            search={this.search}
+                            filters={columns}
+                        />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <TableView
+                            columns={columns}
+                            vals={this.state.items}
+                            keys={columns}
+                            showDetailedView={this.showDetailedView}
+                            filters={columns}
+                        />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <DetailUser
+                            showDetailedView={this.state.showDetailedView}
+                            closeDetailedView={this.closeDetailedView}
+                            inputs={columns}
+                            updateModelEdited={this.updateUserEdited}
+                            defaultValues={this.state.detailedValues}
+                            loading={this.state.detailViewLoading}
+                            edit={this.editUser}
+                            delete={this.deleteUser}
+                            disabled={this.props.privilege==Privilege.USER}
+                        />
+                    </Grid>
+                </Grid>
             </div>
         );
     }

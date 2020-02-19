@@ -12,6 +12,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
 import '../../../stylesheets/Models.css';
+import StatusDisplay from '../../helpers/StatusDisplay';
 
 export default class CreateModal extends React.Component {
     constructor(props) {
@@ -26,7 +27,7 @@ export default class CreateModal extends React.Component {
                     <ExpansionPanelSummary
                         expandIcon={<ExpandMoreIcon />}
                     >
-                        <Typography>Create</Typography>
+                        <Typography>Create User</Typography>
                     </ExpansionPanelSummary>
                     <ExpansionPanelDetails>
                         <Grid
@@ -43,10 +44,10 @@ export default class CreateModal extends React.Component {
                                 <TextField id="standard-basic" variant="outlined" label="Display Name" name="display_name" onChange={this.props.updateModelCreator}/>
                             </Grid>
                             <Grid item xs={6}>
-                                <TextField id="standard-basic" variant="outlined" label="Password" name="password" onChange={this.props.updateModelCreator}/>
+                                <TextField id="standard-basic" variant="outlined" label="Password" name="password" type="password" onChange={this.props.updateModelCreator}/>
                             </Grid>
                             <Grid item xs={6}>
-                                <TextField id="standard-basic" variant="outlined" label="Email" name="email" onChange={this.props.updateModelCreator}/>
+                                <TextField id="standard-basic" variant="outlined" label="Email" name="email" type="email" onChange={this.props.updateModelCreator}/>
                             </Grid>
                             <Grid item xs={6}>
                                 <FormControl

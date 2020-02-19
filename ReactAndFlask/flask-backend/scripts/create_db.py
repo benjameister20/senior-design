@@ -13,6 +13,7 @@ from application import application, init  # isort:skip
 init()  # isort:skip
 
 from app.dal.database import db
+from app.dal.datacenter_table import DatacenterEntry  # noqa
 from app.dal.instance_table import InstanceEntry  # noqa
 from app.dal.model_table import ModelEntry  # noqa
 from app.dal.rack_table import RackEntry  # noqa

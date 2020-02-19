@@ -1,0 +1,38 @@
+.root {
+	width: 90%;
+	margin: 0 auto;
+
+  	padding: 7px 14px;
+}
+
+.select-letter {
+	width: 2em;
+	flex-grow: 1;
+	flex-wrap: wrap;
+	padding-left: 1em;
+	padding-right: 2em;
+	padding-bottom: 2em;
+	padding-top: 2em;
+}
+
+.buttons {
+	padding-bottom: 2em;
+	justify-content: space-between;
+}
+
+.button {
+	flex-wrap: wrap;
+	padding-left: 1em;
+	padding-bottom: 2em;
+	padding-top: 2em;
+}
+
+.select-number {
+	width: 2em;
+	flex-grow: 1;
+	flex-wrap: wrap;
+	padding-left: 1em;
+	padding-right: 2em;
+	padding-bottom: 2em;
+	padding-top: 2em;
+}

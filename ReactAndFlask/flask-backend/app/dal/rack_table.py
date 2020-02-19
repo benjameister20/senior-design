@@ -8,20 +8,25 @@ from sqlalchemy.exc import IntegrityError
 class RackEntry(db.Model):
     __tablename__ = "racks"
 
-    label = db.Column(db.String(80), primary_key=True, unique=True)
+    identifier = db.Column(db.Integer, primary_key=True, unique=True)
+    label = db.Column(db.String(80))
+    datacenter_id = db.Column(db.Integer)
 
     def __init__(self, rack: Rack):
         self.label = rack.label
+        self.datacenter_id = rack.datacenter_id
 
     def make_rack(self) -> Rack:
         """ Convert the database entry to a rack """
-        return Rack(label=self.label)
+        return Rack(label=self.label, datacenter_id=self.datacenter_id)
 
 
 class RackTable:
-    def get_rack(self, label: str) -> Optional[Rack]:
+    def get_rack(self, label: str, datacenter_id: int) -> Optional[Rack]:
         """ Get the rack for the given label """
-        rack_entry: RackEntry = RackEntry.query.filter_by(label=label).first()
+        rack_entry: RackEntry = RackEntry.query.filter_by(
+            label=label, datacenter_id=datacenter_id
+        ).first()
         if rack_entry is None:
             return None
 
@@ -44,7 +49,9 @@ class RackTable:
     def delete_rack(self, rack: Rack) -> None:
         """ Removes a rack from the database """
         try:
-            RackEntry.query.filter_by(label=rack.label).delete()
+            RackEntry.query.filter_by(
+                label=rack.label, datacenter_id=rack.datacenter_id
+            ).delete()
             db.session.commit()
         except:
             print(f"Failed to delete rack {rack.label}")

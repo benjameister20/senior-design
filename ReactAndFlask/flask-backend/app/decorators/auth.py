@@ -40,6 +40,8 @@ def requires_role(request, role):
             if user is None:
                 return {"message": f"User {username} does not exist"}
             if not user.privilege == role:
+                print(user)
+                print(request)
                 return {"message": "Access denied"}
             return f(*args, **kwargs)
 

@@ -19,18 +19,28 @@ class Instance:
     def __init__(
         self,
         model_id: int,
-        hostname: str,
+        hostname: Optional[str],
         rack_label: str,
         rack_position: int,
         owner: Optional[str],
         comment: Optional[str],
+        datacenter_id: int,
+        mac_address: Optional[List[str]],
+        network_connections: Optional[List[str]],
+        power_connections: Optional[List[str]],
+        asset_number: int,
     ) -> None:
         self.model_id: int = model_id
-        self.hostname: str = hostname
+        self.hostname: Optional[str] = hostname
         self.rack_label: str = rack_label
         self.rack_position: int = rack_position
         self.owner: Optional[str] = owner
         self.comment: Optional[str] = comment
+        self.datacenter_id: int = datacenter_id
+        self.mac_address: Optional[List[str]] = mac_address
+        self.network_connections: Optional[List[str]] = network_connections
+        self.power_connections: Optional[List[str]] = power_connections
+        self.asset_number: int = asset_number
 
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, Instance):
@@ -64,9 +74,14 @@ class Instance:
             "rack_position": self.rack_position,
             "owner": self.owner,
             "comment": self.comment,
+            "datacenter_id": self.datacenter_id,
+            "mac_address": self.mac_address,
+            "network_connections": self.network_connections,
+            "power_connections": self.power_connections,
+            "asset_number": self.asset_number,
         }
 
-    def make_json_with_model(self, model):
+    def make_json_with_model_and_datacenter(self, model, datacenter):
         return {
             "model": f"{model.vendor} {model.model_number}",
             "height": f"{model.height}",
@@ -75,6 +90,11 @@ class Instance:
             "rack_position": self.rack_position,
             "owner": self.owner,
             "comment": self.comment,
+            "datacenter_id": datacenter,
+            "mac_address": self.mac_address,
+            "network_connections": self.network_connections,
+            "power_connections": self.power_connections,
+            "asset_number": self.asset_number,
         }
 
     @classmethod
@@ -90,6 +110,11 @@ class Instance:
             rack_position=csv_row["rack_position"],
             owner=csv_row["owner"],
             comment=csv_row["comment"],
+            datacenter_id=csv_row["datacenter_id"],
+            mac_address=csv_row["mac_address"],
+            network_connections=csv_row["network_connections"],
+            power_connections=csv_row["power_connections"],
+            asset_number=csv_row["asset_number"],
         )
 
     def _format_csv_entry(self, entry: str) -> str:

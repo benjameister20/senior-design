@@ -16,7 +16,7 @@ def test()
 ```
 -----------------------------
 ```language=python
-def getNextAssetNumber()
+def get_next_asset_number()
 ```
 - Path: '/instances/nextAssetNumber/'
 - REST Type: 'get'

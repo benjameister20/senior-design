@@ -22,6 +22,7 @@ import Graph from "react-graph-vis";
 // }
 
 function getGraph(primaryHosts, host) {
+    var hostnameMapping = {};
     const hostID = 0;
 
     var nodes = [];
@@ -31,28 +32,39 @@ function getGraph(primaryHosts, host) {
         color:"#F5F5DC"
     });
 
+    hostnameMapping[host] = hostID;
+
     var edges = [];
     var primaryHostID = 1;
 
     Object.entries(primaryHosts).map(([primaryHost, secondaryHosts]) => {
-        nodes.push({
-            id:primaryHostID,
-            label:"" + primaryHost,
-            color:"#F0FFFF"
-        });
-        //edges.push({ from: primaryHostID, to: hostID });
-        edges.push({ from: hostID, to: primaryHostID });
+        if (hostnameMapping[primaryHost] !== undefined) {
+            edges.push({ from: host, to:hostnameMapping[primaryHost] });
+        } else {
+            nodes.push({
+                id:primaryHostID,
+                label:"" + primaryHost,
+                color:"#F0FFFF"
+            });
+            edges.push({ from: hostID, to: primaryHostID });
+            hostnameMapping[primaryHost] = primaryHostID;
+        }
 
         var secondaryHostID = primaryHostID + 1;
         secondaryHosts.map(secondaryHost => {
-            nodes.push({
-                id:secondaryHostID,
-                label:"" + secondaryHost,
-                color:"#7FFFD4"
-            });
-            //edges.push({ from: secondaryHostID, to: primaryHostID });
-            edges.push({ from: primaryHostID, to: secondaryHostID });
-            secondaryHostID++;
+            if (hostnameMapping[secondaryHost] !== undefined) {
+                edges.push({ from: primaryHostID, to: hostnameMapping[secondaryHost]});
+            } else {
+                nodes.push({
+                    id:secondaryHostID,
+                    label:"" + secondaryHost,
+                    color:"#7FFFD4"
+                });
+                edges.push({ from: primaryHostID, to: secondaryHostID });
+                hostnameMapping[secondaryHost] = secondaryHostID;
+                secondaryHostID++;
+            }
+
         });
 
         primaryHostID = secondaryHostID + 1;

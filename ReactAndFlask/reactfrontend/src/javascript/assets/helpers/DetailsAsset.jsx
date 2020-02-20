@@ -730,7 +730,7 @@ class DetailAsset extends React.Component {
                         <ExpansionPanelDetails>
                             <NetworkGraph
                                 vals={{
-                                         "host1": [ "host2", "host4" ],
+                                         "host1": [ "host2", "host4", "host11" ],
                                          "host3": ["host5", "host7", "host9", "host11"]
                                     }}
                                 host={this.props.hostname}

@@ -36,7 +36,8 @@ def search():
         limit = 1000
 
     try:
-        instance_list = INSTANCE_MANAGER.get_instances(filter, limit)
+        datacenter_name = request.json["datacenter_name"]
+        instance_list = INSTANCE_MANAGER.get_instances(filter, datacenter_name, limit)
         returnJSON = addInstancesTOJSON(
             addMessageToJSON(returnJSON, "success"),
             list(
@@ -129,8 +130,9 @@ def detail_view():
         return addInstancesTOJSON(
             addMessageToJSON(returnJSON, "success"),
             [
-                instance.make_json_with_model(
-                    INSTANCE_MANAGER.get_model_from_id(instance.model_id)
+                instance.make_json_with_model_and_datacenter(
+                    INSTANCE_MANAGER.get_model_from_id(instance.model_id),
+                    INSTANCE_MANAGER.get_dc_from_id(instance.datacenter_id),
                 )
             ],
         )

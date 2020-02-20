@@ -89,7 +89,7 @@ class InstanceManager:
         if type(new_instance) is InvalidInputsError:
             return new_instance
 
-    def get_instances(self, filter, limit: int):
+    def get_instances(self, filter, dc_name, limit: int):
         model_name = filter.get("model")
 
         try:
@@ -104,6 +104,16 @@ class InstanceManager:
                 "An error occurred while trying to filter by model name. Please input a different model name"
             )
 
+        try:
+            if dc_name is not None:
+                dc_id = self.get_datacenter_id_from_name(dc_name)
+                if dc_id == -1:
+                    dc_id = None
+        except:
+            raise InvalidInputsError(
+                "An error occurred while trying to filter by datacenter name. Please input a different model name"
+            )
+
         hostname = filter.get("hostname")
         rack_label = filter.get("rack")
         rack_position = filter.get("rack_position")
@@ -114,6 +124,7 @@ class InstanceManager:
                 hostname=hostname,
                 rack_label=rack_label,
                 rack_position=rack_position,
+                datacenter_id=dc_id,
                 limit=limit,
             )
             return instance_list
@@ -147,7 +158,7 @@ class InstanceManager:
         model_name = self.check_null(instance_data[Constants.MODEL_KEY])
         model_id = self.get_model_id_from_name(model_name)
 
-        datacenter_name = self.check_null(instance_data[Constants.DATACENTER_KEY])
+        datacenter_name = self.check_null(instance_data[Constants.DC_NAME_KEY])
         datacenter_id = self.get_datacenter_id_from_name(datacenter_name)
 
         try:
@@ -235,6 +246,15 @@ class InstanceManager:
             )
 
         return model
+
+    def get_dc_from_id(self, dc_id):
+        datacenter = self.dc_table.get_datacenter(dc_id)
+        if datacenter is None:
+            raise InvalidInputsError(
+                "An error occurred while trying to retrieve datacenter info corresponding to the instance."
+            )
+
+        return datacenter
 
     def check_null(self, val):
         if val is None:

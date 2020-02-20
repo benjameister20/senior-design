@@ -19,7 +19,7 @@ def test():
 
 
 @datacenters.route("/datacenters/all/", methods=["GET"])
-# @requires_auth(request)
+@requires_auth(request)
 def list_all():
     """ Route for returning all datacenters """
     global DATACENTER_MANAGER

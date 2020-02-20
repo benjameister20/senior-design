@@ -50,6 +50,6 @@ class Constants:
 
     # Datacenter Keys
     DC_ABRV_KEY = "abbreviation"
-    DC_NAME_KEY = "name"
+    DC_NAME_KEY = "datacenter_name"
 
     NAME_ORIG_KEY = "nameOriginal"

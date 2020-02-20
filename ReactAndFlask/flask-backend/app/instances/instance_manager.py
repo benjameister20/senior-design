@@ -89,7 +89,7 @@ class InstanceManager:
         if type(new_instance) is InvalidInputsError:
             return new_instance
 
-    def get_instances(self, filter, limit: int):
+    def get_instances(self, filter, dc_name, limit: int):
         model_name = filter.get("model")
 
         try:
@@ -104,6 +104,16 @@ class InstanceManager:
                 "An error occurred while trying to filter by model name. Please input a different model name"
             )
 
+        try:
+            if dc_name is not None:
+                dc_id = self.get_datacenter_id_from_name(dc_name)
+                if dc_id == -1:
+                    dc_id = None
+        except:
+            raise InvalidInputsError(
+                "An error occurred while trying to filter by datacenter name. Please input a different model name"
+            )
+
         hostname = filter.get("hostname")
         rack_label = filter.get("rack")
         rack_position = filter.get("rack_position")
@@ -114,6 +124,7 @@ class InstanceManager:
                 hostname=hostname,
                 rack_label=rack_label,
                 rack_position=rack_position,
+                datacenter_id=dc_id,
                 limit=limit,
             )
             return instance_list

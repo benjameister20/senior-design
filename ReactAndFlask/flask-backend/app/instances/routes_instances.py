@@ -36,6 +36,7 @@ def search():
         limit = 1000
 
     try:
+        print(request.json)
         datacenter_name = request.json["datacenter_name"]
         instance_list = INSTANCE_MANAGER.get_instances(filter, datacenter_name, limit)
         returnJSON = addInstancesTOJSON(

@@ -25,18 +25,21 @@ import getURL from '../../helpers/functions/GetURL';
 import * as AssetConstants from "../AssetConstants";
 import * as Constants from "../../Constants";
 import { Typography } from '@material-ui/core';
+import stringToMac from "./functions/StringToMacAddress"
 
 function createInputs(name, label, showTooltip, description) {
     return {label, name, showTooltip, description};
 }
 
 const emptySearch = {
+
     "filter": {
             "model":"",
             "hostname":"",
             "rack":"",
             "rack_position":""
-        }
+        },
+    "datacenter_name":"",
 }
 
 const searchPath = "search/";
@@ -104,7 +107,7 @@ class CreateAsset extends React.Component {
             rackU:-1,
             owner:"",
             comment:"",
-            datacenter_id:"",
+            datacenter_name:"",
             tags:[],
             network_connections:null,
             power_connections:null,
@@ -198,8 +201,9 @@ class CreateAsset extends React.Component {
     }
 
     getAssetList = () => {
+        console.log(emptySearch);
         axios.post(
-            getURL(Constants.ASSETS_MAIN_PATH, searchPath), emptySearch).then(
+            getURL(Constants.ASSETS_MAIN_PATH, searchPath),emptySearch).then(
             response => {
                 var instances = response.data.instances;
 
@@ -232,7 +236,7 @@ class CreateAsset extends React.Component {
                         rackU:-1,
                         owner:"",
                         comment:"",
-                        datacenter_id:"",
+                        datacenter_name:"",
                         tags:[],
                         network_connections:[],
                         power_connections:[],
@@ -269,7 +273,7 @@ class CreateAsset extends React.Component {
     }
 
     updateDatacenter = (event) => {
-        this.setState({ datacenter_id: event.target.value });
+        this.setState({ datacenter_name: event.target.value });
     }
 
     updateTags = (event) => {
@@ -277,20 +281,8 @@ class CreateAsset extends React.Component {
     }
 
     changeNetworkMacAddress = (event, port) => {
-        var val = event.target.value;
-        switch(val.length) {
-            case 2:
-                val = (val + ":").toLowerCase();
-                break;
-            case 5:
-                val = (val + ":").toLowerCase();
-                break;
-            case 9:
-                val = val.substring(0,8).toLowerCase();
-                break;
-            default:
-                val = val.toLowerCase();
-        }
+        var val = stringToMac(event.target.value);
+
 
         this.setState(prevState => {
             let network_connections = Object.assign({}, prevState.network_connections);
@@ -384,7 +376,7 @@ class CreateAsset extends React.Component {
             "rackU":this.state.rackU,
             "owner":this.state.owner,
             "comment":this.state.comment,
-            "datacenter_id":this.state.datacenter_id,
+            "datacenter_name":this.state.datacenter_name,
             "tags":this.state.tags,
             "network_connections":this.state.network_connections,
             "power_connections":this.getPowerConnections(),
@@ -439,7 +431,7 @@ class CreateAsset extends React.Component {
             rackU:-1,
             owner:"",
             comment:"",
-            datacenter_id:"",
+            datacenter_name:"",
             tags:[],
             network_connections:[],
             power_connections:[],
@@ -483,9 +475,8 @@ class CreateAsset extends React.Component {
                     closeAfterTransition
                     BackdropComponent={Backdrop}
                     scroll="body"
-                    fullWidth
                     BackdropProps={{
-                    timeout: 500,
+                        timeout: 500,
                     }}
                 >
                     <Fade in={this.state.showModal}>

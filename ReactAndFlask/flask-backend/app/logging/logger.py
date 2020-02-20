@@ -157,7 +157,7 @@ class Logger:
 
         return log_message
 
-    def __create_log_entry_request(self, request, resource, log_message, user):
+    def __create_log_entry_request(self, request, resource, log_message, user, action):
         self.__refresh()
         timestamp = str(datetime.now())
         message = f"[{timestamp}] {user} - {log_message}"
@@ -167,6 +167,7 @@ class Logger:
         log_entry = {
             "timestamp": timestamp,
             "user": user,
+            "action": action,
             "message": message,
             "resource": resource,
             "type": "request",
@@ -216,7 +217,7 @@ class Logger:
         if resource == Logger.RACKS:
             log_message = self.__log_rack_request(action)
 
-        self.__create_log_entry_request(request, resource, log_message, user)
+        self.__create_log_entry_request(request, resource, log_message, user, action)
 
         return None
 

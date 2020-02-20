@@ -12,6 +12,7 @@ import { Button } from '@material-ui/core';
 import Paper from '@material-ui/core/Paper';
 import { withStyles, makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
+import TableSortLabel from '@material-ui/core/TableSortLabel';
 
 import { AssetInput } from '../enums/AssetInputs.ts';
 import { AssetCommand } from '../enums/AssetCommands.ts';
@@ -24,30 +25,51 @@ import getComparator from "../../helpers/functions/GetComparator";
 
 
 const useStyles = theme => ({
-  styledTableRow: {
-    '&:nth-of-type(odd)': {
-      backgroundColor: theme.palette.background.default,
-    },
-  },
-  tableCellHead: {
-	backgroundColor: theme.palette.primary.main,
-	color: theme.palette.common.white,
-  },
-  styledTableCell:{
-      fontSize: 14,
-  },
-  table: {
-    minWidth: 700,
-  },
+	styledTableRow: {
+	'&:nth-of-type(odd)': {
+		backgroundColor: theme.palette.background.default,
+	},
+	},
+	tableCellHead: {
+		backgroundColor: theme.palette.primary.main,
+		color: theme.palette.common.white,
+	},
+	styledTableCell:{
+		fontSize: 14,
+	},
+	table: {
+		minWidth: 700,
+	},
   	paper: {
 		width: '100%',
 		marginBottom: theme.spacing(2),
 	},
+	visuallyHidden: {
+		border: 0,
+		clip: 'rect(0 0 0 0)',
+		height: 1,
+		margin: -1,
+		overflow: 'hidden',
+		padding: 0,
+		position: 'absolute',
+		top: 20,
+		width: 1,
+	  },
 });
 
 function createData(model, hostname, datacenter, rack, rackU, owner, assetNum) {
   return { model, hostname, datacenter, rack, rackU, owner, assetNum };
 }
+
+const headCells = [
+	{ id: 'datacenter', numeric: false, label:"Datacenter", align:"left" },
+	{ id: 'hostname', numeric: false, label:"Hostname", align:"right" },
+	{ id: 'Model', numeric: false, label:"Model", align:"right" },
+	{ id: 'rack', numeric: false, label:"Rack", align:"right" },
+	{ id: 'rackU', numeric: false, label:"Rack U", align:"right" },
+	{ id: 'owner', numeric: false, label:"Owner", align:"right" },
+	{ id: 'assetNumber', numeric: false, label:"Asset Number", align:"right" },
+];
 
 const rows = [
 	createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
@@ -84,7 +106,7 @@ class TableAsset extends React.Component {
 	  originalrack_position:'',
 
 	  order:"asc",
-	  orderBy:"model",
+	  orderBy:"datacenter",
     };
   }
 
@@ -153,7 +175,23 @@ class TableAsset extends React.Component {
 		this.setState({ showStatus: false })
 	}
 
+	createSortHandler = (event, property) => {
+		this.handleRequestSort(event, property);
+	}
 
+	handleRequestSort = (event, property) => {
+		const isAsc = this.state.orderBy === property && this.state.order === 'asc';
+		this.setOrder(isAsc ? 'desc' : 'asc');
+		this.setOrderBy(property);
+	}
+
+	setOrder = (order) => {
+		this.setState({ order: order });
+	}
+
+	setOrderBy = (orderBy) => {
+		this.setState({ orderBy: orderBy });
+	}
 
 	render() {
 	const { classes } = this.props;
@@ -169,17 +207,68 @@ class TableAsset extends React.Component {
 						<Table className={classes.table} aria-label="customized table">
 							<TableHead>
 							<TableRow className={classes.styledTableRow}>
-								<TableCell className={classes.tableCellHead}>Model</TableCell>
-								<TableCell align="right" className={classes.tableCellHead}>Hostname</TableCell>
-								<TableCell align="right" className={classes.tableCellHead}>Datacenter</TableCell>
-								<TableCell align="right" className={classes.tableCellHead}>Rack</TableCell>
-								<TableCell align="right" className={classes.tableCellHead}>Rack U</TableCell>
-								<TableCell align="right" className={classes.tableCellHead}>Owner</TableCell>
-								<TableCell align="right" className={classes.tableCellHead}>Asset Number</TableCell>
+							{headCells.map(headCell => (
+								<TableCell
+									className={classes.tableCellHead}
+									key={headCell.id}
+									align={headCell.align}
+									sortDirection={this.state.orderBy === headCell.id ? this.state.order : false}
+								>
+									<TableSortLabel
+										active={this.state.orderBy === headCell.id}
+										direction={this.state.orderBy === headCell.id ? this.state.order : 'asc'}
+										onClick={(event) => {this.createSortHandler(event, headCell.id)} }
+									>
+									{headCell.label}
+									{this.state.orderBy === headCell.id ? (
+										<span className={classes.visuallyHidden}>
+											{this.state.order === 'desc' ? 'sorted descending' : 'sorted ascending'}
+										</span>
+									) : null}
+									</TableSortLabel>
+								</TableCell>
+								))}
 								<TableCell align="right" className={classes.tableCellHead}></TableCell>
 							</TableRow>
 							</TableHead>
 							<TableBody>
+								{/*stableSort(rows, getComparator(order, orderBy))
+									.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+									.map((row, index) => {
+										const isItemSelected = isSelected(row.name);
+										const labelId = `enhanced-table-checkbox-${index}`;
+
+										return (
+											<TableRow
+												hover
+												onClick={event => handleClick(event, row.name)}
+												role="checkbox"
+												aria-checked={isItemSelected}
+												tabIndex={-1}
+												key={row.name}
+												selected={isItemSelected}
+											>
+											<TableCell padding="checkbox">
+												<Checkbox
+												checked={isItemSelected}
+												inputProps={{ 'aria-labelledby': labelId }}
+												/>
+											</TableCell>
+											<TableCell component="th" id={labelId} scope="row" padding="none">
+												{row.name}
+											</TableCell>
+											<TableCell align="right">{row.calories}</TableCell>
+											<TableCell align="right">{row.fat}</TableCell>
+											<TableCell align="right">{row.carbs}</TableCell>
+											<TableCell align="right">{row.protein}</TableCell>
+											</TableRow>
+										);
+									})}
+									{emptyRows > 0 && (
+										<TableRow style={{ height: (dense ? 33 : 53) * emptyRows }}>
+										<TableCell colSpan={6} />
+										</TableRow>
+									)*/}
 							{rows.map(row =>
 								<TableRow key={row.name}>
 									<TableCell component="th" scope="row">{row.model}</TableCell>

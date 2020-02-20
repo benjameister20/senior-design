@@ -145,7 +145,7 @@ export default class Login extends React.Component {
                     }}
                 >
                     <Grid item xs={12}>
-                        <img src={logo} style={{height: "200px", "marginTop": "50px"}} />
+                        <img src={logo} style={{height: "200px", "marginTop": "50px"}} alt="Hyposoft" />
                     </Grid>
                     <Grid item xs={12}>
                         <Card

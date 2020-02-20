@@ -276,12 +276,16 @@ export default class UsersView extends React.Component {
     }
 
     updateUserCreator = (event) => {
-        this.state.createdUser[event.target.name] = event.target.value;
-        this.forceUpdate()
+        const newUser = this.state.createdUser;
+        newUser[event.target.name] = event.target.value;
+        this.setState({ createdUser: newUser });
+        this.forceUpdate();
     }
 
     updateUserEdited = (event) => {
-        this.state.detailedValues[event.target.name] = event.target.value;
+        const newDetails = this.state.detailedValues;
+        newDetails[event.target.name] = event.target.value;
+        this.setState({ detailedValues: newDetails });
         this.forceUpdate()
     }
 
@@ -320,7 +324,7 @@ export default class UsersView extends React.Component {
                         </Typography>
                     </Grid>
                     <Grid item xs={12} sm={6} md={4} lg={3}>
-                        {(this.props.privilege == Privilege.ADMIN) ?
+                        {(this.props.privilege === Privilege.ADMIN) ?
                         (<div>
                             <CreateUser
                                 showCreateModal={this.state.showCreateModal}
@@ -359,7 +363,7 @@ export default class UsersView extends React.Component {
                             loading={this.state.detailViewLoading}
                             edit={this.editUser}
                             delete={this.deleteUser}
-                            disabled={this.props.privilege==Privilege.USER}
+                            disabled={this.props.privilege === Privilege.USER}
                         />
                     </Grid>
                 </Grid>

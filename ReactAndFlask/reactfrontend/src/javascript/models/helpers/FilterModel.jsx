@@ -8,16 +8,20 @@ export default class FilterModel extends React.Component {
         super(props);
 
         this.state = {
-            filters:{},
+            filters: {},
         };
     }
 
     updateSearchText(event) {
         if (this.state.filters.hasOwnProperty(event.target.id)) {
-            this.state.filters[event.target.id] = event.target.value;
+            const newFilters = this.state.filters;
+            newFilters[event.target.id] = event.target.value;
+            this.setState({ filters: newFilters });
             this.forceUpdate();
         } else {
-            this.state.filters[event.target.id] = event.target.value;
+            const newFilters = this.state.filters;
+            newFilters[event.target.id] = event.target.value;
+            this.setState({ filters: newFilters });
             this.forceUpdate();
         }
     }

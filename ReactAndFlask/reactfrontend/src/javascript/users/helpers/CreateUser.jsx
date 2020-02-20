@@ -12,7 +12,6 @@ import MenuItem from '@material-ui/core/MenuItem';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
 import '../../../stylesheets/Models.css';
-import StatusDisplay from '../../helpers/StatusDisplay';
 
 export default class CreateModal extends React.Component {
     constructor(props) {

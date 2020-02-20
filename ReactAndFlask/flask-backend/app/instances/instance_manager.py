@@ -158,7 +158,7 @@ class InstanceManager:
         model_name = self.check_null(instance_data[Constants.MODEL_KEY])
         model_id = self.get_model_id_from_name(model_name)
 
-        datacenter_name = self.check_null(instance_data[Constants.DATACENTER_KEY])
+        datacenter_name = self.check_null(instance_data[Constants.DC_NAME_KEY])
         datacenter_id = self.get_datacenter_id_from_name(datacenter_name)
 
         try:
@@ -246,6 +246,15 @@ class InstanceManager:
             )
 
         return model
+
+    def get_dc_from_id(self, dc_id):
+        datacenter = self.dc_table.get_datacenter(dc_id)
+        if datacenter is None:
+            raise InvalidInputsError(
+                "An error occurred while trying to retrieve datacenter info corresponding to the instance."
+            )
+
+        return datacenter
 
     def check_null(self, val):
         if val is None:

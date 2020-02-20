@@ -31,7 +31,7 @@ const useStyles = theme => ({
 	},
 	},
 	tableCellHead: {
-		backgroundColor: theme.palette.primary.main,
+		backgroundColor: theme.palette.success.main,
 		color: theme.palette.common.white,
 	},
 	styledTableCell:{
@@ -63,15 +63,14 @@ function createData(model, hostname, datacenter, rack, rackU, owner, assetNum) {
 
 const headCells = [
 	{ id: 'datacenter', numeric: false, label:"Datacenter", align:"left" },
-	{ id: 'hostname', numeric: false, label:"Hostname", align:"right" },
-	{ id: 'Model', numeric: false, label:"Model", align:"right" },
-	{ id: 'rack', numeric: false, label:"Rack", align:"right" },
-	{ id: 'rackU', numeric: false, label:"Rack U", align:"right" },
-	{ id: 'owner', numeric: false, label:"Owner", align:"right" },
+	{ id: 'hostname', numeric: false, label:"Hostname", align:"left" },
+	{ id: 'model', numeric: false, label:"Model", align:"left" },
+	{ id: 'rack', numeric: false, label:"Location", align:"left" },
+	{ id: 'owner', numeric: false, label:"Owner", align:"left" },
 	{ id: 'assetNumber', numeric: false, label:"Asset Number", align:"right" },
 ];
 
-const rows = [
+const testRows = [
 	createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
 	createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
 	createData('Eclair', 262, 16.0, 24, 6.0),
@@ -79,12 +78,6 @@ const rows = [
 	createData('Gingerbread', 356, 16.0, 49, 3.9),
   ];
 
-const columns = [
-    'model',
-    'hostname',
-    'rack',
-    'rack_position',
-]
 
 class TableAsset extends React.Component {
   constructor(props) {
@@ -110,7 +103,7 @@ class TableAsset extends React.Component {
     };
   }
 
-  editAsset = () => {
+	editAsset = () => {
 	let body = this.state.detailedValues.getAssetAsJSON();
 	body[AssetInput.RACK_ORIGINAL] = this.state.originalRack;
 	body[AssetInput.RACK_U_ORIGINAL] = this.state.originalrack_position;
@@ -176,21 +169,18 @@ class TableAsset extends React.Component {
 	}
 
 	createSortHandler = (event, property) => {
-		this.handleRequestSort(event, property);
-	}
-
-	handleRequestSort = (event, property) => {
 		const isAsc = this.state.orderBy === property && this.state.order === 'asc';
-		this.setOrder(isAsc ? 'desc' : 'asc');
-		this.setOrderBy(property);
+		this.setState({ order: isAsc ? 'desc' : 'asc', orderBy:property });
 	}
 
-	setOrder = (order) => {
-		this.setState({ order: order });
-	}
+	updateItems(assets) {
+		var items = [];
 
-	setOrderBy = (orderBy) => {
-		this.setState({ orderBy: orderBy });
+		assets.map(asset => {
+			items.push(createData(asset.model, asset.hostname, asset.datacenter_id, asset.rack, asset.rack_position, asset.owner, asset.asset_number));
+		});
+
+		this.setState({ tableItems : items });
 	}
 
 	render() {
@@ -200,7 +190,9 @@ class TableAsset extends React.Component {
 		<React.Fragment>
 			<Grid container spacing={3}>
 				<Grid item xs={6}>
-					<FilterAsset />
+					<FilterAsset
+						updateItems={this.updateItems}
+					/>
 				</Grid>
 				<Grid item xs={12}>
 					<TableContainer component={Paper}>
@@ -228,67 +220,46 @@ class TableAsset extends React.Component {
 									</TableSortLabel>
 								</TableCell>
 								))}
-								<TableCell align="right" className={classes.tableCellHead}></TableCell>
+								<TableCell align="left" className={classes.tableCellHead}>{""}</TableCell>
 							</TableRow>
 							</TableHead>
 							<TableBody>
-								{/*stableSort(rows, getComparator(order, orderBy))
-									.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+
+
+								{stableSort(this.state.tableItems, getComparator(this.state.order, this.state.orderBy))
+									//.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
 									.map((row, index) => {
-										const isItemSelected = isSelected(row.name);
 										const labelId = `enhanced-table-checkbox-${index}`;
 
 										return (
 											<TableRow
 												hover
-												onClick={event => handleClick(event, row.name)}
-												role="checkbox"
-												aria-checked={isItemSelected}
 												tabIndex={-1}
-												key={row.name}
-												selected={isItemSelected}
+												key={row.assetNum}
 											>
-											<TableCell padding="checkbox">
-												<Checkbox
-												checked={isItemSelected}
-												inputProps={{ 'aria-labelledby': labelId }}
-												/>
-											</TableCell>
-											<TableCell component="th" id={labelId} scope="row" padding="none">
-												{row.name}
-											</TableCell>
-											<TableCell align="right">{row.calories}</TableCell>
-											<TableCell align="right">{row.fat}</TableCell>
-											<TableCell align="right">{row.carbs}</TableCell>
-											<TableCell align="right">{row.protein}</TableCell>
+												<TableCell component="th" id={labelId} scope="row">{row.model}</TableCell>
+												<TableCell align="left">{row.hostname}</TableCell>
+												<TableCell align="left">{row.datacenter}</TableCell>
+												<TableCell align="left">{row.rack + " U" + row.rackU}</TableCell>
+												<TableCell align="left">{row.owner}</TableCell>
+												<TableCell align="right">{row.assetNum}</TableCell>
+												<TableCell align="center">
+													<Button
+														color="primary"
+														variant="contained"
+														onClick={() => this.setState({ showDetailedView: true })}
+													>
+														More Details
+													</Button>
+												</TableCell>
 											</TableRow>
 										);
 									})}
-									{emptyRows > 0 && (
+									{/*emptyRows > 0 && (
 										<TableRow style={{ height: (dense ? 33 : 53) * emptyRows }}>
 										<TableCell colSpan={6} />
 										</TableRow>
 									)*/}
-							{rows.map(row =>
-								<TableRow key={row.name}>
-									<TableCell component="th" scope="row">{row.model}</TableCell>
-									<TableCell align="right">{row.hostname}</TableCell>
-									<TableCell align="right">{row.datacenter}</TableCell>
-									<TableCell align="right">{row.rack}</TableCell>
-									<TableCell align="right">{row.rackU}</TableCell>
-									<TableCell align="right">{row.owner}</TableCell>
-									<TableCell align="right">{row.assetNum}</TableCell>
-									<TableCell align="center">
-										<Button
-											color="primary"
-											variant="contained"
-											onClick={() => this.setState({ showDetailedView: true })}
-										>
-											More Details
-										</Button>
-									</TableCell>
-								</TableRow>
-							)}
 							</TableBody>
 						</Table>
 					</TableContainer>

@@ -2,82 +2,57 @@ import React from 'react';
 
 import axios from 'axios';
 
-import SearchIcon from '@material-ui/icons/Search';
-import InputBase from '@material-ui/core/InputBase';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 import Grid from '@material-ui/core/Grid';
-import { fade, withStyles } from '@material-ui/core/styles';
+import { withStyles } from '@material-ui/core/styles';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
-import { MenuItem, Button, TextField } from '@material-ui/core';
+import { MenuItem, TextField } from '@material-ui/core';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
-import createAssetJSON from "./functions/createAssetJSON";
 import { AssetCommand } from '../enums/AssetCommands.ts'
 import getURL from '../../helpers/functions/GetURL';
 import * as AssetConstants from "../AssetConstants";
 import * as Constants from '../../Constants';
 
+const emptySearch = {
+    "filter": {
+            "vendor":null,
+            "model_number":null,
+            "height":null,
+            "model":null,
+            "hostname":null,
+            "rack":null,
+            "rack_position":null,
+            "username":null,
+            "display_name":null,
+            "email":null,
+            "privilege":null,
+            "model":null,
+            "hostname":null,
+            "starting_rack_letter":null,
+            "ending_rack_letter":null,
+            "starting_rack_number":null,
+            "ending_rack_number":null,
+            "rack":null,
+            "rack_position":null
+        },
+    "datacenter_name":"",
+}
+
+const searchPath = "search/";
+
 const useStyles = theme => ({
-    grow: {
+    root: {
       flexGrow: 1,
     },
-    menuButton: {
-      marginRight: theme.spacing(2),
-    },
-    title: {
-      display: 'none',
-      [theme.breakpoints.up('sm')]: {
-        display: 'block',
-      },
-    },
-    search: {
-      position: 'relative',
-      borderRadius: theme.shape.borderRadius,
-      backgroundColor: fade(theme.palette.common.white, 0.15),
-      '&:hover': {
-        backgroundColor: fade(theme.palette.common.white, 0.25),
-      },
-      marginRight: theme.spacing(2),
-      marginLeft: 0,
-      width: '100%',
-      [theme.breakpoints.up('sm')]: {
-        marginLeft: theme.spacing(3),
-        width: 'auto',
-      },
-    },
-    searchIcon: {
-      width: theme.spacing(7),
-      height: '100%',
-      position: 'absolute',
-      pointerEvents: 'none',
-      display: 'flex',
-      alignItems: 'left',
-      justifyContent: 'left',
-    },
-    inputRoot: {
-      color: 'inherit',
-    },
-    inputInput: {
-      padding: theme.spacing(1, 1, 1, 7),
-      transition: theme.transitions.create('width'),
-      width: '100%',
-      [theme.breakpoints.up('md')]: {
-        width: 200,
-      },
-    },
-    sectionDesktop: {
-      display: 'none',
-      [theme.breakpoints.up('md')]: {
-        display: 'flex',
-      },
-    },
-    sectionMobile: {
-      display: 'flex',
-      [theme.breakpoints.up('md')]: {
-        display: 'none',
-      },
-    },
-  });
+    searchbar: {
+        minWidth: "200px",
+        flexGrow: 1,
+    }
+}
+);
 
 class FilterAsset extends React.Component {
     constructor(props) {
@@ -86,74 +61,114 @@ class FilterAsset extends React.Component {
         this.state = {
             model:"",
             hostname:"",
-            rack:"",
-            rackU:-1,
-            owner:"",
-            comment:"",
             datacenter_id:"",
-            tags:[],
-            network_connections:"",
-            power_connections:"",
-            asset_number:-1,
+            startingLetter:"",
+            endingLetter:"",
+            startingNum:null,
+            endingNum:null,
 
-            startingRackNumber:null,
-            endingRackNumber:null,
+            loadingModels:true,
+            loadingHostnames:true,
+            loadingDatacenters:true,
+
+            modelList:[],
+            datacenterList:[],
+            hostnamesList:[],
         };
     }
 
     componentDidMount() {
         this.search();
+        this.getModelList();
+        this.getDatacenterList();
+        this.getAssetList();
     }
 
-    updateModel = (event, newValue) => {
-        this.setState({ model: newValue });
+    getModelList = () => {
+        axios.post(
+            getURL(Constants.MODELS_MAIN_PATH, searchPath), emptySearch).then(
+            response => {
+                var models = response.data.models;
+                var modelNames = [];
+                models.map(model => {
+                    var modelKey = model.vendor + " " + model.model_number;
+                    modelNames.push(modelKey);
+                });
+                this.setState({ loadingModels: false, modelList: modelNames });
+            });
     }
 
-    updateHostname = (event, newValue) => {
-        this.setState({ hostname: newValue})
+    getDatacenterList = () => {
+        axios.get(
+            getURL(Constants.DATACENTERS_MAIN_PATH, "all/")).then(
+            response => {
+                var datacenters = [];
+                response.data.datacenters.map(datacenter => datacenters.push(datacenter.name));
+                this.setState({ loadingDatacenters: false, datacenterList: datacenters })
+            });
     }
 
-    updateRack = (event, newValue) => {
-        this.setState({ rack: newValue });
+    getAssetList = () => {
+        console.log(emptySearch);
+        axios.post(
+            getURL(Constants.ASSETS_MAIN_PATH, searchPath),emptySearch).then(
+            response => {
+                var instances = response.data.instances;
+                var hostnames = [];
+                instances.map(instance => {
+                    hostnames.push(instance.asset_number);
+                })
+                this.setState({ loadingHostnames: false, hostnamesList: hostnames });
+            });
     }
 
-    updateRackU = (event, newValue) => {
-        this.setState({ rackU: newValue });
+    updateModel = (event) => {
+        this.setState({ model: event.target.value }, () => { this.search() });
     }
 
-    updateOwner = (event, newValue) => {
-        this.setState({ owner: newValue });
+    updateHostname = (event) => {
+        this.setState({ hostname: event.target.value }, () => { this.search() });
     }
 
-    updateComment = (event, newValue) => {
-        this.setState({ comment: newValue });
+    updateDatacenter = (event) => {
+        this.setState({ datacenter_id: event.target.value }, () => { this.search() });
     }
 
-    updateDatacenter = (event, newValue) => {
-        this.setState({ datacenter_id: newValue });
+    updateStartingLetter = (event) => {
+        this.setState({ startingLetter: event.target.value }, () => { this.search() });
     }
 
-    updateTags = (event, newValue) => {
-        this.setState({ tags: newValue });
+    updateEndingLetter = (event) => {
+        this.setState({ endingLetter: event.target.value }, () => { this.search() });
     }
 
-    updateNetworkConnections = (event, newValue) => {
-        this.setState({ network_connections: newValue });
+    updateStartingNum = (event) => {
+        this.setState({ startingNum: event.target.value }, () => { this.search() });
     }
 
-    updatePowerConnections = (event, newValue) => {
-        this.setState({ power_connections: newValue });
+    updateEndingNum = (event) => {
+        this.setState({ endingNum: event.target.value }, () => { this.search() });
     }
 
-    updateAssetNumber = (event, newValue) => {
-        this.setState({ asset_number: newValue });
+    getSearchJSON = () => {
+        return {
+            "datacenter_name":this.state.datacenter_id,
+            "filters": {
+                "model":this.state.model,
+                "hostname":this.state.hostname,
+                "starting_rack_letter":this.state.startingLetter,
+                "ending_rack_letter":this.state.endingLetter,
+                "starting_rack_number":this.state.startingNum,
+                "ending_rack_number":this.state.endingNum
+            }
+        }
     }
 
     search = () => {
         axios.post(
-            getURL(AssetConstants.ASSETS_MAIN_PATH, AssetCommand.search),{ 'filter':createAssetJSON() }
+            getURL(AssetConstants.ASSETS_MAIN_PATH, AssetCommand.search), this.getSearchJSON()
             ).then(response => {
-                this.props.updateSearchItems(response.data.assets);
+                this.props.updateItems(response.data.instances);
             });
     }
 
@@ -162,49 +177,64 @@ class FilterAsset extends React.Component {
 
         return (
             <React.Fragment>
-                <Grid container spacing={3}>
+                <Grid container spacing={3} className={classes.root}>
                     <Grid item xs={3}>
                         <FormControl>
-                            <div>
+                            {this.state.loadingDatacenters ? <CircularProgress /> :
+                            <Autocomplete
+                                id="select-datacenter"
+                                options={this.state.datacenterList}
+                                includeInputInList
+                                renderInput={params => (
                                 <TextField
-                                    placeholder="Search…"
-                                    classes={{
-                                        root: classes.inputRoot,
-                                        input: classes.inputInput,
-                                    }}
-                                    inputProps={{ 'aria-label': 'search' }}
+                                    {...params}
+                                    className={classes.searchbar}
+                                    name={"select-datacenter"}
+                                    placeholder="datacenter"
+                                    fullWidth
                                 />
-                            </div>
+                                )}
+                            />}
                             <FormHelperText>Filter by Datacenter</FormHelperText>
                         </FormControl>
                     </Grid>
                     <Grid item xs={3}>
                         <FormControl>
-                            <div>
+                            {this.state.loadingModels ? <CircularProgress /> :
+                            <Autocomplete
+                                id="select-model"
+                                options={this.state.modelList}
+                                includeInputInList
+                                renderInput={params => (
                                 <TextField
-                                    placeholder="Search…"
-                                    classes={{
-                                        root: classes.inputRoot,
-                                        input: classes.inputInput,
-                                    }}
-                                    inputProps={{ 'aria-label': 'search' }}
+                                    className={classes.searchbar}
+                                    {...params}
+                                    name={"select-model"}
+                                    placeholder="model"
+                                    fullWidth
                                 />
-                            </div>
+                                )}
+                            />}
                             <FormHelperText>Filter by model</FormHelperText>
                         </FormControl>
                     </Grid>
                     <Grid item xs={6}>
                         <FormControl>
-                            <div>
+                            {this.state.loadingHostnames ? <CircularProgress /> :
+                            <Autocomplete
+                                id="select-hostname"
+                                options={this.state.hostnameList}
+                                includeInputInList
+                                renderInput={params => (
                                 <TextField
-                                    placeholder="Search…"
-                                    classes={{
-                                        root: classes.inputRoot,
-                                        input: classes.inputInput,
-                                    }}
-                                    inputProps={{ 'aria-label': 'search' }}
+                                    {...params}
+                                    className={classes.searchbar}
+                                    name={"select-hostname"}
+                                    placeholder="hostname"
+                                    fullWidth
                                 />
-                            </div>
+                                )}
+                            />}
                             <FormHelperText>Filter by hostname</FormHelperText>
                         </FormControl>
                     </Grid>

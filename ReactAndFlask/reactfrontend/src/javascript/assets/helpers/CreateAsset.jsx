@@ -16,7 +16,6 @@ import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
-import FormLabel from '@material-ui/core/FormLabel';
 import FormHelperText from '@material-ui/core/FormHelperText';
 
 import StatusDisplay from '../../helpers/StatusDisplay';
@@ -34,12 +33,26 @@ function createInputs(name, label, showTooltip, description) {
 }
 
 const emptySearch = {
-
     "filter": {
-            "model":"",
-            "hostname":"",
-            "rack":"",
-            "rack_position":""
+            "vendor":null,
+            "model_number":null,
+            "height":null,
+            "model":null,
+            "hostname":null,
+            "rack":null,
+            "rack_position":null,
+            "username":null,
+            "display_name":null,
+            "email":null,
+            "privilege":null,
+            "model":null,
+            "hostname":null,
+            "starting_rack_letter":null,
+            "ending_rack_letter":null,
+            "starting_rack_number":null,
+            "ending_rack_number":null,
+            "rack":null,
+            "rack_position":null
         },
     "datacenter_name":"",
 }
@@ -209,6 +222,8 @@ class CreateAsset extends React.Component {
         axios.post(
             getURL(Constants.ASSETS_MAIN_PATH, searchPath),emptySearch).then(
             response => {
+                console.log("instances")
+                console.log(response);
                 var instances = response.data.instances;
 
                 var assetNums = [];
@@ -465,8 +480,8 @@ class CreateAsset extends React.Component {
             comment:"",
             datacenter_name:"",
             tags:[],
-            network_connections:[],
-            power_connections:[],
+            network_connections:null,
+            power_connections:null,
             asset_number:100000,
 
             selectedConnection:null,
@@ -476,6 +491,12 @@ class CreateAsset extends React.Component {
             statusSeverity:"",
 
             showModal:false,
+
+            powerPortState:null,
+            leftRight:null,
+            availableConnections:false,
+
+            canSubmit:false,
         }, this.getLists());
     }
 

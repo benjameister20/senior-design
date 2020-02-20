@@ -77,6 +77,7 @@ def create():
 @users.route("/users/delete", methods=["POST"])
 @requires_auth(request)
 @requires_role(request, "admin")
+@log(request, LOGGER.USERS, LOGGER.ACTIONS.USERS.DELETE)
 def delete():
     # TESTED AND FUNCTIONAL
     """Route for deleting users
@@ -97,6 +98,7 @@ def delete():
 @users.route("/users/edit", methods=["POST"])
 @requires_auth(request)
 @requires_role(request, "admin")
+@log(request, LOGGER.USERS, LOGGER.ACTIONS.USERS.EDIT)
 def edit():
 
     response = {}
@@ -124,6 +126,7 @@ def authenticate():
 
 
 @users.route("/users/logout", methods=["GET"])
+@log(request, LOGGER.USERS, LOGGER.ACTIONS.USERS.LOGOUT)
 def logout():
 
     response = {}

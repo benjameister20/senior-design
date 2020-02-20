@@ -300,7 +300,6 @@ export default class UsersView extends React.Component {
     render() {
         return (
             <div>
-                {(this.state.initialized) ? null: this.initialized()}
                 <StatusDisplay
                     open={this.state.showStatus}
                     severity={this.state.statusSeverity}
@@ -313,7 +312,7 @@ export default class UsersView extends React.Component {
                     direction="row"
                     justify="flex-start"
                     alignItems="center"
-                    style={{margin: "0px", maxWidth: "100vw"}}
+                    style={{margin: "0px", maxWidth: "95vw"}}
                 >
                     <Grid item xs={12}>
                         <Typography variant="h4">
@@ -331,7 +330,6 @@ export default class UsersView extends React.Component {
                                 inputs={inputs}
                                 options={[]}
                                 useAutocomplete={false}
-                                style={{width: "100vw"}}
                             />
                         </div>) : null}
                     </Grid>

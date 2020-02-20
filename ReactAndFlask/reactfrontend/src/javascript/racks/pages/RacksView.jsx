@@ -7,7 +7,9 @@ import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
 import { MenuItem, Button, TextField } from '@material-ui/core';
 import Paper from '@material-ui/core/Paper';
-
+import Grid from '@material-ui/core/Grid';
+import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
+import ToggleButton from '@material-ui/lab/ToggleButton';
 
 import { RackCommand } from "../enums/RackCommands.ts";
 import { Privilege } from '../../enums/privilegeTypes.ts';
@@ -26,29 +28,35 @@ export default class RacksView extends React.Component {
         super(props);
 
         this.state = {
-            items:[],
-            startingRackLetter:'A',
-            endingRackLetter:'A',
-            startingRackNumber:1,
-            endingRackNumber:1,
+            items: [],
+            firstRack: 'A1',
+            secondRack: 'A1',
 
-            showStatus:false,
-            statusMessage:'',
-            statusSeverity:'',
+            showStatus: false,
+            statusMessage: '',
+            statusSeverity: 'info',
 
-            showConfirmationBox:false,
+            showConfirmationBox: false,
 
-            racksList:[],
-        };
+            racksList: [],
+
+            formats: ["single"]
+        }
 
         axios.defaults.headers.common['token'] = this.props.token;
         axios.defaults.headers.common['privilege'] = this.props.privilege;
-
     }
 
     componentDidMount() {
         this.getAllRacks();
     }
+
+    handleFormat = (event, newFormats) => {
+        console.log(newFormats);
+        if (newFormats.length) {
+            this.setState({formats: newFormats});
+        }
+    };
 
     getAllRacks = () => {
         axios.get(getURL(racksMainPath, RackCommand.GET_ALL_RACKS)).then(response => {
@@ -64,10 +72,8 @@ export default class RacksView extends React.Component {
         axios.post(
             getURL(racksMainPath, command),
             {
-                'start_letter':this.state.startingRackLetter,
-                'stop_letter':this.state.endingRackLetter,
-                'start_number':this.state.startingRackNumber,
-                'stop_number':this.state.endingRackNumber,
+                'startRack':this.state.firstRack,
+                'endRack':this.state.secondRack,
             }
             ).then(response => {
                 console.log(response);
@@ -97,24 +103,20 @@ export default class RacksView extends React.Component {
         this.updateRacks(RackCommand.GET_RACK_DETAILS);
     }
 
-    changeStartingLetter = (event) => {
-        this.setState({ startingRackLetter: event.target.value })
+    changeStartingRack = (event) => {
+        this.setState({ firstRack: event.target.value })
     }
 
-    changeEndingLetter = (event) => {
-        this.setState({ endingRackLetter: event.target.value })
-    }
-
-    changeStartingNum = (event) => {
-        this.setState({ startingRackNumber: event.target.value })
-    }
-
-    changeEndingNum = (event) => {
-        this.setState({ endingRackNumber: event.target.value })
+    changeEndingRack = (event) => {
+        this.setState({ secondRack: event.target.value })
     }
 
     closeShowStatus = () => {
         this.setState({ showStatus: false })
+    }
+
+    changeRackType = (type) => {
+        this.setState({ rackType: type})
     }
 
     render() {
@@ -128,6 +130,28 @@ export default class RacksView extends React.Component {
                     closeStatus={this.closeShowStatus}
                     message={this.state.statusMessage}
                 />
+                <Grid
+                    container
+                    spacing={1}
+                    direction="row"
+                    justify="flex-start"
+                    alignItems="center"
+                >
+                    <Grid item xs={3}>
+                        <ToggleButtonGroup value={this.state.formats} onChange={this.handleFormat} aria-label="rackType" exclusive>
+                            <ToggleButton value="single" aria-label="single">
+                                Single
+                            </ToggleButton>
+                            <ToggleButton value="range" aria-label="range">
+                                Range
+                            </ToggleButton>
+                        </ToggleButtonGroup>
+                        <TextField id="standard-basic" variant="outlined" label="Username" name="username" onChange={this.props.updateModelCreator}/>
+                    </Grid>
+                    <Grid item xs={3}>
+                        <TextField id="standard-basic" variant="outlined" label="Username" name="username" onChange={this.props.updateModelCreator}/>
+                    </Grid>
+                </Grid>
                 <FormControl>
                     <div class="select-letter">
                         <Select id="starting-letter-selector" value={this.state.startingRackLetter} onChange={this.changeStartingLetter}>

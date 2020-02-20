@@ -1,6 +1,4 @@
 import React from 'react';
-import SearchIcon from '@material-ui/icons/Search';
-import InputBase from '@material-ui/core/InputBase';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import Select from '@material-ui/core/Select';
@@ -67,11 +65,15 @@ export default class Filters extends React.Component {
                             <Grid item xs={6}>
                                 <TextField id="standard-basic" variant="outlined" label="Display Name" name="display_name" onChange={this.props.updateModelCreator}/>
                             </Grid>
-                            <Grid item xs={6}>
-                                <TextField id="standard-basic" variant="outlined" label="Password" name="password" onChange={this.props.updateModelCreator}/>
-                            </Grid>
-                            <Grid item xs={6}>
-                                <TextField id="standard-basic" variant="outlined" label="Email" name="email" onChange={this.props.updateModelCreator}/>
+                            <Grid item xs={12}>
+                                <TextField
+                                    id="standard-basic"
+                                    variant="outlined"
+                                    label="Email"
+                                    name="email"
+                                    onChange={this.props.updateModelCreator}
+                                    style={{"width": "100%"}}
+                                />
                             </Grid>
                             <Grid item xs={6}>
                                 <FormControl

@@ -15,15 +15,15 @@ import { Privilege } from '../../enums/privilegeTypes.ts'
 import UploadModal from '../../helpers/UploadModal';
 import getURL from '../../helpers/functions/GetURL';
 import TableView from '../../helpers/TableView';
-import StatusDisplay from '../../helpers/StatusDisplay';
+import { Typography } from '@material-ui/core';
 
-import ErrorBoundray from '../../errors/ErrorBoundry';
 import * as ModelConstants from "../ModelConstants";
+import Grid from '@material-ui/core/Grid';
 
 const columns = [
-    'vendor',
-    'model_number',
-    'height',
+    'Vendor',
+    'Model Number',
+    'Height',
 ]
 
 const modelsMainPath = 'models/';
@@ -34,13 +34,12 @@ export default class ModelsView extends React.Component {
         super(props);
 
         this.state = {
-
             // modals
-            showCreateModal:false,
-            showImportModal:false,
+            showCreateModal: false,
+            showImportModal: false,
 
             // table items
-            items:[], //Constants.testModelArray,
+            items: [],
 
             // vals for creating a new model
             createdModel : {
@@ -290,14 +289,16 @@ export default class ModelsView extends React.Component {
         axios.post(
             getURL(modelsMainPath, ModelCommand.search),
             {
-                'filter':{
+                'filter': {
                     'vendor':this.state.searchVendor,
                     'model_number':this.state.searchModelNum,
                     'height':this.state.searchHeight,
                 }
             }
             ).then(response => {
-                this.setState({ items: response.data['models'] })
+                const models = response.data['models'] === undefined ? [] : response.data['models'];
+                console.log(models);
+                this.setState({ items: models })
             });
 
         this.setState({
@@ -343,7 +344,7 @@ export default class ModelsView extends React.Component {
     }
 
     search = (filters) => {
-        this.setState({ searchVendor:filters['vendor'], searchModelNum:filters['model_number'], searchHeight:filters['height']}, this.searchModels);
+        this.setState({ searchVendor: filters['vendor'], searchModelNum: filters['model_number'], searchHeight: filters['height']}, this.searchModels);
     }
 
     openCreateModal = () => {
@@ -442,80 +443,99 @@ export default class ModelsView extends React.Component {
     render() {
         return (
             <div>
-                <ErrorBoundray>
-                <StatusDisplay
-                    open={this.state.showStatus}
-                    severity={this.state.statusSeverity}
-                    closeStatus={this.closeShowStatus}
-                    message={this.state.statusMessage}
-                    autoHideDuration={6000}
-                />
-                {(this.props.privilege === Privilege.ADMIN) ?
-                    (<div><ButtonsModel
-                    openCreateModal={this.openCreateModal}
-                    openImportModal={this.openImportModal}
-                    downloadTable={this.downloadTable}
-                />
-                <CSVLink
-                    data={this.state.csvData}
-                    filename={modelDownloadFileName}
-                    className="hidden"
-                    ref={(r) => this.csvLink = r}
-                    target="_blank"
-                />
-                <CreateModel
-                    statusOpen={this.state.createStatusOpen}
-                    statusSeverity={this.state.createStatusSeverity}
-                    statusClose={this.createStatusClose}
-                    statusMessage={this.state.createStatusMessage}
+                <Grid
+                    container
+                    spacing={5}
+                    direction="row"
+                    justify="flex-start"
+                    alignItems="center"
+                    style={{margin: "0px", maxWidth: "95vw"}}
+                >
+                    <Grid item xs={12}>
+                        <Typography variant="h4">
+                            Models
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={6} md={4} lg={3}>
+                        {(this.props.privilege == Privilege.ADMIN) ?
+                        (<div>
+                            <CreateModel
+                                statusOpen={this.state.createStatusOpen}
+                                statusSeverity={this.state.createStatusSeverity}
+                                statusClose={this.createStatusClose}
+                                statusMessage={this.state.createStatusMessage}
+                                showCreateModal={this.state.showCreateModal}
+                                closeCreateModal={this.closeCreateModal}
+                                createModel={this.createModel}
+                                updateModelCreator={this.updateModelCreator}
+                                options={this.state.vendorsList}
+                                useAutocomplete={true}
+                                updateModelColor={this.updateModelColor}
+                            />
+                        </div>) : null}
+                    </Grid>
+                    <Grid item xs={12} sm={6} md={4} lg={3}>
+                        <FilterModel
+                            updateSearchText={this.updateSearchText}
+                            search={this.search}
+                            filters={columns}
+                        />
+                    </Grid>
+                    <Grid item xs={12} sm={6} md={4} lg={3}>
+                        {(this.props.privilege === Privilege.ADMIN) ?
+                        (<div><ButtonsModel
+                            openCreateModal={this.openCreateModal}
+                            openImportModal={this.openImportModal}
+                            downloadTable={this.downloadTable}
+                        />
 
-                    showCreateModal={this.state.showCreateModal}
-                    closeCreateModal={this.closeCreateModal}
-                    createModel={this.createModel}
-                    updateModelCreator={this.updateModelCreator}
-                    options={this.state.vendorsList}
-                    useAutocomplete={true}
-                    updateModelColor={this.updateModelColor}
-                />
-                <UploadModal
-                    showImportModal={this.state.showImportModal}
-                    closeImportModal={this.closeImportModal}
-                    uploadFile={this.uploadFile}
-                    chooseFile={this.chooseFile}
-                    textDescription="The following format should be used for each row: vendor,model_number,height,display_color,ethernet_ports,power_ports,cpu,memory,storage,comment"
-                /></div>):null
-                }
-                <FilterModel
-                    updateSearchText={this.updateSearchText}
-                    search={this.search}
-                    filters={columns}
-                />
-                <TableView
-                    columns={columns}
-                    vals={this.state.items}
-                    keys={columns}
-                    showDetailedView={this.showDetailedView}
-                    filters={columns}
-                />
-                <DetailModel
-                    statusOpen={this.state.detailStatusOpen}
-                    statusSeverity={this.state.detailStatusSeverity}
-                    statusClose={this.detailStatusClose}
-                    statusMessage={this.state.detailStatusMessage}
+                        <CSVLink
+                            data={this.state.csvData}
+                            filename={modelDownloadFileName}
+                            className="hidden"
+                            ref={(r) => this.csvLink = r}
+                            target="_blank"
+                        />
 
-                    showDetailedView={this.state.showDetailedView}
-                    closeDetailedView={this.closeDetailedView}
-                    updateModelEdited={this.updateModelEdited}
-                    defaultValues={this.state.detailedValues}
-                    loading={this.state.detailViewLoading}
-                    edit={this.editModel}
-                    delete={this.deleteModel}
-                    disabled={this.props.privilege===Privilege.USER}
-                    options={this.state.vendorsList}
-                    useAutocomplete={true}
-                    updateModelColorDetails={this.updateModelColorDetails}
-                />
-            </ErrorBoundray>
+                        <UploadModal
+                            showImportModal={this.state.showImportModal}
+                            closeImportModal={this.closeImportModal}
+                            uploadFile={this.uploadFile}
+                            chooseFile={this.chooseFile}
+                            textDescription="The following format should be used for each row: vendor,model_number,height,display_color,ethernet_ports,power_ports,cpu,memory,storage,comment"
+                        /></div>):null
+                        }
+                    </Grid>
+                    <Grid item xs={12}>
+                        <TableView
+                            columns={columns}
+                            vals={this.state.items}
+                            keys={columns}
+                            showDetailedView={this.showDetailedView}
+                            filters={columns}
+                        />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <DetailModel
+                            statusOpen={this.state.detailStatusOpen}
+                            statusSeverity={this.state.detailStatusSeverity}
+                            statusClose={this.detailStatusClose}
+                            statusMessage={this.state.detailStatusMessage}
+
+                            showDetailedView={this.state.showDetailedView}
+                            closeDetailedView={this.closeDetailedView}
+                            updateModelEdited={this.updateModelEdited}
+                            defaultValues={this.state.detailedValues}
+                            loading={this.state.detailViewLoading}
+                            edit={this.editModel}
+                            delete={this.deleteModel}
+                            disabled={this.props.privilege===Privilege.USER}
+                            options={this.state.vendorsList}
+                            useAutocomplete={true}
+                            updateModelColorDetails={this.updateModelColorDetails}
+                        />
+                    </Grid>
+                </Grid>
             </div>
         );
     }

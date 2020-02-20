@@ -28,11 +28,11 @@ def list_all()
     "datacenters": [
         {
             "abbreviation" : "DATACENTER ABBREVIATION",
-            "name": "FULL NAME"
+            "datacenter_name": "DATACENTER_NAME"
         }
         {
             "abbreviation" : "DATACENTER ABBREVIATION",
-            "name": "FULL NAME"
+            "datacenter_name": "DATACENTER_NAME"
         }    
     ]
 }
@@ -49,7 +49,7 @@ def create()
 ```language=json
 {
     "abbreviation" : "DATACENTER ABBREVIATION",
-    "name": "FULL NAME"
+    "datacenter_name": "DATACENTER_NAME"
 }
 ```
 - Returns:
@@ -71,7 +71,7 @@ def edit()
 {
     "nameOriginal": "OLD NAME"
     "abbreviation" : "DATACENTER ABBREVIATION",
-    "name": "FULL NAME"
+    "datacenter_name": "DATACENTER_NAME"
 }
 ```
 - Returns:
@@ -91,7 +91,7 @@ def delete()
 - Arguments:
 ```language=json
 {
-    "name": "FULL NAME"
+    "datacenter_name": "DATACENTER_NAME"
 }
 ```
 - Returns:

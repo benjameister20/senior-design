@@ -30,15 +30,27 @@ def test():
 ```language=python
 def generate_report():
 ```
-- REST Type: 'get'
+- REST Type: 'post'
 - Authentication Required: yes
 - Roled required: none
-- Arguments: none
-- Returns:
+- Arguments:
 ```language=json
 {
-    "message":"success"||"ERROR_MESSAGE",
-    TODO: FINISH THIS
+    "datacenter_name": "DATACENTER_NAME"
+
+}
+```
+- Returns (example):
+```language=json
+{
+{
+      "modelUsage": "{\"dell 1234\": 7.14}",
+      "ownerUsage": "{\"No owner listed\": 7.14}",
+      "spaceUsage": "{\"A1\": 7.14}",
+      "totalFree": 92.86,
+      "totalUsage": 7.14,
+      "vendorUsage": "{\"dell\": 7.14}"
+}
 }
 ```
 -----------------------------

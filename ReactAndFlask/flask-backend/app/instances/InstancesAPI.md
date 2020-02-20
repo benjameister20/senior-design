@@ -39,6 +39,7 @@ def search()
 - Arguments:
 ```language=json
 {
+    "datacenter_name": "DATACENTER_NAME"
     "filter":
         {
             "model":"MODEL",
@@ -114,7 +115,7 @@ def create()
     "rack_position":"RACK_U",
     "owner":"OWNER",
     "comment":"COMMENT"
-    "datacenter_id": "DATACENTER",
+    "datacenter_name": "DATACENTER",
     "tags": "TAGS",
     "network_connections": {
         PORT_NAME_1: {
@@ -179,7 +180,7 @@ def edit()
     "rack_position":"RACK_U",
     "owner":"OWNER",
     "comment":"COMMENT"
-    "datacenter_id": "DATACENTER",
+    "datacenter_name": "DATACENTER",
     "tags": "TAGS",
     "mac_address": "MAC ADDRESSES,
     "network_connections": "NETWORK CONNECTIONS",
@@ -218,7 +219,7 @@ def detail_view()
             "rack_position": "RACK_U",
             "owner": "OWNER",
             "comment": "COMMENT"
-            "datacenter_id": "DATACENTER",
+            "datacenter_name": "DATACENTER NAME",
             "tags": "TAGS",
             "mac_address": "MAC ADDRESSES,
             "network_connections": "NETWORK CONNECTIONS",

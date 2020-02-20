@@ -1,6 +1,5 @@
 import React from "react";
 import Login from "./Login";
-import ShibLogin from "./ShibLogin";
 import TabViewer from "./Tabs";
 import axios from 'axios';
 import getURL from './helpers/functions/GetURL';
@@ -30,6 +29,9 @@ export default class PageSelector extends React.Component {
     sessionStorage.setItem(storedPrivilege, privilege);
     sessionStorage.setItem(storedLoggedIn, true);
     sessionStorage.setItem(storedUsername, username);
+
+    axios.defaults.headers.common['token'] = this.props.token;
+    axios.defaults.headers.common['privilege'] = this.props.privilege;
 
     this.setState({
       token:token,

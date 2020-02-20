@@ -122,6 +122,11 @@ export default class ModelsView extends React.Component {
         axios.defaults.headers.common['privilege'] = this.props.privilege;
     }
 
+    componentDidMount() {
+        this.searchModels();
+        this.getVendorList();
+    }
+
     createModel = () => {
         axios.post(
             getURL(modelsMainPath, ModelCommand.create),
@@ -432,11 +437,6 @@ export default class ModelsView extends React.Component {
 
     chooseFile = (event) => {
         this.setState({ importedFile: event.target.files[0] })
-    }
-
-    componentDidMount() {
-        this.searchModels();
-        this.getVendorList();
     }
 
     render() {

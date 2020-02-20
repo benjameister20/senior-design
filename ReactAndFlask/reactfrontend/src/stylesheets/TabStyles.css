@@ -1,6 +1,6 @@
 .root {
     flex-grow: 1;
-    align-items: flex-end;
+    /*align-items: flex-end;*/
   }
 
 .grow {
@@ -18,7 +18,7 @@
 
 .profile {
     padding-right: 2em;
-    align-self: flex-end;
+
     display: inline-flex;
 }
 

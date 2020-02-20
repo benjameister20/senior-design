@@ -12,11 +12,13 @@ export default function jsonToArr(incomingJSON) {
 
     const items = [];
 
-    Object.keys(json).map(function(key) {
+    Object.keys(json).map((key) => {
         const row = [];
         row.push(key);
         row.push(json[key]);
         items.push(row);
+
+        return key;
     });
     return items;
 }

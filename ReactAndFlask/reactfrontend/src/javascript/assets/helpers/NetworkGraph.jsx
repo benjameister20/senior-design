@@ -28,7 +28,7 @@ function getGraph(primaryHosts, host) {
     nodes.push({
         id:hostID,
         label:"" + host,
-        color:"#e04141"
+        color:"#F5F5DC"
     });
 
     var edges = [];
@@ -38,6 +38,7 @@ function getGraph(primaryHosts, host) {
         nodes.push({
             id:primaryHostID,
             label:"" + primaryHost,
+            color:"#F0FFFF"
         });
         //edges.push({ from: primaryHostID, to: hostID });
         edges.push({ from: hostID, to: primaryHostID });
@@ -47,6 +48,7 @@ function getGraph(primaryHosts, host) {
             nodes.push({
                 id:secondaryHostID,
                 label:"" + secondaryHost,
+                color:"#7FFFD4"
             });
             //edges.push({ from: secondaryHostID, to: primaryHostID });
             edges.push({ from: primaryHostID, to: secondaryHostID });

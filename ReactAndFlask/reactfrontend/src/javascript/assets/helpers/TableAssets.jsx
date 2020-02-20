@@ -28,11 +28,11 @@ import { Privilege } from "../../enums/privilegeTypes.ts";
 const useStyles = theme => ({
 	styledTableRow: {
 	'&:nth-of-type(odd)': {
-		backgroundColor: theme.palette.background.default,
+		backgroundColor: theme.palette.primary.light,
 	},
 	},
 	tableCellHead: {
-		backgroundColor: theme.palette.success.main,
+		backgroundColor: theme.palette.primary.light,
 		color: theme.palette.common.white,
 	},
 	styledTableCell:{

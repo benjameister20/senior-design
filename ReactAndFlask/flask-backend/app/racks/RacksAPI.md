@@ -42,6 +42,7 @@ def create_racks():
     "stop_letter":"STOP_LETTER",
     "start_number":"START_NUMBER"||START_NUMBER,
     "stop_number":"STOP_NUMBER"||STOP_NUMBER
+    "datacenter_name": "DATACENTER_NAME"
 }
 ```
 - Returns:
@@ -64,6 +65,7 @@ def get_rack_details():
     "stop_letter":"STOP_LETTER",
     "start_number":"START_NUMBER"||START_NUMBER,
     "stop_number":"STOP_NUMBER"||STOP_NUMBER
+    "datacenter_name": "DATACENTER_NAME"
 }
 ```
 - Returns:
@@ -91,6 +93,7 @@ def delete_racks():
     "stop_letter":"STOP_LETTER",
     "start_number":"START_NUMBER"||START_NUMBER,
     "stop_number":"STOP_NUMBER"||STOP_NUMBER
+    "datacenter_name": "DATACENTER_NAME"
 }
 ```
 - Returns:

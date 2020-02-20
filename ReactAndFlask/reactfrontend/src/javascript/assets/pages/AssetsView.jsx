@@ -4,7 +4,6 @@ import Grid from '@material-ui/core/Grid';
 
 import { Privilege } from '../../enums/privilegeTypes.ts'
 import ImpExpAsset from '../helpers/ImpExpAsset';
-import FilterAsset from '../helpers/FilterAsset';
 import CreateAsset from '../helpers/CreateAsset';
 import StatusDisplay from '../../helpers/StatusDisplay';
 import TableAsset from '../helpers/TableAssets';
@@ -37,9 +36,6 @@ export default class AssetsView extends React.Component {
                         message={this.state.statusMessage}
                     />
                     <Grid container spacing={3}>
-                        <Grid item xs={12}>
-                            <FilterAsset />
-                        </Grid>
                         <Grid item xs={3}>
                             {(this.props.privilege === Privilege.ADMIN) ? <CreateAsset search={this.search} />:null}
                         </Grid>

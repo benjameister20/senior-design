@@ -16,7 +16,7 @@ def test()
 ```
 -----------------------------
 ```language=python
-def getNextAssetNumber()
+def get_next_asset_number()
 ```
 - Path: '/instances/nextAssetNumber/'
 - REST Type: 'get'
@@ -39,12 +39,15 @@ def search()
 - Arguments:
 ```language=json
 {
+    "datacenter_name": "DATACENTER_NAME"
     "filter":
         {
             "model":"MODEL",
             "hostname":"HOSTNAME",
-            "rack":"RACK",
-            "rack_position":"RACK_U"
+            "starting_rack_letter":"STARTING_LETTER",
+            "ending_rack_letter":"ENDING_LETTER",
+            "starting_rack_number":STARTING_NUMBER,
+            "ending_rack_number":ENDING_NUMBER,
         }
     "limit":OPTIONAL_LIMIT
 }
@@ -114,10 +117,25 @@ def create()
     "rack_position":"RACK_U",
     "owner":"OWNER",
     "comment":"COMMENT"
-    "datacenter_id": "DATACENTER",
+    "datacenter_name": "DATACENTER",
     "tags": "TAGS",
-    "mac_address": "MAC ADDRESSES,
-    "network_connections": "NETWORK CONNECTIONS",
+    "network_connections": {
+        PORT_NAME_1: {
+            "mac_address":MAC_ADDRESS,
+            "connection_hostname":HOSTNAME,
+            "connection_port":CONNECTION_PORT_NAME,
+        },
+        PORT_NAME_2: {
+            "mac_address":MAC_ADDRESS,
+            "connection_hostname":HOSTNAME,
+            "connection_port":CONNECTION_PORT_NAME,
+        },
+        PORT_NAME_3: {
+            "mac_address":MAC_ADDRESS,
+            "connection_hostname":HOSTNAME,
+            "connection_port":CONNECTION_PORT_NAME,
+        }
+    }
     "power_connections": "POWER CONNECTIONS",
     "asset_number": "ASSET NUMBER",  
 }
@@ -164,7 +182,7 @@ def edit()
     "rack_position":"RACK_U",
     "owner":"OWNER",
     "comment":"COMMENT"
-    "datacenter_id": "DATACENTER",
+    "datacenter_name": "DATACENTER",
     "tags": "TAGS",
     "mac_address": "MAC ADDRESSES,
     "network_connections": "NETWORK CONNECTIONS",
@@ -203,7 +221,7 @@ def detail_view()
             "rack_position": "RACK_U",
             "owner": "OWNER",
             "comment": "COMMENT"
-            "datacenter_id": "DATACENTER",
+            "datacenter_name": "DATACENTER NAME",
             "tags": "TAGS",
             "mac_address": "MAC ADDRESSES,
             "network_connections": "NETWORK CONNECTIONS",

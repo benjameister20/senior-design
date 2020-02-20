@@ -1,7 +1,6 @@
 import React from 'react';
 
 import axios from 'axios';
-import getURL from '../../helpers/functions/GetURL';
 
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -9,11 +8,20 @@ import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
+import { Button } from '@material-ui/core';
 import Paper from '@material-ui/core/Paper';
 import { withStyles, makeStyles } from '@material-ui/core/styles';
-import { AssetInput } from '../enums/AssetInputs';
-import { AssetCommand } from '../enums/AssetCommands';
-import * as AssetConstants from '../AssetConstants';
+import Grid from '@material-ui/core/Grid';
+
+import { AssetInput } from '../enums/AssetInputs.ts';
+import { AssetCommand } from '../enums/AssetCommands.ts';
+import getURL from '../../helpers/functions/GetURL';
+import * as AssetConstants from "../AssetConstants";
+import DetailAsset from "./DetailsAsset";
+import FilterAsset from './FilterAsset';
+import stableSort from "../../helpers/functions/StableSort";
+import getComparator from "../../helpers/functions/GetComparator";
+
 
 const useStyles = theme => ({
   styledTableRow: {
@@ -22,7 +30,7 @@ const useStyles = theme => ({
     },
   },
   tableCellHead: {
-	backgroundColor: theme.palette.common.black,
+	backgroundColor: theme.palette.primary.main,
 	color: theme.palette.common.white,
   },
   styledTableCell:{
@@ -31,10 +39,14 @@ const useStyles = theme => ({
   table: {
     minWidth: 700,
   },
+  	paper: {
+		width: '100%',
+		marginBottom: theme.spacing(2),
+	},
 });
 
-function createData(name, calories, fat, carbs, protein) {
-  return { name, calories, fat, carbs, protein };
+function createData(model, hostname, datacenter, rack, rackU, owner, assetNum) {
+  return { model, hostname, datacenter, rack, rackU, owner, assetNum };
 }
 
 const rows = [
@@ -65,14 +77,14 @@ class TableAsset extends React.Component {
 
 	  deleteAssetRack:'',
 	  deleteAssetrack_position:'',
-	  viewAssetRack:'',
-	  viewAssetrack_position:'',
 
 	  showDetailedView: false,
 	  detailViewLoading:false,
-	  detailedValues : null,
 	  originalRack:'',
 	  originalrack_position:'',
+
+	  order:"asc",
+	  orderBy:"model",
     };
   }
 
@@ -121,124 +133,86 @@ class TableAsset extends React.Component {
 			});
 	}
 
-	detailViewAsset = (rack, rack_position) => {
+	getAssetDetails = (rack, rack_position) => {
+		this.setState({ detailViewLoading: true });
+
 		var body = {};
 		body[AssetInput.RACK] = rack;
 		body[AssetInput.RACK_U] = rack_position;
 
 		axios.post(
 			getURL(AssetConstants.ASSETS_MAIN_PATH, AssetCommand.detailView), body
-			).then(response => this.setState({ detailedValues: response.data['assets'][0], detailViewLoading:false})
-			);
-
-		this.setState({
-			viewAssetRack:'',
-		});
-	}
-
-
-
-	showDetailedView = (id) => {
-		this.setState({
-			showDetailedView: true,
-			detailViewLoading:true,
-			originalRack: this.state.items[id][AssetInput.RACK],
-			originalrack_position: this.state.items[id][AssetInput.RACK_U],
-		});
-
-		var rack = this.state.items[id][AssetInput.RACK];
-		var rack_position = this.state.items[id][AssetInput.RACK_U];
-
-		this.detailViewAsset(rack, rack_position);
+			).then(response => this.setState({ detailedValues: response.data['assets'][0], detailViewLoading:false}));
 	}
 
 	closeDetailedView = () => {
 		this.setState({ showDetailedView: false })
 	}
 
-	updateAssetEdited = (event) => {
-		this.state.detailedValues.updateVal(event.target.value);
-		this.forceUpdate()
-	}
-
 	closeShowStatus = () => {
 		this.setState({ showStatus: false })
 	}
 
-	detailStatusClose = () => {
-		this.setState({ detailStatusOpen: false })
-	}
 
-  showDetailedView(event) {
-    this.props.showDetailedView(event.target.id);
-  }
 
-  render() {
+	render() {
 	const { classes } = this.props;
 
-    return (
-      <div>
-        <TableContainer component={Paper}>
-        <Table className={classes.table} aria-label="customized table">
-          <TableHead>
-            <TableRow className={classes.styledTableRow}>
-              <TableCell className={classes.tableCellHead}>Dessert (100g serving)</TableCell>
-              <TableCell align="right" className={classes.tableCellHead}>Calories</TableCell>
-              <TableCell align="right" className={classes.tableCellHead}>Fat&nbsp;(g)</TableCell>
-              <TableCell align="right" className={classes.tableCellHead}>Carbs&nbsp;(g)</TableCell>
-              <TableCell align="right" className={classes.tableCellHead}>Protein&nbsp;(g)</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {rows.map(row => (
-              <TableRow key={row.name}>
-                <TableCell component="th" scope="row">
-                  {row.name}
-                </TableCell>
-                <TableCell align="right" className={classes.styledTableCell}>{row.calories}</TableCell>
-                <TableCell align="right">{row.fat}</TableCell>
-                <TableCell align="right">{row.carbs}</TableCell>
-                <TableCell align="right">{row.protein}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-
-
-        {/*<TableContainer component={Paper}>
-          <Table className={{minWidth: 650}} aria-label="simple table">
-            <TableHead>
-              <TableRow >
-                {this.props.columns.map(col => (<TableCell><span id={col}>{col}</span></TableCell>))}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {this.props.vals.map((row, index)=> (
-              <TableRow>
-                {this.props.keys.map(key => (<TableCell scope="row"><span id={index} onClick={this.showDetailedView.bind(this)}>{row[key]}</span></TableCell>))}
-              </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-			  </TableContainer>
+	return (
+		<React.Fragment>
+			<Grid container spacing={3}>
+				<Grid item xs={6}>
+					<FilterAsset />
+				</Grid>
+				<Grid item xs={12}>
+					<TableContainer component={Paper}>
+						<Table className={classes.table} aria-label="customized table">
+							<TableHead>
+							<TableRow className={classes.styledTableRow}>
+								<TableCell className={classes.tableCellHead}>Model</TableCell>
+								<TableCell align="right" className={classes.tableCellHead}>Hostname</TableCell>
+								<TableCell align="right" className={classes.tableCellHead}>Datacenter</TableCell>
+								<TableCell align="right" className={classes.tableCellHead}>Rack</TableCell>
+								<TableCell align="right" className={classes.tableCellHead}>Rack U</TableCell>
+								<TableCell align="right" className={classes.tableCellHead}>Owner</TableCell>
+								<TableCell align="right" className={classes.tableCellHead}>Asset Number</TableCell>
+								<TableCell align="right" className={classes.tableCellHead}></TableCell>
+							</TableRow>
+							</TableHead>
+							<TableBody>
+							{rows.map(row =>
+								<TableRow key={row.name}>
+									<TableCell component="th" scope="row">{row.model}</TableCell>
+									<TableCell align="right">{row.hostname}</TableCell>
+									<TableCell align="right">{row.datacenter}</TableCell>
+									<TableCell align="right">{row.rack}</TableCell>
+									<TableCell align="right">{row.rackU}</TableCell>
+									<TableCell align="right">{row.owner}</TableCell>
+									<TableCell align="right">{row.assetNum}</TableCell>
+									<TableCell align="center">
+										<Button
+											color="primary"
+											variant="contained"
+											onClick={() => this.setState({ showDetailedView: true })}
+										>
+											More Details
+										</Button>
+									</TableCell>
+								</TableRow>
+							)}
+							</TableBody>
+						</Table>
+					</TableContainer>
+				</Grid>
+			</Grid>
 		<DetailAsset
-			statusOpen={this.state.detailStatusOpen}
-			statusSeverity={this.state.detailStatusSeverity}
-			statusClose={this.detailStatusClose}
-			statusMessage={this.state.detailStatusMessage}
-			showDetailedView={this.state.showDetailedView}
-			closeDetailedView={this.closeDetailedView}
-			updateModelEdited={this.updateAssetEdited}
-			defaultValues={this.state.detailedValues}
-			loading={this.state.detailViewLoading}
-			edit={this.editAsset}
-			delete={this.deleteAsset}
-			disabled={this.props.privilege===Privilege.USER}
+			open={this.state.showDetailedView}
+			close={this.closeDetailedView}
+			search={this.props.search}
+			/*disabled={this.props.privilege===Privilege.USER}*/
 		/>
-		*/}
-      </div>
-    );
+		</React.Fragment>
+	);
   }
 }
 

@@ -96,8 +96,8 @@ class FilterAsset extends React.Component {
             power_connections:"",
             asset_number:-1,
 
-            startingRackNumber:1,
-            endingRackNumber:1,
+            startingRackNumber:null,
+            endingRackNumber:null,
         };
     }
 
@@ -214,7 +214,6 @@ class FilterAsset extends React.Component {
                                     id="starting-letter-selector"
                                     value={this.state.startingRackLetter}
                                     onChange={this.changeStartingLetter}
-                                    defaultValue={Constants.RackX[0]}
                                 >
                                     {Constants.RackX.map(val => (<MenuItem value={val}>{val}</MenuItem>))}
                                 </Select>
@@ -227,7 +226,6 @@ class FilterAsset extends React.Component {
                                     id="ending-letter-selector"
                                     value={this.state.endingRackLetter}
                                     onChange={this.changeEndingLetter}
-                                    defaultValue={Constants.RackX[0]}
                                 >
                                     {Constants.RackX.map(val => (<MenuItem value={val}>{val}</MenuItem>))}
                                 </Select>

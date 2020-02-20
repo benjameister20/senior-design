@@ -40,6 +40,9 @@ const emptySearch = {
 }
 
 const searchPath = "search/";
+const left = "left";
+const right = "right";
+const off = "off";
 
 const useStyles = theme => ({
     root: {
@@ -51,6 +54,8 @@ const useStyles = theme => ({
         justifyContent: 'center',
         maxWidth: "80%",
         margin:"0 auto",
+        minWidth:"70%",
+        overflow: "scroll"
       },
       paper: {
         backgroundColor: theme.palette.background.paper,
@@ -115,6 +120,7 @@ class CreateAsset extends React.Component {
 
             powerPortState:null,
             leftRight:null,
+            availableConnections:false,
 
             inputs: {
                 "model":createInputs(AssetInput.MODEL, "Model", false, "A reference to an existing model"),
@@ -162,7 +168,7 @@ class CreateAsset extends React.Component {
                 });
 
                 this.setState({ loadingModels: false, modelList: modelNames, networkList: networkNames, powerPortList: powerPortNames })
-            });
+            }, this.availableNetworkConnections());
     }
 
     getOwnerList = () => {
@@ -205,7 +211,7 @@ class CreateAsset extends React.Component {
                 })
 
                 this.setState({ loadingHostnames: false, assetNumList: assetNums, assetNumToModelList: assetNumToModel });
-            });
+            }, this.availableNetworkConnections());
     }
 
     createAsset = () => {
@@ -337,8 +343,37 @@ class CreateAsset extends React.Component {
         });
     }
 
+    changePowerPortState = (event, portNum) => {
+        var val = event.target.value;
+
+        this.setState(prevState => {
+            let leftRight = Object.assign({}, prevState.leftRight);
+            leftRight[portNum] = val;
+            return { leftRight };
+        });
+    }
+
     updateAssetNumber = (event) => {
         this.setState({ asset_number: event.target.value });
+    }
+
+    getPowerConnections = () => {
+
+        var pwrConns = [];
+        Object.entries(this.state.leftRight).map(([key, value]) => {
+            switch(value) {
+                case left:
+                    pwrConns.push("L" + this.state.power_connections[key]);
+                    break;
+                case right:
+                    pwrConns.push("R" + this.state.power_connections[key]);
+                    break;
+                default:
+                    break;
+            }
+        });
+
+        return pwrConns;
     }
 
     createJSON = () => {
@@ -352,19 +387,22 @@ class CreateAsset extends React.Component {
             "datacenter_id":this.state.datacenter_id,
             "tags":this.state.tags,
             "network_connections":this.state.network_connections,
-            "power_connections":this.state.power_connections,
+            "power_connections":this.getPowerConnections(),
             'asset_number':this.state.asset_number,
         }
     }
 
-    changePowerPortState = (event, portNum) => {
-        var val = event.target.value;
+    availableNetworkConnections = () => {
+        var availableNetworks = false;
 
-        this.setState(prevState => {
-            let leftRight = Object.assign({}, prevState.leftRight);
-            leftRight[portNum] = val;
-            return { leftRight };
+        var assets = this.state.assetNumList;
+        assets.map(asset => {
+            if (Object.keys(this.state.networList[this.state.assetNumToModelList[asset]].length).length > 0) {
+                availableNetworks = true;
+            }
         });
+
+        this.setState({ availableConnections: availableNetworks });
     }
 
     showModal = () => {
@@ -444,6 +482,8 @@ class CreateAsset extends React.Component {
                     onClose={this.closeModal}
                     closeAfterTransition
                     BackdropComponent={Backdrop}
+                    scroll="body"
+                    fullWidth
                     BackdropProps={{
                     timeout: 500,
                     }}
@@ -458,7 +498,9 @@ class CreateAsset extends React.Component {
                     || this.state.loadingOwners)
                     //&& false
                     ) ? <div className={classes.progress}><CircularProgress /></div> :
-                        <form>
+                        <form
+                            onSubmit={this.createAsset
+                        >
                         <Grid container spacing={3}>
                             <Grid item xs={3}>
                                 <Tooltip placement="top" open={this.state.inputs.model.Tooltip} title={this.state.inputs.model.description}>
@@ -583,7 +625,12 @@ class CreateAsset extends React.Component {
                             </Grid>
 
                             <Grid item xs={12}>
-                                {(!(this.state.networkList && this.state.networkList[this.state.model]) || (this.state.hostname==="")) ? null:
+                                {(
+                                    (!(this.state.networkList
+                                        && this.state.networkList[this.state.model])
+                                    || (this.state.hostname===""))
+                                    && !this.state.availableConnections
+                                ) ? null:
                                 this.state.networkList[this.state.model].map(networkPort => (
                                 <Grid container spacing={3}>
                                     <Grid item xs={2}>
@@ -646,12 +693,15 @@ class CreateAsset extends React.Component {
                                 ))}
                             </Grid>
 
-                            {(!(this.state.powerPortList && this.state.powerPortList[this.state.model])) ? null :
+                            {(
+                                !(this.state.powerPortList
+                                && this.state.powerPortList[this.state.model])
+                                ) ? null :
                             Array.from( { length: this.state.powerPortList[this.state.model] }, (_, k) => (
                             <Grid item xs={12}>
                                 <Grid container spacing={3}>
                                     <Grid item xs={12}>
-                                        <Typography>{"Power Port :" + k}</Typography>
+                                        <Typography>{"Power Port: " + k}</Typography>
                                     </Grid>
                                     <Grid item xs={2}>
                                         <TextField
@@ -712,7 +762,6 @@ class CreateAsset extends React.Component {
                                     variant="contained"
                                     color="primary"
                                     type="submit"
-                                    onClick={this.createAsset}
                                 >
                                     Create
                                 </Button>

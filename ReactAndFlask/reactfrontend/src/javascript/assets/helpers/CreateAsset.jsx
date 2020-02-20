@@ -499,7 +499,7 @@ class CreateAsset extends React.Component {
                     //&& false
                     ) ? <div className={classes.progress}><CircularProgress /></div> :
                         <form
-                            onSubmit={this.createAsset
+                            onSubmit={this.createAsset}
                         >
                         <Grid container spacing={3}>
                             <Grid item xs={3}>

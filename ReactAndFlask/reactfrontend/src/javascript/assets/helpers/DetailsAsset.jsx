@@ -1,7 +1,6 @@
 import React from 'react';
 
 import axios from 'axios';
-
 import TextField from "@material-ui/core/TextField";
 import Button from '@material-ui/core/Button';
 import Autocomplete from '@material-ui/lab/Autocomplete';
@@ -16,7 +15,11 @@ import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
-import FormLabel from '@material-ui/core/FormLabel';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import ExpansionPanel from '@material-ui/core/ExpansionPanel';
+import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
+import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 import StatusDisplay from '../../helpers/StatusDisplay';
 import { AssetInput } from '../enums/AssetInputs.ts';
@@ -25,6 +28,9 @@ import getURL from '../../helpers/functions/GetURL';
 import * as AssetConstants from "../AssetConstants";
 import * as Constants from "../../Constants";
 import { Typography } from '@material-ui/core';
+import stringToMac from "./functions/StringToMacAddress"
+import stringToRack from "./functions/StringToRack";
+import NetworkGraph from "./NetworkGraph";
 
 function createInputs(name, label, showTooltip, description) {
     return {label, name, showTooltip, description};
@@ -32,11 +38,27 @@ function createInputs(name, label, showTooltip, description) {
 
 const emptySearch = {
     "filter": {
-            "model":"",
-            "hostname":"",
-            "rack":"",
-            "rack_position":""
-        }
+            "vendor":null,
+            "model_number":null,
+            "height":null,
+            "model":null,
+            "hostname":null,
+            "rack":null,
+            "rack_position":null,
+            "username":null,
+            "display_name":null,
+            "email":null,
+            "privilege":null,
+            "model":null,
+            "hostname":null,
+            "starting_rack_letter":null,
+            "ending_rack_letter":null,
+            "starting_rack_number":null,
+            "ending_rack_number":null,
+            "rack":null,
+            "rack_position":null
+        },
+    "datacenter_name":"",
 }
 
 const searchPath = "search/";
@@ -55,7 +77,6 @@ const useStyles = theme => ({
         maxWidth: "80%",
         margin:"0 auto",
         minWidth:"70%",
-        overflow: "scroll"
       },
       paper: {
         backgroundColor: theme.palette.background.paper,
@@ -76,8 +97,6 @@ class DetailAsset extends React.Component {
         super(props);
 
         this.state = {
-            // next available asset number
-            loadingAssetNumber:true,
 
             // model information
             loadingModels:true,
@@ -104,7 +123,7 @@ class DetailAsset extends React.Component {
             rackU:-1,
             owner:"",
             comment:"",
-            datacenter_id:"",
+            datacenter_name:"",
             tags:[],
             network_connections:null,
             power_connections:null,
@@ -120,6 +139,12 @@ class DetailAsset extends React.Component {
 
             powerPortState:null,
             leftRight:null,
+            availableConnections:false,
+
+            canSubmit:false,
+
+            detailAsset:null,
+            loadingDetailAsset: true,
 
             inputs: {
                 "model":createInputs(AssetInput.MODEL, "Model", false, "A reference to an existing model"),
@@ -139,13 +164,36 @@ class DetailAsset extends React.Component {
 
     componentDidMount() {
         this.getLists();
+        this.getDetailView();
+    }
+
+    getDetailView = () => {
+        axios.post(getURL(Constants.ASSETS_MAIN_PATH, AssetCommand.detailView), { "asset_number":this.props.asset }).then(
+            response => {
+                this.setState({ detailAsset: response.data.instances[0], loadingDetailAsset: false});
+            }
+        );
+
+        var detailTemp = {
+            "model": "Dell 27",
+            "hostname": "HOSTNAME",
+            "rack": "A1",
+            "rack_position": 1,
+            "owner": "OWNER",
+            "comment": "COMMENT",
+            "datacenter_name": "DATACENTER NAME",
+            "tags": "TAGS",
+            "network_connections": "",
+            "power_connections": "",
+            "asset_number": 1000005,
+        };
+        this.setState({ detailAsset: detailTemp });
     }
 
     getLists = () => {
         this.getModelList();
         this.getOwnerList();
         this.getDatacenterList();
-        this.getNextAssetNum();
         this.getAssetList();
     }
 
@@ -166,7 +214,7 @@ class DetailAsset extends React.Component {
                     powerPortNames[modelKey] = parseInt(model.power_ports);
                 });
 
-                this.setState({ loadingModels: false, modelList: modelNames, networkList: networkNames, powerPortList: powerPortNames })
+                this.setState({ loadingModels: false, modelList: modelNames, networkList: networkNames, powerPortList: powerPortNames }, this.availableNetworkConnections())
             });
     }
 
@@ -190,16 +238,13 @@ class DetailAsset extends React.Component {
             });
     }
 
-    getNextAssetNum = () => {
-        axios.get(
-            getURL(Constants.ASSETS_MAIN_PATH, AssetCommand.GET_NEXT_ASSET_NUM)).then(
-            response => this.setState({ loadingAssetNumber: false, asset_number: response.data.asset_number }));
-    }
-
     getAssetList = () => {
+        console.log(emptySearch);
         axios.post(
-            getURL(Constants.ASSETS_MAIN_PATH, searchPath), emptySearch).then(
+            getURL(Constants.ASSETS_MAIN_PATH, searchPath),emptySearch).then(
             response => {
+                console.log("instances")
+                console.log(response);
                 var instances = response.data.instances;
 
                 var assetNums = [];
@@ -209,87 +254,98 @@ class DetailAsset extends React.Component {
                     assetNumToModel[instance.asset_number] = instance.model;
                 })
 
-                this.setState({ loadingHostnames: false, assetNumList: assetNums, assetNumToModelList: assetNumToModel });
+                this.setState({ loadingHostnames: false, assetNumList: assetNums, assetNumToModelList: assetNumToModel }, this.availableNetworkConnections());
             });
     }
 
-    DetailAsset = () => {
-        axios.post(
-            getURL(AssetConstants.ASSETS_MAIN_PATH, AssetCommand.create),
-            this.createJSON()).then(
-                response => {
-                if (response.data.message === AssetConstants.SUCCESS_TOKEN) {
-                    this.setState({
-                        statusOpen: true,
-                        statusMessage: "Successfully created asset",
-                        statusSeverity:AssetConstants.SUCCESS_TOKEN,
-                        showModal:false,
+    validJSON = (json) => {
+        var valid = (json.model !== ""
+        && json.owner !== ""
+        && json.datacenter_name !== ""
+        && json.rack !== ""
+        && json.rack_position !== -1
+        && json.asset_number >= 100000 && json.asset_number <= 999999)
 
-                        model:"",
-                        hostname:"",
-                        rack:"",
-                        rackU:-1,
-                        owner:"",
-                        comment:"",
-                        datacenter_id:"",
-                        tags:[],
-                        network_connections:[],
-                        power_connections:[],
-                        asset_number:-1,
-                    }, this.props.search());
-                } else {
-                    this.setState({ statusOpen: true, statusMessage: response.data.message, statusSeverity:AssetConstants.ERROR_TOKEN })
-                }
-            });
+        Object.entries(json.network_connections).map(([port, vals]) => {
+            var validConnection = (vals.connection_hostname !== undefined && vals.connection_port === undefined) || (vals.connection_hostname === undefined && vals.connection_port !== undefined);
+            valid = valid && validConnection;
+        });
+
+        return valid;
+    }
+
+    createAsset = (event) => {
+        event.preventDefault();
+        var json = this.createJSON();
+        if (this.validJSON(json)) {
+            axios.post(
+                getURL(AssetConstants.ASSETS_MAIN_PATH, AssetCommand.create),
+                json).then(
+                    response => {
+                    if (response.data.message === AssetConstants.SUCCESS_TOKEN) {
+                        this.setState({
+                            statusOpen: true,
+                            statusMessage: "Successfully created asset",
+                            statusSeverity:AssetConstants.SUCCESS_TOKEN,
+                            showModal:false,
+
+                            model:"",
+                            hostname:"",
+                            rack:"",
+                            rackU:-1,
+                            owner:"",
+                            comment:"",
+                            datacenter_name:"",
+                            tags:[],
+                            network_connections:[],
+                            power_connections:[],
+                            asset_number:-1,
+                        }, this.props.search());
+                    } else {
+                        console.log(response);
+                        this.setState({ statusOpen: true, statusMessage: response.data.message, statusSeverity:AssetConstants.ERROR_TOKEN }, console.log(this.state.statusOpen));
+                    }
+                });
+        }
+
     }
 
     updateModel = (event) => {
-        this.setState({ model: event.target.value });
+        this.setState({ model: event.target.value }, () => { this.validateForm() });
     }
 
     updateHostname = (event) => {
-        this.setState({ hostname: event.target.value})
+        this.setState({ hostname: event.target.value }, () => { this.validateForm() });
     }
 
     updateRack = (event) => {
-        this.setState({ rack: event.target.value });
+        //var rackVal = stringToRack(event.target.value);
+        this.setState({ rack: event.target.value }, () => { this.validateForm() });
     }
 
     updateRackU = (event) => {
-        this.setState({ rackU: event.target.value });
+        this.setState({ rackU: event.target.value }, () => { this.validateForm() });
     }
 
     updateOwner = (event) => {
-        this.setState({ owner: event.target.value });
+        this.setState({ owner: event.target.value }, () => { this.validateForm() });
     }
 
     updateComment = (event) => {
-        this.setState({ comment: event.target.value });
+        this.setState({ comment: event.target.value }, () => { this.validateForm() });
     }
 
     updateDatacenter = (event) => {
-        this.setState({ datacenter_id: event.target.value });
+        this.setState({ datacenter_name: event.target.value }, () => { this.validateForm() });
     }
 
     updateTags = (event) => {
-        this.setState({ tags: event.target.value });
+        this.setState({ tags: event.target.value }, () => { this.validateForm() });
     }
 
     changeNetworkMacAddress = (event, port) => {
-        var val = event.target.value;
-        switch(val.length) {
-            case 2:
-                val = (val + ":").toLowerCase();
-                break;
-            case 5:
-                val = (val + ":").toLowerCase();
-                break;
-            case 9:
-                val = val.substring(0,8).toLowerCase();
-                break;
-            default:
-                val = val.toLowerCase();
-        }
+        var val = stringToMac(event.target.value);
+
 
         this.setState(prevState => {
             let network_connections = Object.assign({}, prevState.network_connections);
@@ -307,7 +363,7 @@ class DetailAsset extends React.Component {
             network_connections[port] = (network_connections[port] === null) ? {} : network_connections[port];
             network_connections[port].mac_address = val;
             return { network_connections };
-        });
+        }, () => { this.validateForm() });
     }
 
     changeNetworkHostname = (event, port) => {
@@ -318,7 +374,7 @@ class DetailAsset extends React.Component {
             network_connections[port] = (network_connections[port] === null) ? {} : network_connections[port];
             network_connections[port].connection_hostname = val;
             return { network_connections };
-        });
+        }, () => { this.validateForm() });
     }
 
     changeNetworkPort = (event, port) => {
@@ -329,7 +385,7 @@ class DetailAsset extends React.Component {
             network_connections[port] = (network_connections[port] === null) ? {} : network_connections[port];
             network_connections[port].connection_port = val;
             return { network_connections };
-        });
+        }, () => { this.validateForm() });
     }
 
     updatePowerPort = (event, port) => {
@@ -339,7 +395,7 @@ class DetailAsset extends React.Component {
             let power_connections = Object.assign({}, prevState.power_connections);
             power_connections[port] = val;
             return { power_connections };
-        });
+        }, () => { this.validateForm() });
     }
 
     changePowerPortState = (event, portNum) => {
@@ -349,23 +405,28 @@ class DetailAsset extends React.Component {
             let leftRight = Object.assign({}, prevState.leftRight);
             leftRight[portNum] = val;
             return { leftRight };
-        });
+        }, () => { this.validateForm() });
     }
 
     updateAssetNumber = (event) => {
-        this.setState({ asset_number: event.target.value });
+        this.setState({ asset_number: event.target.value }, () => { this.validateForm() });
     }
 
     getPowerConnections = () => {
+        if (this.state.leftRight===null) {
+            return [];
+        }
 
         var pwrConns = [];
+        var defaultValue = 1;
         Object.entries(this.state.leftRight).map(([key, value]) => {
-            switch(key) {
+            var num = this.state.power_connections===null ? defaultValue : this.state.power_connections[key];
+            switch(value) {
                 case left:
-                    pwrConns.push("L" + value);
+                    pwrConns.push("L" + num);
                     break;
                 case right:
-                    pwrConns.push("R" + value);
+                    pwrConns.push("R" + num);
                     break;
                 default:
                     break;
@@ -380,19 +441,28 @@ class DetailAsset extends React.Component {
             "model":this.state.model,
             "hostname":this.state.hostname,
             "rack":this.state.rack,
-            "rackU":this.state.rackU,
+            "rack_position":this.state.rackU,
             "owner":this.state.owner,
             "comment":this.state.comment,
-            "datacenter_id":this.state.datacenter_id,
+            "datacenter_name":this.state.datacenter_name,
             "tags":this.state.tags,
-            "network_connections":this.state.network_connections,
+            "network_connections":(this.state.network_connections===null) ? {}:this.state.network_connections,
             "power_connections":this.getPowerConnections(),
             'asset_number':this.state.asset_number,
         }
     }
 
     availableNetworkConnections = () => {
+        var availableNetworks = false;
 
+        var assets = this.state.assetNumList;
+        assets.map(asset => {
+            if (Object.keys(this.state.networList[this.state.assetNumToModelList[asset]].length).length > 0) {
+                availableNetworks = true;
+            }
+        });
+        console.log(availableNetworks);
+        this.setState({ availableConnections: availableNetworks });
     }
 
     showModal = () => {
@@ -401,8 +471,6 @@ class DetailAsset extends React.Component {
 
     closeModal = () => {
         this.setState({
-            // next available asset number
-            loadingAssetNumber:true,
 
             // model information
             loadingModels:true,
@@ -429,10 +497,10 @@ class DetailAsset extends React.Component {
             rackU:-1,
             owner:"",
             comment:"",
-            datacenter_id:"",
+            datacenter_name:"",
             tags:[],
-            network_connections:[],
-            power_connections:[],
+            network_connections:null,
+            power_connections:null,
             asset_number:100000,
 
             selectedConnection:null,
@@ -442,7 +510,21 @@ class DetailAsset extends React.Component {
             statusSeverity:"",
 
             showModal:false,
+
+            powerPortState:null,
+            leftRight:null,
+            availableConnections:false,
+
+            canSubmit:false,
         }, this.getLists());
+    }
+
+    statusClose = () => {
+        this.setState({ statusOpen: false, statusMessage: "", statusSeverity:"" });
+    }
+
+    validateForm = () => {
+        this.setState({ canSubmit:this.validJSON(this.createJSON()) });
     }
 
 
@@ -451,313 +533,232 @@ class DetailAsset extends React.Component {
 
         return (
         <span>
-            <StatusDisplay
-                open={this.statusOpen}
-                severity={this.statusSeverity}
-                closeStatus={this.statusClose}
-                message={this.statusMessage}
-            />
-            <Button
-                variant="contained"
-                color="primary"
-                onClick={() => {this.showModal()} }
-            >
-                Create Asset
-            </Button>
             <Modal
                     aria-labelledby="transition-modal-title"
                     aria-describedby="transition-modal-description"
                     className={classes.modal}
-                    open={this.state.showModal}
-                    onClose={this.closeModal}
+                    open={this.props.open}
+                    onClose={this.props.close}
                     closeAfterTransition
                     BackdropComponent={Backdrop}
                     scroll="body"
-                    fullWidth
                     BackdropProps={{
-                    timeout: 500,
+                        timeout: 500,
                     }}
                 >
-                    <Fade in={this.state.showModal}>
+                    <Fade in={this.props.open}>
                     <div className={classes.paper}>
-                    {(
-                    (this.state.loadingAssetNumber
-                    || this.state.loadingDatacenters
-                    || this.state.loadingModels
-                    || this.state.loadingHostnames
-                    || this.state.loadingOwners)
-                    && false
-                    ) ? <div className={classes.progress}><CircularProgress /></div> :
-                        <form>
-                        <Grid container spacing={3}>
-                            <Grid item xs={3}>
-                                <Tooltip placement="top" open={this.state.inputs.model.Tooltip} title={this.state.inputs.model.description}>
-                                    <Autocomplete
-                                        id="select-model"
-                                        options={this.state.modelList}
-                                        includeInputInList
 
-                                        renderInput={params => (
-                                        <TextField
-                                            {...params}
-                                            label={this.state.inputs.model.label}
-                                            name={this.state.inputs.model.name}
-                                            onChange={this.updateModel}
-                                            onBlur={this.updateModel}
-                                            variant="outlined"
-                                            fullWidth
-                                            required
-                                        />
-                                        )}
-                                    />
-                                </Tooltip>
-                            </Grid>
-                            <Grid item xs={3}>
-                                <Tooltip placement="top" open={this.state.inputs.owner.Tooltip} title={this.state.inputs.owner.description}>
-                                    <Autocomplete
-                                        id="select-owner"
-                                        options={this.state.ownerList}
-                                        includeInputInList
-                                        renderInput={params => (
-                                        <TextField
-                                            {...params}
-                                            label={this.state.inputs.owner.label}
-                                            name={this.state.inputs.owner.name}
-                                            onChange={this.updateOwner}
-                                            onBlur={this.updateOwner}
-                                            variant="outlined"
-                                            fullWidth
-                                            required
-                                        />
-                                        )}
-                                    />
-                                </Tooltip>
-                            </Grid>
-                            <Grid item xs={3}>
-                                <Tooltip placement="top" open={this.state.inputs.datacenter.Tooltip} title={this.state.inputs.datacenter.description}>
-                                    <Autocomplete
-                                        id="input-datacenter"
-                                        options={this.state.datacenterList}
-                                        includeInputInList
+                    <ExpansionPanel>
+                        <ExpansionPanelSummary
+                            expandIcon={<ExpandMoreIcon />}
+                            aria-controls="panel1a-content"
+                            id="fields-header"
+                        >
+                        <Typography>Asset General Details</Typography>
+                        </ExpansionPanelSummary>
+                        <ExpansionPanelDetails>
 
-                                        renderInput={params => (
-                                        <TextField
-                                            {...params}
-                                            label={this.state.inputs.datacenter.label}
-                                            name={this.state.inputs.datacenter.name}
-                                            onChange={this.updateDatacenter}
-                                            onBlur={this.updateDatacenter}
 
-                                            variant="outlined"
-                                            fullWidth
-                                        />
-                                        )}
-                                    />
-                                </Tooltip>
-                            </Grid>
-                            <Grid item xs={3}>
-                                <Tooltip placement="top" open={this.state.inputs.rack.Tooltip} title={this.state.inputs.rack.description}>
-                                    <TextField
-                                        id="input-rack"
-                                        variant="outlined"
-                                        label={this.state.inputs.rack.label}
-                                        name={this.state.inputs.rack.name}
-                                        onChange={this.updateRack}
-                                        required
-                                        fullWidth
-                                    />
-                                </Tooltip>
-                            </Grid>
-                            <Grid item xs={3}>
-                                <Tooltip placement="top" open={this.state.inputs.rackU.Tooltip} title={this.state.inputs.rackU.description}>
-                                    <TextField
-                                        id="input-rackU"
-                                        variant="outlined"
-                                        type="number"
-                                        InputProps={{ inputProps: { min: 1, max:42} }}
-                                        label={this.state.inputs.rackU.label}
-                                        name={this.state.inputs.rackU.name}
-                                        onChange={this.updateRackU}
-                                        required
-                                        fullWidth
-                                    />
-                                </Tooltip>
-                            </Grid>
-                            <Grid item xs={3}>
-                                <Tooltip placement="top" open={this.state.inputs.assetNum.Tooltip} title={this.state.inputs.assetNum.description}>
-                                    <TextField
-                                        id="input-asset-number"
-                                        variant="outlined"
-                                        type="number"
-                                        InputProps={{ inputProps: { min: 100000, max:999999} }}
-                                        label={this.state.inputs.assetNum.label}
-                                        name={this.state.inputs.assetNum.name}
-                                        onChange={this.updateAssetNumber}
-                                        value={this.state.asset_number}
-                                        required
-                                        fullWidth
-                                    />
-                                </Tooltip>
-                            </Grid>
-                            <Grid item xs={3}>
-                                <Tooltip placement="top" open={this.state.inputs.hostname.Tooltip} title={this.state.inputs.hostname.description}>
-                                    <TextField
-                                        id="input-hostname"
-                                        variant="outlined"
-                                        label={this.state.inputs.hostname.label}
-                                        name={this.state.inputs.hostname.name}
-                                        onChange={this.updateHostname}
-                                        fullWidth
-                                    />
-                                </Tooltip>
-                            </Grid>
-
-                            <Grid item xs={12}>
-                                {(!(this.state.networkList && this.state.networkList[this.state.model]) || (this.state.hostname==="")) ? null:
-                                this.state.networkList[this.state.model].map(networkPort => (
+                            {(
+                            this.state.loadingDatacenters
+                            || this.state.loadingModels
+                            || this.state.loadingHostnames
+                            || this.state.loadingOwners
+                            //|| this.state.loadingDetailAsset
+                            //&& false
+                            ) ? <div className={classes.progress}><CircularProgress /></div> :
+                                <form>
                                 <Grid container spacing={3}>
-                                    <Grid item xs={2}>
-                                        <Typography>{networkPort + ": "}</Typography>
+                                    <Grid item xs={3}>
+                                        <Tooltip placement="top" open={this.state.inputs.model.Tooltip} title={this.state.inputs.model.description}>
+                                            <Autocomplete
+                                                id="select-model"
+                                                options={this.state.modelList}
+                                                includeInputInList
+                                                defaultValue={this.state.detailAsset.model}
+                                                renderInput={params => (
+                                                <TextField
+                                                    {...params}
+                                                    label={this.state.inputs.model.label}
+                                                    name={this.state.inputs.model.name}
+                                                    onChange={this.updateModel}
+                                                    onBlur={this.updateModel}
+                                                    variant="outlined"
+                                                    fullWidth
+                                                    required
+
+                                                />
+                                                )}
+                                            />
+                                        </Tooltip>
                                     </Grid>
                                     <Grid item xs={3}>
-                                        <Tooltip placement="top" open={this.state.inputs.macAddress.Tooltip} title={this.state.inputs.macAddress.description}>
+                                        <Tooltip placement="top" open={this.state.inputs.owner.Tooltip} title={this.state.inputs.owner.description}>
+                                            <Autocomplete
+                                                id="select-owner"
+                                                options={this.state.ownerList}
+                                                includeInputInList
+                                                defaultValue={this.state.detailAsset.owner}
+                                                renderInput={params => (
+                                                <TextField
+                                                    {...params}
+                                                    label={this.state.inputs.owner.label}
+                                                    name={this.state.inputs.owner.name}
+                                                    onChange={this.updateOwner}
+                                                    onBlur={this.updateOwner}
+                                                    variant="outlined"
+                                                    fullWidth
+                                                    required
+                                                />
+                                                )}
+                                            />
+                                        </Tooltip>
+                                    </Grid>
+                                    <Grid item xs={3}>
+                                        <Tooltip placement="top" open={this.state.inputs.datacenter.Tooltip} title={this.state.inputs.datacenter.description}>
+                                            <Autocomplete
+                                                id="input-datacenter"
+                                                options={this.state.datacenterList}
+                                                includeInputInList
+                                                defaultValue={this.state.detailAsset.datacenter_name}
+                                                renderInput={params => (
+                                                <TextField
+                                                    {...params}
+                                                    label={this.state.inputs.datacenter.label}
+                                                    name={this.state.inputs.datacenter.name}
+                                                    onChange={this.updateDatacenter}
+                                                    onBlur={this.updateDatacenter}
+                                                    variant="outlined"
+                                                    fullWidth
+                                                    required
+                                                />
+                                                )}
+                                            />
+                                        </Tooltip>
+                                    </Grid>
+                                    <Grid item xs={3}>
+                                        <Tooltip placement="top" open={this.state.inputs.rack.Tooltip} title={this.state.inputs.rack.description}>
                                             <TextField
-                                                id="input-mac-address"
+                                                id="input-rack"
                                                 variant="outlined"
-                                                label={this.state.inputs.macAddress.label}
-                                                name={this.state.inputs.macAddress.name}
-                                                onChange={(event) => {this.changeNetworkMacAddress(event, networkPort)}}
+                                                label={this.state.inputs.rack.label}
+                                                name={this.state.inputs.rack.name}
+                                                onChange={this.updateRack}
+                                                required
                                                 fullWidth
-                                                value={ (this.state.network_connections !== null && this.state.network_connections[networkPort]!==undefined) ? this.state.network_connections[networkPort].mac_address : "" }
+                                                defaultValue={this.state.detailAsset.rack}
                                             />
                                         </Tooltip>
                                     </Grid>
                                     <Grid item xs={3}>
-                                        <Tooltip placement="top" open={this.state.inputs.networkConnections.Tooltip} title={this.state.inputs.networkConnections.description}>
-                                            <Autocomplete
-                                                id="input-network-ports"
-                                                options={this.state.assetNumList}
-                                                includeInputInList
-                                                renderInput={params => (
-                                                    <TextField
-                                                        {...params}
-                                                        label={"Connection Hostname"}
-                                                        name={"Connection Hostname"}
-                                                        onBlur={(event) => {this.changeNetworkHostname(event, networkPort)}}
-                                                        variant="outlined"
-                                                        fullWidth
-                                                        value={ (this.state.network_connections !== null && this.state.network_connections[networkPort]!==undefined) ? this.state.network_connections[networkPort].connection_hostname : "" }
-                                                    />
-                                                )}
+                                        <Tooltip placement="top" open={this.state.inputs.rackU.Tooltip} title={this.state.inputs.rackU.description}>
+                                            <TextField
+                                                id="input-rackU"
+                                                variant="outlined"
+                                                type="number"
+                                                InputProps={{ inputProps: { min: 1, max:42} }}
+                                                label={this.state.inputs.rackU.label}
+                                                name={this.state.inputs.rackU.name}
+                                                onChange={this.updateRackU}
+                                                required
+                                                fullWidth
+                                                defaultValue={this.state.detailAsset.rack_position}
                                             />
                                         </Tooltip>
                                     </Grid>
                                     <Grid item xs={3}>
-                                        <Tooltip placement="top" open={this.state.inputs.networkConnections.Tooltip} title={this.state.inputs.networkConnections.description}>
-                                            <Autocomplete
-                                                id="input-network-ports"
-                                                options={this.state.networkList[this.state.assetNumToModelList[networkPort]]}
-                                                includeInputInList
-                                                renderInput={params => (
-                                                    <TextField
-                                                        {...params}
-                                                        label={"Connection Port"}
-                                                        name={"Connection Port"}
-                                                        onBlur={(event) => {this.changeNetworkPort(event, networkPort)}}
-                                                        variant="outlined"
-                                                        fullWidth
-                                                        value={ (this.state.network_connections !== null && this.state.network_connections[networkPort]!==undefined) ? this.state.network_connections[networkPort].connection_port : "" }
-                                                    />
-                                                )}
+                                        <Tooltip placement="top" open={this.state.inputs.assetNum.Tooltip} title={this.state.inputs.assetNum.description}>
+                                            <TextField
+                                                id="input-asset-number"
+                                                variant="outlined"
+                                                type="number"
+                                                InputProps={{ inputProps: { min: 100000, max:999999} }}
+                                                label={this.state.inputs.assetNum.label}
+                                                name={this.state.inputs.assetNum.name}
+                                                onChange={this.updateAssetNumber}
+                                                required
+                                                fullWidth
+                                                defaultValue={this.state.detailAsset.asset_number}
                                             />
                                         </Tooltip>
                                     </Grid>
-                                </Grid>
-                                ))}
-                            </Grid>
-
-                            {(!(this.state.powerPortList && this.state.powerPortList[this.state.model])) ? null :
-                            Array.from( { length: this.state.powerPortList[this.state.model] }, (_, k) => (
-                            <Grid item xs={12}>
-                                <Grid container spacing={3}>
-                                    <Grid item xs={12}>
-                                        <Typography>{"Power Port: " + k}</Typography>
-                                    </Grid>
-                                    <Grid item xs={2}>
-                                        <TextField
-                                            type="number"
-                                            value={(this.state.power_connections===null) ? 1 : this.state.power_connections[k]}
-                                            InputProps={{ inputProps: { min: 0, max: 24} }}
-                                            onChange={(event) => {this.updatePowerPort(event, k)} }
-                                        />
+                                    <Grid item xs={3}>
+                                        <Tooltip placement="top" open={this.state.inputs.hostname.Tooltip} title={this.state.inputs.hostname.description}>
+                                            <TextField
+                                                id="input-hostname"
+                                                variant="outlined"
+                                                label={this.state.inputs.hostname.label}
+                                                name={this.state.inputs.hostname.name}
+                                                onChange={this.updateHostname}
+                                                fullWidth
+                                                defaultValue={this.state.detailAsset.hostname}
+                                            />
+                                        </Tooltip>
                                     </Grid>
                                     <Grid item xs={6}>
-                                        <FormControl component="fieldset">
-                                            <RadioGroup
-                                                aria-label="position"
-                                                name="position"
-                                                value={(this.state.leftRight===null) ? null:this.state.leftRight[k]}
-                                                onChange={(event) => {this.changePowerPortState(event, k)} }
-                                                row
-                                            >
-                                                <FormControlLabel
-                                                    value="left"
-                                                    control={<Radio color="primary" />}
-                                                    label="Left"
-                                                    labelPlacement="bottom"
-                                                />
-                                                <FormControlLabel
-                                                    value="right"
-                                                    control={<Radio color="primary" />}
-                                                    label="Right"
-                                                    labelPlacement="bottom"
-                                                />
-                                                <FormControlLabel
-                                                    value="off"
-                                                    control={<Radio color="primary" />}
-                                                    label="Off"
-                                                    labelPlacement="bottom"
-                                                />
-                                            </RadioGroup>
-                                        </FormControl>
+                                            <TextField
+                                                id="input-comment"
+                                                variant="outlined"
+                                                label={this.state.inputs.comment.label}
+                                                name={this.state.inputs.comment.name}
+                                                onChange={this.updateComment}
+                                                multiline={true}
+                                                fullWidth
+                                                defaultValue={this.state.detailAsset.comment}
+                                            />
                                     </Grid>
-                                </Grid>
-                            </Grid>
-                            ))
-                                    }
-                            <Grid item xs={6}>
-                                    <TextField
-                                        id="input-comment"
-                                        variant="outlined"
-                                        label={this.state.inputs.comment.label}
-                                        name={this.state.inputs.comment.name}
-                                        onChange={this.updateComment}
-                                        multiline={true}
-                                        fullWidth
-                                    />
-                            </Grid>
-                            <Grid item xs={6} />
-                            <Grid item xs={1}>
-                                <Button
-                                    variant="contained"
-                                    color="primary"
-                                    type="submit"
-                                    onClick={this.DetailAsset}
-                                >
-                                    Create
-                                </Button>
-                            </Grid>
-                            <Grid item xs={9}>
-                                <Button
-                                    variant="contained"
-                                    color="primary"
-                                    type="submit"
-                                    onClick={this.closeModal}
-                                >
-                                    Cancel
-                                </Button>
-                            </Grid>
-                        </Grid></form>}
+                                </Grid></form>}
+                                <StatusDisplay
+                                    open={this.statusOpen}
+                                    severity={this.statusSeverity}
+                                    closeStatus={this.statusClose}
+                                    message={this.statusMessage}
+                                />
+
+                        </ExpansionPanelDetails>
+                    </ExpansionPanel>
+
+                    <ExpansionPanel>
+                        <ExpansionPanelSummary
+                            expandIcon={<ExpandMoreIcon />}
+                            aria-controls="panel1a-content"
+                            id="networks-header"
+                        >
+                            <Typography>Asset Network Management</Typography>
+                        </ExpansionPanelSummary>
+                        <ExpansionPanelDetails>
+                            <NetworkGraph
+                                vals={{
+                                         "host1": [ "host2", "host4" ],
+                                         "host3": ["host5", "host7", "host9", "host11"]
+                                    }}
+                                host={this.props.hostname}
+                            />
+                        </ExpansionPanelDetails>
+                    </ExpansionPanel>
+                    <ExpansionPanel>
+                        <ExpansionPanelSummary
+                            expandIcon={<ExpandMoreIcon />}
+                            aria-controls="panel1a-content"
+                            id="power-header"
+                        >
+                            <Typography>Asset Power Management</Typography>
+                        </ExpansionPanelSummary>
+                        <ExpansionPanelDetails>
+                        </ExpansionPanelDetails>
+                    </ExpansionPanel>
+                    <Button>
+                        Save edits
+                    </Button>
+                    <Button>
+                        Delete asset
+                    </Button>
+                    <Button>
+                        Close without saving
+                    </Button>
+
+
                     </div>
                     </Fade>
                 </Modal>

@@ -22,6 +22,7 @@ import DetailAsset from "./DetailsAsset";
 import FilterAsset from './FilterAsset';
 import stableSort from "../../helpers/functions/StableSort";
 import getComparator from "../../helpers/functions/GetComparator";
+import { Privilege } from "../../enums/privilegeTypes.ts";
 
 
 const useStyles = theme => ({
@@ -95,6 +96,8 @@ class TableAsset extends React.Component {
 
 	  showDetailedView: false,
 	  detailViewLoading:false,
+	  detailAsset:-1,
+	  detailHostname:"",
 	  originalRack:'',
 	  originalrack_position:'',
 
@@ -173,6 +176,10 @@ class TableAsset extends React.Component {
 		this.setState({ order: isAsc ? 'desc' : 'asc', orderBy:property });
 	}
 
+	openDetailedView = (event, assetNum, hostname) => {
+		this.setState({ detailAsset: assetNum, showDetailedView: true, detailHostname:hostname });
+	}
+
 	updateItems(assets) {
 		var items = [];
 
@@ -226,7 +233,7 @@ class TableAsset extends React.Component {
 							<TableBody>
 
 
-								{stableSort(this.state.tableItems, getComparator(this.state.order, this.state.orderBy))
+								{stableSort(testRows, getComparator(this.state.order, this.state.orderBy))
 									//.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
 									.map((row, index) => {
 										const labelId = `enhanced-table-checkbox-${index}`;
@@ -247,7 +254,7 @@ class TableAsset extends React.Component {
 													<Button
 														color="primary"
 														variant="contained"
-														onClick={() => this.setState({ showDetailedView: true })}
+														onClick={(event) => {this.openDetailedView(event, row.assetNum, row.hostname)}}
 													>
 														More Details
 													</Button>
@@ -268,8 +275,10 @@ class TableAsset extends React.Component {
 		<DetailAsset
 			open={this.state.showDetailedView}
 			close={this.closeDetailedView}
-			search={this.props.search}
-			/*disabled={this.props.privilege===Privilege.USER}*/
+			search={this.search}
+			disabled={this.props.privilege===Privilege.USER /* && username !== row.owner*/}
+			asset={this.state.detailAsset}
+			hostname={this.state.detailHostname}
 		/>
 		</React.Fragment>
 	);

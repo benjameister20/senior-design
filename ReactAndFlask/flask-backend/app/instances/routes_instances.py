@@ -36,6 +36,7 @@ def search():
         limit = 1000
 
     try:
+        print(request.json)
         datacenter_name = request.json["datacenter_name"]
         instance_list = INSTANCE_MANAGER.get_instances(filter, datacenter_name, limit)
         returnJSON = addInstancesTOJSON(
@@ -70,9 +71,9 @@ def create():
         error = INSTANCE_MANAGER.create_instance(instance_data)
         print(type(error))
         if error is not None:
-            print(error.message)
+            print(error)
             print("YEEHAW")
-            return addMessageToJSON(returnJSON, error.message)
+            return addMessageToJSON(returnJSON, error)
         return addMessageToJSON(returnJSON, "success")
     except InvalidInputsError as e:
         return addMessageToJSON(returnJSON, e.message)
@@ -163,7 +164,7 @@ def get_next_asset_number():
     global INSTANCE_MANAGER
     returnJSON = createJSON()
 
-    returnJSON["asset_number"] = 100000
+    returnJSON["asset_number"] = 583965
     return addMessageToJSON(returnJSON, "success")
 
 

@@ -25,7 +25,7 @@ class Instance:
         owner: Optional[str],
         comment: Optional[str],
         datacenter_id: int,
-        mac_address: Optional[List[str]],
+        # mac_address: Optional[List[str]],
         network_connections: Optional[List[str]],
         power_connections: Optional[List[str]],
         asset_number: int,
@@ -37,7 +37,7 @@ class Instance:
         self.owner: Optional[str] = owner
         self.comment: Optional[str] = comment
         self.datacenter_id: int = datacenter_id
-        self.mac_address: Optional[List[str]] = mac_address
+        # self.mac_address: Optional[List[str]] = mac_address
         self.network_connections: Optional[List[str]] = network_connections
         self.power_connections: Optional[List[str]] = power_connections
         self.asset_number: int = asset_number
@@ -75,7 +75,7 @@ class Instance:
             "owner": self.owner,
             "comment": self.comment,
             "datacenter_id": self.datacenter_id,
-            "mac_address": self.mac_address,
+            # "mac_address": self.mac_address,
             "network_connections": self.network_connections,
             "power_connections": self.power_connections,
             "asset_number": self.asset_number,
@@ -91,7 +91,7 @@ class Instance:
             "owner": self.owner,
             "comment": self.comment,
             "datacenter_name": datacenter,
-            "mac_address": self.mac_address,
+            # "mac_address": self.mac_address,
             "network_connections": self.network_connections,
             "power_connections": self.power_connections,
             "asset_number": self.asset_number,
@@ -111,7 +111,7 @@ class Instance:
             owner=csv_row["owner"],
             comment=csv_row["comment"],
             datacenter_id=csv_row["datacenter_id"],
-            mac_address=csv_row["mac_address"],
+            # mac_address=csv_row["mac_address"],
             network_connections=csv_row["network_connections"],
             power_connections=csv_row["power_connections"],
             asset_number=csv_row["asset_number"],

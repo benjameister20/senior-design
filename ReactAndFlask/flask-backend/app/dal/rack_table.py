@@ -32,6 +32,15 @@ class RackTable:
 
         return rack_entry.make_rack()
 
+    def get_rack_by_datacenter(self, datacenter_id):
+        rack_entries: RackEntry = RackEntry.query.filter_by(
+            datacenter_id=datacenter_id
+        ).all()
+        if rack_entries is None:
+            return None
+
+        return [entry.make_rack() for entry in rack_entries]
+
     def add_rack(self, rack: Rack) -> None:
         """ Adds a rack to the database """
         rack_entry: RackEntry = RackEntry(rack=rack)

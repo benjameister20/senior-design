@@ -1,8 +1,9 @@
 export default function jsonToArr(incomingJSON) {
+    var json = {};
     try {
-        var json = JSON.parse(incomingJSON);
+        json = JSON.parse(incomingJSON);
     } catch (e) {
-        var json = incomingJSON;
+        json = incomingJSON;
     }
 
     if (Object.entries(json).length === 0 && json.constructor === Object) {
@@ -11,11 +12,13 @@ export default function jsonToArr(incomingJSON) {
 
     const items = [];
 
-    Object.keys(json).map(function(key) {
+    Object.keys(json).map((key) => {
         const row = [];
         row.push(key);
         row.push(json[key]);
         items.push(row);
+
+        return key;
     });
     return items;
 }

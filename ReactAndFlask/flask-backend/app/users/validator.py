@@ -39,7 +39,6 @@ class Validator:
         Returns:
             Boolean: True if password adheres to guidelines, false if not
         """
-
         reg = (
             r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!#%*?&]{8,20}$"
         )
@@ -111,7 +110,9 @@ class Validator:
         pattern = re.compile(reg)
         is_valid = bool(re.search(pattern, username))
         if not is_valid:
-            raise InvalidUsernameError(f"Username '{username}' is not valid")
+            raise InvalidUsernameError(
+                f"Username '{username}' is not valid. Usernames must be between 4 and 20 characters, can only contain alphanumeric characters or special characters '.' and '_', cannot start with a special character, and cannot have doubles of special chacacters ('..' or '__')"
+            )
 
         user = USER_TABLE.get_user(username)
         if user is not None:

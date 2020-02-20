@@ -18,11 +18,21 @@ export const RackX = [
     'W', 'X', 'Y', 'Z',
 ]
 
-export const RackY = [
-    1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
-    11, 12, 13, 14, 15, 16, 17, 18, 19 , 20,
-    21, 22, 23, 24, 25, 26, 27, 28, 29, 30,
-    31, 32, 33, 34, 35, 36, 37, 38, 39, 40,
-    41, 42, 43, 44, 45, 46, 47, 48, 49, 50,
-    51, 52, 53, 54, 55, 56, 57, 58, 59, 60,
-]
+export const ASSETS_MAIN_PATH = 'instances/';
+export const MODELS_MAIN_PATH = "models/";
+export const USERS_MAIN_PATH = "users/";
+export const RACKS_MAIN_PATH = "racks/";
+export const DATACENTERS_MAIN_PATH = "datacenters/";
+
+export const CLIENT_ID = "ParselTonguesUserAuth";
+export const CLIENT_SECRET = "LpUwB*eiK4Iw#1gaCu5jYp1u5uRF3ERsdmuNUGoKYNzn7rHm7b";
+export const SCOPE = "basic";
+
+export const SHIBBOLETH_LOGIN =
+    "https://oauth.oit.duke.edu/oauth/authorize.php?"
+     + "client_id=" + encodeURIComponent(CLIENT_ID)
+     + "&client_secret=" + encodeURIComponent(CLIENT_SECRET)
+     + "&redirect_uri=" + encodeURIComponent('http://localhost:3000/')
+     + "&response_type=token"
+     + "&state=1129"
+     + "&scope=" + encodeURIComponent(SCOPE);

@@ -12,8 +12,6 @@ def log(request, resource, action):
     def wrap(f):
         @wraps(f)
         def wrapped(*args, **kwargs):
-            print("ACTION")
-            print(action)
             token = request.headers.get("token")
             user = ""
             try:
@@ -26,9 +24,6 @@ def log(request, resource, action):
                     user = request.get_json().get("username")
             except UserException as e:
                 return e.message
-
-            print("USER")
-            print(user)
 
             LOGGER.log_request(request.get_json(), resource, action, user)
             response = f(*args, **kwargs)

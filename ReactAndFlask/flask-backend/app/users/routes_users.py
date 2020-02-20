@@ -65,7 +65,6 @@ def create():
     Returns:
         string: Success or failure, if failure provide message
     """
-
     response = {}
     try:
         response = USER_MANAGER.create_user(request)

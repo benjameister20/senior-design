@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "querystring": "^0.2.0",
+    "react-color": "^2.18.0",
+    "react-render-html": "^0.6.0"
+  }
+}

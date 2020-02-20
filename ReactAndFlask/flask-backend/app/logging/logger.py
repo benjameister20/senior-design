@@ -161,15 +161,16 @@ class Logger:
         self.__refresh()
         timestamp = str(datetime.now())
         message = f"[{timestamp}] {user} - {log_message}"
-        if Constants.PASSWORD_KEY in request.keys():
-            request[Constants.PASSWORD_KEY] = "*" * 12
+        request_copy = dict(request)
+        if Constants.PASSWORD_KEY in request_copy.keys():
+            request_copy[Constants.PASSWORD_KEY] = "*" * 12
         log_entry = {
             "timestamp": timestamp,
             "user": user,
             "message": message,
             "resource": resource,
             "type": "request",
-            "request": request,
+            "request": request_copy,
         }
         self.LOG["log"].append(log_entry)
         self.__dump()

@@ -36,7 +36,8 @@ def search():
         limit = 1000
 
     try:
-        instance_list = INSTANCE_MANAGER.get_instances(filter, limit)
+        datacenter_name = request.json["datacenter_name"]
+        instance_list = INSTANCE_MANAGER.get_instances(filter, datacenter_name, limit)
         returnJSON = addInstancesTOJSON(
             addMessageToJSON(returnJSON, "success"),
             list(
@@ -55,8 +56,8 @@ def search():
 
 
 @instances.route("/instances/create", methods=["POST"])
-# @requires_auth(request)
-# @requires_role(request, "admin")
+@requires_auth(request)
+@requires_role(request, "admin")
 def create():
     """ Route for creating instances """
     print("REQUEST")
@@ -151,6 +152,18 @@ def assisted_model_input():
         return returnJSON
     except InvalidInputsError as e:
         return addMessageToJSON(returnJSON, e.message)
+
+
+@instances.route("/instances/nextAssetNumber", methods=["GET"])
+@requires_auth(request)
+@requires_role(request, "admin")
+def get_next_asset_number():
+    """ Route to get next valid asset number"""
+    global INSTANCE_MANAGER
+    returnJSON = createJSON()
+
+    returnJSON["asset_number"] = 100000
+    return addMessageToJSON(returnJSON, "success")
 
 
 def createJSON() -> dict:

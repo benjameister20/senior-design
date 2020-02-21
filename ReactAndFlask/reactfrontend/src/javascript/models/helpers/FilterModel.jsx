@@ -4,6 +4,24 @@ import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
+import Autocomplete from '@material-ui/lab/Autocomplete';
+
+function createInputs(name, label) {
+    return {label, name};
+}
+
+const inputs = {
+    "vendor": createInputs('vendor', "Vendor"),
+    "modelNumber": createInputs('model_number', "Model Number"),
+    "height": createInputs('height', "Height"),
+    "displayColor": createInputs('display_color', "Display Color"),
+    "ethernetPorts": createInputs('ethernet_ports', "Network Ports"),
+    "powerPorts": createInputs('power_ports', "Power Ports"),
+    "cpu": createInputs('cpu', "CPU"),
+    "memory": createInputs('memory', "Memory"),
+    "storage": createInputs('storage', "Storage"),
+    "comments": createInputs('comments', "Comments"),
+}
 
 export default class FilterModel extends React.Component {
     constructor(props) {
@@ -47,29 +65,46 @@ export default class FilterModel extends React.Component {
                     <Grid item xs={12}>
                         <Typography variant="h5">Search</Typography>
                     </Grid>
-                    <Grid item xs={3}>
-                        <TextField id="vendor-filter" variant="outlined" label="Vendor" name="vendor" onChange={this.updateSearchText.bind(this)}/>
+                    <Grid item xs={12} sm={6} md={4} lg={3}>
+                        <Autocomplete
+                            id="vendor"
+                            options={this.props.options}
+                            includeInputInList
+                            freeSolo
+                            renderInput={params => (
+                            <TextField {...params} label={inputs.vendor.label} name={inputs.vendor.name} onChange={this.updateSearchText.bind(this)} onBlur={this.updateSearchText.bind(this)} variant="outlined" fullWidth />
+                            )}
+                        />
                     </Grid>
-                    <Grid item xs={3}>
-                        <TextField id="model_number-filter" variant="outlined" label="Model Number" name="model_number-filter" onChange={this.updateSearchText.bind(this)}/>
+                    <Grid item xs={12} sm={6} md={4} lg={3}>
+                        <TextField id="model_number" variant="outlined" label="Model Number" name="model_number" onChange={this.updateSearchText.bind(this)} style={{width: "100%"}} />
                     </Grid>
-                    <Grid item xs={3}>
-                        <TextField id="height-filter" variant="outlined" label="Height" name="height" onChange={this.updateSearchText.bind(this)}/>
+                    <Grid item xs={12} sm={6} md={4} lg={3}>
+                        <TextField id="min_height" variant="outlined" label="Min Height" name="min_height" onChange={this.updateSearchText.bind(this)} style={{width: "100%"}}/>
                     </Grid>
-                    <Grid item xs={3}>
-                        <TextField id="ethernet_ports-filter" variant="outlined" label="Network Ports" name="ethernet_ports" onChange={this.updateSearchText.bind(this)}/>
+                    <Grid item xs={12} sm={6} md={4} lg={3}>
+                        <TextField id="max_height" variant="outlined" label="Max Height" name="max_height" onChange={this.updateSearchText.bind(this)} style={{width: "100%"}}/>
                     </Grid>
-                    <Grid item xs={3}>
-                        <TextField id="power_ports-filter" variant="outlined" label="Power Ports" name="power_ports" onChange={this.updateSearchText.bind(this)}/>
+                    <Grid item xs={12} sm={6} md={4} lg={3}>
+                        <TextField id="min_ethernet_ports" variant="outlined" label="Min Network Ports" name="min_ethernet_ports" onChange={this.updateSearchText.bind(this)} style={{width: "100%"}}/>
                     </Grid>
-                    <Grid item xs={3}>
-                        <TextField id="cpu-filter" variant="outlined" label="CPU" name="cpu" onChange={this.updateSearchText.bind(this)}/>
+                    <Grid item xs={12} sm={6} md={4} lg={3}>
+                        <TextField id="max_ethernet_ports" variant="outlined" label="Max Network Ports" name="max_ethernet_ports" onChange={this.updateSearchText.bind(this)} style={{width: "100%"}}/>
                     </Grid>
-                    <Grid item xs={3}>
-                        <TextField id="memory-filter" variant="outlined" label="Memory" name="memory" onChange={this.updateSearchText.bind(this)}/>
+                    <Grid item xs={12} sm={6} md={4} lg={3}>
+                        <TextField id="min_power_ports" variant="outlined" label="Min Power Ports" name="min_power_ports" onChange={this.updateSearchText.bind(this)} style={{width: "100%"}}/>
                     </Grid>
-                    <Grid item xs={3}>
-                        <TextField id="storage-filter" variant="outlined" label="Storage" name="storage" onChange={this.updateSearchText.bind(this)}/>
+                    <Grid item xs={12} sm={6} md={4} lg={3}>
+                        <TextField id="max_power_ports" variant="outlined" label="Max Power Ports" name="max_power_ports" onChange={this.updateSearchText.bind(this)} style={{width: "100%"}}/>
+                    </Grid>
+                    <Grid item xs={12} sm={6} md={4} lg={3}>
+                        <TextField id="cpu" variant="outlined" label="CPU" name="cpu" onChange={this.updateSearchText.bind(this)} style={{width: "100%"}}/>
+                    </Grid>
+                    <Grid item xs={12} sm={6} md={4} lg={3}>
+                        <TextField id="memory" variant="outlined" label="Memory" name="memory" onChange={this.updateSearchText.bind(this)} style={{width: "100%"}}/>
+                    </Grid>
+                    <Grid item xs={12} sm={6} md={4} lg={3}>
+                        <TextField id="storage" variant="outlined" label="Storage" name="storage" onChange={this.updateSearchText.bind(this)} style={{width: "100%"}}/>
                     </Grid>
                     <Grid item xs={12}>
                         <Button

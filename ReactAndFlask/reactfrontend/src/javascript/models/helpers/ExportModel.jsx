@@ -43,6 +43,25 @@ export default class ExportModel extends React.Component {
                             Export
                         </Button>
                     </Grid>
+                    <Grid container item direciton="row" justify="center" alignItems="center" xs={12}>
+                        <hr style={{width: "5vw"}} />
+                        <Typography color="textSecondary">
+                            Or
+                        </Typography>
+                        <hr style={{width: "5vw"}} />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <Button
+                            onClick={this.props.showAll}
+                            variant="contained"
+                            color="default"
+                            style={{
+                                width: "100%"
+                            }}
+                        >
+                            Show all models
+                        </Button>
+                    </Grid>
                 </Grid>
             </Paper>
             </div>

@@ -65,27 +65,45 @@ class CreateModel extends React.Component {
         this.state = {
             color: '#000',
             showModal: false,
+            showImportModal: false,
+            importedFile: null
         };
     }
 
     updateColor = (color) => {
-        console.log(color);
         this.setState({ color: color });
         this.props.updateModelColor(color.hex);
-        console.log("state: " + this.state.color);
     }
 
     showModal = () => {
         this.setState({ showModal: true });
     }
 
+    showImportModal = () => {
+        this.setState({ showImportModal: true });
+    }
+
     closeModal = () => {
         this.setState({ showModal: false });
+    }
+
+    closeImportModal = () => {
+        this.setState({ showImportModal: false });
     }
 
     create = () => {
         this.props.createModel();
         this.closeModal();
+    }
+
+    uploadFile = () => {
+        const data = new FormData();
+        data.append('file', this.state.importedFile);
+        this.sendUploadedFile(data);
+    }
+
+    chooseFile = (event) => {
+        this.setState({ importedFile: event.target.files[0] })
     }
 
     render() {
@@ -138,7 +156,7 @@ class CreateModel extends React.Component {
                             color="primary"
                             style={{width: "100%"}}
                             startIcon={<CloudUploadIcon />}
-                            onClick={() => {this.showModal()} }
+                            onClick={() => {this.showImportModal()} }
                         >
                             Import
                         </Button>
@@ -168,18 +186,18 @@ class CreateModel extends React.Component {
                             <Grid item xs={12}>
                                 <Typography variant="h5">New Model</Typography>
                             </Grid>
-                            <Grid item xs={6}>
+                            <Grid item xs={12} sm={12} md={6} lg={6}>
                                 <Autocomplete
                                     id="select-vendor"
                                     options={this.props.options}
                                     includeInputInList
                                     freeSolo
                                     renderInput={params => (
-                                    <TextField {...params} label={inputs.vendor.label} name={inputs.vendor.name} onChange={this.props.updateModelCreator} onBlur={this.props.updateModelCreator} variant="outlined" fullWidth />
+                                        <TextField {...params} label={inputs.vendor.label} name={inputs.vendor.name} onChange={this.props.updateModelCreator} onBlur={this.props.updateModelCreator} variant="outlined" fullWidth />
                                     )}
                                 />
                             </Grid>
-                            <Grid item xs={3}>
+                            <Grid item xs={12} sm={6} md={4} lg={3}>
                                 <TextField id="standard-basic" variant="outlined" label={inputs.modelNumber.label} name={inputs.modelNumber.name} onChange={this.props.updateModelCreator}/>
                             </Grid>
                             <Grid item xs={3}>
@@ -217,6 +235,7 @@ class CreateModel extends React.Component {
                                     variant="contained"
                                     color="primary"
                                     onClick={this.create}
+                                    style={{width: "100%"}}
                                 >
                                     Create
                                 </Button>
@@ -226,6 +245,7 @@ class CreateModel extends React.Component {
                                     variant="contained"
                                     color="secondary"
                                     onClick={this.closeModal}
+                                    style={{width: "100%"}}
                                 >
                                     Cancel
                                 </Button>
@@ -241,13 +261,13 @@ class CreateModel extends React.Component {
                 aria-labelledby="transition-modal-title"
                 aria-describedby="transition-modal-description"
                 className={classes.modal}
-                open={this.state.showModal}
-                onClose={this.closeModal}
+                open={this.state.showImportModal}
+                onClose={this.closeImportModal}
                 closeAfterTransition
             >
-                <Fade in={this.state.showModal}>
+                <Fade in={this.state.showImportModal}>
                     <Backdrop
-                        open={this.state.showModal}
+                        open={this.state.showImportModal}
                     >
                         <div className={classes.grid}>
                         <Grid
@@ -261,60 +281,30 @@ class CreateModel extends React.Component {
                                 <Typography variant="h5">Import Models</Typography>
                             </Grid>
                             <Grid item xs={6}>
-                                <Autocomplete
-                                    id="select-vendor"
-                                    options={this.props.options}
-                                    includeInputInList
-                                    freeSolo
-                                    renderInput={params => (
-                                    <TextField {...params} label={inputs.vendor.label} name={inputs.vendor.name} onChange={this.props.updateModelCreator} onBlur={this.props.updateModelCreator} variant="outlined" fullWidth />
-                                    )}
-                                />
+                                Drag and drop file
                             </Grid>
-                            <Grid item xs={6}>
-                                <TextField id="standard-basic" variant="outlined" label={inputs.modelNumber.label} name={inputs.modelNumber.name} onChange={this.props.updateModelCreator}/>
-                            </Grid>
-                            <Grid item xs={3}>
-                                <TextField id="standard-basic" variant="outlined" label={inputs.height.label} name={inputs.height.name} onChange={this.props.updateModelCreator}/>
-                            </Grid>
-                            <Grid item xs={3}>
-                                <TextField id="standard-basic" variant="outlined" label={inputs.powerPorts.label} name={inputs.powerPorts.name} onChange={this.props.updateModelCreator}/>
-                            </Grid>
-                            <Grid item xs={3}>
-                            <TextField id="standard-basic" variant="outlined" label={inputs.cpu.label} name={inputs.cpu.name} onChange={this.props.updateModelCreator}/>
-                            </Grid>
-                            <Grid item xs={3}>
-                            <TextField id="standard-basic" variant="outlined" label={inputs.memory.label} name={inputs.memory.name} onChange={this.props.updateModelCreator}/>
-                            </Grid>
-                            <Grid item xs={3}>
-                            <TextField id="standard-basic" variant="outlined" label={inputs.storage.label} name={inputs.storage.name} onChange={this.props.updateModelCreator}/>
-                            </Grid>
-                            <Grid item xs={3}>
-                            <TextField id="standard-basic" variant="outlined" label={inputs.comments.label} name={inputs.comments.name} onChange={this.props.updateModelCreator}/>
-                            </Grid>
-
-                            <Grid item xs={6}>
-                                <Typography>Display Color</Typography>
-                                <CompactPicker
-                                    color={this.state.color}
-                                    onChange={this.updateColor}
-
-                                />
+                            <Grid container item direciton="row" justify="center" alignItems="center" xs={12}>
+                                <hr style={{width: "20vw"}} />
+                                <Typography color="textSecondary">
+                                    Or
+                                </Typography>
+                                <hr style={{width: "20vw"}} />
                             </Grid>
                             <Grid item xs={3}>
                                 <Button
                                     variant="contained"
                                     color="primary"
-                                    onClick={this.create}
+                                    style={{width: "100%"}}
                                 >
-                                    Create
+                                    Choose File
                                 </Button>
                             </Grid>
                             <Grid item xs={3}>
                                 <Button
                                     variant="contained"
                                     color="secondary"
-                                    onClick={this.closeModal}
+                                    onClick={this.closeImportModal}
+                                    style={{width: "100%"}}
                                 >
                                     Cancel
                                 </Button>

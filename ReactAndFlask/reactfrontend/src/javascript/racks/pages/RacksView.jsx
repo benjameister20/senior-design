@@ -52,7 +52,6 @@ export default class RacksView extends React.Component {
     }
 
     handleFormat = (event, newFormats) => {
-        console.log(newFormats);
         if (newFormats.length) {
             this.setState({formats: newFormats});
         }
@@ -76,7 +75,6 @@ export default class RacksView extends React.Component {
                 'endRack':this.state.secondRack,
             }
             ).then(response => {
-                console.log(response);
                 if (response.data.message === 'success') {
                     this.setState({ showStatus: true, statusMessage: "Success", statusSeverity:"success", showConfirmationBox:false });
                     if (command === RackCommand.GET_RACK_DETAILS) {

@@ -218,12 +218,9 @@ class CreateAsset extends React.Component {
     }
 
     getAssetList = () => {
-        console.log(emptySearch);
         axios.post(
             getURL(Constants.ASSETS_MAIN_PATH, searchPath),emptySearch).then(
             response => {
-                console.log("instances")
-                console.log(response);
                 var instances = response.data.instances;
 
                 var assetNums = [];
@@ -281,7 +278,6 @@ class CreateAsset extends React.Component {
                             asset_number:-1,
                         }, this.props.search());
                     } else {
-                        console.log(response);
                         this.setState({ statusOpen: true, statusMessage: response.data.message, statusSeverity:AssetConstants.ERROR_TOKEN }, console.log(this.state.statusOpen));
                     }
                 });
@@ -328,8 +324,6 @@ class CreateAsset extends React.Component {
 
         this.setState(prevState => {
             let network_connections = Object.assign({}, prevState.network_connections);
-            console.log(network_connections);
-            console.log(network_connections[port]);
             if (network_connections[port] === undefined) {
                 network_connections[port] = {
                     "mac_address":val,
@@ -338,7 +332,6 @@ class CreateAsset extends React.Component {
                 network_connections[port].mac_address = val;
             }
 
-            console.log(network_connections[port]["mac_address"]);
             network_connections[port] = (network_connections[port] === null) ? {} : network_connections[port];
             network_connections[port].mac_address = val;
             return { network_connections };
@@ -440,7 +433,6 @@ class CreateAsset extends React.Component {
                 availableNetworks = true;
             }
         });
-        console.log(availableNetworks);
         this.setState({ availableConnections: availableNetworks });
     }
 

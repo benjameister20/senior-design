@@ -35,15 +35,12 @@ export default class Login extends React.Component {
     }
 
     componentDidMount() {
-        console.log(this.props.shib);
         try {
             var params = queryString.parse(window.location.hash.substring(1));
             if (params.access_token != null) {
                 this.getDukeCredentials(params.access_token);
                 this.setState({ oauth: true });
             }
-
-            console.log(params);
         } catch(e) {
             console.log("tried:")
         }
@@ -94,7 +91,6 @@ export default class Login extends React.Component {
                 'Authorization': `Bearer ${token}`
             }
         }).then(response => {
-            console.log(response);
             axios.post(
                 getURL(loginMainPath, 'oauth'),
                 {

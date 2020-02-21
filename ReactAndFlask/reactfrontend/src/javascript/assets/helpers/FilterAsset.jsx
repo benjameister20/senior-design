@@ -109,7 +109,6 @@ class FilterAsset extends React.Component {
     }
 
     getAssetList = () => {
-        console.log(emptySearch);
         axios.post(
             getURL(Constants.ASSETS_MAIN_PATH, searchPath),emptySearch).then(
             response => {

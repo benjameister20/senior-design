@@ -12,9 +12,8 @@ import CreateModel from '../helpers/CreateModel';
 
 import { Privilege } from '../../enums/privilegeTypes.ts'
 
-import UploadModal from '../../helpers/UploadModal';
 import getURL from '../../helpers/functions/GetURL';
-import TableView from '../../helpers/TableView';
+import ModelsTable from '../helpers/ModelsTable';
 import { Typography } from '@material-ui/core';
 
 import * as ModelConstants from "../ModelConstants";
@@ -100,7 +99,6 @@ export default class ModelsView extends React.Component {
 
             // csv data
             csvData:'',
-            importedFile:null,
 
             // detailed view
             showDetailedView: false,
@@ -294,7 +292,6 @@ export default class ModelsView extends React.Component {
                 this.setState({ detailedValues: response.data['models'][0], detailViewLoading:false});
             }
             ).catch(function(error) {
-                console.log(error);
                 this.setState({ showStatus: true, statusMessage: ModelConstants.GENERAL_MODEL_ERROR, statusSeverity:"error" });
             });
 
@@ -309,9 +306,9 @@ export default class ModelsView extends React.Component {
             getURL(modelsMainPath, ModelCommand.search),
             {
                 'filter': {
-                    'vendor':this.state.searchVendor,
-                    'model_number':this.state.searchModelNum,
-                    'height':this.state.searchHeight,
+                    'vendor': this.state.searchVendor,
+                    'model_number': this.state.searchModelNum,
+                    'height': this.state.searchHeight,
                 }
             }
             ).then(response => {
@@ -333,7 +330,7 @@ export default class ModelsView extends React.Component {
             });
 
         this.setState({
-            searchText:'',
+            searchText: '',
         });
     }
 
@@ -376,6 +373,16 @@ export default class ModelsView extends React.Component {
 
     search = (filters) => {
         this.setState({ searchVendor: filters['vendor'], searchModelNum: filters['model_number'], searchHeight: filters['height']}, this.searchModels);
+    }
+
+    searchAll = () => {
+        var filters = {
+            'vendor': '',
+            'model_number': '',
+            'height': ''
+        };
+
+        this.search(filters);
     }
 
     openCreateModal = () => {
@@ -459,16 +466,6 @@ export default class ModelsView extends React.Component {
         this.setState({ detailStatusOpen: false })
     }
 
-    uploadFile = () => {
-        const data = new FormData();
-        data.append('file', this.state.importedFile);
-        this.sendUploadedFile(data);
-    }
-
-    chooseFile = (event) => {
-        this.setState({ importedFile: event.target.files[0] })
-    }
-
     render() {
         return (
             <div>
@@ -508,6 +505,8 @@ export default class ModelsView extends React.Component {
                             updateSearchText={this.updateSearchText}
                             search={this.search}
                             filters={columns}
+                            options={this.state.vendorsList}
+                            useAutocomplete={true}
                         />
                     </Grid>
                     <Grid item xs={12} sm={6} md={4} lg={3}>
@@ -516,6 +515,7 @@ export default class ModelsView extends React.Component {
 
                         <ExportModel
                             downloadTable={this.downloadTable}
+                            showAll={this.searchAll}
                         />
 
                         <CSVLink
@@ -525,18 +525,11 @@ export default class ModelsView extends React.Component {
                             ref={(r) => this.csvLink = r}
                             target="_blank"
                         />
-
-                        <UploadModal
-                            showImportModal={this.state.showImportModal}
-                            closeImportModal={this.closeImportModal}
-                            uploadFile={this.uploadFile}
-                            chooseFile={this.chooseFile}
-                            textDescription="The following format should be used for each row: vendor,model_number,height,display_color,ethernet_ports,power_ports,cpu,memory,storage,comment"
-                        /></div>):null
+                        </div>):null
                         }
                     </Grid>
                     <Grid item xs={12}>
-                        <TableView
+                        <ModelsTable
                             columns={columns}
                             vals={this.state.rows}
                             keys={columns}

@@ -161,17 +161,24 @@ class Logger:
 
         return log_message
 
-    def __create_log_entry_request(self, request, resource, log_message, user, action):
+    def __create_log_entry_request(
+        self, request, resource, log_message, username, action
+    ):
         self.__refresh()
         timestamp = str(datetime.now())
         # message = f"[{timestamp}] {user} - {log_message}"
-        message = f"[{user}] - {log_message}"
-        request_copy = dict(request)
+        message = f"[{username}] - {log_message}"
+
+        if request is not None:
+            request_copy = dict(request)
+        else:
+            request_copy = {"username": username}
+
         if Constants.PASSWORD_KEY in request_copy.keys():
             request_copy[Constants.PASSWORD_KEY] = "*" * 12
         log_entry = {
             "timestamp": timestamp,
-            "user": user,
+            "user": username,
             "action": action,
             "message": message,
             "resource": resource,
@@ -212,7 +219,7 @@ class Logger:
         except Exception as e:
             print(str(e))
 
-    def log_request(self, request, resource, action, user):
+    def log_request(self, request, resource, action, username):
         if resource == Logger.USERS:
             log_message = self.__log_user_request(action)
         if resource == Logger.MODELS:
@@ -222,7 +229,9 @@ class Logger:
         if resource == Logger.RACKS:
             log_message = self.__log_rack_request(action)
 
-        self.__create_log_entry_request(request, resource, log_message, user, action)
+        self.__create_log_entry_request(
+            request, resource, log_message, username, action
+        )
 
         return None
 

@@ -33,7 +33,7 @@ export const SHIBBOLETH_LOGIN =
     "https://oauth.oit.duke.edu/oauth/authorize.php?"
      + "client_id=" + encodeURIComponent(CLIENT_ID)
      + "&client_secret=" + encodeURIComponent(CLIENT_SECRET)
-     + "&redirect_uri=" + encodeURIComponent('http://localhost:3000/')
+     + "&redirect_uri=" + encodeURIComponent(serverEndpoint)
      + "&response_type=token"
      + "&state=1129"
      + "&scope=" + encodeURIComponent(SCOPE);

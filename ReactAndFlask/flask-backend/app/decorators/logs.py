@@ -13,19 +13,20 @@ def log(request, resource, action):
         @wraps(f)
         def wrapped(*args, **kwargs):
             token = request.headers.get("token")
-            user = ""
+            username = ""
             try:
                 if action not in [
                     Logger.ACTIONS.USERS.AUTHENTICATE,
                     Logger.ACTIONS.USERS.OAUTH,
                 ]:
-                    user = AUTHMANAGER.decode_auth_token(token)
+                    username = AUTHMANAGER.decode_auth_token(token)
                 else:
-                    user = request.get_json().get("username")
+                    username = request.get_json().get("username")
             except UserException as e:
                 return e.message
 
-            LOGGER.log_request(request.get_json(), resource, action, user)
+            print(request.get_json())
+            LOGGER.log_request(request.get_json(), resource, action, username)
             response = f(*args, **kwargs)
             LOGGER.log_response(response)
             return response

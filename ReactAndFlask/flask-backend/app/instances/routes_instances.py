@@ -30,6 +30,8 @@ def search():
     global instancesArr
     returnJSON = createJSON()
 
+    print("THIS ONE RIGHT HERE THIS ONE RIGHT HERE THIS ONE RIGHT HERE")
+    print(request.json)
     filter = request.json["filter"]
     print("FILTER")
     print(filter)

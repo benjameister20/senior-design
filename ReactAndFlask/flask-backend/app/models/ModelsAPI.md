@@ -24,22 +24,22 @@ def create()
 - Arguments:
 ```language=json
 {
-    "vendor":"VENDOR",
-    "model_number":"MODEL_NUMBER",
-    "height":"HEIGHT"||HEIGHT,
-    "display_color":"DISPLAY_COLOR",
-    "ethernet_ports":"ETHERNET_PORTS",
-    "power_ports":"POWER_PORTS",
-    "cpu":"CPU",
-    "memory":"MEMORY",
-    "storage":"STORAGE",
-    "comment":"COMMENT"
+    "vendor": "VENDOR",
+    "model_number": "MODEL_NUMBER",
+    "height": "HEIGHT"||HEIGHT,
+    "display_color": "DISPLAY_COLOR",
+    "ethernet_ports": [ETHERNET_PORTS],
+    "power_ports": "POWER_PORTS",
+    "cpu": "CPU",
+    "memory": "MEMORY",
+    "storage": "STORAGE",
+    "comment": "COMMENT"
 }
 ```
 - Returns:
 ```language=json
 {
-    "message":"success"||"ERROR_MESSAGE",
+    "message": "success" || "ERROR_MESSAGE"
 }
 ```
 -----------------------------

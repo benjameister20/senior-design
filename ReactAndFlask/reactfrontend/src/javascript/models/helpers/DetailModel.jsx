@@ -110,7 +110,7 @@ export default class DetailModel extends React.Component {
                             defaultValue={this.props.defaultValues[inputs.height.name]}
                         />
                         <CompactPicker
-                            color={this.state.color || this.props.defaultValues["display_color"]}
+                            color={this.state.color !== null ? this.state.color : "#000000"}
                             onChange={this.updateColor}
 
                         />

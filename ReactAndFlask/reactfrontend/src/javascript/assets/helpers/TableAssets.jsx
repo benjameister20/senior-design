@@ -231,8 +231,6 @@ class TableAsset extends React.Component {
 							</TableRow>
 							</TableHead>
 							<TableBody>
-
-
 								{stableSort(testRows, getComparator(this.state.order, this.state.orderBy))
 									//.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
 									.map((row, index) => {

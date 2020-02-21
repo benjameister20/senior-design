@@ -41,7 +41,7 @@ export default class Filters extends React.Component {
                     <ExpansionPanelSummary
                         expandIcon={<ExpandMoreIcon />}
                     >
-                        <Typography>Filter</Typography>
+                        <Typography>Search</Typography>
                     </ExpansionPanelSummary>
                     <ExpansionPanelDetails>
                         <Grid

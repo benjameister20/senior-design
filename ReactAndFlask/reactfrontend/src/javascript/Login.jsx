@@ -10,7 +10,6 @@ import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import logo from '../images/logo.png';
-import { loginKeys } from './JSONKeys';
 import ShibLogin from './ShibLogin';
 import * as Constants from "./Constants";
 
@@ -52,13 +51,10 @@ export default class Login extends React.Component {
     }
 
     submitCredentials() {
-        const usernameKey = loginKeys.username;
-        const passwordKey = loginKeys.password;
-
         axios.post(
             getURL(loginMainPath, 'authenticate'), {
-                usernameKey: this.state.username,
-                passwordKey: this.state.password,
+                username: this.state.username,
+                password: this.state.password,
             }).then(response => {
                 var valid = response.data['message'];
                 if (valid === 'success') {

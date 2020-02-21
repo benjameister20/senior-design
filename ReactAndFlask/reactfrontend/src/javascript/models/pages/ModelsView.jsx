@@ -5,7 +5,7 @@ import { CSVLink } from "react-csv";
 import { ModelCommand } from '../enums/ModelCommands.ts'
 import { ModelInput } from '../enums/ModelInputs.ts'
 
-import ButtonsModel from '../helpers/ButtonsModel';
+import ExportModel from '../helpers/ExportModel';
 import FilterModel from '../helpers/FilterModel';
 import DetailModel from '../helpers/DetailModel';
 import CreateModel from '../helpers/CreateModel';
@@ -24,7 +24,25 @@ const columns = [
     'Vendor',
     'Model Number',
     'Height',
+    'Display Color',
+    'Network Ports',
+    'Power Ports',
+    'CPU',
+    'Memory',
+    'Storage',
 ]
+
+const columnLookup = {
+    "vendor": "Vendor",
+    "model_number": "Model Number",
+    "height": "Height",
+    'display_color': 'Display Color',
+    'ethernet_ports': 'Network Ports',
+    'power_ports': 'Power Ports',
+    'cpu': 'CPU',
+    'memory': 'Memory',
+    'storage': 'Storage',
+}
 
 const modelsMainPath = 'models/';
 const modelDownloadFileName = 'models.csv';
@@ -40,6 +58,7 @@ export default class ModelsView extends React.Component {
 
             // table items
             items: [],
+            rows: [],
 
             // vals for creating a new model
             createdModel : {
@@ -180,7 +199,6 @@ export default class ModelsView extends React.Component {
                 'vendorOriginal':this.state.originalVendor,
                 'model_numberOriginal':this.state.originalModelNumber,
                 'heightOriginal':this.state.originalHeight,
-
                 'vendor':this.state.detailedValues[ModelInput.Vendor],
                 'model_number':this.state.detailedValues[ModelInput.model_number],
                 'height':this.state.detailedValues[ModelInput.Height],
@@ -269,8 +287,8 @@ export default class ModelsView extends React.Component {
         axios.post(
             getURL(modelsMainPath, ModelCommand.detailView),
             {
-                'vendor':vendor,
-                'model_number':modelNum,
+                'vendor': vendor,
+                'model_number': modelNum,
             }
             ).then(response => {
                 this.setState({ detailedValues: response.data['models'][0], detailViewLoading:false});
@@ -298,8 +316,20 @@ export default class ModelsView extends React.Component {
             }
             ).then(response => {
                 const models = response.data['models'] === undefined ? [] : response.data['models'];
-                console.log(models);
-                this.setState({ items: models })
+                var rows = [];
+                Object.values(models).forEach(model => {
+                    var row = {};
+                    Object.keys(model).forEach(key => {
+                        if (key in columnLookup) {
+                            row[columnLookup[key]] = model[key];
+                        } else {
+                            row[key] = model[key];
+                        }
+                    });
+                    rows.push(row);
+                });
+
+                this.setState({ rows: rows, items: models })
             });
 
         this.setState({
@@ -332,7 +362,7 @@ export default class ModelsView extends React.Component {
         axios.post(
             getURL(modelsMainPath, ModelCommand.EXPORT_FILE),
             {
-                'filter':{
+                'filter': {
                     'vendor':this.state.searchVendor,
                     'model_number':this.state.searchModelNum,
                     'height':this.state.searchHeight,
@@ -390,13 +420,11 @@ export default class ModelsView extends React.Component {
     }
 
     updateModelColor = (color) => {
-        console.log("updating color to " + color);
         this.state.createdModel['display_color'] = color;
         this.forceUpdate();
     }
 
     updateModelColorDetails = (color) => {
-        console.log("updating color to " + color);
         this.state.detailedValues['display_color'] = color;
         this.forceUpdate();
     }
@@ -475,7 +503,7 @@ export default class ModelsView extends React.Component {
                             />
                         </div>) : null}
                     </Grid>
-                    <Grid item xs={12} sm={6} md={4} lg={3}>
+                    <Grid item xs={12} sm={6} md={6} lg={6}>
                         <FilterModel
                             updateSearchText={this.updateSearchText}
                             search={this.search}
@@ -484,9 +512,9 @@ export default class ModelsView extends React.Component {
                     </Grid>
                     <Grid item xs={12} sm={6} md={4} lg={3}>
                         {(this.props.privilege === Privilege.ADMIN) ?
-                        (<div><ButtonsModel
-                            openCreateModal={this.openCreateModal}
-                            openImportModal={this.openImportModal}
+                        (<div>
+
+                        <ExportModel
                             downloadTable={this.downloadTable}
                         />
 
@@ -510,7 +538,7 @@ export default class ModelsView extends React.Component {
                     <Grid item xs={12}>
                         <TableView
                             columns={columns}
-                            vals={this.state.items}
+                            vals={this.state.rows}
                             keys={columns}
                             showDetailedView={this.showDetailedView}
                             filters={columns}
@@ -522,7 +550,6 @@ export default class ModelsView extends React.Component {
                             statusSeverity={this.state.detailStatusSeverity}
                             statusClose={this.detailStatusClose}
                             statusMessage={this.state.detailStatusMessage}
-
                             showDetailedView={this.state.showDetailedView}
                             closeDetailedView={this.closeDetailedView}
                             updateModelEdited={this.updateModelEdited}

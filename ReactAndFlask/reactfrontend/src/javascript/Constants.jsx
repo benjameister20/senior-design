@@ -29,11 +29,21 @@ export const CLIENT_ID = "ParselTonguesUserAuth";
 export const CLIENT_SECRET = "LpUwB*eiK4Iw#1gaCu5jYp1u5uRF3ERsdmuNUGoKYNzn7rHm7b";
 export const SCOPE = "basic";
 
+export var SHIB_REDIRECT_URI = "";
+
+if (window.location.href === "http://localhost:3000" || window.location.href === "http://localhost:3000/") {
+    SHIB_REDIRECT_URI = window.location.href;
+} else {
+    SHIB_REDIRECT_URI = serverEndpoint;
+}
+
 export const SHIBBOLETH_LOGIN =
     "https://oauth.oit.duke.edu/oauth/authorize.php?"
      + "client_id=" + encodeURIComponent(CLIENT_ID)
      + "&client_secret=" + encodeURIComponent(CLIENT_SECRET)
-     + "&redirect_uri=" + encodeURIComponent(serverEndpoint)
+     + "&redirect_uri=" + encodeURIComponent(SHIB_REDIRECT_URI)
      + "&response_type=token"
      + "&state=1129"
      + "&scope=" + encodeURIComponent(SCOPE);
+
+export const HTTPS_STATUS_OK = 200;

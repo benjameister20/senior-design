@@ -314,6 +314,8 @@ class UserManager:
 
         response["token"] = self.AUTH_MANAGER.encode_auth_token(username)
         response["privilege"] = privilege
+        response["message"] = "success"
+        response["username"] = username
 
         # print("RESPONSE")
         # print(response)

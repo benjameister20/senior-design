@@ -11,8 +11,6 @@ from app.exceptions.UserExceptions import (
     UsernameTakenError,
 )
 
-# TODO: implement error class to return from validator functions so can provide error messages for each situation
-
 USER_TABLE = UserTable()
 
 

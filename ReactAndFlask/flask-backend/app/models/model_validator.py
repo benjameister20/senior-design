@@ -11,13 +11,6 @@ class ModelValidator:
         self.instance_table = InstanceTable()
 
     def _validate(self, model: Model) -> str:
-        result = self.model_table.get_model_id_by_vendor_number(
-            model.vendor, model.model_number
-        )
-
-        if result is not None:
-            return "This vendor and model number combination already exists."
-
         pattern = re.compile("[0-9]+")
         if pattern.fullmatch(str(model.height)) is None:
             return "The value for model height must be a positive integer."
@@ -46,9 +39,29 @@ class ModelValidator:
         return "success"
 
     def create_model_validation(self, model: Model) -> str:
+        result = self.model_table.get_model_id_by_vendor_number(
+            model.vendor, model.model_number
+        )
+
+        if result is not None:
+            return "This vendor and model number combination already exists."
+
         return self._validate(model=model)
 
-    def edit_model_validation(self, model: Model) -> str:
+    def edit_model_validation(
+        self, model: Model, original_vendor: str, original_model_number: str
+    ) -> str:
+        if not (
+            original_vendor == model.vendor
+            and original_model_number == model.model_number
+        ):
+            result = self.model_table.get_model_id_by_vendor_number(
+                model.vendor, model.model_number
+            )
+
+            if result is not None:
+                return "This vendor and model number combination already exists."
+
         return self._validate(model=model)
 
     def delete_model_validation(self, vendor, model_number):

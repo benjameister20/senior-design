@@ -89,7 +89,7 @@ class ModelManager:
                     "Cannot edit height while instances are deployed"
                 )
         edit_validation_result = self.validate.edit_model_validation(
-            self.make_model(model_data)
+            self.make_model(model_data), original_vendor, original_model_number
         )
         if edit_validation_result == "success":
             self.table.edit_model(model_id, updated_model)

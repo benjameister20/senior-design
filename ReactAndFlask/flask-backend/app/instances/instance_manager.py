@@ -173,9 +173,6 @@ class InstanceManager:
             owner = self.check_null(instance_data[Constants.OWNER_KEY])
             print("7")
             comment = self.check_null(instance_data[Constants.COMMENT_KEY])
-            print("8")
-            # mac_address = self.check_null(instance_data[Constants.MAC_ADDRESS_KEY])
-            print("9")
             network_connections = self.check_null(
                 instance_data[Constants.NETWORK_CONNECTIONS_KEY]
             )
@@ -199,6 +196,8 @@ class InstanceManager:
         if asset_number == "":
             return InvalidInputsError("Must provide an asset number")
 
+        print(network_connections)
+        print(type(network_connections))
         print("about to make instance")
         return Instance(
             model_id,
@@ -208,7 +207,6 @@ class InstanceManager:
             owner,
             comment,
             datacenter_id,
-            # mac_address,
             network_connections,
             power_connections,
             asset_number,

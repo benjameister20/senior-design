@@ -1,8 +1,10 @@
 from typing import List
 
 from app.decorators.auth import requires_auth, requires_role
+from app.decorators.logs import log
 from app.exceptions.InvalidInputsException import InvalidInputsError
 from app.instances.instance_manager import InstanceManager
+from app.logging.logger import Logger
 from flask import Blueprint, request
 
 instances = Blueprint(
@@ -10,6 +12,7 @@ instances = Blueprint(
 )
 
 INSTANCE_MANAGER = InstanceManager()
+LOGGER = Logger()
 
 
 @instances.route("/instances/test", methods=["GET"])
@@ -27,6 +30,8 @@ def search():
     global instancesArr
     returnJSON = createJSON()
 
+    print("THIS ONE RIGHT HERE THIS ONE RIGHT HERE THIS ONE RIGHT HERE")
+    print(request.json)
     filter = request.json["filter"]
     print("FILTER")
     print(filter)
@@ -43,8 +48,9 @@ def search():
             addMessageToJSON(returnJSON, "success"),
             list(
                 map(
-                    lambda x: x.make_json_with_model_name(
-                        INSTANCE_MANAGER.get_model_from_id(x.model_id)
+                    lambda x: x.make_json_with_model_and_datacenter(
+                        INSTANCE_MANAGER.get_model_from_id(x.model_id),
+                        INSTANCE_MANAGER.get_dc_from_id(x.datacenter_id),
                     ),
                     instance_list,
                 )
@@ -59,6 +65,7 @@ def search():
 @instances.route("/instances/create", methods=["POST"])
 @requires_auth(request)
 @requires_role(request, "admin")
+@log(request, LOGGER.INSTANCES, LOGGER.ACTIONS.INSTANCES.CREATE)
 def create():
     """ Route for creating instances """
     print("REQUEST")
@@ -82,6 +89,7 @@ def create():
 @instances.route("/instances/delete", methods=["POST"])
 @requires_auth(request)
 @requires_role(request, "admin")
+@log(request, LOGGER.INSTANCES, LOGGER.ACTIONS.INSTANCES.DELETE)
 def delete():
     """ Route for deleting instances """
 
@@ -99,6 +107,7 @@ def delete():
 @instances.route("/instances/edit", methods=["POST"])
 @requires_auth(request)
 @requires_role(request, "admin")
+@log(request, LOGGER.INSTANCES, LOGGER.ACTIONS.INSTANCES.EDIT)
 def edit():
     """ Route for editing instances """
     global INSTANCE_MANAGER

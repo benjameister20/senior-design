@@ -1,7 +1,9 @@
 from typing import List
 
 from app.decorators.auth import requires_auth, requires_role
+from app.decorators.logs import log
 from app.exceptions.InvalidInputsException import InvalidInputsError
+from app.logging.logger import Logger
 from app.models.model_manager import ModelManager
 from flask import Blueprint, request
 
@@ -10,6 +12,7 @@ models = Blueprint(
 )
 
 MODEL_MANAGER = ModelManager()
+LOGGER = Logger()
 
 
 @models.route("/models/test", methods=["GET"])
@@ -21,6 +24,7 @@ def test():
 @models.route("/models/create", methods=["POST"])
 @requires_auth(request)
 @requires_role(request, "admin")
+@log(request, LOGGER.MODELS, LOGGER.ACTIONS.MODELS.CREATE)
 def create():
     """ Route for creating models """
 
@@ -39,6 +43,7 @@ def create():
 @models.route("/models/delete", methods=["POST"])
 @requires_auth(request)
 @requires_role(request, "admin")
+@log(request, LOGGER.MODELS, LOGGER.ACTIONS.MODELS.DELETE)
 def delete():
     """ Route for deleting models """
 
@@ -89,6 +94,7 @@ def search():
 @models.route("/models/edit", methods=["POST"])
 @requires_auth(request)
 @requires_role(request, "admin")
+@log(request, LOGGER.MODELS, LOGGER.ACTIONS.MODELS.EDIT)
 def edit():
     """ Route for editing models """
 

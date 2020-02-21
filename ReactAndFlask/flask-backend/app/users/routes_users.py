@@ -119,7 +119,7 @@ def authenticate():
     return response
 
 
-@users.route("users/oauth", methods=["POST"])
+@users.route("/users/oauth", methods=["POST"])
 def oauth():
 
     response = {}

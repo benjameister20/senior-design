@@ -173,14 +173,20 @@ class UserManager:
         username = request_data["username"]
 
         user = self.USER_TABLE.get_user(username)
-        if user is None:
+
+        try:
+            self.VALIDATOR.validate_delete_user(user)
+        except UserException as e:
+            return self.__add_message_to_JSON(response, e.message)
+        except Exception as e:
+            print(e)
             return self.__add_message_to_JSON(
-                response, f"User <{username}> does not exist"
+                response, f"Could not delete user '{username}'"
             )
 
         self.USER_TABLE.delete_user(user)
 
-        return self.__add_message_to_JSON(response, "success")
+        return self.__add_message_to_JSON(response, "Success")
 
     def edit(self, request):
 
@@ -218,7 +224,13 @@ class UserManager:
         self.USER_TABLE.delete_user(old_user)
         self.USER_TABLE.add_user(updated_user)
 
-        return self.__add_message_to_JSON(response, "success")
+        if old_user.privilege == "admin" and updated_user.privilege != "admin":
+            return self.__add_message_to_JSON(
+                response,
+                f"Success, Demotion to user privilege will take effect within the next {self.AUTH_MANAGER.TOKEN_EXP_DAYS} Days, {self.AUTH_MANAGER.TOKEN_EXP_HOURS} Hours, {self.AUTH_MANAGER.TOKEN_EXP_MINUTES} Minutes, and {self.AUTH_MANAGER.TOKEN_EXP_SECONDS} Seconds.",
+            )
+
+        return self.__add_message_to_JSON(response, "Success")
 
     def authenticate(self, request):
         # TESTED AND FUNCTIONAL
@@ -281,8 +293,10 @@ class UserManager:
         request_data = request.get_json()
 
         username = request_data.get("username")
-        request_data.get("email")
-        request_data.get("display_name")
+        email = request_data.get("email")
+        display_name = request_data.get("display_name")
+        privilege = "admin"
+        password = "netid"
 
         client_id = request_data.get("client_id")
         token = request_data.get("token")
@@ -297,6 +311,11 @@ class UserManager:
         )
         if not data_matches:
             raise UserException(f"Cannot confirm NetID user {username}")
+
+        # Add user to user table
+        user = User(username, display_name, email, password, privilege)
+        self.USER_TABLE.add_user(user)
+        # TODO: FIgure out what to do when adding netID user overwrites existing user
 
         response["token"] = self.AUTH_MANAGER.encode_auth_token(username)
         response["privilege"] = "user"

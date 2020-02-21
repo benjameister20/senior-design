@@ -119,42 +119,43 @@ class TabViewer extends React.Component {
                     <Tab value={4} style={{flexGrow: 1,}} label="Statistics" />
                     <Tab value={5} style={{flexGrow: 1,}} label="Logs" />
             </Tabs>
+            {this.state.currentTabID !== 0 ? null :
             <Typography
                 component="div"
                 role="tabpanel"
-                hidden={this.state.currentTabID !== 0}
                 id={`simple-tabpanel-0`}
                 aria-labelledby={`simple-tab-0`}
             >
                 <Container className={classes.tab} ><ModelsView token={this.props.token} privilege={this.props.privilege} /></Container>
-            </Typography>
+            </Typography>}
+            {this.state.currentTabID !== 1 ? null :
             <Typography
                 component="div"
                 role="tabpanel"
-                hidden={this.state.currentTabID !== 1}
                 id={`simple-tabpanel-0`}
                 aria-labelledby={`simple-tab-0`}
             >
                 <Container className={classes.tab} ><AssetsView token={this.props.token} privilege={this.props.privilege} /></Container>
-            </Typography>
+            </Typography>}
+            {this.state.currentTabID !== 2 ? null :
             <Typography
                 component="div"
                 role="tabpanel"
-                hidden={this.state.currentTabID !== 2}
                 id={`simple-tabpanel-0`}
                 aria-labelledby={`simple-tab-0`}
             >
                 <Container className={classes.tab} ><UsersView token={this.props.token} privilege={this.props.privilege} /></Container>
-            </Typography>
+            </Typography>}
+            {this.state.currentTabID !== 3 ? null :
             <Typography
                 component="div"
                 role="tabpanel"
-                hidden={this.state.currentTabID !== 3}
                 id={`simple-tabpanel-0`}
                 aria-labelledby={`simple-tab-0`}
             >
                 <Container className={classes.tab} ><RacksView token={this.props.token} privilege={this.props.privilege} /></Container>
-            </Typography>
+            </Typography>}
+            {this.state.currentTabID !== 4 ? null :
             <Typography
                 component="div"
                 role="tabpanel"
@@ -163,7 +164,8 @@ class TabViewer extends React.Component {
                 aria-labelledby={`simple-tab-0`}
             >
                 <Container className={classes.tab} ><StatisticsView token={this.props.token} privilege={this.props.privilege} /></Container>
-            </Typography>
+            </Typography>}
+            {this.state.currentTabID !== 5 ? null :
             <Typography
                 component="div"
                 role="tabpanel"
@@ -172,7 +174,7 @@ class TabViewer extends React.Component {
                 aria-labelledby={`tab-panel-logs`}
             >
                 <Container className={classes.tab} ><LogsView /></Container>
-            </Typography>
+            </Typography>}
             </ErrorBoundry>
         </div>);
     }

@@ -160,7 +160,8 @@ class Logger:
     def __create_log_entry_request(self, request, resource, log_message, user, action):
         self.__refresh()
         timestamp = str(datetime.now())
-        message = f"[{timestamp}] {user} - {log_message}"
+        # message = f"[{timestamp}] {user} - {log_message}"
+        message = f"[{user}] - {log_message}"
         request_copy = dict(request)
         if Constants.PASSWORD_KEY in request_copy.keys():
             request_copy[Constants.PASSWORD_KEY] = "*" * 12
@@ -179,10 +180,10 @@ class Logger:
     def __create_log_entry_response(self, response, log_message):
         self.__refresh()
         timestamp = str(datetime.now())
-        message = f"[{timestamp}] - {log_message}"
+        # message = f"[{timestamp}] - {log_message}"
         log_entry = {
             "timestamp": timestamp,
-            "message": message,
+            "message": log_message,
             "type": "response",
             "response": response,
         }

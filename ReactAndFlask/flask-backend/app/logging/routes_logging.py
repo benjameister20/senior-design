@@ -17,7 +17,7 @@ def test():
     return add_message_to_JSON(response, "hello")
 
 
-@logs.route("/logs/get-logs", methods=["GET"])
+@logs.route("/logs/getlogs", methods=["GET"])
 def get_logs():
     response = {}
 

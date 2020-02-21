@@ -7,6 +7,8 @@ from app.dal.instance_table import RackDoesNotExistError
 from app.dal.rack_table import RackTable
 from app.data_models.rack import Rack
 from app.decorators.auth import requires_auth, requires_role
+from app.decorators.logs import log
+from app.logging.logger import Logger
 from app.main.types import JSON
 from app.racks.diagram_manager import DiagramManager
 from app.racks.rack_manager import (
@@ -25,6 +27,7 @@ racks = Blueprint(
     template_folder="templates",
     static_folder="static",
 )
+LOGGER = Logger()
 
 
 @racks.route("/all", methods=["GET"])
@@ -48,7 +51,8 @@ def get_all_racks():
 
 
 @racks.route("/create", methods=["POST"])
-# @requires_auth(request)
+@requires_auth(request)
+@log(request, LOGGER.RACKS, LOGGER.ACTIONS.RACKS.CREATE)
 def create_racks():
     """ Create a range of racks """
     returnJSON = createJSON()
@@ -122,6 +126,7 @@ def get_rack_details():
 @racks.route("/delete", methods=["POST"])
 @requires_auth(request)
 @requires_role(request, "admin")
+@log(request, LOGGER.RACKS, LOGGER.ACTIONS.RACKS.DELETE)
 def delete_racks():
     """ Delete a range of racks """
     data: JSON = request.get_json()

@@ -8,6 +8,7 @@ from app.exceptions.UserExceptions import (
     InvalidPrivilegeError,
     InvalidUsernameError,
     NoEditsError,
+    UserException,
     UsernameTakenError,
 )
 
@@ -145,17 +146,51 @@ class Validator:
 
     def validate_edit_user(self, user: User, original_username: str):
         old_user = self.validate_existing_username(original_username)
+
+        if old_user.password == "netid":
+            raise UserException("Cannot edit NetID user")
+
         if old_user == user:
             raise NoEditsError("No edits made")
 
         if not (user.email == old_user.email):
             self.validate_email(user.email)
+
         if user.password is not None:
             self.validate_password(user.password)
-        self.validate_privilege(user.privilege, user.username)
+
+        if not (user.privilege == old_user.privilege):
+            self.validate_privilege(user.privilege, user.username)
+
         if not (original_username == user.username):
             self.validate_new_username(user.username)
 
         user.password = old_user.password
 
         return [user, old_user]
+
+    def validate_delete_user(self, user: User):
+
+        if user.password == "netid":
+            raise UserException("Cannot delete NetID user")
+
+        if user is None:
+            raise UserException(f"User '{user.username}' does not exist")
+
+        return True
+
+    def validate_shibboleth_login(self, user: User):
+        # Upon shibboleth login
+        # 1 check to see if a user with netid exists, if not create a new one
+        # 2 check to see if that user has a password equal to "netid", if not, reject the new user
+        # 3 make new user
+
+        result = USER_TABLE.get_user(user.username)
+
+        if result is None:
+            return True
+
+        if not result.password == user.password:
+            raise UserException(f"User {user.username} already exists")
+
+        return True

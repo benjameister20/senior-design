@@ -1,8 +1,10 @@
 from typing import List
 
 from app.decorators.auth import requires_auth, requires_role
+from app.decorators.logs import log
 from app.exceptions.InvalidInputsException import InvalidInputsError
 from app.instances.instance_manager import InstanceManager
+from app.logging.logger import Logger
 from flask import Blueprint, request
 
 instances = Blueprint(
@@ -10,6 +12,7 @@ instances = Blueprint(
 )
 
 INSTANCE_MANAGER = InstanceManager()
+LOGGER = Logger()
 
 
 @instances.route("/instances/test", methods=["GET"])
@@ -27,6 +30,8 @@ def search():
     global instancesArr
     returnJSON = createJSON()
 
+    print("THIS ONE RIGHT HERE THIS ONE RIGHT HERE THIS ONE RIGHT HERE")
+    print(request.json)
     filter = request.json["filter"]
     print("FILTER")
     print(filter)
@@ -36,6 +41,7 @@ def search():
         limit = 1000
 
     try:
+        print(request.json)
         datacenter_name = request.json["datacenter_name"]
         instance_list = INSTANCE_MANAGER.get_instances(filter, datacenter_name, limit)
         returnJSON = addInstancesTOJSON(
@@ -59,6 +65,7 @@ def search():
 @instances.route("/instances/create", methods=["POST"])
 @requires_auth(request)
 @requires_role(request, "admin")
+@log(request, LOGGER.INSTANCES, LOGGER.ACTIONS.INSTANCES.CREATE)
 def create():
     """ Route for creating instances """
     print("REQUEST")
@@ -71,9 +78,9 @@ def create():
         error = INSTANCE_MANAGER.create_instance(instance_data)
         print(type(error))
         if error is not None:
-            print(error.message)
+            print(error)
             print("YEEHAW")
-            return addMessageToJSON(returnJSON, error.message)
+            return addMessageToJSON(returnJSON, error)
         return addMessageToJSON(returnJSON, "success")
     except InvalidInputsError as e:
         return addMessageToJSON(returnJSON, e.message)
@@ -82,6 +89,7 @@ def create():
 @instances.route("/instances/delete", methods=["POST"])
 @requires_auth(request)
 @requires_role(request, "admin")
+@log(request, LOGGER.INSTANCES, LOGGER.ACTIONS.INSTANCES.DELETE)
 def delete():
     """ Route for deleting instances """
 
@@ -99,6 +107,7 @@ def delete():
 @instances.route("/instances/edit", methods=["POST"])
 @requires_auth(request)
 @requires_role(request, "admin")
+@log(request, LOGGER.INSTANCES, LOGGER.ACTIONS.INSTANCES.EDIT)
 def edit():
     """ Route for editing instances """
     global INSTANCE_MANAGER
@@ -164,7 +173,7 @@ def get_next_asset_number():
     global INSTANCE_MANAGER
     returnJSON = createJSON()
 
-    returnJSON["asset_number"] = 100000
+    returnJSON["asset_number"] = 583965
     return addMessageToJSON(returnJSON, "success")
 
 

@@ -12,7 +12,7 @@ def requires_auth(request):
         @wraps(f)
         def wrapper(*args, **kwargs):
             try:
-                print(request.headers)
+                # print(request.headers)
                 request.headers["token"]
             except KeyError as e:
                 print(str(e))

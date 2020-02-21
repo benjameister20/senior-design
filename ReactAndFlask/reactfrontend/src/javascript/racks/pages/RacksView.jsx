@@ -7,6 +7,12 @@ import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
 import { MenuItem, Button, TextField } from '@material-ui/core';
 import Paper from '@material-ui/core/Paper';
+import { withStyles } from '@material-ui/core/styles';
+import ExpansionPanel from '@material-ui/core/ExpansionPanel';
+import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
+import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
+import Typography from '@material-ui/core/Typography';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 
 import { RackCommand } from "../enums/RackCommands.ts";
@@ -21,7 +27,17 @@ import ErrorBoundray from '../../errors/ErrorBoundry';
 
 const racksMainPath = 'racks/';
 
-export default class RacksView extends React.Component {
+const useStyles = theme => ({
+    root: {
+      width: '100%',
+    },
+    heading: {
+      fontSize: theme.typography.pxToRem(15),
+      fontWeight: theme.typography.fontWeightRegular,
+    },
+  });
+
+class RacksView extends React.Component {
     constructor(props) {
         super(props);
 
@@ -40,10 +56,6 @@ export default class RacksView extends React.Component {
 
             racksList:[],
         };
-
-        axios.defaults.headers.common['token'] = this.props.token;
-        axios.defaults.headers.common['privilege'] = this.props.privilege;
-
     }
 
     componentDidMount() {
@@ -119,7 +131,7 @@ export default class RacksView extends React.Component {
 
     render() {
         return (
-            <div>
+            <React.Fragment>
                 <ErrorBoundray>
                 <Paper elevation={3}>
                 <StatusDisplay
@@ -222,7 +234,9 @@ export default class RacksView extends React.Component {
 
                     </Paper>
                 </ErrorBoundray>
-            </div>
+            </React.Fragment>
         );
     }
 }
+
+export default withStyles(useStyles)(RacksView);

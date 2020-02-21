@@ -39,6 +39,7 @@ class RackActions:
 class DataCenterActions:
     CREATE = "CREATE"
     DELETE = "DELETE"
+    EDIT = "EDIT"
 
 
 class Actions:
@@ -154,6 +155,9 @@ class Logger:
 
         if action == Logger.ACTIONS.DATACENTERS.DELETE:
             log_message = f"""DELETE Datacenter (Name: {Constants.DC_NAME_KEY}, Abbreviation: {Constants.DC_ABRV_KEY})"""
+
+        if action == Logger.ACTIONS.DATACENTERS.EDIT:
+            log_message = f"""EDIT Datacenter (Name: {Constants.NAME_ORIG_KEY}) to (Name: {Constants.DC_NAME_KEY}, Abbreviation: {Constants.DC_ABRV_KEY})"""
 
         return log_message
 

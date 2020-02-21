@@ -77,19 +77,19 @@ export default class StatisticsView extends React.Component {
                     totalUsage.push(totalUsageRow);
 
                     var spaceUsage = JSONtoArr(data["spaceUsage"]);
-                    if (spaceUsage.length == 0) {
+                    if (spaceUsage.length === 0) {
                         spaceUsage.push(["No space is currently being used", []])
                     }
                     var vendorUsage = JSONtoArr(data["vendorUsage"]);
-                    if (vendorUsage.length == 0) {
+                    if (vendorUsage.length === 0) {
                         vendorUsage.push(["No vendors currently using space", []])
                     }
                     var modelUsage = JSONtoArr(data["modelUsage"]);
-                    if (modelUsage.length == 0) {
+                    if (modelUsage.length === 0) {
                         modelUsage.push(["No models currently using space", []])
                     }
                     var ownerUsage = JSONtoArr(data["ownerUsage"]);
-                    if (ownerUsage.length == 0) {
+                    if (ownerUsage.length === 0) {
                         ownerUsage.push(["No owners currently using space", []])
                     }
 

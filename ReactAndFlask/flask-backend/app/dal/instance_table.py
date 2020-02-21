@@ -262,6 +262,7 @@ class InstanceTable:
         hostname: Optional[str],
         rack_label: Optional[str],
         rack_position: Optional[int],
+        datacenter_id: Optional[int],
         limit: int,
     ) -> List[Instance]:
         """ Get a list of all instances containing the given filter """
@@ -274,6 +275,8 @@ class InstanceTable:
             conditions.append(InstanceEntry.rack_label == rack_label)
         if rack_position is not None and rack_position != "":
             conditions.append(InstanceEntry.rack_position == rack_position)
+        if datacenter_id is not None and datacenter_id != "":
+            conditions.append(InstanceEntry.datacenter_id == datacenter_id)
 
         filtered_instances: List[InstanceEntry] = InstanceEntry.query.filter(
             and_(*conditions)

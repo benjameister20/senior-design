@@ -18,19 +18,7 @@ import TableView from '../../helpers/TableView';
 import StatusDisplay from '../../helpers/StatusDisplay';
 
 import ErrorBoundray from '../../errors/ErrorBoundry';
-
-const inputs = [
-    'vendor',
-    'model_number',
-    'height',
-    'display_color',
-    'ethernet_ports',
-    'power_ports',
-    'cpu',
-    'memory',
-    'storage',
-    'comments',
-]
+import * as ModelConstants from "../ModelConstants";
 
 const columns = [
     'vendor',
@@ -115,42 +103,31 @@ export default class ModelsView extends React.Component {
             originalModelNumber:'',
             originalHeight:'',
 
-            showStatus:false,
+            statusOpen:false,
             statusSeverity:'',
             statusMessage:'',
+            detailStatusOpen:false,
+            detailStatusSeverity:'',
+            detailStatusMessage:'',
+            createStatusOpen:false,
+            createStatusSeverity:'',
+            createStatusMessage:'',
 
             vendorsList:[],
             madeVendorQuery:false,
 
         };
 
-        this.openCreateModal = this.openCreateModal.bind(this);
-        this.openImportModal = this.openImportModal.bind(this);
-        this.downloadTable = this.downloadTable.bind(this);
-        this.updateSearchText = this.updateSearchText.bind(this);
-        this.search = this.search.bind(this);
-        this.closeImportModal = this.closeImportModal.bind(this);
-        this.closeCreateModal = this.closeCreateModal.bind(this);
-        this.showDetailedView = this.showDetailedView.bind(this);
-        this.editModel = this.editModel.bind(this);
-        this.closeDetailedView = this.closeDetailedView.bind(this);
-        this.updateModelEdited = this.updateModelEdited.bind(this);
-        this.closeCreateModal = this.closeCreateModal.bind(this);
-        this.createModel = this.createModel.bind(this);
-        this.updateModelCreator = this.updateModelCreator.bind(this);
-        this.deleteModel = this.deleteModel.bind(this);
-        this.closeShowStatus = this.closeShowStatus.bind(this);
-        this.getVendorList = this.getVendorList.bind(this);
-        this.chooseFile = this.chooseFile.bind(this);
-        this.uploadFile = this.uploadFile.bind(this);
-        this.sendUploadedFile = this.sendUploadedFile.bind(this);
-        this.initialize = this.initialize.bind(this);
-
         axios.defaults.headers.common['token'] = this.props.token;
         axios.defaults.headers.common['privilege'] = this.props.privilege;
     }
 
-    createModel() {
+    componentDidMount() {
+        this.searchModels();
+        this.getVendorList();
+    }
+
+    createModel = () => {
         axios.post(
             getURL(modelsMainPath, ModelCommand.create),
             {
@@ -164,13 +141,13 @@ export default class ModelsView extends React.Component {
                 'memory':this.state.createdModel[ModelInput.Memory],
                 'storage':this.state.createdModel[ModelInput.Storage],
                 'comment':this.state.createdModel[ModelInput.Comment],
+                'ethernet_ports':["eth0", "eth1", "eth2", "eth3"],
             }
             ).then(
                 response => {
                     if (response.data.message === 'success') {
                         this.setState({
                             showStatus: true,
-                            statusMessage:'success',
                             statusMessage: "Successfully created model",
                             statusSeverity:"success",
                             createdModel : {
@@ -190,12 +167,14 @@ export default class ModelsView extends React.Component {
                         this.getVendorList();
                         this.searchModels();
                     } else {
-                        this.setState({ showStatus: true, statusMessage: response.data.message, statusSeverity:"error" })
+                        this.setState({ createStatusOpen: true, createStatusMessage: response.data.message, createStatusSeverity:"error" })
                     }
-                });
+                }).catch(
+                    this.setState({ createStatusOpen: true, createStatusMessage: ModelConstants.GENERAL_MODEL_ERROR, createStatusSeverity:"error" })
+                );
     }
 
-    editModel() {
+    editModel = () => {
         axios.post(
             getURL(modelsMainPath, ModelCommand.edit),
             {
@@ -241,13 +220,15 @@ export default class ModelsView extends React.Component {
                         this.getVendorList();
                         this.searchModels();
                     } else {
-                        this.setState({ showStatus: true, statusMessage: response.data.message, statusSeverity:"error" })
+                        this.setState({ detailStatusOpen: true, detailStatusMessage: response.data.message, detailStatusSeverity:"error" })
                     }
-                });
+                }).catch(
+                    this.setState({ detailStatusOpen: true, detailStatusMessage: ModelConstants.GENERAL_MODEL_ERROR, detailStatusSeverity:"error" })
+                );
     }
 
 
-    deleteModel() {
+    deleteModel = () => {
         axios.post(
             getURL(modelsMainPath, ModelCommand.delete),
             {
@@ -280,17 +261,25 @@ export default class ModelsView extends React.Component {
                     } else {
                         this.setState({ showStatus: true, statusMessage: response.data.message, statusSeverity:"error" })
                     }
-                });
+                }).catch(
+                    this.setState({ showStatus: true, statusMessage: ModelConstants.GENERAL_MODEL_ERROR, statusSeverity:"error" })
+                );
     }
 
-    detailViewModel(vendor, modelNum) {
+    detailViewModel = (vendor, modelNum) => {
         axios.post(
             getURL(modelsMainPath, ModelCommand.detailView),
             {
                 'vendor':vendor,
                 'model_number':modelNum,
-            }, this.props.headers
-            ).then(response => this.setState({ detailedValues: response.data['models'][0], detailViewLoading:false}));
+            }
+            ).then(response => {
+                this.setState({ detailedValues: response.data['models'][0], detailViewLoading:false});
+            }
+            ).catch(function(error) {
+                console.log(error);
+                this.setState({ showStatus: true, statusMessage: ModelConstants.GENERAL_MODEL_ERROR, statusSeverity:"error" });
+            });
 
         this.setState({
             viewVendor:'',
@@ -298,7 +287,7 @@ export default class ModelsView extends React.Component {
         });
     }
 
-    searchModels() {
+    searchModels = () => {
         axios.post(
             getURL(modelsMainPath, ModelCommand.search),
             {
@@ -317,7 +306,7 @@ export default class ModelsView extends React.Component {
         });
     }
 
-    getVendorList() {
+    getVendorList = () => {
         axios.get(
             getURL(modelsMainPath, ModelCommand.VENDOR_VALUES), {}
             ).then(response => this.setState({ vendorsList: response.data.results }));
@@ -325,7 +314,7 @@ export default class ModelsView extends React.Component {
         this.setState({ madeVendorQuery: true });
     }
 
-    sendUploadedFile(data) {
+    sendUploadedFile = (data) => {
         axios.post(
             getURL(modelsMainPath, ModelCommand.UPLOAD_FILE), data
             ).then(response => {
@@ -338,7 +327,7 @@ export default class ModelsView extends React.Component {
             });
     }
 
-    downloadTable() {
+    downloadTable = () => {
         axios.post(
             getURL(modelsMainPath, ModelCommand.EXPORT_FILE),
             {
@@ -354,19 +343,19 @@ export default class ModelsView extends React.Component {
             });
     }
 
-    search(filters) {
+    search = (filters) => {
         this.setState({ searchVendor:filters['vendor'], searchModelNum:filters['model_number'], searchHeight:filters['height']}, this.searchModels);
     }
 
-    openCreateModal() {
+    openCreateModal = () => {
         this.setState({showCreateModal: true});
     }
 
-    openImportModal() {
+    openImportModal = () => {
         this.setState({showImportModal: true});
     }
 
-    showDetailedView(id) {
+    showDetailedView = (id) => {
         this.setState({
             showDetailedView: true,
             detailViewLoading:true,
@@ -382,63 +371,87 @@ export default class ModelsView extends React.Component {
         this.detailViewModel(vendor, modelNum);
     }
 
-    closeCreateModal() {
+    closeCreateModal = () => {
         this.setState({showCreateModal: false});
     }
 
-    closeImportModal() {
+    closeImportModal = () => {
         this.setState({showImportModal: false});
     }
 
-    closeDetailedView() {
+    closeDetailedView = () => {
         this.setState({ showDetailedView: false })
     }
 
-    updateModelCreator(event) {
+    updateModelCreator = (event) => {
         this.state.createdModel[event.target.name] = event.target.value;
-        this.forceUpdate()
+        this.forceUpdate();
     }
 
-    updateModelEdited(event) {
+    updateModelColor = (color) => {
+        console.log("updating color to " + color);
+        this.state.createdModel['display_color'] = color;
+        this.forceUpdate();
+    }
+
+    updateModelColorDetails = (color) => {
+        console.log("updating color to " + color);
+        this.state.detailedValues['display_color'] = color;
+        this.forceUpdate();
+    }
+
+    updateModelEdited = (event) => {
         this.state.detailedValues[event.target.name] = event.target.value;
         this.forceUpdate()
     }
 
-    updateSearchText(event) {
+    updateSearchText = (event) => {
         this.setState({ searchText: event.target.value})
     }
 
-    closeShowStatus() {
+    closeShowStatus = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
         this.setState({ showStatus: false })
     }
 
-    uploadFile() {
+    createStatusClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        this.setState({ createStatusOpen: false })
+    }
+
+    detailStatusClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        this.setState({ detailStatusOpen: false })
+    }
+
+    uploadFile = () => {
         const data = new FormData();
         data.append('file', this.state.importedFile);
         this.sendUploadedFile(data);
     }
 
-    chooseFile(event) {
+    chooseFile = (event) => {
         this.setState({ importedFile: event.target.files[0] })
-    }
-
-    initialize() {
-        this.searchModels();
-        this.getVendorList();
     }
 
     render() {
         return (
             <div>
                 <ErrorBoundray>
-                {(this.state.madeVendorQuery) ? null: this.initialize()}
                 <StatusDisplay
                     open={this.state.showStatus}
                     severity={this.state.statusSeverity}
                     closeStatus={this.closeShowStatus}
                     message={this.state.statusMessage}
+                    autoHideDuration={6000}
                 />
-                {(this.props.privilege == Privilege.ADMIN) ?
+                {(this.props.privilege === Privilege.ADMIN) ?
                     (<div><ButtonsModel
                     openCreateModal={this.openCreateModal}
                     openImportModal={this.openImportModal}
@@ -452,13 +465,18 @@ export default class ModelsView extends React.Component {
                     target="_blank"
                 />
                 <CreateModel
+                    statusOpen={this.state.createStatusOpen}
+                    statusSeverity={this.state.createStatusSeverity}
+                    statusClose={this.createStatusClose}
+                    statusMessage={this.state.createStatusMessage}
+
                     showCreateModal={this.state.showCreateModal}
                     closeCreateModal={this.closeCreateModal}
                     createModel={this.createModel}
                     updateModelCreator={this.updateModelCreator}
-                    inputs={inputs}
                     options={this.state.vendorsList}
                     useAutocomplete={true}
+                    updateModelColor={this.updateModelColor}
                 />
                 <UploadModal
                     showImportModal={this.state.showImportModal}
@@ -481,15 +499,22 @@ export default class ModelsView extends React.Component {
                     filters={columns}
                 />
                 <DetailModel
+                    statusOpen={this.state.detailStatusOpen}
+                    statusSeverity={this.state.detailStatusSeverity}
+                    statusClose={this.detailStatusClose}
+                    statusMessage={this.state.detailStatusMessage}
+
                     showDetailedView={this.state.showDetailedView}
                     closeDetailedView={this.closeDetailedView}
-                    inputs={inputs}
                     updateModelEdited={this.updateModelEdited}
                     defaultValues={this.state.detailedValues}
                     loading={this.state.detailViewLoading}
                     edit={this.editModel}
                     delete={this.deleteModel}
-                    disabled={this.props.privilege==Privilege.USER}
+                    disabled={this.props.privilege===Privilege.USER}
+                    options={this.state.vendorsList}
+                    useAutocomplete={true}
+                    updateModelColorDetails={this.updateModelColorDetails}
                 />
             </ErrorBoundray>
             </div>

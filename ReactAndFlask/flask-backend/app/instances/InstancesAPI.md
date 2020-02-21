@@ -16,6 +16,21 @@ def test()
 ```
 -----------------------------
 ```language=python
+def get_next_asset_number()
+```
+- Path: '/instances/nextAssetNumber/'
+- REST Type: 'get'
+- Authentication Required: yes
+- Roled required: admin
+- Arguments: none
+- Returns:
+```language=json
+{
+    "asset_number":ASSET_NUMBER_AS_INTEGER
+}
+```
+-----------------------------
+```language=python
 def search()
 ```
 - REST Type: 'post'
@@ -24,12 +39,15 @@ def search()
 - Arguments:
 ```language=json
 {
+    "datacenter_name": "DATACENTER_NAME"
     "filter":
         {
             "model":"MODEL",
             "hostname":"HOSTNAME",
-            "rack":"RACK",
-            "rack_position":"RACK_U"
+            "starting_rack_letter":"STARTING_LETTER",
+            "ending_rack_letter":"ENDING_LETTER",
+            "starting_rack_number":STARTING_NUMBER,
+            "ending_rack_number":ENDING_NUMBER,
         }
     "limit":OPTIONAL_LIMIT
 }
@@ -50,7 +68,7 @@ def search()
             "mac_address": "MAC ADDRESSES,
             "network_connections": "NETWORK CONNECTIONS",
             "power_connections": "POWER CONNECTIONS",
-            "asset_number": "ASSET NUMBER",            
+            "asset_number": "ASSET NUMBER",  
         },
         {
             "model":"MODEL",
@@ -64,7 +82,7 @@ def search()
             "mac_address": "MAC ADDRESSES,
             "network_connections": "NETWORK CONNECTIONS",
             "power_connections": "POWER CONNECTIONS",
-            "asset_number": "ASSET NUMBER",                 
+            "asset_number": "ASSET NUMBER",  
         },
         {
             "model":"MODEL",
@@ -78,7 +96,7 @@ def search()
             "mac_address": "MAC ADDRESSES,
             "network_connections": "NETWORK CONNECTIONS",
             "power_connections": "POWER CONNECTIONS",
-            "asset_number": "ASSET NUMBER",                 
+            "asset_number": "ASSET NUMBER",  
         }
     ]
 }
@@ -99,12 +117,27 @@ def create()
     "rack_position":"RACK_U",
     "owner":"OWNER",
     "comment":"COMMENT"
-    "datacenter_id": "DATACENTER",
+    "datacenter_name": "DATACENTER",
     "tags": "TAGS",
-    "mac_address": "MAC ADDRESSES,
-    "network_connections": "NETWORK CONNECTIONS",
-    "power_connections": "POWER CONNECTIONS",
-    "asset_number": "ASSET NUMBER",     
+    "network_connections": {
+        PORT_NAME_1: {
+            "mac_address":MAC_ADDRESS,
+            "connection_hostname":HOSTNAME,
+            "connection_port":CONNECTION_PORT_NAME,
+        },
+        PORT_NAME_2: {
+            "mac_address":MAC_ADDRESS,
+            "connection_hostname":HOSTNAME,
+            "connection_port":CONNECTION_PORT_NAME,
+        },
+        PORT_NAME_3: {
+            "mac_address":MAC_ADDRESS,
+            "connection_hostname":HOSTNAME,
+            "connection_port":CONNECTION_PORT_NAME,
+        }
+    }
+    "power_connections": [ L3, R5, ... ]
+    "asset_number": "ASSET NUMBER",  
 }
 ```
 - Returns:
@@ -123,7 +156,7 @@ def delete()
 - Arguments:
 ```language=json
 {
-    "asset_number": "ASSET NUMBER", 
+    "asset_number": "ASSET NUMBER",
 }
 ```
 - Returns:
@@ -149,12 +182,12 @@ def edit()
     "rack_position":"RACK_U",
     "owner":"OWNER",
     "comment":"COMMENT"
-    "datacenter_id": "DATACENTER",
+    "datacenter_name": "DATACENTER",
     "tags": "TAGS",
     "mac_address": "MAC ADDRESSES,
     "network_connections": "NETWORK CONNECTIONS",
     "power_connections": "POWER CONNECTIONS",
-    "asset_number": "ASSET NUMBER",    
+    "asset_number": "ASSET NUMBER",  
 }
 ```
 - Returns:
@@ -173,7 +206,7 @@ def detail_view()
 - Arguments:
 ```language=json
 {
-    "asset_number": "ASSET NUMBER", 
+    "asset_number": "ASSET NUMBER",
 }
 ```
 - Returns:
@@ -188,12 +221,12 @@ def detail_view()
             "rack_position": "RACK_U",
             "owner": "OWNER",
             "comment": "COMMENT"
-            "datacenter_id": "DATACENTER",
+            "datacenter_name": "DATACENTER NAME",
             "tags": "TAGS",
             "mac_address": "MAC ADDRESSES,
             "network_connections": "NETWORK CONNECTIONS",
             "power_connections": "POWER CONNECTIONS",
-            "asset_number": "ASSET NUMBER",    
+            "asset_number": "ASSET NUMBER",  
         },
     ]
 }

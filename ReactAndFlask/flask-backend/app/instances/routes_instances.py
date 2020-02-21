@@ -36,7 +36,9 @@ def search():
         limit = 1000
 
     try:
-        instance_list = INSTANCE_MANAGER.get_instances(filter, limit)
+        print(request.json)
+        datacenter_name = request.json["datacenter_name"]
+        instance_list = INSTANCE_MANAGER.get_instances(filter, datacenter_name, limit)
         returnJSON = addInstancesTOJSON(
             addMessageToJSON(returnJSON, "success"),
             list(
@@ -55,8 +57,8 @@ def search():
 
 
 @instances.route("/instances/create", methods=["POST"])
-# @requires_auth(request)
-# @requires_role(request, "admin")
+@requires_auth(request)
+@requires_role(request, "admin")
 def create():
     """ Route for creating instances """
     print("REQUEST")
@@ -69,9 +71,9 @@ def create():
         error = INSTANCE_MANAGER.create_instance(instance_data)
         print(type(error))
         if error is not None:
-            print(error.message)
+            print(error)
             print("YEEHAW")
-            return addMessageToJSON(returnJSON, error.message)
+            return addMessageToJSON(returnJSON, error)
         return addMessageToJSON(returnJSON, "success")
     except InvalidInputsError as e:
         return addMessageToJSON(returnJSON, e.message)
@@ -129,8 +131,9 @@ def detail_view():
         return addInstancesTOJSON(
             addMessageToJSON(returnJSON, "success"),
             [
-                instance.make_json_with_model(
-                    INSTANCE_MANAGER.get_model_from_id(instance.model_id)
+                instance.make_json_with_model_and_datacenter(
+                    INSTANCE_MANAGER.get_model_from_id(instance.model_id),
+                    INSTANCE_MANAGER.get_dc_from_id(instance.datacenter_id),
                 )
             ],
         )
@@ -151,6 +154,18 @@ def assisted_model_input():
         return returnJSON
     except InvalidInputsError as e:
         return addMessageToJSON(returnJSON, e.message)
+
+
+@instances.route("/instances/nextAssetNumber", methods=["GET"])
+@requires_auth(request)
+@requires_role(request, "admin")
+def get_next_asset_number():
+    """ Route to get next valid asset number"""
+    global INSTANCE_MANAGER
+    returnJSON = createJSON()
+
+    returnJSON["asset_number"] = 583965
+    return addMessageToJSON(returnJSON, "success")
 
 
 def createJSON() -> dict:

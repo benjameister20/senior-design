@@ -16,6 +16,30 @@ def test()
 ```
 -----------------------------
 ```language=python
+def list_all()
+```
+- REST Type: 'get'
+- Authentication Required: yes
+- Roled required: none
+- Arguments: none
+- Returns:
+```language=json
+{
+    "datacenters": [
+        {
+            "abbreviation" : "DATACENTER ABBREVIATION",
+            "datacenter_name": "DATACENTER_NAME"
+        }
+        {
+            "abbreviation" : "DATACENTER ABBREVIATION",
+            "datacenter_name": "DATACENTER_NAME"
+        }    
+    ]
+}
+```
+-----------------------------
+
+```language=python
 def create()
 ```
 - REST Type: 'post'
@@ -25,7 +49,7 @@ def create()
 ```language=json
 {
     "abbreviation" : "DATACENTER ABBREVIATION",
-    "name": "FULL NAME"
+    "datacenter_name": "DATACENTER_NAME"
 }
 ```
 - Returns:
@@ -35,6 +59,29 @@ def create()
 }
 ```
 -----------------------------
+
+```language=python
+def edit()
+```
+- REST Type: 'post'
+- Authentication Required: yes
+- Roled required: 'admin'
+- Arguments:
+```language=json
+{
+    "nameOriginal": "OLD NAME"
+    "abbreviation" : "DATACENTER ABBREVIATION",
+    "datacenter_name": "DATACENTER_NAME"
+}
+```
+- Returns:
+```language=json
+{
+    "message":"success"||"ERROR_MESSAGE",
+}
+```
+-----------------------------
+
 ```language=python
 def delete()
 ```
@@ -44,7 +91,7 @@ def delete()
 - Arguments:
 ```language=json
 {
-    "name": "FULL NAME"
+    "datacenter_name": "DATACENTER_NAME"
 }
 ```
 - Returns:

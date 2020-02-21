@@ -56,11 +56,12 @@ class UserManager:
 
     @staticmethod
     def __match_oauth(request, response):
-        usernames_match = request.get("username") == response.get("username")
-        display_names_match = request.get("display_name") == response.get(
-            "display_name"
-        )
-        emails_match = request.get("email") == response.get("email")
+        # print(request)
+        # print("RESPONSE")
+        # print(json.dumps(response, indent=4))
+        usernames_match = request.get("username") == response.get("netid")
+        display_names_match = request.get("display_name") == response.get("displayName")
+        emails_match = request.get("email") == response.get("mail")
 
         return usernames_match and display_names_match and emails_match
 
@@ -163,7 +164,7 @@ class UserManager:
         except Exception as e:
             print(e)
             return self.__add_message_to_JSON(
-                response, f"Could not delete user '{username}'"
+                response, f"User '{username}' does not exist"
             )
 
         self.USER_TABLE.delete_user(user)
@@ -263,7 +264,7 @@ class UserManager:
 
         user = self.USER_TABLE.get_user(username)
         if user is None:
-            raise NonexistantUserError(f"User <{username}> does not exist")
+            raise NonexistantUserError(f"User '{username}' does not exist")
 
         response["user"] = user.make_json()
 
@@ -272,7 +273,7 @@ class UserManager:
     def oauth(self, request):
 
         response = {}
-        request_data = request.get_json()
+        request_data = request.json
 
         username = request_data.get("username")
         email = request_data.get("email")
@@ -288,9 +289,8 @@ class UserManager:
             "https://api.colab.duke.edu/identity/v1/", headers=headers
         )
 
-        data_matches = self.__match_oauth(
-            request_data, duke_response.json().get("data")
-        )
+        data_matches = self.__match_oauth(request_data, duke_response.json())
+
         if not data_matches:
             raise UserException(f"Cannot confirm NetID user {username}")
 
@@ -304,12 +304,18 @@ class UserManager:
             print(str(e))
             raise UserException("Could not authorize shibboleth login")
 
-        if self.USER_TABLE.get_user(user.username) is None:
+        existing_user = self.USER_TABLE.get_user(user.username)
+        if existing_user is None:
             self.USER_TABLE.add_user(user)
+        else:
+            privilege = existing_user.privilege
 
         # TODO: FIgure out what to do when adding netID user overwrites existing user
 
         response["token"] = self.AUTH_MANAGER.encode_auth_token(username)
-        response["privilege"] = "user"
+        response["privilege"] = privilege
+
+        # print("RESPONSE")
+        # print(response)
 
         return response

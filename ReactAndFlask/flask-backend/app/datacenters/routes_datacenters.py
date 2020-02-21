@@ -1,3 +1,5 @@
+from typing import List
+
 from app.datacenters.datacenter_manager import DatacenterManager
 from app.decorators.auth import requires_auth, requires_role
 from app.exceptions.InvalidInputsException import InvalidInputsError
@@ -16,17 +18,55 @@ def test():
     return "test"
 
 
+@datacenters.route("/datacenters/all/", methods=["GET"])
+@requires_auth(request)
+def list_all():
+    """ Route for returning all datacenters """
+    global DATACENTER_MANAGER
+    global dcArr
+    returnJSON = createJSON()
+
+    try:
+        dc_list = DATACENTER_MANAGER.get_all_datacenters()
+        returnJSON = addDatacentersTOJSON(
+            addMessageToJSON(returnJSON, "success"),
+            list(map(lambda x: x.make_json(), dc_list)),
+        )
+        return returnJSON
+    except InvalidInputsError as e:
+        return addMessageToJSON(returnJSON, e.message)
+
+
 @datacenters.route("/datacenters/create/", methods=["POST"])
 @requires_auth(request)
 @requires_role(request, "admin")
 def create():
     """ Route for creating datacenters """
-    DATACENTER_MANAGER
+    global DATACENTER_MANAGER
     returnJSON = createJSON()
 
     try:
         dc_data = request.get_json()
         error = DATACENTER_MANAGER.create_datacenter(dc_data)
+        if error is not None:
+            print(error.message)
+            return addMessageToJSON(returnJSON, error.message)
+        return addMessageToJSON(returnJSON, "success")
+    except InvalidInputsError as e:
+        return addMessageToJSON(returnJSON, e.message)
+
+
+@datacenters.route("/datacenters/edit/", methods=["POST"])
+# @requires_auth(request)
+# @requires_role(request, "admin")
+def edit():
+    """ Route for creating datacenters """
+    global DATACENTER_MANAGER
+    returnJSON = createJSON()
+
+    try:
+        dc_data = request.get_json()
+        error = DATACENTER_MANAGER.edit_datacenter(dc_data)
         if error is not None:
             print(error.message)
             return addMessageToJSON(returnJSON, error.message)
@@ -45,7 +85,10 @@ def delete():
 
     try:
         dc_data = request.get_json()
-        DATACENTER_MANAGER.delete_datacenter(dc_data)
+        error = DATACENTER_MANAGER.delete_datacenter(dc_data)
+        if error is not None:
+            print(error.message)
+            return addMessageToJSON(returnJSON, error.message)
         return addMessageToJSON(returnJSON, "success")
     except InvalidInputsError as e:
         return addMessageToJSON(returnJSON, e.message)
@@ -57,4 +100,9 @@ def createJSON() -> dict:
 
 def addMessageToJSON(json, message) -> dict:
     json["message"] = message
+    return json
+
+
+def addDatacentersTOJSON(json, dcArr: List[str]) -> dict:
+    json["datacenters"] = dcArr
     return json

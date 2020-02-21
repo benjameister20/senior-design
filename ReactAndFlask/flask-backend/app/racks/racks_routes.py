@@ -60,7 +60,7 @@ def create_racks():
         start_number: int = int(data[Constants.START_NUMBER_KEY])
         stop_number: int = int(data[Constants.STOP_NUMBER_KEY])
 
-        datacenter_name: str = data[Constants.DATACENTER_KEY]
+        datacenter_name: str = data[Constants.DC_NAME_KEY]
         datacenter_id = get_datacenter_id_by_name(datacenter_name)
 
         add_rack_range(
@@ -95,7 +95,7 @@ def get_rack_details():
         start_number: int = int(data[Constants.START_NUMBER_KEY])
         stop_number: int = int(data[Constants.STOP_NUMBER_KEY])
 
-        datacenter_name: str = data[Constants.DATACENTER_KEY]
+        datacenter_name: str = data[Constants.DC_NAME_KEY]
         datacenter_id = get_datacenter_id_by_name(datacenter_name)
 
         racks = get_rack_range(
@@ -133,7 +133,7 @@ def delete_racks():
         start_number: int = int(data[Constants.START_NUMBER_KEY])
         stop_number: int = int(data[Constants.STOP_NUMBER_KEY])
 
-        datacenter_name: str = data[Constants.DATACENTER_KEY]
+        datacenter_name: str = data[Constants.DC_NAME_KEY]
         datacenter_id = get_datacenter_id_by_name(datacenter_name)
 
         delete_rack_range(

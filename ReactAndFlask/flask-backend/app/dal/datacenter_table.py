@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import List, Optional
 
 from app.dal.database import DBWriteException, db
 from app.data_models.datacenter import Datacenter
@@ -22,6 +22,20 @@ class DatacenterEntry(db.Model):
 
 
 class DatacenterTable:
+    def get_datacenter(self, identifier: int):
+        datacenter: DatacenterEntry = DatacenterEntry.query.filter_by(
+            identifier=identifier
+        ).first()
+        if datacenter is None:
+            return None
+
+        return datacenter.make_datacenter()
+
+    def get_all_datacenters(self):
+        all_datacnters: List[DatacenterEntry] = DatacenterEntry.query.all()
+
+        return [datacenter.make_datacenter() for datacenter in all_datacnters]
+
     def add_datacenter(self, datacenter: Datacenter) -> None:
         """ Adds a datacenter to the database """
         datacenter_entry: DatacenterEntry = DatacenterEntry(datacenter=datacenter)
@@ -38,6 +52,18 @@ class DatacenterTable:
             print(f"Failed to add datacenter {datacenter_entry.name}")
             raise DBWriteException
 
+    def edit_datacenter(self, datacenter: Datacenter, original_name: str) -> None:
+        """ Updates the information for a given datacenter"""
+        try:
+            old_entry = DatacenterEntry.query.filter_by(name=original_name).first()
+
+            old_entry.name = datacenter.name
+            old_entry.abbreviation = datacenter.abbreviation
+
+            db.session.commit()
+        except:
+            print(f"Failed to update datacenter {original_name}")
+
     def delete_datacenter_by_name(self, name: str) -> None:
         """ Removes a datacenter from the database """
         try:
@@ -48,6 +74,15 @@ class DatacenterTable:
 
     def get_datacenter_id_by_name(self, name: str) -> Optional[int]:
         datacenter: DatacenterEntry = DatacenterEntry.query.filter_by(name=name).first()
+        if datacenter is None:
+            return None
+
+        return datacenter.identifier
+
+    def get_datacenter_id_by_abbrev(self, abbreviation: str) -> Optional[int]:
+        datacenter: DatacenterEntry = DatacenterEntry.query.filter_by(
+            abbreviation=abbreviation
+        ).first()
         if datacenter is None:
             return None
 

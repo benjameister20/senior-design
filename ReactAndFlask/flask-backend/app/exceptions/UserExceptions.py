@@ -41,3 +41,13 @@ class NoEditsError(UserException):
 class IncorrectPasswordError(UserException):
     def __init__(self, message):
         self.message = message
+
+
+class ExpiredTokenError(UserException):
+    def __init__(self, message):
+        self.message = message
+
+
+class InvalidTokenError(UserException):
+    def __init__(self, message):
+        self.message = message

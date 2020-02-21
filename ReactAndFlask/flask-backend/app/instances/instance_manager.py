@@ -89,7 +89,7 @@ class InstanceManager:
         if type(new_instance) is InvalidInputsError:
             return new_instance
 
-    def get_instances(self, filter, limit: int):
+    def get_instances(self, filter, dc_name, limit: int):
         model_name = filter.get("model")
 
         try:
@@ -104,6 +104,16 @@ class InstanceManager:
                 "An error occurred while trying to filter by model name. Please input a different model name"
             )
 
+        try:
+            if dc_name is not None:
+                dc_id = self.get_datacenter_id_from_name(dc_name)
+                if dc_id == -1:
+                    dc_id = None
+        except:
+            raise InvalidInputsError(
+                "An error occurred while trying to filter by datacenter name. Please input a different model name"
+            )
+
         hostname = filter.get("hostname")
         rack_label = filter.get("rack")
         rack_position = filter.get("rack_position")
@@ -114,6 +124,7 @@ class InstanceManager:
                 hostname=hostname,
                 rack_label=rack_label,
                 rack_position=rack_position,
+                datacenter_id=dc_id,
                 limit=limit,
             )
             return instance_list
@@ -147,32 +158,44 @@ class InstanceManager:
         model_name = self.check_null(instance_data[Constants.MODEL_KEY])
         model_id = self.get_model_id_from_name(model_name)
 
-        datacenter_name = self.check_null(instance_data[Constants.DATACENTER_KEY])
+        print("1")
+        datacenter_name = self.check_null(instance_data[Constants.DC_NAME_KEY])
+        print("2")
         datacenter_id = self.get_datacenter_id_from_name(datacenter_name)
-
+        print("3")
         try:
             hostname = self.check_null(instance_data[Constants.HOSTNAME_KEY])
+            print("4")
             rack = self.check_null(instance_data[Constants.RACK_KEY].upper())
+            print("5")
             rack_position = self.check_null(instance_data[Constants.RACK_POSITION_KEY])
+            print("6")
             owner = self.check_null(instance_data[Constants.OWNER_KEY])
+            print("7")
             comment = self.check_null(instance_data[Constants.COMMENT_KEY])
-            mac_address = self.check_null(instance_data[Constants.MAC_ADDRESS_KEY])
+            print("8")
+            # mac_address = self.check_null(instance_data[Constants.MAC_ADDRESS_KEY])
+            print("9")
             network_connections = self.check_null(
                 instance_data[Constants.NETWORK_CONNECTIONS_KEY]
             )
+            print("10")
             power_connections = self.check_null(
                 instance_data[Constants.POWER_CONNECTIONS_KEY]
             )
+            print("11")
             asset_number = self.check_null(instance_data[Constants.ASSET_NUMBER_KEY])
         except:
             raise InvalidInputsError(
                 "Could not read data fields correctly. Client-server error occurred."
             )
-
+        print("12")
         if rack == "":
             return InvalidInputsError("Must provide a rack location")
+        print("13")
         if rack_position == "":
             return InvalidInputsError("Must provide a rack location")
+        print("14")
         if asset_number == "":
             return InvalidInputsError("Must provide an asset number")
 
@@ -185,7 +208,7 @@ class InstanceManager:
             owner,
             comment,
             datacenter_id,
-            mac_address,
+            # mac_address,
             network_connections,
             power_connections,
             asset_number,
@@ -235,6 +258,15 @@ class InstanceManager:
             )
 
         return model
+
+    def get_dc_from_id(self, dc_id):
+        datacenter = self.dc_table.get_datacenter(dc_id)
+        if datacenter is None:
+            raise InvalidInputsError(
+                "An error occurred while trying to retrieve datacenter info corresponding to the instance."
+            )
+
+        return datacenter
 
     def check_null(self, val):
         if val is None:

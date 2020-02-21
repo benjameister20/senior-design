@@ -48,7 +48,7 @@ def get_all_racks():
 
 
 @racks.route("/create", methods=["POST"])
-@requires_auth(request)
+# @requires_auth(request)
 def create_racks():
     """ Create a range of racks """
     returnJSON = createJSON()

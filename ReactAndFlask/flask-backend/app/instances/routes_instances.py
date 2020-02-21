@@ -19,7 +19,7 @@ def test():
 
 
 @instances.route("/instances/search/", methods=["POST"])
-@requires_auth(request)
+# @requires_auth(request)
 def search():
     """ Route for searching instances """
 
@@ -42,8 +42,9 @@ def search():
             addMessageToJSON(returnJSON, "success"),
             list(
                 map(
-                    lambda x: x.make_json_with_model_name(
-                        INSTANCE_MANAGER.get_model_from_id(x.model_id)
+                    lambda x: x.make_json_with_model_and_datacenter(
+                        INSTANCE_MANAGER.get_model_from_id(x.model_id),
+                        INSTANCE_MANAGER.get_dc_from_id(x.datacenter_id),
                     ),
                     instance_list,
                 )
@@ -56,8 +57,8 @@ def search():
 
 
 @instances.route("/instances/create", methods=["POST"])
-@requires_auth(request)
-@requires_role(request, "admin")
+# @requires_auth(request)
+# @requires_role(request, "admin")
 def create():
     """ Route for creating instances """
     print("REQUEST")
@@ -79,8 +80,8 @@ def create():
 
 
 @instances.route("/instances/delete", methods=["POST"])
-@requires_auth(request)
-@requires_role(request, "admin")
+# @requires_auth(request)
+# @requires_role(request, "admin")
 def delete():
     """ Route for deleting instances """
 

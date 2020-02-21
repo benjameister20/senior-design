@@ -19,7 +19,7 @@ def test():
 
 
 @datacenters.route("/datacenters/all/", methods=["GET"])
-@requires_auth(request)
+# @requires_auth(request)
 def list_all():
     """ Route for returning all datacenters """
     global DATACENTER_MANAGER
@@ -38,10 +38,11 @@ def list_all():
 
 
 @datacenters.route("/datacenters/create/", methods=["POST"])
-@requires_auth(request)
-@requires_role(request, "admin")
+# @requires_auth(request)
+# @requires_role(request, "admin")
 def create():
-    """ Route for creating datacenters """
+    """ Route for creating datacenters"""
+
     global DATACENTER_MANAGER
     returnJSON = createJSON()
 

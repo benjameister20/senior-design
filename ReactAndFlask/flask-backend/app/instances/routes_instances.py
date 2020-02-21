@@ -19,7 +19,7 @@ def test():
 
 
 @instances.route("/instances/search/", methods=["POST"])
-# @requires_auth(request)
+@requires_auth(request)
 def search():
     """ Route for searching instances """
 
@@ -57,8 +57,8 @@ def search():
 
 
 @instances.route("/instances/create", methods=["POST"])
-# @requires_auth(request)
-# @requires_role(request, "admin")
+@requires_auth(request)
+@requires_role(request, "admin")
 def create():
     """ Route for creating instances """
     print("REQUEST")
@@ -80,8 +80,8 @@ def create():
 
 
 @instances.route("/instances/delete", methods=["POST"])
-# @requires_auth(request)
-# @requires_role(request, "admin")
+@requires_auth(request)
+@requires_role(request, "admin")
 def delete():
     """ Route for deleting instances """
 

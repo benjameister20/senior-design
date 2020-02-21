@@ -80,7 +80,7 @@ export default class PageSelector extends React.Component {
     sessionStorage.removeItem(storedLoggedIn);
     sessionStorage.removeItem(storedUsername);
 
-    window.location.reload();
+    window.location = Constants.SHIB_REDIRECT_URI;
   }
 
   render() {

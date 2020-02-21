@@ -278,7 +278,7 @@ class UserManager:
         username = request_data.get("username")
         email = request_data.get("email")
         display_name = request_data.get("display_name")
-        privilege = "admin"
+        privilege = "user"
         password = b"netid"
 
         client_id = request_data.get("client_id")

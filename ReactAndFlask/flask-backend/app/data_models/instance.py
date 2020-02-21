@@ -90,7 +90,7 @@ class Instance:
             "rack_position": self.rack_position,
             "owner": self.owner,
             "comment": self.comment,
-            "datacenter_id": datacenter,
+            "datacenter_name": datacenter,
             "mac_address": self.mac_address,
             "network_connections": self.network_connections,
             "power_connections": self.power_connections,

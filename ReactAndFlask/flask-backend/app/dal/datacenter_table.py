@@ -22,6 +22,15 @@ class DatacenterEntry(db.Model):
 
 
 class DatacenterTable:
+    def get_datacenter(self, identifier: int):
+        datacenter: DatacenterEntry = DatacenterEntry.query.filter_by(
+            identifier=identifier
+        ).first()
+        if datacenter is None:
+            return None
+
+        return datacenter.make_datacenter()
+
     def get_all_datacenters(self):
         all_datacnters: List[DatacenterEntry] = DatacenterEntry.query.all()
 

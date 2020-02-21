@@ -164,7 +164,7 @@ class UserManager:
         user = self.USER_TABLE.get_user(username)
         if user is None:
             return self.__add_message_to_JSON(
-                response, f"User <{username}> does not exist"
+                response, f"User '{username}' does not exist"
             )
 
         self.USER_TABLE.delete_user(user)
@@ -258,7 +258,7 @@ class UserManager:
 
         user = self.USER_TABLE.get_user(username)
         if user is None:
-            raise NonexistantUserError(f"User <{username}> does not exist")
+            raise NonexistantUserError(f"User '{username}' does not exist")
 
         response["user"] = user.make_json()
 

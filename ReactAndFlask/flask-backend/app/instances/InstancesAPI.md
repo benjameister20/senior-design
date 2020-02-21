@@ -44,8 +44,10 @@ def search()
         {
             "model":"MODEL",
             "hostname":"HOSTNAME",
-            "rack":"RACK",
-            "rack_position":"RACK_U"
+            "starting_rack_letter":"STARTING_LETTER",
+            "ending_rack_letter":"ENDING_LETTER",
+            "starting_rack_number":STARTING_NUMBER,
+            "ending_rack_number":ENDING_NUMBER,
         }
     "limit":OPTIONAL_LIMIT
 }

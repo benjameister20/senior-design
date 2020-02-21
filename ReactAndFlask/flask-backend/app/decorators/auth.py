@@ -12,13 +12,15 @@ def requires_auth(request):
         @wraps(f)
         def wrapper(*args, **kwargs):
             try:
+                print(request.headers)
                 request.headers["token"]
-            except KeyError:
-                # return Response('Please provide auth token', 401, {'WWW-Authenticate': 'Basic realm="Login!"'})
+            except KeyError as e:
+                print(str(e))
                 return {"message": "Please provide auth token"}
             is_validated, message = AUTH_MANAGER.validate_auth_token(request.headers)
             if not is_validated:
                 return {"message": message}
+
             return f(*args, **kwargs)
 
         return wrapper

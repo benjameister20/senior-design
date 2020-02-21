@@ -17,6 +17,7 @@ import UsersView from './users/pages/UsersView';
 import AssetsView from './assets/pages/AssetsView';
 import RacksView from './racks/pages/RacksView';
 import StatisticsView from './statistics/pages/StatisticsView';
+import LogsView from "./logs/pages/LogsView";
 
 import { Privilege } from './enums/privilegeTypes.ts'
 
@@ -116,6 +117,7 @@ class TabViewer extends React.Component {
                     {(this.props.privilege === Privilege.ADMIN) ? <Tab value={2} style={{flexGrow: 1,}} label="Users"></Tab> : null}
                     <Tab value={3} style={{flexGrow: 1,}} label="Racks" />
                     <Tab value={4} style={{flexGrow: 1,}} label="Statistics" />
+                    <Tab value={5} style={{flexGrow: 1,}} label="Logs" />
             </Tabs>
             <Typography
                 component="div"
@@ -161,6 +163,15 @@ class TabViewer extends React.Component {
                 aria-labelledby={`simple-tab-0`}
             >
                 <Container className={classes.tab} ><StatisticsView token={this.props.token} privilege={this.props.privilege} /></Container>
+            </Typography>
+            <Typography
+                component="div"
+                role="tabpanel"
+                hidden={this.state.currentTabID !== 5}
+                id={`tab-panel-logs`}
+                aria-labelledby={`tab-panel-logs`}
+            >
+                <Container className={classes.tab} ><LogsView /></Container>
             </Typography>
             </ErrorBoundry>
         </div>);

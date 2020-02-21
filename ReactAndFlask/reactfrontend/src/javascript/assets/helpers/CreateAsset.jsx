@@ -12,9 +12,11 @@ import Tooltip from '@material-ui/core/Tooltip';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Grid from '@material-ui/core/Grid';
 import { withStyles } from '@material-ui/core/styles';
-import FormHelperText from '@material-ui/core/FormHelperText';
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
-import Switch from '@material-ui/core/Switch';
+import FormHelperText from '@material-ui/core/FormHelperText';
 
 import StatusDisplay from '../../helpers/StatusDisplay';
 import { AssetInput } from '../enums/AssetInputs.ts';
@@ -23,18 +25,42 @@ import getURL from '../../helpers/functions/GetURL';
 import * as AssetConstants from "../AssetConstants";
 import * as Constants from "../../Constants";
 import { Typography } from '@material-ui/core';
+import stringToMac from "./functions/StringToMacAddress"
+import stringToRack from "./functions/StringToRack";
 
 function createInputs(name, label, showTooltip, description) {
     return {label, name, showTooltip, description};
 }
 
 const emptySearch = {
-    "filters":{
-
-    }
+    "filter": {
+            "vendor":null,
+            "model_number":null,
+            "height":null,
+            "model":null,
+            "hostname":null,
+            "rack":null,
+            "rack_position":null,
+            "username":null,
+            "display_name":null,
+            "email":null,
+            "privilege":null,
+            "model":null,
+            "hostname":null,
+            "starting_rack_letter":null,
+            "ending_rack_letter":null,
+            "starting_rack_number":null,
+            "ending_rack_number":null,
+            "rack":null,
+            "rack_position":null
+        },
+    "datacenter_name":"",
 }
 
 const searchPath = "search/";
+const left = "left";
+const right = "right";
+const off = "off";
 
 const useStyles = theme => ({
     root: {
@@ -46,6 +72,8 @@ const useStyles = theme => ({
         justifyContent: 'center',
         maxWidth: "80%",
         margin:"0 auto",
+        minWidth:"70%",
+        overflow: "scroll"
       },
       paper: {
         backgroundColor: theme.palette.background.paper,
@@ -94,11 +122,11 @@ class CreateAsset extends React.Component {
             rackU:-1,
             owner:"",
             comment:"",
-            datacenter_id:"",
+            datacenter_name:"",
             tags:[],
             network_connections:null,
-            power_connections:[],
-            asset_number:1,
+            power_connections:null,
+            asset_number:100000,
 
             selectedConnection:null,
 
@@ -107,6 +135,12 @@ class CreateAsset extends React.Component {
             statusSeverity:"",
 
             showModal:false,
+
+            powerPortState:null,
+            leftRight:null,
+            availableConnections:false,
+
+            canSubmit:false,
 
             inputs: {
                 "model":createInputs(AssetInput.MODEL, "Model", false, "A reference to an existing model"),
@@ -125,6 +159,10 @@ class CreateAsset extends React.Component {
     }
 
     componentDidMount() {
+        this.getLists();
+    }
+
+    getLists = () => {
         this.getModelList();
         this.getOwnerList();
         this.getDatacenterList();
@@ -133,10 +171,10 @@ class CreateAsset extends React.Component {
     }
 
     getModelList = () => {
-        axios.get(
+        axios.post(
             getURL(Constants.MODELS_MAIN_PATH, searchPath), emptySearch).then(
             response => {
-                var models = response.data.results;
+                var models = response.data.models;
 
                 var modelNames = [];
                 var networkNames = {};
@@ -149,22 +187,28 @@ class CreateAsset extends React.Component {
                     powerPortNames[modelKey] = parseInt(model.power_ports);
                 });
 
-                this.setState({ loadingModels: false, modelList: modelNames, networkList: networkNames, powerPortList: powerPortNames })
+                this.setState({ loadingModels: false, modelList: modelNames, networkList: networkNames, powerPortList: powerPortNames }, this.availableNetworkConnections())
             });
     }
 
     getOwnerList = () => {
-        axios.get(
+        axios.post(
             getURL(Constants.USERS_MAIN_PATH, searchPath), emptySearch).then(
             response => {
-                this.setState({ loadingOwners: false, ownerList: response.data.results })
+                var users = [];
+                response.data.users.map(user => users.push(user.username));
+                this.setState({ loadingOwners: false, ownerList: users });
             });
     }
 
     getDatacenterList = () => {
         axios.get(
             getURL(Constants.DATACENTERS_MAIN_PATH, "all/")).then(
-            response => this.setState({ loadingDatacenters: false, datacenterList: response.data.results }));
+            response => {
+                var datacenters = [];
+                response.data.datacenters.map(datacenter => datacenters.push(datacenter.name));
+                this.setState({ loadingDatacenters: false, datacenterList: datacenters })
+            });
     }
 
     getNextAssetNum = () => {
@@ -174,10 +218,13 @@ class CreateAsset extends React.Component {
     }
 
     getAssetList = () => {
-        axios.get(
-            getURL(Constants.ASSETS_MAIN_PATH, searchPath), emptySearch).then(
+        console.log(emptySearch);
+        axios.post(
+            getURL(Constants.ASSETS_MAIN_PATH, searchPath),emptySearch).then(
             response => {
-                var instances = response.data.results;
+                console.log("instances")
+                console.log(response);
+                var instances = response.data.instances;
 
                 var assetNums = [];
                 var assetNumToModel = {};
@@ -186,102 +233,186 @@ class CreateAsset extends React.Component {
                     assetNumToModel[instance.asset_number] = instance.model;
                 })
 
-                this.setState({ loadingHostnames: false, assetNumList: assetNums, assetNumToModelList: assetNumToModel });
+                this.setState({ loadingHostnames: false, assetNumList: assetNums, assetNumToModelList: assetNumToModel }, this.availableNetworkConnections());
             });
     }
 
-    createAsset = () => {
-        axios.post(
-            getURL(AssetConstants.ASSETS_MAIN_PATH, AssetCommand.create),
-            this.createJSON()).then(
-                response => {
-                if (response.data.message === AssetConstants.SUCCESS_TOKEN) {
-                    this.setState({
-                        statusOpen: true,
-                        statusMessage: "Successfully created asset",
-                        statusSeverity:AssetConstants.SUCCESS_TOKEN,
-                        showModal:false,
+    validJSON = (json) => {
+        var valid = (json.model !== ""
+        && json.owner !== ""
+        && json.datacenter_name !== ""
+        && json.rack !== ""
+        && json.rack_position !== -1
+        && json.asset_number >= 100000 && json.asset_number <= 999999)
 
-                        model:"",
-                        hostname:"",
-                        rack:"",
-                        rackU:-1,
-                        owner:"",
-                        comment:"",
-                        datacenter_id:"",
-                        tags:[],
-                        network_connections:[],
-                        power_connections:[],
-                        asset_number:-1,
-                    }, this.props.search());
-                } else {
-                    this.setState({ statusOpen: true, statusMessage: response.data.message, statusSeverity:AssetConstants.ERROR_TOKEN })
+        Object.entries(json.network_connections).map(([port, vals]) => {
+            var validConnection = (vals.connection_hostname !== undefined && vals.connection_port === undefined) || (vals.connection_hostname === undefined && vals.connection_port !== undefined);
+            valid = valid && validConnection;
+        });
+
+        return valid;
+    }
+
+    createAsset = (event) => {
+        event.preventDefault();
+        var json = this.createJSON();
+        if (this.validJSON(json)) {
+            axios.post(
+                getURL(AssetConstants.ASSETS_MAIN_PATH, AssetCommand.create),
+                json).then(
+                    response => {
+                    if (response.data.message === AssetConstants.SUCCESS_TOKEN) {
+                        this.setState({
+                            statusOpen: true,
+                            statusMessage: "Successfully created asset",
+                            statusSeverity:AssetConstants.SUCCESS_TOKEN,
+                            showModal:false,
+
+                            model:"",
+                            hostname:"",
+                            rack:"",
+                            rackU:-1,
+                            owner:"",
+                            comment:"",
+                            datacenter_name:"",
+                            tags:[],
+                            network_connections:[],
+                            power_connections:[],
+                            asset_number:-1,
+                        }, this.props.search());
+                    } else {
+                        console.log(response);
+                        this.setState({ statusOpen: true, statusMessage: response.data.message, statusSeverity:AssetConstants.ERROR_TOKEN }, console.log(this.state.statusOpen));
+                    }
+                });
+        }
+
+    }
+
+    updateModel = (event) => {
+        this.setState({ model: event.target.value }, () => { this.validateForm() });
+    }
+
+    updateHostname = (event) => {
+        this.setState({ hostname: event.target.value }, () => { this.validateForm() });
+    }
+
+    updateRack = (event) => {
+        var rackVal = stringToRack(event.target.value);
+        this.setState({ rack: rackVal }, () => { this.validateForm() });
+    }
+
+    updateRackU = (event) => {
+        this.setState({ rackU: event.target.value }, () => { this.validateForm() });
+    }
+
+    updateOwner = (event) => {
+        this.setState({ owner: event.target.value }, () => { this.validateForm() });
+    }
+
+    updateComment = (event) => {
+        this.setState({ comment: event.target.value }, () => { this.validateForm() });
+    }
+
+    updateDatacenter = (event) => {
+        this.setState({ datacenter_name: event.target.value }, () => { this.validateForm() });
+    }
+
+    updateTags = (event) => {
+        this.setState({ tags: event.target.value }, () => { this.validateForm() });
+    }
+
+    changeNetworkMacAddress = (event, port) => {
+        var val = stringToMac(event.target.value);
+
+
+        this.setState(prevState => {
+            let network_connections = Object.assign({}, prevState.network_connections);
+            console.log(network_connections);
+            console.log(network_connections[port]);
+            if (network_connections[port] === undefined) {
+                network_connections[port] = {
+                    "mac_address":val,
                 }
-            });
+            } else {
+                network_connections[port].mac_address = val;
+            }
+
+            console.log(network_connections[port]["mac_address"]);
+            network_connections[port] = (network_connections[port] === null) ? {} : network_connections[port];
+            network_connections[port].mac_address = val;
+            return { network_connections };
+        }, () => { this.validateForm() });
     }
 
-    updateModel = (event, newValue) => {
-        this.setState({ model: newValue });
+    changeNetworkHostname = (event, port) => {
+        var val = event.target.value;
+
+        this.setState(prevState => {
+            let network_connections = Object.assign({}, prevState.network_connections);
+            network_connections[port] = (network_connections[port] === null) ? {} : network_connections[port];
+            network_connections[port].connection_hostname = val;
+            return { network_connections };
+        }, () => { this.validateForm() });
     }
 
-    updateHostname = (event, newValue) => {
-        this.setState({ hostname: newValue})
+    changeNetworkPort = (event, port) => {
+        var val = event.target.value;
+
+        this.setState(prevState => {
+            let network_connections = Object.assign({}, prevState.network_connections);
+            network_connections[port] = (network_connections[port] === null) ? {} : network_connections[port];
+            network_connections[port].connection_port = val;
+            return { network_connections };
+        }, () => { this.validateForm() });
     }
 
-    updateRack = (event, newValue) => {
-        this.setState({ rack: newValue });
+    updatePowerPort = (event, port) => {
+        var val = event.target.value;
+
+        this.setState(prevState => {
+            let power_connections = Object.assign({}, prevState.power_connections);
+            power_connections[port] = val;
+            return { power_connections };
+        }, () => { this.validateForm() });
     }
 
-    updateRackU = (event, newValue) => {
-        this.setState({ rackU: newValue });
+    changePowerPortState = (event, portNum) => {
+        var val = event.target.value;
+
+        this.setState(prevState => {
+            let leftRight = Object.assign({}, prevState.leftRight);
+            leftRight[portNum] = val;
+            return { leftRight };
+        }, () => { this.validateForm() });
     }
 
-    updateOwner = (event, newValue) => {
-        this.setState({ owner: newValue });
+    updateAssetNumber = (event) => {
+        this.setState({ asset_number: event.target.value }, () => { this.validateForm() });
     }
 
-    updateComment = (event, newValue) => {
-        this.setState({ comment: newValue });
-    }
+    getPowerConnections = () => {
+        if (this.state.leftRight===null) {
+            return [];
+        }
 
-    updateDatacenter = (event, newValue) => {
-        this.setState({ datacenter_id: newValue });
-    }
+        var pwrConns = [];
+        var defaultValue = 1;
+        Object.entries(this.state.leftRight).map(([key, value]) => {
+            var num = this.state.power_connections===null ? defaultValue : this.state.power_connections[key];
+            switch(value) {
+                case left:
+                    pwrConns.push("L" + num);
+                    break;
+                case right:
+                    pwrConns.push("R" + num);
+                    break;
+                default:
+                    break;
+            }
+        });
 
-    updateTags = (event, newValue) => {
-        this.setState({ tags: newValue });
-    }
-
-    updateNetworkMac = (event, port) => {
-        this.setState(network_connections => {
-            let port = Object.assign({}, network_connections.port);
-            port.mac_address = event.target.value;
-            return { port };
-          });
-    }
-
-    updateNetworkPort = (event, port) => {
-        this.setState(network_connections => {
-            let port = Object.assign({}, network_connections.port);
-            port.connection_port = event.target.value;
-            return { port };
-          });
-    }
-
-    updateNetworkHostname = (event, port) => {
-        this.setState(network_connections => {
-            let port = Object.assign({}, network_connections.port);
-            port.connection_hostname = event.target.value;
-            return { port };
-          });
-    }
-
-    updatePowerConnections = (event, newValue) => {
-        this.setState({ power_connections: newValue });
-    }
-
-    updateAssetNumber = (event, newValue) => {
-        this.setState({ asset_number: newValue });
+        return pwrConns;
     }
 
     createJSON = () => {
@@ -289,25 +420,92 @@ class CreateAsset extends React.Component {
             "model":this.state.model,
             "hostname":this.state.hostname,
             "rack":this.state.rack,
-            "rackU":this.state.rackU,
+            "rack_position":this.state.rackU,
             "owner":this.state.owner,
             "comment":this.state.comment,
-            "datacenter_id":this.state.datacenter_id,
+            "datacenter_name":this.state.datacenter_name,
             "tags":this.state.tags,
-            "network_connections":this.state.network_connections,
-            "power_connections":this.state.power_connections,
+            "network_connections":(this.state.network_connections===null) ? {}:this.state.network_connections,
+            "power_connections":this.getPowerConnections(),
             'asset_number':this.state.asset_number,
         }
     }
 
+    availableNetworkConnections = () => {
+        var availableNetworks = false;
 
+        var assets = this.state.assetNumList;
+        assets.map(asset => {
+            if (Object.keys(this.state.networList[this.state.assetNumToModelList[asset]].length).length > 0) {
+                availableNetworks = true;
+            }
+        });
+        console.log(availableNetworks);
+        this.setState({ availableConnections: availableNetworks });
+    }
 
     showModal = () => {
         this.setState({ showModal: true });
     }
 
     closeModal = () => {
-        this.setState({ showModal: false });
+        this.setState({
+            // next available asset number
+            loadingAssetNumber:true,
+
+            // model information
+            loadingModels:true,
+            modelList:[],
+            networkList:null,
+            powerPortList:null,
+
+            // owner information
+            loadingOwners:true,
+            ownerList:[],
+
+            // datacenter information
+            loadingDatacenters:true,
+            datacenterList:[],
+
+            // hostname information
+            loadingHostnames:true,
+            assetNumList:[],
+            assetNumToModelList:null,
+
+            model:"",
+            hostname:"",
+            rack:"",
+            rackU:-1,
+            owner:"",
+            comment:"",
+            datacenter_name:"",
+            tags:[],
+            network_connections:null,
+            power_connections:null,
+            asset_number:100000,
+
+            selectedConnection:null,
+
+            statusOpen: false,
+            statusMessage: "",
+            statusSeverity:"",
+
+            showModal:false,
+
+            powerPortState:null,
+            leftRight:null,
+            availableConnections:false,
+
+            canSubmit:false,
+        }, this.getLists());
+    }
+
+    statusClose = () => {
+        this.setState({ statusOpen: false, statusMessage: "", statusSeverity:"" });
+    }
+
+    validateForm = () => {
+        this.setState({ canSubmit:this.validJSON(this.createJSON()) });
     }
 
 
@@ -316,12 +514,6 @@ class CreateAsset extends React.Component {
 
         return (
         <span>
-            <StatusDisplay
-                open={this.statusOpen}
-                severity={this.statusSeverity}
-                closeStatus={this.statusClose}
-                message={this.statusMessage}
-            />
             <Button
                 variant="contained"
                 color="primary"
@@ -337,8 +529,9 @@ class CreateAsset extends React.Component {
                     onClose={this.closeModal}
                     closeAfterTransition
                     BackdropComponent={Backdrop}
+                    scroll="body"
                     BackdropProps={{
-                    timeout: 500,
+                        timeout: 500,
                     }}
                 >
                     <Fade in={this.state.showModal}>
@@ -349,7 +542,7 @@ class CreateAsset extends React.Component {
                     || this.state.loadingModels
                     || this.state.loadingHostnames
                     || this.state.loadingOwners)
-                    && false
+                    //&& false
                     ) ? <div className={classes.progress}><CircularProgress /></div> :
                         <form>
                         <Grid container spacing={3}>
@@ -365,7 +558,8 @@ class CreateAsset extends React.Component {
                                             {...params}
                                             label={this.state.inputs.model.label}
                                             name={this.state.inputs.model.name}
-                                            onBlur={() => this.updateModel}
+                                            onChange={this.updateModel}
+                                            onBlur={this.updateModel}
                                             variant="outlined"
                                             fullWidth
                                             required
@@ -385,7 +579,8 @@ class CreateAsset extends React.Component {
                                             {...params}
                                             label={this.state.inputs.owner.label}
                                             name={this.state.inputs.owner.name}
-                                            onBlur={() => this.updateOwner}
+                                            onChange={this.updateOwner}
+                                            onBlur={this.updateOwner}
                                             variant="outlined"
                                             fullWidth
                                             required
@@ -408,9 +603,9 @@ class CreateAsset extends React.Component {
                                             name={this.state.inputs.datacenter.name}
                                             onChange={this.updateDatacenter}
                                             onBlur={this.updateDatacenter}
-                                            required
                                             variant="outlined"
                                             fullWidth
+                                            required
                                         />
                                         )}
                                     />
@@ -423,7 +618,8 @@ class CreateAsset extends React.Component {
                                         variant="outlined"
                                         label={this.state.inputs.rack.label}
                                         name={this.state.inputs.rack.name}
-                                        onChange={() => this.updateRack}
+                                        onChange={this.updateRack}
+                                        value={this.state.rack}
                                         required
                                         fullWidth
                                     />
@@ -454,7 +650,7 @@ class CreateAsset extends React.Component {
                                         label={this.state.inputs.assetNum.label}
                                         name={this.state.inputs.assetNum.name}
                                         onChange={this.updateAssetNumber}
-                                        value={this.state.nextAssetNum}
+                                        value={this.state.asset_number}
                                         required
                                         fullWidth
                                     />
@@ -474,53 +670,65 @@ class CreateAsset extends React.Component {
                             </Grid>
 
                             <Grid item xs={12}>
-                                {(!(this.state.networkList && this.state.networkList[this.state.model]) || (this.state.hostname==="")) ? null:
+                                {(
+                                    (!(this.state.networkList
+                                        && this.state.networkList[this.state.model])
+                                    || (this.state.hostname===""))
+                                    || !this.state.availableConnections
+                                ) ? null:
                                 this.state.networkList[this.state.model].map(networkPort => (
                                 <Grid container spacing={3}>
-                                    <Grid item xs={3}>
+                                    <Grid item xs={2}>
                                         <Typography>{networkPort + ": "}</Typography>
                                     </Grid>
                                     <Grid item xs={3}>
-                                        <TextField
-                                            id="input-mac-address"
-                                            variant="outlined"
-                                            label={this.state.inputs.macAddress.label}
-                                            name={this.state.inputs.macAddress.name}
-                                            onChange={() => this.updateNetworkMac(networkPort)}
-                                            fullWidth
-                                        />
-                                    </Grid>
-                                    <Grid item xs={3}>
-                                        <Autocomplete
-                                            id="input-network-ports"
-                                            options={this.state.assetNumList}
-                                            includeInputInList
-                                            renderInput={params => (
-                                                <TextField
-                                                    {...params}
-                                                    label={"Connection Hostname"}
-                                                    name={"Connection Hostname"}
-                                                    onBlur={() => this.updateNetworkHostname(networkPort)}
-                                                    variant="outlined"
-                                                    fullWidth
-                                                />
-                                            )}
-                                        />
+                                        <Tooltip placement="top" open={this.state.inputs.macAddress.Tooltip} title={this.state.inputs.macAddress.description}>
+                                            <TextField
+                                                id="input-mac-address"
+                                                variant="outlined"
+                                                label={this.state.inputs.macAddress.label}
+                                                name={this.state.inputs.macAddress.name}
+                                                onChange={(event) => {this.changeNetworkMacAddress(event, networkPort)}}
+                                                fullWidth
+                                                value={ (this.state.network_connections !== null && this.state.network_connections[networkPort]!==undefined) ? this.state.network_connections[networkPort].mac_address : "" }
+                                            />
+                                        </Tooltip>
                                     </Grid>
                                     <Grid item xs={3}>
                                         <Tooltip placement="top" open={this.state.inputs.networkConnections.Tooltip} title={this.state.inputs.networkConnections.description}>
                                             <Autocomplete
                                                 id="input-network-ports"
-                                                options={this.state.networkList[this.state.assetNumToModel[this.state.selectedConnection[networkPort]]]}
+                                                options={this.state.assetNumList}
+                                                includeInputInList
+                                                renderInput={params => (
+                                                    <TextField
+                                                        {...params}
+                                                        label={"Connection Hostname"}
+                                                        name={"Connection Hostname"}
+                                                        onBlur={(event) => {this.changeNetworkHostname(event, networkPort)}}
+                                                        variant="outlined"
+                                                        fullWidth
+                                                        value={ (this.state.network_connections !== null && this.state.network_connections[networkPort]!==undefined) ? this.state.network_connections[networkPort].connection_hostname : "" }
+                                                    />
+                                                )}
+                                            />
+                                        </Tooltip>
+                                    </Grid>
+                                    <Grid item xs={3}>
+                                        <Tooltip placement="top" open={this.state.inputs.networkConnections.Tooltip} title={this.state.inputs.networkConnections.description}>
+                                            <Autocomplete
+                                                id="input-network-ports"
+                                                options={this.state.networkList[this.state.assetNumToModelList[networkPort]]}
                                                 includeInputInList
                                                 renderInput={params => (
                                                     <TextField
                                                         {...params}
                                                         label={"Connection Port"}
                                                         name={"Connection Port"}
-                                                        onBlur={() => this.updateNetworkPort(networkPort)}
+                                                        onBlur={(event) => {this.changeNetworkPort(event, networkPort)}}
                                                         variant="outlined"
                                                         fullWidth
+                                                        value={ (this.state.network_connections !== null && this.state.network_connections[networkPort]!==undefined) ? this.state.network_connections[networkPort].connection_port : "" }
                                                     />
                                                 )}
                                             />
@@ -530,32 +738,63 @@ class CreateAsset extends React.Component {
                                 ))}
                             </Grid>
 
+                            {(
+                                !(this.state.powerPortList
+                                && this.state.powerPortList[this.state.model])
+                                ) ? null :
+                            Array.from( { length: this.state.powerPortList[this.state.model] }, (_, k) => (
                             <Grid item xs={12}>
                                 <Grid container spacing={3}>
-                                    {(!(this.state.powerPortList && this.state.powerPortList[this.state.model])) ? null :
-                                        Array.from( { length: this.state.powerPortList[this.state.model] }, (_, k) => (
-                                            <Grid item xs={3}>
-                                                <Tooltip placement="top" open={this.state.inputs.networkConnections.Tooltip} title={this.state.inputs.networkConnections.description}>
-                                                    <TextField
-                                                        id="starting-num-selector"
-                                                        type="number"
-                                                        value={1}
-                                                        InputProps={{ inputProps: { min: 0, max: 24} }}
-                                                    />
-                                                    <Switch
-                                                        checked={true}
-                                                        value="checkedB"
-                                                        color="primary"
-                                                        inputProps={{ 'aria-label': 'primary checkbox' }}
-                                                    />
-                                                </Tooltip>
-                                            </Grid>
-                                        ))
-                                    }
+                                    <Grid item xs={12}>
+                                        <Typography>{"Power Port: " + k}</Typography>
+                                    </Grid>
+                                    <Grid item xs={3}>
+                                        <FormControl component="fieldset">
+                                            <RadioGroup
+                                                id={"power-port-"+k}
+                                                aria-label="position"
+                                                name={"position"+k}
+                                                value={(this.state.leftRight===null) ? off:(this.state.leftRight[k]===undefined ? off:this.state.leftRight[k])}
+                                                onChange={(event) => {this.changePowerPortState(event, k)} }
+                                                row
+                                            >
+                                                <FormControlLabel
+                                                    value={left}
+                                                    control={<Radio color="primary" />}
+                                                    label="Left"
+                                                    labelPlacement="bottom"
+                                                />
+                                                <FormControlLabel
+                                                    value={right}
+                                                    control={<Radio color="primary" />}
+                                                    label="Right"
+                                                    labelPlacement="bottom"
+                                                />
+                                                <FormControlLabel
+                                                    value={off}
+                                                    control={<Radio color="primary" />}
+                                                    label="No Connection"
+                                                    labelPlacement="bottom"
+                                                />
+                                            </RadioGroup>
+                                        </FormControl>
+                                    </Grid>
+                                    {(this.state.leftRight===null) ? null:(this.state.leftRight[k]===undefined||this.state.leftRight[k]===off ? null:
+                                        <Grid item xs={2}>
+                                            <TextField
+                                                type="number"
+                                                value={(this.state.power_connections===null) ? 1 : (this.state.power_connections[k]===undefined?1:this.state.power_connections[k])}
+                                                InputProps={{ inputProps: { min: 1, max: 24} }}
+                                                onChange={(event) => {this.updatePowerPort(event, k)} }
+                                            />
+                                            <FormHelperText>Power Port Number</FormHelperText>
+                                        </Grid>
+                                        )}
                                 </Grid>
                             </Grid>
+                            ))
+                                    }
                             <Grid item xs={6}>
-                                <Tooltip placement="top" open={this.state.inputs.comment.Tooltip} title={this.state.inputs.comment.description}>
                                     <TextField
                                         id="input-comment"
                                         variant="outlined"
@@ -565,16 +804,15 @@ class CreateAsset extends React.Component {
                                         multiline={true}
                                         fullWidth
                                     />
-                                </Tooltip>
                             </Grid>
                             <Grid item xs={6} />
-
                             <Grid item xs={1}>
                                 <Button
                                     variant="contained"
                                     color="primary"
                                     type="submit"
-                                    onClick={() => this.createAsset()}
+                                    onClick={(event) => {this.createAsset(event)}}
+                                    disabled={!this.state.canSubmit}
                                 >
                                     Create
                                 </Button>
@@ -584,12 +822,18 @@ class CreateAsset extends React.Component {
                                     variant="contained"
                                     color="primary"
                                     type="submit"
-                                    onClick={() => this.cancelCreation()}
+                                    onClick={this.closeModal}
                                 >
                                     Cancel
                                 </Button>
                             </Grid>
                         </Grid></form>}
+                        <StatusDisplay
+                            open={this.statusOpen}
+                            severity={this.statusSeverity}
+                            closeStatus={this.statusClose}
+                            message={this.statusMessage}
+                        />
                     </div>
                     </Fade>
                 </Modal>

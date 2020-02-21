@@ -179,3 +179,19 @@ class Validator:
             raise UserException(f"User '{user.username}' does not exist")
 
         return True
+
+    def validate_shibboleth_login(self, user: User):
+        # Upon shibboleth login
+        # 1 check to see if a user with netid exists, if not create a new one
+        # 2 check to see if that user has a password equal to "netid", if not, reject the new user
+        # 3 make new user
+
+        result = USER_TABLE.get_user(user.username)
+
+        if result is None:
+            return True
+
+        if not result.password == user.password:
+            raise UserException(f"User {user.username} already exists")
+
+        return True

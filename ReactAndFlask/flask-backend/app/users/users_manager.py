@@ -129,24 +129,6 @@ class UserManager:
             raise UserException(e.message)
         except:
             raise UserException("Could not create user")
-        # try:
-        #     self.VALIDATOR.validate_privilege(privilege, username)
-        # except InvalidPrivilegeError as e:
-        #     raise e
-
-        # try:
-        #     self.VALIDATOR.validate_username(username)
-        # except (InvalidUsernameError, UsernameTakenError) as e:
-        #     return self.__add_message_to_JSON(response, e.message)
-
-        # if not self.VALIDATOR.validate_email(email):
-        #     return self.__add_message_to_JSON(response, "Invalid email address")
-
-        # if not self.VALIDATOR.validate_password(password):
-        #     return self.__add_message_to_JSON(
-        #         response,
-        #         "Password too weak. Passwords must contain uppercase and lowercase characters, numbers, special characters, and be 8 to 20 characters long",
-        #     )
 
         try:
             encrypted_password = self.AUTH_MANAGER.encrypt_pw(password)
@@ -296,7 +278,7 @@ class UserManager:
         email = request_data.get("email")
         display_name = request_data.get("display_name")
         privilege = "admin"
-        password = "netid"
+        password = b"netid"
 
         client_id = request_data.get("client_id")
         token = request_data.get("token")
@@ -312,9 +294,19 @@ class UserManager:
         if not data_matches:
             raise UserException(f"Cannot confirm NetID user {username}")
 
-        # Add user to user table
         user = User(username, display_name, email, password, privilege)
-        self.USER_TABLE.add_user(user)
+
+        try:
+            self.VALIDATOR.validate_shibboleth_login(user)
+        except UserException as e:
+            raise UserException(e.message)
+        except Exception as e:
+            print(str(e))
+            raise UserException("Could not authorize shibboleth login")
+
+        if self.USER_TABLE.get_user(user.username) is None:
+            self.USER_TABLE.add_user(user)
+
         # TODO: FIgure out what to do when adding netID user overwrites existing user
 
         response["token"] = self.AUTH_MANAGER.encode_auth_token(username)

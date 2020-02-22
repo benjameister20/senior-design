@@ -8,12 +8,6 @@ import FormControl from '@material-ui/core/FormControl';
 import { MenuItem, Button, TextField } from '@material-ui/core';
 import Paper from '@material-ui/core/Paper';
 import { withStyles } from '@material-ui/core/styles';
-import ExpansionPanel from '@material-ui/core/ExpansionPanel';
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
-import Typography from '@material-ui/core/Typography';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-
 
 import { RackCommand } from "../enums/RackCommands.ts";
 import { Privilege } from '../../enums/privilegeTypes.ts';
@@ -22,7 +16,6 @@ import "../stylesheets/RackStyles.css";
 import getURL from '../../helpers/functions/GetURL';
 import * as Constants from '../../Constants';
 import StatusDisplay from '../../helpers/StatusDisplay';
-
 import ErrorBoundray from '../../errors/ErrorBoundry';
 
 const racksMainPath = 'racks/';
@@ -80,6 +73,7 @@ class RacksView extends React.Component {
                 'stop_letter':this.state.endingRackLetter,
                 'start_number':this.state.startingRackNumber,
                 'stop_number':this.state.endingRackNumber,
+                "datacenter_name": this.props.datacenter,
             }
             ).then(response => {
                 console.log(response);
@@ -131,9 +125,7 @@ class RacksView extends React.Component {
 
     render() {
         return (
-            <React.Fragment>
                 <ErrorBoundray>
-                <Paper elevation={3}>
                 <StatusDisplay
                     open={this.state.showStatus}
                     severity={this.state.statusSeverity}
@@ -141,7 +133,7 @@ class RacksView extends React.Component {
                     message={this.state.statusMessage}
                 />
                 <FormControl>
-                    <div class="select-letter">
+                    <div>
                         <Select id="starting-letter-selector" value={this.state.startingRackLetter} onChange={this.changeStartingLetter}>
                             {Constants.RackX.map(val => (<MenuItem value={val}>{val}</MenuItem>))}
                         </Select>
@@ -149,7 +141,7 @@ class RacksView extends React.Component {
                     </div>
                 </FormControl>
                 <FormControl>
-                    <div class="select-letter">
+                    <div>
                         <Select id="ending-letter-selector" value={this.state.endingRackLetter} onChange={this.changeEndingLetter}>
                             {Constants.RackX.map(val => (<MenuItem value={val}>{val}</MenuItem>))}
                         </Select>
@@ -157,7 +149,7 @@ class RacksView extends React.Component {
                     </div>
                 </FormControl>
                 <FormControl>
-                    <div class="select-number">
+                    <div>
                         <TextField
                             id="starting-num-selector"
                             type="number"
@@ -169,7 +161,7 @@ class RacksView extends React.Component {
                     </div>
                 </FormControl>
                 <FormControl>
-                    <div class="select-number">
+                    <div>
                         <TextField
                             id="ending-num-selector"
                             type="number"
@@ -180,7 +172,7 @@ class RacksView extends React.Component {
                         <FormHelperText>Ending Number</FormHelperText>
                     </div>
                 </FormControl>
-                <div class="buttons">
+                <div>
                     <span class="button">
                     <Button
                         variant="contained"
@@ -191,7 +183,7 @@ class RacksView extends React.Component {
                         View
                     </Button>
                     </span>
-                    <span class="button">
+                    <span>
                         {(this.props.privilege === Privilege.ADMIN) ?
                         <Button
                             variant="contained"
@@ -202,7 +194,7 @@ class RacksView extends React.Component {
                             Create
                         </Button> : null}
                     </span>
-                    <span class="button">
+                    <span>
                         {(this.props.privilege === Privilege.ADMIN) ?
                         <Button
                             variant="contained"
@@ -231,10 +223,7 @@ class RacksView extends React.Component {
                                 No
                             </Button>
                         </div>:null}
-
-                    </Paper>
-                </ErrorBoundray>
-            </React.Fragment>
+            </ErrorBoundray>
         );
     }
 }

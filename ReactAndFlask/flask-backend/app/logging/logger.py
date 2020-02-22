@@ -220,6 +220,15 @@ class Logger:
             print(str(e))
 
     def log_request(self, request, resource, action, username):
+        print("resource")
+        print(resource)
+        print("request")
+        print(request)
+        print("action")
+        print(action)
+        print("username")
+        print("username")
+
         if resource == Logger.USERS:
             log_message = self.__log_user_request(action)
         if resource == Logger.MODELS:
@@ -228,6 +237,8 @@ class Logger:
             log_message = self.__log_instance_request(action)
         if resource == Logger.RACKS:
             log_message = self.__log_rack_request(action)
+        if resource == Logger.DATACENTERS:
+            log_message = self.__log_datacenter_request(action)
 
         self.__create_log_entry_request(
             request, resource, log_message, username, action

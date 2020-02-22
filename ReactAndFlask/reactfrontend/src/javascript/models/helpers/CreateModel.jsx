@@ -29,7 +29,7 @@ const inputs = {
     "cpu": createInputs('cpu', "CPU"),
     "memory": createInputs('memory', "Memory"),
     "storage": createInputs('storage', "Storage"),
-    "comments": createInputs('comments', "Comments"),
+    "comment": createInputs('comment', "Comment"),
 }
 
 const useStyles = theme => ({
@@ -219,7 +219,7 @@ class CreateModel extends React.Component {
                             <TextField id="standard-basic" variant="outlined" label={inputs.storage.label} name={inputs.storage.name} onChange={this.props.updateModelCreator}/>
                             </Grid>
                             <Grid item xs={3}>
-                            <TextField id="standard-basic" variant="outlined" label={inputs.comments.label} name={inputs.comments.name} onChange={this.props.updateModelCreator}/>
+                            <TextField id="standard-basic" variant="outlined" label={inputs.comment.label} name={inputs.comment.name} onChange={this.props.updateModelCreator}/>
                             </Grid>
 
                             <Grid item xs={6}>
@@ -312,7 +312,6 @@ class CreateModel extends React.Component {
                         </Grid>
                 </div>
                 </Backdrop>
-
                 </Fade>
             </Modal>
         </div>

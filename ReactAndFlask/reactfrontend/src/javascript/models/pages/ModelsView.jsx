@@ -7,7 +7,6 @@ import { ModelInput } from '../enums/ModelInputs.ts'
 
 import ExportModel from '../helpers/ExportModel';
 import FilterModel from '../helpers/FilterModel';
-import DetailModel from '../helpers/DetailModel';
 import CreateModel from '../helpers/CreateModel';
 
 import { Privilege } from '../../enums/privilegeTypes.ts'
@@ -31,6 +30,19 @@ const columns = [
     'Storage',
 ]
 
+const adminColumns = [
+    'Actions',
+    'Vendor',
+    'Model Number',
+    'Height',
+    'Display Color',
+    'Network Ports',
+    'Power Ports',
+    'CPU',
+    'Memory',
+    'Storage',
+]
+
 const columnLookup = {
     "vendor": "Vendor",
     "model_number": "Model Number",
@@ -41,6 +53,7 @@ const columnLookup = {
     'cpu': 'CPU',
     'memory': 'Memory',
     'storage': 'Storage',
+    'comment': "Comment"
 }
 
 const modelsMainPath = 'models/';
@@ -289,15 +302,15 @@ export default class ModelsView extends React.Component {
                 'model_number': modelNum,
             }
             ).then(response => {
-                this.setState({ detailedValues: response.data['models'][0], detailViewLoading:false});
+                this.setState({ detailedValues: response.data['models'][0], detailViewLoading: false});
             }
             ).catch(function(error) {
                 this.setState({ showStatus: true, statusMessage: ModelConstants.GENERAL_MODEL_ERROR, statusSeverity:"error" });
             });
 
         this.setState({
-            viewVendor:'',
-            viewModel:'',
+            viewVendor: '',
+            viewModel: '',
         });
     }
 
@@ -396,11 +409,11 @@ export default class ModelsView extends React.Component {
     showDetailedView = (id) => {
         this.setState({
             showDetailedView: true,
-            detailViewLoading:true,
+            detailViewLoading: true,
 
-            originalHeight:this.state.items[id]['height'],
-            originalModelNumber:this.state.items[id]['model_number'],
-            originalVendor:this.state.items[id]['vendor'],
+            originalHeight: this.state.items[id]['height'],
+            originalModelNumber: this.state.items[id]['model_number'],
+            originalVendor: this.state.items[id]['vendor'],
          });
 
         var vendor = this.state.items[id]['vendor'];
@@ -530,30 +543,12 @@ export default class ModelsView extends React.Component {
                     </Grid>
                     <Grid item xs={12}>
                         <ModelsTable
-                            columns={columns}
+                            columns={this.props.privilege == Privilege.ADMIN ? adminColumns : columns}
                             vals={this.state.rows}
+                            privilege={this.props.privilege}
                             keys={columns}
                             showDetailedView={this.showDetailedView}
-                            filters={columns}
-                        />
-                    </Grid>
-                    <Grid item xs={12}>
-                        <DetailModel
-                            statusOpen={this.state.detailStatusOpen}
-                            statusSeverity={this.state.detailStatusSeverity}
-                            statusClose={this.detailStatusClose}
-                            statusMessage={this.state.detailStatusMessage}
-                            showDetailedView={this.state.showDetailedView}
-                            closeDetailedView={this.closeDetailedView}
-                            updateModelEdited={this.updateModelEdited}
-                            defaultValues={this.state.detailedValues}
-                            loading={this.state.detailViewLoading}
-                            edit={this.editModel}
-                            delete={this.deleteModel}
-                            disabled={this.props.privilege===Privilege.USER}
-                            options={this.state.vendorsList}
-                            useAutocomplete={true}
-                            updateModelColorDetails={this.updateModelColorDetails}
+                            filters={this.props.privilege == Privilege.ADMIN ? adminColumns : columns}
                         />
                     </Grid>
                 </Grid>

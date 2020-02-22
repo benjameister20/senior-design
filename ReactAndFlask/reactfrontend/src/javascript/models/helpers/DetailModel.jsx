@@ -2,32 +2,60 @@ import React from 'react';
 import TextField from "@material-ui/core/TextField";
 import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import ExpansionPanel from '@material-ui/core/ExpansionPanel';
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import Typography from '@material-ui/core/Typography';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { CompactPicker } from 'react-color';
-import StatusDisplay from '../../helpers/StatusDisplay';
+import Grid from '@material-ui/core/Grid';
+import Modal from '@material-ui/core/Modal';
+import Backdrop from '@material-ui/core/Backdrop';
+import Fade from '@material-ui/core/Fade';
+import { withStyles } from '@material-ui/core/styles';
+
 
 function createInputs(name, label) {
     return {label, name};
 }
 
 const inputs = {
-    "vendor":createInputs('vendor', "Vendor", ),
-    "modelNumber":createInputs('model_number', "Model Number"),
-    "height":createInputs('height', "Height"),
-    "displayColor":createInputs('display_color', "Display Color"),
-    "powerPorts":createInputs('power_ports', "Power Ports"),
-    "cpu":createInputs('cpu', "CPU"),
-    "memory":createInputs('memory', "Memory"),
-    "storage":createInputs('storage', "Storage"),
-    "comments":createInputs('comments', "Comments"),
+    "vendor": createInputs('vendor', "Vendor", ),
+    "modelNumber": createInputs('model_number', "Model Number"),
+    "height": createInputs('height', "Height"),
+    "displayColor": createInputs('display_color', "Display Color"),
+    "ethernetPorts": createInputs('ethernet_ports', "Network Ports"),
+    "powerPorts": createInputs('power_ports', "Power Ports"),
+    "cpu": createInputs('cpu', "CPU"),
+    "memory": createInputs('memory', "Memory"),
+    "storage": createInputs('storage', "Storage"),
+    "comments": createInputs('comments', "Comments"),
 }
 
-export default class DetailModel extends React.Component {
+const useStyles = theme => ({
+    root: {
+      flexGrow: 1,
+    },
+    modal: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: "100%",
+        margin:"0 auto",
+        overflow: "scroll"
+      },
+      grid: {
+          backgroundColor: theme.palette.background.paper,
+          boxShadow: theme.shadows[5],
+          padding: theme.spacing(2, 4, 3),
+          width: "50%"
+      },
+      progress: {
+        display: 'flex',
+        '& > * + *': {
+          marginLeft: theme.spacing(2),
+        },
+      },
+});
+
+class DetailModel extends React.Component {
     constructor(props) {
         super(props);
 
@@ -59,26 +87,29 @@ export default class DetailModel extends React.Component {
         this.props.updateModelColorDetails(color.hex);
     }
 
+    closeModal = () => {
+
+    }
+
     render() {
+        const { classes } = this.props;
+
         return (
         <div>
-            {!this.props.showDetailedView ? null:
-            <ExpansionPanel >
-                    <ExpansionPanelSummary
-                        expandIcon={<ExpandMoreIcon />}
-                    >
-                        <Typography>Model Details</Typography>
-                    </ExpansionPanelSummary>
-                    <ExpansionPanelDetails>
-                        <StatusDisplay
-                            open={this.props.statusOpen}
-                            severity={this.props.statusSeverity}
-                            closeStatus={this.props.statusClose}
-                            message={this.props.statusMessage}
-                            autoHideDuration={6000}
-                        />
-                    {
-                this.props.loading ? <CircularProgress /> :
+            <Modal
+                aria-labelledby="transition-modal-title"
+                aria-describedby="transition-modal-description"
+                className={classes.modal}
+                open={this.props.showDetailedView}
+                onClose={this.props.closeDetailedView}
+                closeAfterTransition
+            >
+            <Fade in={this.state.showModal}>
+                <Backdrop
+                    open={this.state.showModal}
+                >
+                    <div className={classes.grid}>
+                    {this.props.loading ? <CircularProgress /> :
                 <div>
                     <Autocomplete
                             id="select-vendor"
@@ -182,9 +213,89 @@ export default class DetailModel extends React.Component {
                         </Button>
                     </div>:null}
                 </div>}
-                    </ExpansionPanelDetails>
-                </ExpansionPanel>}
-        </div>
-        );
+
+                    <Grid
+                        container
+                        spacing={1}
+                        direction="row"
+                        justify="flex-start"
+                        alignItems="center"
+                    >
+                        <Grid item xs={12}>
+                            <Typography variant="h5">Model Details</Typography>
+                        </Grid>
+                        <Grid item xs={12} sm={12} md={6} lg={6}>
+                            <Autocomplete
+                                id="select-vendor"
+                                options={this.props.options}
+                                includeInputInList
+                                freeSolo
+                                renderInput={params => (
+                                    <TextField {...params} label={inputs.vendor.label} name={inputs.vendor.name} onChange={this.props.updateModelCreator} onBlur={this.props.updateModelCreator} variant="outlined" fullWidth />
+                                )}
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={6} md={4} lg={3}>
+                            <TextField id="standard-basic" variant="outlined" label={inputs.modelNumber.label} name={inputs.modelNumber.name} onChange={this.props.updateModelCreator}/>
+                        </Grid>
+                        <Grid item xs={3}>
+                            <TextField id="standard-basic" variant="outlined" label={inputs.height.label} name={inputs.height.name} onChange={this.props.updateModelCreator}/>
+                        </Grid>
+                        <Grid item xs={3}>
+                            <TextField id="standard-basic" variant="outlined" label={inputs.ethernetPorts.label} name={inputs.ethernetPorts.name} onChange={this.props.updateModelCreator}/>
+                        </Grid>
+                        <Grid item xs={3}>
+                            <TextField id="standard-basic" variant="outlined" label={inputs.powerPorts.label} name={inputs.powerPorts.name} onChange={this.props.updateModelCreator}/>
+                        </Grid>
+                        <Grid item xs={3}>
+                        <TextField id="standard-basic" variant="outlined" label={inputs.cpu.label} name={inputs.cpu.name} onChange={this.props.updateModelCreator}/>
+                        </Grid>
+                        <Grid item xs={3}>
+                        <TextField id="standard-basic" variant="outlined" label={inputs.memory.label} name={inputs.memory.name} onChange={this.props.updateModelCreator}/>
+                        </Grid>
+                        <Grid item xs={3}>
+                        <TextField id="standard-basic" variant="outlined" label={inputs.storage.label} name={inputs.storage.name} onChange={this.props.updateModelCreator}/>
+                        </Grid>
+                        <Grid item xs={3}>
+                        <TextField id="standard-basic" variant="outlined" label={inputs.comments.label} name={inputs.comments.name} onChange={this.props.updateModelCreator}/>
+                        </Grid>
+
+                        <Grid item xs={6}>
+                            <Typography>Display Color</Typography>
+                            <CompactPicker
+                                color={this.state.color}
+                                onChange={this.updateColor}
+
+                            />
+                        </Grid>
+                        <Grid item xs={3}>
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                onClick={this.create}
+                                style={{width: "100%"}}
+                            >
+                                Create
+                            </Button>
+                        </Grid>
+                        <Grid item xs={3}>
+                            <Button
+                                variant="contained"
+                                color="secondary"
+                                onClick={this.closeModal}
+                                style={{width: "100%"}}
+                            >
+                                Cancel
+                            </Button>
+                        </Grid>
+                    </Grid>
+            </div>
+            </Backdrop>
+
+            </Fade>
+            </Modal>
+    </div>);
     }
 }
+
+export default withStyles(useStyles)(DetailModel);

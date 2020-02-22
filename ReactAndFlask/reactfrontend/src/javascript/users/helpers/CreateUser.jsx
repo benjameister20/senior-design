@@ -26,7 +26,7 @@ export default class CreateModal extends React.Component {
                     <ExpansionPanelSummary
                         expandIcon={<ExpandMoreIcon />}
                     >
-                        <Typography>Create User</Typography>
+                        <Typography>Create</Typography>
                     </ExpansionPanelSummary>
                     <ExpansionPanelDetails>
                         <Grid

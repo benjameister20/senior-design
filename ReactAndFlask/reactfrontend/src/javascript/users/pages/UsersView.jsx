@@ -9,7 +9,7 @@ import DetailUser from '../helpers/DetailUser';
 import CreateUser from '../helpers/CreateUser';
 
 import getURL from '../../helpers/functions/GetURL';
-import TableView from '../../helpers/TableView';
+import UsersTable from '../helpers/UsersTable';
 import StatusDisplay from '../../helpers/StatusDisplay';
 
 import { Privilege } from '../../enums/privilegeTypes.ts'
@@ -32,6 +32,21 @@ const columns = [
     'Display Name',
     'Privilege',
 ]
+
+const adminColumns = [
+    'Actions',
+    'Username',
+    'Email',
+    'Display Name',
+    'Privilege'
+]
+
+const columnLookup = {
+    "username": "Username",
+    "email": "Email",
+    "display_name": "Display Name",
+    'privilege': 'Privilege'
+}
 
 const usersMainPath = 'users/';
 
@@ -218,13 +233,29 @@ export default class UsersView extends React.Component {
             getURL(usersMainPath, UserCommand.search),
             {
                 'filter':{
-                    'username':this.state.searchUsernm,
-                    'email':this.state.searchEml,
-                    'display_name':this.state.searchDspNm,
-                    'privilege':this.state.searchPriv,
+                    'username': this.state.searchUsernm,
+                    'email': this.state.searchEml,
+                    'display_name': this.state.searchDspNm,
+                    'privilege': this.state.searchPriv,
                 }
             }
-            ).then(response => this.setState({ items: (response.data['users']===null) ? [] : response.data['users'] }));
+            ).then(response => {
+                const models = response.data['users'] === undefined ? [] : response.data['users'];
+                var rows = [];
+                Object.values(models).forEach(model => {
+                    var row = {};
+                    Object.keys(model).forEach(key => {
+                        if (key in columnLookup) {
+                            row[columnLookup[key]] = model[key];
+                        } else {
+                            row[key] = model[key];
+                        }
+                    });
+                    rows.push(row);
+                });
+
+                this.setState({ items: rows });
+            });
 
         this.setState({ initialized: true})
     }
@@ -345,12 +376,13 @@ export default class UsersView extends React.Component {
                         />
                     </Grid>
                     <Grid item xs={12}>
-                        <TableView
-                            columns={columns}
+                        <UsersTable
+                            columns={this.props.privilege == Privilege.ADMIN ? adminColumns : columns}
                             vals={this.state.items}
                             keys={columns}
+                            privilege={this.props.privilege}
                             showDetailedView={this.showDetailedView}
-                            filters={columns}
+                            filters={this.props.privilege == Privilege.ADMIN ? adminColumns : columns}
                         />
                     </Grid>
                     <Grid item xs={12}>

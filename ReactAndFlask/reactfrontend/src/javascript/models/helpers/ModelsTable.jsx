@@ -8,20 +8,87 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Popover from '@material-ui/core/Popover';
 import InfoIcon from '@material-ui/icons/Info';
+import DeleteIcon from '@material-ui/icons/Delete';
 import Typography from '@material-ui/core/Typography';
+import Modal from '@material-ui/core/Modal';
+import Backdrop from '@material-ui/core/Backdrop';
+import Fade from '@material-ui/core/Fade';
+import { withStyles } from '@material-ui/core/styles';
+import TextField from "@material-ui/core/TextField";
+import Button from '@material-ui/core/Button';
+import Grid from '@material-ui/core/Grid';
+import Autocomplete from '@material-ui/lab/Autocomplete';
+import { CompactPicker } from 'react-color';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+import ListItemText from '@material-ui/core/ListItemText';
+import ViewListIcon from '@material-ui/icons/ViewList';
+import { Privilege } from '../../enums/privilegeTypes.ts'
+import EditIcon from '@material-ui/icons/Edit';
 
-export default class ModelsTable extends React.Component {
+const useStyles = theme => ({
+    root: {
+      flexGrow: 1,
+    },
+    modal: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: "100%",
+        margin:"0 auto",
+        overflow: "scroll"
+      },
+      grid: {
+          backgroundColor: theme.palette.background.paper,
+          boxShadow: theme.shadows[5],
+          padding: theme.spacing(2, 4, 3),
+          width: "50%"
+      },
+      progress: {
+        display: 'flex',
+        '& > * + *': {
+          marginLeft: theme.spacing(2),
+        },
+      },
+});
+
+function createInputs(name, label) {
+    return {label, name};
+}
+
+const inputs = {
+    "vendor": createInputs('vendor', "Vendor", ),
+    "modelNumber": createInputs('model_number', "Model Number"),
+    "height": createInputs('height', "Height"),
+    "displayColor": createInputs('display_color', "Display Color"),
+    "ethernetPorts": createInputs('ethernet_ports', "Network Ports"),
+    "powerPorts": createInputs('power_ports', "Power Ports"),
+    "cpu": createInputs('cpu', "CPU"),
+    "memory": createInputs('memory', "Memory"),
+    "storage": createInputs('storage', "Storage"),
+    "comment": createInputs('comment', "Comment"),
+}
+
+class ModelsTable extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
         popoverAnchor: null,
-        networkPorts: ''
+        networkPorts: '',
+        showDetailedView: false,
+        row: null
     };
   }
 
-  showDetailedView(index) {
-    this.props.showDetailedView(index);
+  showDetailedView = (row) => {
+    this.setState({ row: row, showDetailedView: true });
+  }
+
+  closeDetailedView = () => {
+      this.setState({ showDetailedView: false, row: null });
   }
 
   clickInfo = (event, ports) => {
@@ -33,6 +100,8 @@ export default class ModelsTable extends React.Component {
   }
 
   render() {
+    const { classes } = this.props;
+
     return (
       <div>
         <TableContainer component={Paper}>
@@ -43,8 +112,16 @@ export default class ModelsTable extends React.Component {
               </TableRow>
             </TableHead>
             <TableBody>
-              {this.props.vals.map((row, index)=> (
-              <TableRow id={index} onClick={() => this.showDetailedView(index)}>
+              {this.props.vals.map((row, index) => (
+              <TableRow id={index} hover={true}>
+                  { this.props.privilege === Privilege.ADMIN ? <TableCell scope="row" align="center">
+                      <Button>
+                        <EditIcon onClick={() => this.showDetailedView(row)} />
+                      </Button>
+                      <Button>
+                        <DeleteIcon />
+                      </Button>
+                  </TableCell> : null }
                 {this.props.keys.map(key => {
                   if (key === "Display Color") {
                     return (
@@ -66,7 +143,7 @@ export default class ModelsTable extends React.Component {
                         align="center"
                       >
                         {row[key] === null ? "" : row[key].length}
-                        {row[key] == null ? null : <InfoIcon style={{"margin": "5px"}} onClick={(e) => {this.clickInfo(e, row[key].join(", "))}} />}
+                        {row[key] == null ? null : <ViewListIcon style={{"margin": "5px"}} onClick={(e) => {this.clickInfo(e, row[key].join(", "))}} />}
                       </TableCell>
                     )
                   }
@@ -100,7 +177,106 @@ export default class ModelsTable extends React.Component {
                 Network Ports: {this.state.networkPorts}
             </Typography>
         </Popover>
+        <Modal
+                aria-labelledby="transition-modal-title"
+                aria-describedby="transition-modal-description"
+                className={classes.modal}
+                open={this.state.showDetailedView}
+                onClose={this.closeDetailedView}
+                closeAfterTransition
+            >
+            <Fade in={this.state.showDetailedView}>
+                <Backdrop
+                    open={this.state.showDetailedView}
+                >
+                    <div className={classes.grid}>
+                <Grid
+                        container
+                        spacing={1}
+                        direction="row"
+                        justify="flex-start"
+                        alignItems="center"
+                    >
+                        <Grid item xs={9}>
+                            <Typography variant="h5">Model Details</Typography>
+                        </Grid>
+                        <Grid item xs={3}>
+                            <Button style={{ width: "100%" }} onClick={this.closeDetailedView}>Close</Button>
+                        </Grid>
+                        <Grid item xs={12} sm={12} md={6} lg={6}>
+                            <Autocomplete
+                                id="select-vendor"
+                                options={this.props.options}
+                                defaultValue={this.state.row == null ? '' : this.state.row["Vendor"]}
+                                includeInputInList
+                                freeSolo
+                                renderInput={params => (
+                                    <TextField {...params} label={inputs.vendor.label} name={inputs.vendor.name} onChange={this.props.updateModelCreator} onBlur={this.props.updateModelCreator} variant="outlined" fullWidth />
+                                )}
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={6} md={4} lg={3}>
+                            <TextField id="standard-basic" variant="outlined" label={inputs.modelNumber.label} name={inputs.modelNumber.name} defaultValue={this.state.row == null ? '' : this.state.row["Model Number"]} onChange={this.props.updateModelCreator}/>
+                        </Grid>
+                        <Grid item xs={3}>
+                            <TextField id="standard-basic" variant="outlined" label={inputs.height.label} name={inputs.height.name} defaultValue={this.state.row == null ? '' : this.state.row["Height"]} onChange={this.props.updateModelCreator}/>
+                        </Grid>
+                        <Grid item xs={3}>
+                            <TextField id="standard-basic" variant="outlined" label={inputs.ethernetPorts.label} name={inputs.ethernetPorts.name} defaultValue={this.state.row == null ? '' : (this.state.row["Network Ports"] == null ? '' : this.state.row["Network Ports"].length)} onChange={this.props.updateModelCreator}/>
+                        </Grid>
+                        <Grid item xs={3}>
+                            <TextField id="standard-basic" variant="outlined" label={inputs.powerPorts.label} name={inputs.powerPorts.name} defaultValue={this.state.row == null ? '' : this.state.row["Power Ports"]} onChange={this.props.updateModelCreator}/>
+                        </Grid>
+                        <Grid item xs={3}>
+                            <TextField id="standard-basic" variant="outlined" label={inputs.cpu.label} name={inputs.cpu.name} defaultValue={this.state.row == null ? '' : this.state.row["CPU"]} onChange={this.props.updateModelCreator}/>
+                        </Grid>
+                        <Grid item xs={3}>
+                            <TextField id="standard-basic" variant="outlined" label={inputs.memory.label} name={inputs.memory.name} defaultValue={this.state.row == null ? '' : this.state.row["Memory"]} onChange={this.props.updateModelCreator}/>
+                        </Grid>
+                        <Grid item xs={3}>
+                            <TextField id="standard-basic" variant="outlined" label={inputs.storage.label} name={inputs.storage.name} defaultValue={this.state.row == null ? '' : this.state.row["Storage"]} onChange={this.props.updateModelCreator}/>
+                        </Grid>
+                        <Grid item xs={3}>
+                            <TextField id="standard-basic" variant="outlined" label={inputs.comment.label} name={inputs.comment.name} defaultValue={this.state.row == null ? '' : this.state.row["Comment"]} onChange={this.props.updateModelCreator}/>
+                        </Grid>
+
+                        <Grid item xs={6}>
+                            <Typography>Display Color</Typography>
+                            <CompactPicker
+                                color={this.state.color}
+                                onChange={this.updateColor}
+                            />
+                        </Grid>
+                        <Grid item xs={3}>
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                onClick={this.create}
+                                style={{width: "100%"}}
+                            >
+                                Save
+                            </Button>
+                        </Grid>
+                        <Grid item xs={3}>
+                            <Button
+                                variant="contained"
+                                color="secondary"
+                                onClick={this.closeModal}
+                                style={{width: "100%"}}
+                            >
+                                Delete
+                            </Button>
+                        </Grid>
+                    </Grid>
+            </div>
+            </Backdrop>
+
+            </Fade>
+            </Modal>
+
       </div>
     );
   }
 }
+
+export default withStyles(useStyles)(ModelsTable);

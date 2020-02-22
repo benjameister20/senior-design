@@ -48,8 +48,9 @@ def search():
             addMessageToJSON(returnJSON, "success"),
             list(
                 map(
-                    lambda x: x.make_json_with_model_name(
-                        INSTANCE_MANAGER.get_model_from_id(x.model_id)
+                    lambda x: x.make_json_with_model_and_datacenter(
+                        INSTANCE_MANAGER.get_model_from_id(x.model_id),
+                        INSTANCE_MANAGER.get_dc_from_id(x.datacenter_id),
                     ),
                     instance_list,
                 )

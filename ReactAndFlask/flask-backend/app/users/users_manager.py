@@ -278,7 +278,7 @@ class UserManager:
         username = request_data.get("username")
         email = request_data.get("email")
         display_name = request_data.get("display_name")
-        privilege = "admin"
+        privilege = "user"
         password = b"netid"
 
         client_id = request_data.get("client_id")
@@ -314,6 +314,8 @@ class UserManager:
 
         response["token"] = self.AUTH_MANAGER.encode_auth_token(username)
         response["privilege"] = privilege
+        response["message"] = "success"
+        response["username"] = username
 
         # print("RESPONSE")
         # print(response)

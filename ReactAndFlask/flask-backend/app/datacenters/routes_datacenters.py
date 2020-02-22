@@ -45,7 +45,8 @@ def list_all():
 @requires_role(request, "admin")
 @log(request, LOGGER.DATACENTERS, LOGGER.ACTIONS.DATACENTERS.CREATE)
 def create():
-    """ Route for creating datacenters """
+    """ Route for creating datacenters"""
+
     global DATACENTER_MANAGER
     returnJSON = createJSON()
 
@@ -61,8 +62,8 @@ def create():
 
 
 @datacenters.route("/datacenters/edit/", methods=["POST"])
-# @requires_auth(request)
-# @requires_role(request, "admin")
+@requires_auth(request)
+@requires_role(request, "admin")
 @log(request, LOGGER.DATACENTERS, LOGGER.ACTIONS.DATACENTERS.EDIT)
 def edit():
     """ Route for creating datacenters """

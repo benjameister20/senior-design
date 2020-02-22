@@ -1,7 +1,5 @@
-# TODO: Fix whole log_syntax thing
-# TODO: Finish log messages for models and racks
 # TODO: Test logger
-
+# TODO: Add power and network connections for assets
 
 import json
 import os

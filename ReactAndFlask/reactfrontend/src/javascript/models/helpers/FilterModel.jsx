@@ -80,28 +80,28 @@ export default class FilterModel extends React.Component {
                         <TextField id="model_number" variant="outlined" label="Model Number" name="model_number" onChange={this.updateSearchText.bind(this)} style={{width: "100%"}} />
                     </Grid>
                     <Grid item xs={12} sm={6} md={4} lg={3}>
-                        <TextField id="min_height" variant="outlined" label="Min Height" name="min_height" onChange={this.updateSearchText.bind(this)} style={{width: "100%"}}/>
+                        <TextField id="min_height" type="number" variant="outlined" label="Min Height" name="min_height" onChange={this.updateSearchText.bind(this)} style={{width: "100%"}} InputProps={{ inputProps: { min: 1, max: 42} }}/>
                     </Grid>
                     <Grid item xs={12} sm={6} md={4} lg={3}>
-                        <TextField id="max_height" variant="outlined" label="Max Height" name="max_height" onChange={this.updateSearchText.bind(this)} style={{width: "100%"}}/>
+                        <TextField id="max_height" type="number" variant="outlined" label="Max Height" name="max_height" onChange={this.updateSearchText.bind(this)} style={{width: "100%"}} InputProps={{ inputProps: { min: 1, max: 42} }}/>
                     </Grid>
                     <Grid item xs={12} sm={6} md={4} lg={3}>
-                        <TextField id="min_ethernet_ports" variant="outlined" label="Min Network Ports" name="min_ethernet_ports" onChange={this.updateSearchText.bind(this)} style={{width: "100%"}}/>
+                        <TextField id="min_ethernet_ports" type="number" variant="outlined" label="Min Network Ports" name="min_ethernet_ports" onChange={this.updateSearchText.bind(this)} style={{width: "100%"}} InputProps={{ inputProps: { min: 0} }}/>
                     </Grid>
                     <Grid item xs={12} sm={6} md={4} lg={3}>
-                        <TextField id="max_ethernet_ports" variant="outlined" label="Max Network Ports" name="max_ethernet_ports" onChange={this.updateSearchText.bind(this)} style={{width: "100%"}}/>
+                        <TextField id="max_ethernet_ports" type="number" variant="outlined" label="Max Network Ports" name="max_ethernet_ports" onChange={this.updateSearchText.bind(this)} style={{width: "100%"}} InputProps={{ inputProps: { min: 0} }}/>
                     </Grid>
                     <Grid item xs={12} sm={6} md={4} lg={3}>
-                        <TextField id="min_power_ports" variant="outlined" label="Min Power Ports" name="min_power_ports" onChange={this.updateSearchText.bind(this)} style={{width: "100%"}}/>
+                        <TextField id="min_power_ports" type="number" variant="outlined" label="Min Power Ports" name="min_power_ports" onChange={this.updateSearchText.bind(this)} style={{width: "100%"}} InputProps={{ inputProps: { min: 0} }}/>
                     </Grid>
                     <Grid item xs={12} sm={6} md={4} lg={3}>
-                        <TextField id="max_power_ports" variant="outlined" label="Max Power Ports" name="max_power_ports" onChange={this.updateSearchText.bind(this)} style={{width: "100%"}}/>
+                        <TextField id="max_power_ports" type="number" variant="outlined" label="Max Power Ports" name="max_power_ports" onChange={this.updateSearchText.bind(this)} style={{width: "100%"}} InputProps={{ inputProps: { min: 0} }}/>
                     </Grid>
                     <Grid item xs={12} sm={6} md={4} lg={3}>
                         <TextField id="cpu" variant="outlined" label="CPU" name="cpu" onChange={this.updateSearchText.bind(this)} style={{width: "100%"}}/>
                     </Grid>
                     <Grid item xs={12} sm={6} md={4} lg={3}>
-                        <TextField id="memory" variant="outlined" label="Memory" name="memory" onChange={this.updateSearchText.bind(this)} style={{width: "100%"}}/>
+                        <TextField id="memory" type="number" variant="outlined" label="Memory" name="memory" onChange={this.updateSearchText.bind(this)} style={{width: "100%"}} InputProps={{ inputProps: { min: 0} }}/>
                     </Grid>
                     <Grid item xs={12} sm={6} md={4} lg={3}>
                         <TextField id="storage" variant="outlined" label="Storage" name="storage" onChange={this.updateSearchText.bind(this)} style={{width: "100%"}}/>

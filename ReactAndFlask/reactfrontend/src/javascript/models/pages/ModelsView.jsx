@@ -28,6 +28,7 @@ const columns = [
     'CPU',
     'Memory',
     'Storage',
+    'Comment',
 ]
 
 const adminColumns = [
@@ -41,6 +42,7 @@ const adminColumns = [
     'CPU',
     'Memory',
     'Storage',
+    'Comment',
 ]
 
 const columnLookup = {
@@ -156,7 +158,7 @@ export default class ModelsView extends React.Component {
         this.getVendorList();
     }
 
-    createModel = () => {
+    createModel = (networkPorts) => {
         axios.post(
             getURL(modelsMainPath, ModelCommand.create),
             {
@@ -170,7 +172,7 @@ export default class ModelsView extends React.Component {
                 'memory':this.state.createdModel[ModelInput.Memory],
                 'storage':this.state.createdModel[ModelInput.Storage],
                 'comment':this.state.createdModel[ModelInput.Comment],
-                'ethernet_ports':["eth0", "eth1", "eth2", "eth3"],
+                'ethernet_ports': networkPorts,
             }
             ).then(
                 response => {
@@ -203,7 +205,7 @@ export default class ModelsView extends React.Component {
                 );
     }
 
-    editModel = () => {
+    editModel = (networkPorts) => {
         axios.post(
             getURL(modelsMainPath, ModelCommand.edit),
             {
@@ -214,7 +216,7 @@ export default class ModelsView extends React.Component {
                 'model_number':this.state.detailedValues[ModelInput.model_number],
                 'height':this.state.detailedValues[ModelInput.Height],
                 'display_color':this.state.detailedValues[ModelInput.display_color],
-                'ethernet_ports':this.state.detailedValues[ModelInput.ethernet_ports],
+                'ethernet_ports': networkPorts,
                 'power_ports':this.state.detailedValues[ModelInput.power_ports],
                 'cpu':this.state.detailedValues[ModelInput.CPU],
                 'memory':this.state.detailedValues[ModelInput.Memory],
@@ -549,6 +551,10 @@ export default class ModelsView extends React.Component {
                             keys={columns}
                             showDetailedView={this.showDetailedView}
                             filters={this.props.privilege == Privilege.ADMIN ? adminColumns : columns}
+                            updateModelEdited={this.updateModelEdited}
+                            updateModelColor={this.updateModelColorDetails}
+                            saveModel={this.editModel}
+                            deleteModel={this.deleteModel}
                         />
                     </Grid>
                 </Grid>

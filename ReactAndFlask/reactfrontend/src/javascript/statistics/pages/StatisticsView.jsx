@@ -18,7 +18,7 @@ import TableRow from '@material-ui/core/TableRow';
 import StatusDisplay from '../../helpers/StatusDisplay';
 import Paper from '@material-ui/core/Paper';
 import ErrorBoundray from '../../errors/ErrorBoundry';
-
+import Grid from '@material-ui/core/Grid';
 
 const statsMainPath = 'stats/';
 const tables = {
@@ -125,6 +125,20 @@ export default class StatisticsView extends React.Component {
                     closeStatus={this.closeShowStatus}
                     message={this.state.statusMessage}
                 />
+                <Grid
+                    container
+                    spacing={5}
+                    direction="row"
+                    justify="flex-start"
+                    alignItems="center"
+                    style={{margin: "0px", maxWidth: "95vw"}}
+                >
+                    <Grid item xs={12}>
+                        <Typography variant="h4">
+                            Reports
+                        </Typography>
+                    </Grid>
+                </Grid>
                 <div>
                     <Button
                         variant="contained"

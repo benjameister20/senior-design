@@ -69,6 +69,9 @@ const useStyles = theme => ({
     root: {
       flexGrow: 1,
     },
+    dialogDiv: {
+        padding: theme.spacing(2, 4, 3),
+    },
     modal: {
         display: 'flex',
         alignItems: 'center',
@@ -518,7 +521,7 @@ class CreateAsset extends React.Component {
             availableConnections:false,
 
             canSubmit:false,
-        }, this.getLists());
+        }, () => {this.getLists(); this.props.close(); });
     }
 
     statusClose = () => {
@@ -534,14 +537,7 @@ class CreateAsset extends React.Component {
 
         return (
         <span>
-            <Button
-                variant="contained"
-                color="primary"
-                onClick={() => {this.showModal()} }
-            >
-                Create Asset
-            </Button>
-            <Dialog fullScreen open={this.state.showModal} onClose={this.closeModal} TransitionComponent={Transition} padding={3}>
+            <Dialog fullScreen open={this.props.open} onClose={this.closeModal} TransitionComponent={Transition} padding={3}>
                 <AppBar className={classes.appBar}>
                     <Toolbar>
                         <IconButton edge="start" color="inherit" onClick={this.closeModal} aria-label="close">
@@ -561,6 +557,7 @@ class CreateAsset extends React.Component {
                     //&& false
                     ) ? <div className={classes.progress}><CircularProgress /></div> :
                         <form>
+                        <div className={classes.dialogDiv}>
                         <Grid container spacing={3}>
                             <Grid item xs={3}>
                                 <Tooltip placement="top" open={this.state.inputs.model.Tooltip} title={this.state.inputs.model.description}>
@@ -843,7 +840,7 @@ class CreateAsset extends React.Component {
                                     Cancel
                                 </Button>
                             </Grid>
-                        </Grid></form>}
+                        </Grid></div></form>}
                         <StatusDisplay
                             open={this.statusOpen}
                             severity={this.statusSeverity}

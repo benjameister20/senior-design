@@ -198,11 +198,11 @@ class TableAsset extends React.Component {
 	return (
 		<React.Fragment>
 			<Grid container spacing={3}>
-				<Grid item xs={6}>
+				{/*<Grid item xs={6}>
 					<FilterAsset
 						updateItems={this.updateItems}
 					/>
-				</Grid>
+	</Grid>*/}
 				<Grid item xs={12}>
 					<TableContainer component={Paper}>
 						<Table className={classes.table} aria-label="customized table">

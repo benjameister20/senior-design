@@ -1,14 +1,16 @@
 import React from 'react';
 
-import Grid from '@material-ui/core/Grid';
+import {
+    Grid,
+    Typography,
+ } from '@material-ui/core/';
 
 import { Privilege } from '../../enums/privilegeTypes.ts'
-import ImpExpAsset from '../helpers/ImpExpAsset';
-import CreateAsset from '../helpers/CreateAsset';
-import StatusDisplay from '../../helpers/StatusDisplay';
+import ExportAsset from '../helpers/ExportAsset';
 import TableAsset from '../helpers/TableAssets';
 import ErrorBoundary from '../../errors/ErrorBoundry';
-import "../stylesheets/AssetStyles.css";
+import AddAsset from "../helpers/AddAsset";
+import FilterAsset from "../helpers/FilterAsset";
 
 export default class AssetsView extends React.Component {
     constructor(props) {
@@ -21,26 +23,31 @@ export default class AssetsView extends React.Component {
         };
     }
 
-    componentDidUpdate() {
-        console.log("updated");
-    }
-
     render() {
         return (
             <div>
                 <ErrorBoundary>
-                    <StatusDisplay
-                        open={this.state.showStatus}
-                        severity={this.state.statusSeverity}
-                        closeStatus={this.closeShowStatus}
-                        message={this.state.statusMessage}
-                    />
-                    <Grid container spacing={3}>
-                        <Grid item xs={3}>
-                            {(this.props.privilege === Privilege.ADMIN) ? <CreateAsset />:null}
+                    <Grid
+                        container
+                        spacing={5}
+                        direction="row"
+                        justify="flex-start"
+                        alignItems="center"
+                        style={{margin: "0px", maxWidth: "95vw"}}
+                    >
+                        <Grid item xs={12}>
+                            <Typography variant="h4">
+                                Assets
+                            </Typography>
                         </Grid>
-                        <Grid item xs={6}>
-                            {(this.props.privilege === Privilege.ADMIN) ? <ImpExpAsset downloadTable={this.downloadTable} />:null}
+                        <Grid item xs={12} sm={6} md={4} lg={3}>
+                            {(this.props.privilege == Privilege.ADMIN) ? <AddAsset /> : null}
+                        </Grid>
+                        <Grid item xs={12} sm={6} md={6} lg={6}>
+                            <FilterAsset />
+                        </Grid>
+                        <Grid item xs={12} sm={6} md={4} lg={3}>
+                            {(this.props.privilege === Privilege.ADMIN) ? <ExportAsset downloadTable={this.downloadTable} />:null}
                         </Grid>
                         <Grid item xs={12}>
                             <TableAsset />

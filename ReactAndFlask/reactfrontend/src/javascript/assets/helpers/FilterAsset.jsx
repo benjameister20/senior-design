@@ -2,14 +2,22 @@ import React from 'react';
 
 import axios from 'axios';
 
-import Autocomplete from '@material-ui/lab/Autocomplete';
-import Grid from '@material-ui/core/Grid';
-import { withStyles } from '@material-ui/core/styles';
-import FormHelperText from '@material-ui/core/FormHelperText';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
-import { MenuItem, TextField } from '@material-ui/core';
-import CircularProgress from '@material-ui/core/CircularProgress';
+import {
+    Autocomplete
+} from '@material-ui/lab/';
+import {
+    Grid,
+    withStyles,
+    FormHelperText,
+    FormControl,
+    Select,
+    MenuItem,
+    TextField,
+    CircularProgress,
+    Paper,
+    Typography,
+    Button,
+} from '@material-ui/core/';
 
 import { AssetCommand } from '../enums/AssetCommands.ts'
 import getURL from '../../helpers/functions/GetURL';
@@ -167,7 +175,7 @@ class FilterAsset extends React.Component {
         axios.post(
             getURL(AssetConstants.ASSETS_MAIN_PATH, AssetCommand.search), emptySearch
             ).then(response => {
-                this.props.updateItems(response.data.instances);
+                //this.props.updateItems(response.data.instances);
             });
     }
 
@@ -176,116 +184,111 @@ class FilterAsset extends React.Component {
 
         return (
             <React.Fragment>
-                <Grid container spacing={3} className={classes.root}>
-                    <Grid item xs={3}>
+                <Paper elevation={3}>
+                <Grid
+                    container
+                    spacing={2}
+                    direction="row"
+                    justify="flex-start"
+                    alignItems="center"
+                    style={{"padding": "10px"}}
+                >
+                    <Grid item xs={12}>
+                        <Typography variant="h5">Search</Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={6} md={4} lg={3}>
+                        <TextField
+                            id="datacenter"
+                            variant="outlined"
+                            label="Datacenter"
+                            name="datacenter"
+                            onChange={() => { this.updateDatacenter() } }
+                            style={{width: "100%"}}
+                        />
+                    </Grid>
+                    <Grid item xs={12} sm={6} md={4} lg={3}>
+                        <TextField
+                            id="model"
+                            variant="outlined"
+                            label="Model"
+                            name="model"
+                            onChange={() => { this.updateModel()} }
+                            style={{width: "100%"}}
+                        />
+                    </Grid>
+                    <Grid item xs={12} sm={6} md={4} lg={3}>
+                        <TextField
+                            id="hostname"
+                            variant="outlined"
+                            label="Hostname"
+                            name="hostname"
+                            onChange={() => this.updateHostname()}
+                            style={{width: "100%"}}
+                        />
+                    </Grid>
+                    <Grid item item xs={12} sm={6} md={4} lg={3}></Grid>
+                    <Grid item xs={12} sm={6} md={4} lg={2}>
                         <FormControl>
-                            {this.state.loadingDatacenters ? <CircularProgress /> :
-                            <Autocomplete
-                                id="select-datacenter"
-                                options={this.state.datacenterList}
-                                includeInputInList
-                                renderInput={params => (
-                                <TextField
-                                    {...params}
-                                    className={classes.searchbar}
-                                    name={"select-datacenter"}
-                                    placeholder="datacenter"
-                                    fullWidth
-                                />
-                                )}
-                            />}
-                            <FormHelperText>Filter by Datacenter</FormHelperText>
+                            <Select
+                                id="starting-letter-selector"
+                                value={this.state.startingRackLetter}
+                                onChange={this.changeStartingLetter}
+                            >
+                                {Constants.RackX.map(val => (<MenuItem value={val}>{val}</MenuItem>))}
+                            </Select>
+                            <FormHelperText>Starting Letter</FormHelperText>
                         </FormControl>
                     </Grid>
-                    <Grid item xs={3}>
+                    <Grid item xs={12} sm={6} md={4} lg={2}>
                         <FormControl>
-                            {this.state.loadingModels ? <CircularProgress /> :
-                            <Autocomplete
-                                id="select-model"
-                                options={this.state.modelList}
-                                includeInputInList
-                                renderInput={params => (
-                                <TextField
-                                    className={classes.searchbar}
-                                    {...params}
-                                    name={"select-model"}
-                                    placeholder="model"
-                                    fullWidth
-                                />
-                                )}
-                            />}
-                            <FormHelperText>Filter by model</FormHelperText>
+                            <Select
+                                id="ending-letter-selector"
+                                value={this.state.endingRackLetter}
+                                onChange={this.changeEndingLetter}
+                            >
+                                {Constants.RackX.map(val => (<MenuItem value={val}>{val}</MenuItem>))}
+                            </Select>
+                            <FormHelperText>Ending Letter</FormHelperText>
                         </FormControl>
                     </Grid>
-                    <Grid item xs={6}>
+                    <Grid item xs={12} sm={6} md={4} lg={3}>
                         <FormControl>
-                            {this.state.loadingHostnames ? <CircularProgress /> :
-                            <Autocomplete
-                                id="select-hostname"
-                                options={this.state.hostnameList}
-                                includeInputInList
-                                renderInput={params => (
-                                <TextField
-                                    {...params}
-                                    className={classes.searchbar}
-                                    name={"select-hostname"}
-                                    placeholder="hostname"
-                                    fullWidth
-                                />
-                                )}
-                            />}
-                            <FormHelperText>Filter by hostname</FormHelperText>
+                            <TextField
+                                id="starting-num-selector"
+                                type="number"
+                                value={this.state.startingRackNumber}
+                                onChange={this.changeStartingNum}
+                                InputProps={{ inputProps: { min: 1} }}
+                            />
+                            <FormHelperText>Starting Number</FormHelperText>
                         </FormControl>
                     </Grid>
-                    <Grid item xs={1}>
+                    <Grid item xs={12} sm={6} md={4} lg={3}>
                         <FormControl>
-                                <Select
-                                    id="starting-letter-selector"
-                                    value={this.state.startingRackLetter}
-                                    onChange={this.changeStartingLetter}
-                                >
-                                    {Constants.RackX.map(val => (<MenuItem value={val}>{val}</MenuItem>))}
-                                </Select>
-                                <FormHelperText>Starting Letter</FormHelperText>
+                            <TextField
+                                id="ending-num-selector"
+                                type="number"
+                                value={this.state.endingRackNumber}
+                                onChange={this.changeEndingNum}
+                                InputProps={{ inputProps: { min: 1} }}
+                            />
+                            <FormHelperText>Ending Number</FormHelperText>
                         </FormControl>
                     </Grid>
-                    <Grid item xs={1}>
-                        <FormControl>
-                                <Select
-                                    id="ending-letter-selector"
-                                    value={this.state.endingRackLetter}
-                                    onChange={this.changeEndingLetter}
-                                >
-                                    {Constants.RackX.map(val => (<MenuItem value={val}>{val}</MenuItem>))}
-                                </Select>
-                                <FormHelperText>Ending Letter</FormHelperText>
-                        </FormControl>
-                    </Grid>
-                    <Grid item xs={1}>
-                        <FormControl>
-                                <TextField
-                                    id="starting-num-selector"
-                                    type="number"
-                                    value={this.state.startingRackNumber}
-                                    onChange={this.changeStartingNum}
-                                    InputProps={{ inputProps: { min: 1} }}
-                                />
-                                <FormHelperText>Starting Number</FormHelperText>
-                        </FormControl>
-                    </Grid>
-                    <Grid item xs={1}>
-                        <FormControl>
-                                <TextField
-                                    id="ending-num-selector"
-                                    type="number"
-                                    value={this.state.endingRackNumber}
-                                    onChange={this.changeEndingNum}
-                                    InputProps={{ inputProps: { min: 1} }}
-                                />
-                                <FormHelperText>Ending Number</FormHelperText>
-                        </FormControl>
+                    <Grid item xs={12}>
+                        <Button
+                            onClick={() => this.search()}
+                            variant="contained"
+                            color="primary"
+                            style={{
+                                width: "100%"
+                            }}
+                        >
+                            Search
+                        </Button>
                     </Grid>
                 </Grid>
+            </Paper>
             </React.Fragment>
         );
     }

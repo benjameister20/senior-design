@@ -16,6 +16,7 @@ class Constants:
     EMAIL_KEY = "email"
     DISPLAY_NAME_KEY = "display_name"
     PRIVILEGE_KEY = "privilege"
+    NETID_PASSWORD = "netid"
     TOKEN_KEY = "token"
 
     # Model Keys

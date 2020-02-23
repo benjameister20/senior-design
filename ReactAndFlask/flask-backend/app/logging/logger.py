@@ -111,12 +111,12 @@ class Logger:
     def __log_instance_request(self, action):
 
         if action == Logger.ACTIONS.INSTANCES.CREATE:
-            log_message = f"""CREATE Asset (Model Name: <<{Constants.MODEL_KEY}>>, Datacenter Name: <<{Constants.DC_NAME_KEY}>>, Hostname: <<{Constants.HOSTNAME_KEY}>>, Rack: <<{Constants.RACK_KEY}>>, Rack Position: <<{Constants.RACK_POSITION_KEY}>>, Owner: <<{Constants.OWNER_KEY}>>, Comment: <<{Constants.COMMENT_KEY}>>, Power Ports: <<{Constants.POWER_PORT_KEY}>>, Network Ports: <<{Constants.NETWORK_CONNECTIONS_KEY}>>, Asset Number: <<{Constants.ASSET_NUMBER_KEY}>>)"""
+            log_message = f"""CREATE Asset (Model Name: <<{Constants.MODEL_KEY}>>, Datacenter Name: <<{Constants.DC_NAME_KEY}>>, Hostname: <<{Constants.HOSTNAME_KEY}>>, Rack: <<{Constants.RACK_KEY}>>, Rack Position: <<{Constants.RACK_POSITION_KEY}>>, Owner: <<{Constants.OWNER_KEY}>>, Comment: <<{Constants.COMMENT_KEY}>>, Network Connections: <<{Constants.NETWORK_CONNECTIONS_KEY}>>, Power Connections: <<{Constants.POWER_CONNECTIONS_KEY}>>, Asset Number: <<{Constants.ASSET_NUMBER_KEY}>>)"""
             # log_syntax = """CREATE instance (
             #     <<model_name>>, <<email>>, <<display_name>>, <<privilege>>)"""
 
         if action == Logger.ACTIONS.INSTANCES.EDIT:
-            log_message = f"""EDIT Asset (Model Name: <<{Constants.MODEL_KEY}>>, Datacenter Name: <<{Constants.DC_NAME_KEY}>>, Hostname: <<{Constants.HOSTNAME_KEY}>>, Rack: <<{Constants.RACK_KEY}>>, Rack Position: <<{Constants.RACK_POSITION_KEY}>>, Owner: <<{Constants.OWNER_KEY}>>, Comment: <<{Constants.COMMENT_KEY}>>, Power Ports: <<{Constants.POWER_PORT_KEY}>>, Network Ports: <<{Constants.NETWORK_CONNECTIONS_KEY}>>, Asset Number: <<{Constants.ASSET_NUMBER_KEY}>>)"""
+            log_message = f"""EDIT Asset (Model Name: <<{Constants.MODEL_KEY}>>, Datacenter Name: <<{Constants.DC_NAME_KEY}>>, Hostname: <<{Constants.HOSTNAME_KEY}>>, Rack: <<{Constants.RACK_KEY}>>, Rack Position: <<{Constants.RACK_POSITION_KEY}>>, Owner: <<{Constants.OWNER_KEY}>>, Comment: <<{Constants.COMMENT_KEY}>>, Network Connections: <<{Constants.NETWORK_CONNECTIONS_KEY}>>, Power Connections: <<{Constants.POWER_CONNECTIONS_KEY}>>, Asset Number: <<{Constants.ASSET_NUMBER_KEY}>>)"""
             # log_syntax = "EDIT instance (<<old_username>>) to (<<username>>, <<email>>, <<display_name>>, <<privilege>>)"
 
         if action == Logger.ACTIONS.INSTANCES.DELETE:

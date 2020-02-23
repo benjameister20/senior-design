@@ -1,5 +1,6 @@
 import re
 
+from app.constants import Constants
 from app.dal.user_table import UserTable
 from app.data_models.user import User
 from app.exceptions.UserExceptions import (
@@ -147,7 +148,7 @@ class Validator:
     def validate_edit_user(self, user: User, original_username: str):
         old_user = self.validate_existing_username(original_username)
 
-        if old_user.password == "netid":
+        if old_user.password.decode("utf-8") == Constants.NETID_PASSWORD:
             raise UserException("Cannot edit NetID user")
 
         if old_user == user:
@@ -171,7 +172,7 @@ class Validator:
 
     def validate_delete_user(self, user: User):
 
-        if user.password == "netid":
+        if user.password.decode("utf-8") == Constants.NETID_PASSWORD:
             raise UserException("Cannot delete NetID user")
 
         if user is None:

@@ -104,6 +104,7 @@ class UserManager:
         response = {}
 
         request_data = request.get_json()
+        print(request_data)
         try:
             username = request_data.get(Constants.USERNAME_KEY)
             password = request_data.get(Constants.PASSWORD_KEY)
@@ -168,10 +169,10 @@ class UserManager:
         request_data = request.get_json()
 
         username_original = request_data.get(Constants.ORIGINAL_USERNAME_KEY)
-        # request_data.get("username")
-        # request_data.get("email")
-        # request_data.get("display_name")
-        # request_data.get("privilege")
+        request_data.get(Constants.USERNAME_KEY)
+        request_data.get(Constants.EMAIL_KEY)
+        request_data.get(Constants.DISPLAY_NAME_KEY)
+        request_data.get(Constants.PRIVILEGE_KEY)
 
         old_user = None
         try:
@@ -218,8 +219,10 @@ class UserManager:
         if user is None:
             raise NonexistantUserError(f"User '{username}' does not exist")
 
-        if user.password.decode("utf-8") == "netid":
-            raise UserException("Cannot authenticate as NetID user. Use shibboleth")
+        if user.password.decode("utf-8") == Constants.NETID_PASSWORD:
+            raise UserException(
+                "Please click 'SIGN IN WITH NETID' to log in as a NetID user"
+            )
 
         auth_success = self.AUTH_MANAGER.compare_pw(attempted_password, user.password)
         if not auth_success:
@@ -250,7 +253,7 @@ class UserManager:
         response = {}
 
         request_data = request.get_json()
-        username = request_data.get("username")
+        username = request_data.get(Constants.USERNAME_KEY)
         if username is None:
             raise InvalidUsernameError("Please provide a username")
 
@@ -271,7 +274,7 @@ class UserManager:
         email = request_data.get(Constants.EMAIL_KEY)
         display_name = request_data.get(Constants.DISPLAY_NAME_KEY)
         privilege = "admin"
-        password = b"netid"
+        password = Constants.NETID_PASSWORD.encode("utf-8")
 
         client_id = request_data.get("client_id")
         token = request_data.get(Constants.TOKEN_KEY)
@@ -306,7 +309,7 @@ class UserManager:
 
         response[Constants.TOKEN_KEY] = self.AUTH_MANAGER.encode_auth_token(username)
         response[Constants.PRIVILEGE_KEY] = privilege
-        response[Constants.MESSAGE_KEY] = "Successful oauth"
+        response[Constants.MESSAGE_KEY] = "success"
         response[Constants.USERNAME_KEY] = username
 
         # print("RESPONSE")

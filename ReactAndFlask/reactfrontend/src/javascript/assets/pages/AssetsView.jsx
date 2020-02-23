@@ -21,8 +21,8 @@ export default class AssetsView extends React.Component {
         };
     }
 
-    componentDidMount() {
-
+    componentDidUpdate() {
+        console.log("updated");
     }
 
     render() {
@@ -37,7 +37,7 @@ export default class AssetsView extends React.Component {
                     />
                     <Grid container spacing={3}>
                         <Grid item xs={3}>
-                            {(this.props.privilege === Privilege.ADMIN) ? <CreateAsset search={this.search} />:null}
+                            {(this.props.privilege === Privilege.ADMIN) ? <CreateAsset />:null}
                         </Grid>
                         <Grid item xs={6}>
                             {(this.props.privilege === Privilege.ADMIN) ? <ImpExpAsset downloadTable={this.downloadTable} />:null}

@@ -8,14 +8,14 @@ import FilterUser from '../helpers/FilterUser';
 import DetailUser from '../helpers/DetailUser';
 import CreateUser from '../helpers/CreateUser';
 
-import UploadModal from '../../helpers/UploadModal';
 import getURL from '../../helpers/functions/GetURL';
-import TableView from '../../helpers/TableView';
+import UsersTable from '../helpers/UsersTable';
 import StatusDisplay from '../../helpers/StatusDisplay';
 
 import { Privilege } from '../../enums/privilegeTypes.ts'
 
-import ErrorBoundray from '../../errors/ErrorBoundry';
+import { Typography } from '@material-ui/core';
+import Grid from '@material-ui/core/Grid';
 import * as UserConstants from "../UserConstants";
 
 const inputs = [
@@ -27,11 +27,26 @@ const inputs = [
 ]
 
 const columns = [
-    'username',
-    'email',
-    'display_name',
-    'privilege',
+    'Username',
+    'Email',
+    'Display Name',
+    'Privilege',
 ]
+
+const adminColumns = [
+    'Actions',
+    'Username',
+    'Email',
+    'Display Name',
+    'Privilege'
+]
+
+const columnLookup = {
+    "username": "Username",
+    "email": "Email",
+    "display_name": "Display Name",
+    'privilege': 'Privilege'
+}
 
 const usersMainPath = 'users/';
 
@@ -117,9 +132,9 @@ export default class UsersView extends React.Component {
             ).then(response => {
                 if (response.data.message === 'success') {
                     this.setState({
-                        createStatusOpen: true,
-                        createStatusMessage: "Successfully created user",
-                        createStatusSeverity:"success",
+                        statusOPen: true,
+                        statusMessage: "Successfully created user",
+                        statusSeverity:"success",
                         createdUser : {
                             'username':'',
                             'password':'',
@@ -131,10 +146,10 @@ export default class UsersView extends React.Component {
                     });
                     this.searchUsers();
                 } else {
-                    this.setState({ createStatusOpen: true, createStatusMessage: response.data.message, createStatusSeverity:"error" })
+                    this.setState({ statusOpen: true, statusMessage: response.data.message, statusSeverity:"error" })
                 }
             }).catch(
-                this.setState({ createStatusOpen: true, createStatusMessage: UserConstants.GENERAL_USER_ERROR, createStatusSeverity:"error" })
+                this.setState({ statusOpen: true, statusMessage: UserConstants.GENERAL_USER_ERROR, statusSeverity:"error" })
             );
     }
 
@@ -218,13 +233,29 @@ export default class UsersView extends React.Component {
             getURL(usersMainPath, UserCommand.search),
             {
                 'filter':{
-                    'username':this.state.searchUsernm,
-                    'email':this.state.searchEml,
-                    'display_name':this.state.searchDspNm,
-                    'privilege':this.state.searchPriv,
+                    'username': this.state.searchUsernm,
+                    'email': this.state.searchEml,
+                    'display_name': this.state.searchDspNm,
+                    'privilege': this.state.searchPriv,
                 }
             }
-            ).then(response => this.setState({ items: (response.data['users']===null) ? [] : response.data['users'] }));
+            ).then(response => {
+                const models = response.data['users'] === undefined ? [] : response.data['users'];
+                var rows = [];
+                Object.values(models).forEach(model => {
+                    var row = {};
+                    Object.keys(model).forEach(key => {
+                        if (key in columnLookup) {
+                            row[columnLookup[key]] = model[key];
+                        } else {
+                            row[key] = model[key];
+                        }
+                    });
+                    rows.push(row);
+                });
+
+                this.setState({ items: rows });
+            });
 
         this.setState({ initialized: true})
     }
@@ -276,12 +307,16 @@ export default class UsersView extends React.Component {
     }
 
     updateUserCreator = (event) => {
-        this.state.createdUser[event.target.name] = event.target.value;
-        this.forceUpdate()
+        const newUser = this.state.createdUser;
+        newUser[event.target.name] = event.target.value;
+        this.setState({ createdUser: newUser });
+        this.forceUpdate();
     }
 
     updateUserEdited = (event) => {
-        this.state.detailedValues[event.target.name] = event.target.value;
+        const newDetails = this.state.detailedValues;
+        newDetails[event.target.name] = event.target.value;
+        this.setState({ detailedValues: newDetails });
         this.forceUpdate()
     }
 
@@ -300,64 +335,70 @@ export default class UsersView extends React.Component {
     render() {
         return (
             <div>
-                <ErrorBoundray>
                 <StatusDisplay
                     open={this.state.showStatus}
                     severity={this.state.statusSeverity}
                     closeStatus={this.closeShowStatus}
                     message={this.state.statusMessage}
                 />
-                {(this.props.privilege === Privilege.ADMIN) ?
-                    (<div>
-                <CreateUser
-                    statusOpen={this.state.createStatusOpen}
-                    statusSeverity={this.state.createStatusSeverity}
-                    statusClose={this.createStatusClose}
-                    statusMessage={this.state.createStatusMessage}
-
-                    showStatus={this.state.createStatus}
-                    showCreateModal={this.state.showCreateModal}
-                    closeCreateModal={this.closeCreateModal}
-                    createModel={this.createUser}
-                    updateModelCreator={this.updateUserCreator}
-                    inputs={inputs}
-                    options={[]}
-                    useAutocomplete={false}
-                />
-                <UploadModal
-                    showImportModal={this.state.showImportModal}
-                    closeImportModal={this.closeImportModal}
-                /></div>):null
-            }
-                <FilterUser
-                    updateSearchText={this.updateSearchText}
-                    search={this.search}
-                    filters={columns}
-                />
-                <TableView
-                    columns={columns}
-                    vals={this.state.items}
-                    keys={columns}
-                    showDetailedView={this.showDetailedView}
-                    filters={columns}
-                />
-                <DetailUser
-                    statusOpen={this.state.detailStatusOpen}
-                    statusSeverity={this.state.detailStatusSeverity}
-                    statusClose={this.detailStatusClose}
-                    statusMessage={this.state.detailStatusMessage}
-
-                    showDetailedView={this.state.showDetailedView}
-                    closeDetailedView={this.closeDetailedView}
-                    inputs={columns}
-                    updateModelEdited={this.updateUserEdited}
-                    defaultValues={this.state.detailedValues}
-                    loading={this.state.detailViewLoading}
-                    edit={this.editUser}
-                    delete={this.deleteUser}
-                    disabled={this.props.privilege===Privilege.USER}
-                />
-                </ErrorBoundray>
+                <Grid
+                    container
+                    spacing={5}
+                    direction="row"
+                    justify="flex-start"
+                    alignItems="center"
+                    style={{margin: "0px", maxWidth: "95vw"}}
+                >
+                    <Grid item xs={12}>
+                        <Typography variant="h4">
+                            Users
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={6} md={4} lg={3}>
+                        {(this.props.privilege === Privilege.ADMIN) ?
+                        (<div>
+                            <CreateUser
+                                showCreateModal={this.state.showCreateModal}
+                                closeCreateModal={this.closeCreateModal}
+                                createModel={this.createUser}
+                                updateModelCreator={this.updateUserCreator}
+                                inputs={inputs}
+                                options={[]}
+                                useAutocomplete={false}
+                            />
+                        </div>) : null}
+                    </Grid>
+                    <Grid item xs={12} sm={6} md={4} lg={3}>
+                        <FilterUser
+                            updateSearchText={this.updateSearchText}
+                            search={this.search}
+                            filters={columns}
+                        />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <UsersTable
+                            columns={this.props.privilege == Privilege.ADMIN ? adminColumns : columns}
+                            vals={this.state.items}
+                            keys={columns}
+                            privilege={this.props.privilege}
+                            showDetailedView={this.showDetailedView}
+                            filters={this.props.privilege == Privilege.ADMIN ? adminColumns : columns}
+                        />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <DetailUser
+                            showDetailedView={this.state.showDetailedView}
+                            closeDetailedView={this.closeDetailedView}
+                            inputs={columns}
+                            updateModelEdited={this.updateUserEdited}
+                            defaultValues={this.state.detailedValues}
+                            loading={this.state.detailViewLoading}
+                            edit={this.editUser}
+                            delete={this.deleteUser}
+                            disabled={this.props.privilege === Privilege.USER}
+                        />
+                    </Grid>
+                </Grid>
             </div>
         );
     }

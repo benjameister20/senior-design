@@ -107,24 +107,24 @@ class TableAsset extends React.Component {
   }
 
 	editAsset = () => {
-	let body = this.state.detailedValues.getAssetAsJSON();
-	body[AssetInput.RACK_ORIGINAL] = this.state.originalRack;
-	body[AssetInput.RACK_U_ORIGINAL] = this.state.originalrack_position;
-	axios.post(
-		getURL(AssetConstants.ASSETS_MAIN_PATH, AssetCommand.edit),body
-		).then(response => {
-			if (response.data.message === AssetConstants.SUCCESS_TOKEN) {
-				this.setState({
-					showStatus: true,
-					statusMessage: "Successfully edited asset",
-					statusSeverity:AssetConstants.SUCCESS_TOKEN,
-					detailedValues : null,
-					showDetailedView:false,
-				});
-			} else {
-				this.setState({ detailStatusOpen: true, detailStatusMessage: response.data.message, detailStatusSeverity:AssetConstants.ERROR_TOKEN })
-			}
-		});
+		let body = this.state.detailedValues.getAssetAsJSON();
+		body[AssetInput.RACK_ORIGINAL] = this.state.originalRack;
+		body[AssetInput.RACK_U_ORIGINAL] = this.state.originalrack_position;
+		axios.post(
+			getURL(AssetConstants.ASSETS_MAIN_PATH, AssetCommand.edit),body
+			).then(response => {
+				if (response.data.message === AssetConstants.SUCCESS_TOKEN) {
+					this.setState({
+						showStatus: true,
+						statusMessage: "Successfully edited asset",
+						statusSeverity:AssetConstants.SUCCESS_TOKEN,
+						detailedValues : null,
+						showDetailedView:false,
+					});
+				} else {
+					this.setState({ detailStatusOpen: true, detailStatusMessage: response.data.message, detailStatusSeverity:AssetConstants.ERROR_TOKEN })
+				}
+			});
 	}
 
 
@@ -233,7 +233,7 @@ class TableAsset extends React.Component {
 							<TableBody>
 
 
-								{stableSort(testRows, getComparator(this.state.order, this.state.orderBy))
+								{stableSort(this.state.tableItems, getComparator(this.state.order, this.state.orderBy))
 									//.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
 									.map((row, index) => {
 										const labelId = `enhanced-table-checkbox-${index}`;

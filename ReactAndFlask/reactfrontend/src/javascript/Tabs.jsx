@@ -15,7 +15,7 @@ import Container from '@material-ui/core/Container';
 import ModelsView from './models/pages/ModelsView';
 import UsersView from './users/pages/UsersView';
 import AssetsView from './assets/pages/AssetsView';
-import RacksView from './racks/pages/RacksView';
+import DatacenterManagerView from './racks/pages/DatacenterManagerView';
 import StatisticsView from './statistics/pages/StatisticsView';
 import LogsView from "./logs/pages/LogsView";
 
@@ -115,7 +115,7 @@ class TabViewer extends React.Component {
                     <Tab value={0} style={{flexGrow: 1,}} label="Models"> </Tab>
                     <Tab value={1} style={{flexGrow: 1,}} label="Assets" ></Tab>
                     {(this.props.privilege === Privilege.ADMIN) ? <Tab value={2} style={{flexGrow: 1,}} label="Users"></Tab> : null}
-                    <Tab value={3} style={{flexGrow: 1,}} label="Racks" />
+                    <Tab value={3} style={{flexGrow: 1,}} label="Datcenters" />
                     <Tab value={4} style={{flexGrow: 1,}} label="Statistics" />
                     <Tab value={5} style={{flexGrow: 1,}} label="Logs" />
             </Tabs>
@@ -153,7 +153,7 @@ class TabViewer extends React.Component {
                 id={`simple-tabpanel-0`}
                 aria-labelledby={`simple-tab-0`}
             >
-                <Container className={classes.tab} ><RacksView token={this.props.token} privilege={this.props.privilege} /></Container>
+                <Container className={classes.tab} ><DatacenterManagerView token={this.props.token} privilege={this.props.privilege} /></Container>
             </Typography>}
             {this.state.currentTabID !== 4 ? null :
             <Typography

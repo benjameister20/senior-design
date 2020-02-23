@@ -168,7 +168,7 @@ class CreateAsset extends React.Component {
                 "owner":createInputs(AssetInput.OWNER, "Owner", false, "A reference to an existing user on the system who owns this equipment"),
                 "comment":createInputs(AssetInput.COMMENT, "Comment", false, "Any additional information associated with this asset"),
                 "datacenter":createInputs(AssetInput.DATACENTER, "Datacenter", false, "A reference to an existing datacenter"),
-                "macAddress":createInputs(AssetInput.MAC_ADDRESS, "Mac Address", false, "A 6-byte hexadecimal string per network port shown canonically in lower case with colon delimiters (e.g., '00:1e:c9:ac:78:aa')"),
+                "macAddress":createInputs(AssetInput.MAC_ADDRESS, "Mac Address", false, "A 6-byte hexadecimal string per network port shown canonically in lower case with colon delimiters (e.g., '00:1e:c9:ac:78:aa').\nA hostname is required to enter in this value"),
                 "networkConnections":createInputs(AssetInput.NETWORK_CONNECTIONS, "Port Name", false, "For each network port, a reference to another network port on another piece of gear"),
                 "powerConnections":createInputs(AssetInput.POWER_CONNECTIONS, "Power Connections", false, "Choice of PDU port number (0 means not plugged in)"),
                 "assetNum":createInputs(AssetInput.ASSET_NUMBER, "Asset Number", false, "A six-digit serial number unique associated with an asset."),
@@ -306,17 +306,21 @@ class CreateAsset extends React.Component {
     updateModel = (event) => {
         var model = event.target.value;
 
-        const defaultNetworkPort = {
-            "mac_address":"",
-            "connection_hostname":"",
-            "connection_port":"",
+        if (model !== "") {
+            var ports = this.state.networkList[model];
+            var networkConns = {};
+            ports.map(port => {
+                var defaultNetworkPort = {
+                    "mac_address":"",
+                    "connection_hostname":"",
+                    "connection_port":"",
+                }
+                networkConns[port] = defaultNetworkPort;
+            });
+        } else {
+            var networkConns = {};
         }
 
-        var ports = this.state.networkList[model];
-        var networkConns = {};
-        ports.map(port => {
-            networkConns[port] = defaultNetworkPort;
-        })
 
         this.setState({ model: model, network_connections:networkConns }, () => { this.validateForm() });
     }
@@ -352,19 +356,8 @@ class CreateAsset extends React.Component {
 
     changeNetworkMacAddress = (event, port) => {
         var val = stringToMac(event.target.value);
-
-
         this.setState(prevState => {
             let network_connections = Object.assign({}, prevState.network_connections);
-            if (network_connections[port] === undefined) {
-                network_connections[port] = {
-                    "mac_address":val,
-                }
-            } else {
-                network_connections[port].mac_address = val;
-            }
-
-            network_connections[port] = (network_connections[port] === null) ? {} : network_connections[port];
             network_connections[port].mac_address = val;
             return { network_connections };
         }, () => { this.validateForm() });
@@ -521,7 +514,7 @@ class CreateAsset extends React.Component {
             availableConnections:false,
 
             canSubmit:false,
-        }, () => {this.getLists(); this.props.close(); });
+        }, () => {this.getLists(); this.props.getAssetList(); this.props.close(); });
     }
 
     statusClose = () => {
@@ -717,7 +710,7 @@ class CreateAsset extends React.Component {
                                                         onBlur={(event) => {this.changeNetworkHostname(event, networkPort)}}
                                                         variant="outlined"
                                                         fullWidth
-                                                        required={this.state.network_connections[networkPort].mac_address!==""}
+                                                        required={this.state.network_connections[networkPort].connection_port!==""}
                                                         disabled={this.state.hostname===""}
                                                         value={ (this.state.network_connections !== null && this.state.network_connections[networkPort]!==undefined) ? this.state.network_connections[networkPort].connection_hostname : "" }
                                                     />
@@ -739,7 +732,7 @@ class CreateAsset extends React.Component {
                                                         onBlur={(event) => {this.changeNetworkPort(event, networkPort)}}
                                                         variant="outlined"
                                                         fullWidth
-                                                        required={this.state.network_connections[networkPort].mac_address!==""}
+                                                        required={this.state.network_connections[networkPort].connection_hostname!==""}
                                                         disabled={this.state.hostname===""}
                                                         value={ (this.state.network_connections !== null && this.state.network_connections[networkPort]!==undefined) ? this.state.network_connections[networkPort].connection_port : "" }
                                                     />

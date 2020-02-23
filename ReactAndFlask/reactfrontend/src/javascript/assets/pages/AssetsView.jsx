@@ -6,11 +6,8 @@ import {
  } from '@material-ui/core/';
 
 import { Privilege } from '../../enums/privilegeTypes.ts'
-import ExportAsset from '../helpers/ExportAsset';
 import TableAsset from '../helpers/TableAssets';
 import ErrorBoundary from '../../errors/ErrorBoundry';
-import AddAsset from "../helpers/AddAsset";
-import FilterAsset from "../helpers/FilterAsset";
 
 export default class AssetsView extends React.Component {
     constructor(props) {
@@ -40,17 +37,10 @@ export default class AssetsView extends React.Component {
                                 Assets
                             </Typography>
                         </Grid>
-                        <Grid item xs={12} sm={6} md={4} lg={3}>
-                            {(this.props.privilege == Privilege.ADMIN) ? <AddAsset /> : null}
-                        </Grid>
-                        <Grid item xs={12} sm={6} md={6} lg={6}>
-                            <FilterAsset />
-                        </Grid>
-                        <Grid item xs={12} sm={6} md={4} lg={3}>
-                            {(this.props.privilege === Privilege.ADMIN) ? <ExportAsset downloadTable={this.downloadTable} />:null}
-                        </Grid>
                         <Grid item xs={12}>
-                            <TableAsset />
+                            <TableAsset
+                                privilege={this.props.privilege}
+                            />
                         </Grid>
                     </Grid>
                 </ErrorBoundary>

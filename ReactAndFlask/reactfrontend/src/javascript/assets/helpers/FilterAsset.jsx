@@ -3,130 +3,42 @@ import React from 'react';
 import axios from 'axios';
 
 import {
-    Autocomplete
-} from '@material-ui/lab/';
-import {
     Grid,
-    withStyles,
     FormHelperText,
     FormControl,
     Select,
     MenuItem,
     TextField,
-    CircularProgress,
     Paper,
     Typography,
     Button,
 } from '@material-ui/core/';
 
-import { AssetCommand } from '../enums/AssetCommands.ts'
-import getURL from '../../helpers/functions/GetURL';
-import * as AssetConstants from "../AssetConstants";
+
 import * as Constants from '../../Constants';
-
-const emptySearch = {
-    "filter": {
-            "vendor":null,
-            "model_number":null,
-            "height":null,
-            "model":null,
-            "hostname":null,
-            "rack":null,
-            "rack_position":null,
-            "username":null,
-            "display_name":null,
-            "email":null,
-            "privilege":null,
-            "model":null,
-            "hostname":null,
-            "starting_rack_letter":null,
-            "ending_rack_letter":null,
-            "starting_rack_number":null,
-            "ending_rack_number":null,
-            "rack":null,
-            "rack_position":null
-        },
-    "datacenter_name":"",
-}
-
-const searchPath = "search/";
-
-const useStyles = theme => ({
-    root: {
-      flexGrow: 1,
-    },
-    searchbar: {
-        minWidth: "200px",
-        flexGrow: 1,
-    }
-}
-);
 
 class FilterAsset extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
+            allAssets:[],
+            datacenter:"",
             model:"",
             hostname:"",
-            datacenter_id:"",
-            startingLetter:"",
-            endingLetter:"",
-            startingNum:null,
-            endingNum:null,
-
-            loadingModels:true,
-            loadingHostnames:true,
-            loadingDatacenters:true,
-
-            modelList:[],
-            datacenterList:[],
-            hostnamesList:[],
+            startingLetter:"A",
+            endingLetter:"Z",
+            startingNum:1,
+            endingNum:1000,
         };
     }
 
     componentDidMount() {
         this.search();
-        this.getModelList();
-        this.getDatacenterList();
-        this.getAssetList();
     }
 
-    getModelList = () => {
-        axios.post(
-            getURL(Constants.MODELS_MAIN_PATH, searchPath), emptySearch).then(
-            response => {
-                var models = response.data.models;
-                var modelNames = [];
-                models.map(model => {
-                    var modelKey = model.vendor + " " + model.model_number;
-                    modelNames.push(modelKey);
-                });
-                this.setState({ loadingModels: false, modelList: modelNames });
-            });
-    }
-
-    getDatacenterList = () => {
-        axios.get(
-            getURL(Constants.DATACENTERS_MAIN_PATH, "all/")).then(
-            response => {
-                var datacenters = [];
-                response.data.datacenters.map(datacenter => datacenters.push(datacenter.name));
-                this.setState({ loadingDatacenters: false, datacenterList: datacenters })
-            });
-    }
-
-    getAssetList = () => {
-        axios.post(
-            getURL(Constants.ASSETS_MAIN_PATH, searchPath),emptySearch).then(
-            response => {
-                var instances = response.data.instances;
-                var hostnames = [];
-                instances.map(instance => {
-                    hostnames.push(instance.asset_number);
-                })
-                this.setState({ loadingHostnames: false, hostnamesList: hostnames });
-            });
+    updateDatacenter = (event) => {
+        this.setState({ datacenter: event.target.value }, () => { this.search() });
     }
 
     updateModel = (event) => {
@@ -135,10 +47,6 @@ class FilterAsset extends React.Component {
 
     updateHostname = (event) => {
         this.setState({ hostname: event.target.value }, () => { this.search() });
-    }
-
-    updateDatacenter = (event) => {
-        this.setState({ datacenter_id: event.target.value }, () => { this.search() });
     }
 
     updateStartingLetter = (event) => {
@@ -157,31 +65,29 @@ class FilterAsset extends React.Component {
         this.setState({ endingNum: event.target.value }, () => { this.search() });
     }
 
-    getSearchJSON = () => {
-        return {
-            "datacenter_name":this.state.datacenter_id,
-            "filters": {
-                "model":this.state.model,
-                "hostname":this.state.hostname,
-                "starting_rack_letter":this.state.startingLetter,
-                "ending_rack_letter":this.state.endingLetter,
-                "starting_rack_number":this.state.startingNum,
-                "ending_rack_number":this.state.endingNum
-            }
-        }
+    componentDidUpdate() {
+
     }
 
     search = () => {
-        axios.post(
-            getURL(AssetConstants.ASSETS_MAIN_PATH, AssetCommand.search), emptySearch
-            ).then(response => {
-                //this.props.updateItems(response.data.instances);
-            });
+         var items = [];
+
+         this.props.allAssets.map(asset => {
+            if (
+                (asset.datacenter_name.includes(this.state.datacenter) || asset.datacenter_abbreviation.includes(this.state.datacenter))
+                && asset.model.includes(this.state.model)
+                && asset.hostname.includes(this.state.hostname)
+                && asset.rack >= this.state.startingLetter + "" + this.state.startingNum
+                && asset.rack <= this.state.endingLetter + "" + this.state.endingNum
+            ) {
+                items.push(asset);
+            }
+         });
+
+         this.props.updateItems(items);
     }
 
     render() {
-        const { classes } = this.props;
-
         return (
             <React.Fragment>
                 <Paper elevation={3}>
@@ -194,35 +100,32 @@ class FilterAsset extends React.Component {
                     style={{"padding": "10px"}}
                 >
                     <Grid item xs={12}>
-                        <Typography variant="h5">Search</Typography>
+                        <Typography variant="h5">Filter</Typography>
                     </Grid>
                     <Grid item xs={12} sm={6} md={4} lg={3}>
                         <TextField
                             id="datacenter"
-                            variant="outlined"
                             label="Datacenter"
                             name="datacenter"
-                            onChange={() => { this.updateDatacenter() } }
+                            onChange={(event) => { this.updateDatacenter(event) } }
                             style={{width: "100%"}}
                         />
                     </Grid>
                     <Grid item xs={12} sm={6} md={4} lg={3}>
                         <TextField
                             id="model"
-                            variant="outlined"
                             label="Model"
                             name="model"
-                            onChange={() => { this.updateModel()} }
+                            onChange={(event) => { this.updateModel(event)} }
                             style={{width: "100%"}}
                         />
                     </Grid>
                     <Grid item xs={12} sm={6} md={4} lg={3}>
                         <TextField
                             id="hostname"
-                            variant="outlined"
                             label="Hostname"
                             name="hostname"
-                            onChange={() => this.updateHostname()}
+                            onChange={(event) => this.updateHostname(event)}
                             style={{width: "100%"}}
                         />
                     </Grid>
@@ -231,8 +134,8 @@ class FilterAsset extends React.Component {
                         <FormControl>
                             <Select
                                 id="starting-letter-selector"
-                                value={this.state.startingRackLetter}
-                                onChange={this.changeStartingLetter}
+                                value={this.state.startingLetter}
+                                onChange={this.updateStartingLetter}
                             >
                                 {Constants.RackX.map(val => (<MenuItem value={val}>{val}</MenuItem>))}
                             </Select>
@@ -243,8 +146,8 @@ class FilterAsset extends React.Component {
                         <FormControl>
                             <Select
                                 id="ending-letter-selector"
-                                value={this.state.endingRackLetter}
-                                onChange={this.changeEndingLetter}
+                                value={this.state.endingLetter}
+                                onChange={this.updateEndingLetter}
                             >
                                 {Constants.RackX.map(val => (<MenuItem value={val}>{val}</MenuItem>))}
                             </Select>
@@ -256,8 +159,8 @@ class FilterAsset extends React.Component {
                             <TextField
                                 id="starting-num-selector"
                                 type="number"
-                                value={this.state.startingRackNumber}
-                                onChange={this.changeStartingNum}
+                                value={this.state.startingNum}
+                                onChange={this.updateStartingNum}
                                 InputProps={{ inputProps: { min: 1} }}
                             />
                             <FormHelperText>Starting Number</FormHelperText>
@@ -268,24 +171,12 @@ class FilterAsset extends React.Component {
                             <TextField
                                 id="ending-num-selector"
                                 type="number"
-                                value={this.state.endingRackNumber}
-                                onChange={this.changeEndingNum}
+                                value={this.state.endingNum}
+                                onChange={this.updateEndingNum}
                                 InputProps={{ inputProps: { min: 1} }}
                             />
                             <FormHelperText>Ending Number</FormHelperText>
                         </FormControl>
-                    </Grid>
-                    <Grid item xs={12}>
-                        <Button
-                            onClick={() => this.search()}
-                            variant="contained"
-                            color="primary"
-                            style={{
-                                width: "100%"
-                            }}
-                        >
-                            Search
-                        </Button>
                     </Grid>
                 </Grid>
             </Paper>
@@ -294,4 +185,4 @@ class FilterAsset extends React.Component {
     }
 }
 
-export default withStyles(useStyles)(FilterAsset);
+export default FilterAsset;

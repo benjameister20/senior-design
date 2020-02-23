@@ -10,7 +10,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import { Button } from '@material-ui/core';
 import Paper from '@material-ui/core/Paper';
-import { withStyles, makeStyles } from '@material-ui/core/styles';
+import { withStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
 
@@ -23,6 +23,9 @@ import FilterAsset from './FilterAsset';
 import stableSort from "../../helpers/functions/StableSort";
 import getComparator from "../../helpers/functions/GetComparator";
 import { Privilege } from "../../enums/privilegeTypes.ts";
+import AddAsset from "./AddAsset";
+import ExportAsset from "./ExportAsset";
+import * as Constants from '../../Constants';
 
 
 const useStyles = theme => ({
@@ -58,6 +61,31 @@ const useStyles = theme => ({
 	  },
 });
 
+const emptySearch = {
+    "filter": {
+            "vendor":null,
+            "model_number":null,
+            "height":null,
+            "model":null,
+            "hostname":null,
+            "rack":null,
+            "rack_position":null,
+            "username":null,
+            "display_name":null,
+            "email":null,
+            "privilege":null,
+            "model":null,
+            "hostname":null,
+            "starting_rack_letter":null,
+            "ending_rack_letter":null,
+            "starting_rack_number":null,
+            "ending_rack_number":null,
+            "rack":null,
+            "rack_position":null
+        },
+    "datacenter_name":"",
+}
+
 function createData(model, hostname, datacenter, rack, rackU, owner, assetNum) {
   return { model, hostname, datacenter, rack, rackU, owner, assetNum };
 }
@@ -71,20 +99,13 @@ const headCells = [
 	{ id: 'assetNumber', numeric: false, label:"Asset Number", align:"right" },
 ];
 
-const testRows = [
-	createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-	createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-	createData('Eclair', 262, 16.0, 24, 6.0),
-	createData('Cupcake', 305, 3.7, 67, 4.3),
-	createData('Gingerbread', 356, 16.0, 49, 3.9),
-  ];
-
 
 class TableAsset extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
+		allAssets:[],
 	  tableItems:[],
 
 	  detailStatusOpen:false,
@@ -105,6 +126,12 @@ class TableAsset extends React.Component {
 	  orderBy:"datacenter",
     };
   }
+
+  	componentDidMount() {
+		axios.post(
+            getURL(Constants.ASSETS_MAIN_PATH, AssetCommand.search),emptySearch).then(
+            response => { this.setState({ allAssets: response.data.instances, tableItems:response.data.instances }); });
+	}
 
 	editAsset = () => {
 		let body = this.state.detailedValues.getAssetAsJSON();
@@ -182,8 +209,6 @@ class TableAsset extends React.Component {
 
 	updateItems = (assets) => {
 		var items = [];
-		console.log("assets");
-		console.log(assets);
 
 		assets.map(asset => {
 			items.push(createData(asset.model, asset.hostname, asset.datacenter_id, asset.rack, asset.rack_position, asset.owner, asset.asset_number));
@@ -192,17 +217,32 @@ class TableAsset extends React.Component {
 		this.setState({ tableItems : items });
 	}
 
+	getAssetList = () => {
+        axios.post(
+            getURL(Constants.ASSETS_MAIN_PATH, AssetCommand.search),emptySearch).then(
+            response => { this.setState({ allAssets: response.data.instances }); });
+    }
+
 	render() {
 	const { classes } = this.props;
 
 	return (
 		<React.Fragment>
 			<Grid container spacing={3}>
-				{/*<Grid item xs={6}>
+
+				<Grid item xs={12} sm={6} md={4} lg={3}>
+					{(this.props.privilege === Privilege.ADMIN) ? <AddAsset getAssetList={this.getAssetList} /> : null}
+				</Grid>
+				<Grid item xs={12} sm={6} md={4} lg={6}>
 					<FilterAsset
 						updateItems={this.updateItems}
+						getAssetList={this.getAssetList}
+						allAssets={this.state.allAssets}
 					/>
-	</Grid>*/}
+				</Grid>
+				<Grid item xs={12} sm={6} md={4} lg={3}>
+					{(this.props.privilege === Privilege.ADMIN) ? <ExportAsset downloadTable={this.downloadTable} />:null}
+				</Grid>
 				<Grid item xs={12}>
 					<TableContainer component={Paper}>
 						<Table className={classes.table} aria-label="customized table">

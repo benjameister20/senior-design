@@ -92,6 +92,7 @@ class AddAsset extends React.Component {
 				<CreateAsset
 					open={this.state.showCreate}
 					close={this.closeCreate}
+					getAssetList={this.props.getAssetList}
 				/>
 				<ImportAsset
 					open={this.state.showImport}

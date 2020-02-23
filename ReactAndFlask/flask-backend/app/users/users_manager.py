@@ -218,6 +218,9 @@ class UserManager:
         if user is None:
             raise NonexistantUserError(f"User '{username}' does not exist")
 
+        if user.password.decode("utf-8") == "netid":
+            raise UserException("Cannot authenticate as NetID user. Use shibboleth")
+
         auth_success = self.AUTH_MANAGER.compare_pw(attempted_password, user.password)
         if not auth_success:
             raise IncorrectPasswordError("Incorrect password")

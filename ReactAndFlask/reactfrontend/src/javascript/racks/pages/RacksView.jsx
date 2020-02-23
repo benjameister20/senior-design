@@ -49,25 +49,29 @@ class RacksView extends React.Component {
         super(props);
 
         this.state = {
-            items:[],
-            startingRackLetter:'A',
-            endingRackLetter:'A',
-            startingRackNumber:1,
-            endingRackNumber:1,
+            items: [],
+            firstRack: 'A1',
+            secondRack: 'A1',
 
-            showStatus:false,
-            statusMessage:'',
-            statusSeverity:'',
+            showStatus: false,
+            statusMessage: '',
+            statusSeverity: 'info',
 
-            showConfirmationBox:false,
+            showConfirmationBox: false,
 
-            racksList:[],
+            racksList: [],
         };
     }
 
     componentDidMount() {
         this.getAllRacks();
     }
+
+    handleFormat = (event, newFormats) => {
+        if (newFormats.length) {
+            this.setState({formats: newFormats});
+        }
+    };
 
     getAllRacks = () => {
         axios.get(getURL(racksMainPath, RackCommand.GET_ALL_RACKS)).then(response => {
@@ -90,7 +94,6 @@ class RacksView extends React.Component {
                 "datacenter_name": this.props.datacenter,
             }
             ).then(response => {
-                console.log(response);
                 if (response.data.message === 'success') {
                     this.setState({ showStatus: true, statusMessage: "Success", statusSeverity:"success", showConfirmationBox:false });
                     if (command === RackCommand.GET_RACK_DETAILS) {
@@ -117,24 +120,20 @@ class RacksView extends React.Component {
         this.updateRacks(RackCommand.GET_RACK_DETAILS);
     }
 
-    changeStartingLetter = (event) => {
-        this.setState({ startingRackLetter: event.target.value })
+    changeStartingRack = (event) => {
+        this.setState({ firstRack: event.target.value })
     }
 
-    changeEndingLetter = (event) => {
-        this.setState({ endingRackLetter: event.target.value })
-    }
-
-    changeStartingNum = (event) => {
-        this.setState({ startingRackNumber: event.target.value })
-    }
-
-    changeEndingNum = (event) => {
-        this.setState({ endingRackNumber: event.target.value })
+    changeEndingRack = (event) => {
+        this.setState({ secondRack: event.target.value })
     }
 
     closeShowStatus = () => {
         this.setState({ showStatus: false })
+    }
+
+    changeRackType = (type) => {
+        this.setState({ rackType: type})
     }
 
     closeConfirmationBox = () => {

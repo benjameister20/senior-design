@@ -156,19 +156,19 @@ class ModelsTable extends React.Component {
 }
 
   closeDetailedView = () => {
-      this.setState({ showDetailedView: false, row: null, color: "#000000" });
+      this.setState({ showDetailedView: false, row: null, color: "#000000", originalVendor: "", originalModelNumber: "", originalHeight: "" });
   }
 
-  showDeleteModal = () => {
-      this.setState({ showDeleteModal: true });
+  showDeleteModal = (row) => {
+      this.setState({ showDeleteModal: true, originalVendor: row["Vendor"], originalModelNumber: row["Model Number"] });
   }
 
   closeDeleteModal = () => {
-        this.setState({ showDeleteModal: false });
+        this.setState({ showDeleteModal: false, originalVendor: "", originalModelNumber: "", originalHeight: "" });
   }
 
   delete = () => {
-      this.props.deleteModel();
+      this.props.deleteModel(this.state.originalVendor, this.state.originalModelNumber);
       this.closeDeleteModal();
   }
 
@@ -239,7 +239,7 @@ class ModelsTable extends React.Component {
                         <EditIcon onClick={() => this.showDetailedView(row)} />
                       </Button>
                       <Button>
-                        <DeleteIcon onClick={this.showDeleteModal} />
+                        <DeleteIcon onClick={() => this.showDeleteModal(row)} />
                       </Button>
                   </TableCell> : null }
                 {this.props.keys.map(key => {

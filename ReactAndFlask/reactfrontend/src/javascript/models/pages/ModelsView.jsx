@@ -223,12 +223,13 @@ export default class ModelsView extends React.Component {
                 );
     }
 
-    deleteModel = () => {
+    deleteModel = (originalVendor, originalModelNumber) => {
+        console.log(originalVendor);
         axios.post(
             getURL(modelsMainPath, ModelCommand.delete),
             {
-                'vendor':this.state.originalVendor,
-                'model_number':this.state.originalModelNumber,
+                'vendor': originalVendor,
+                'model_number': originalModelNumber,
             }
             ).then(
                 response => {
@@ -237,19 +238,6 @@ export default class ModelsView extends React.Component {
                             showStatus: true,
                             statusSeverity:'success',
                             statusMessage: "Successfully deleted model",
-                            detailedValues : {
-                                'vendor':'',
-                                'model_number':'',
-                                'height':'',
-                                'display_color':'',
-                                'ethernet_ports':'',
-                                'power_ports':'',
-                                'cpu':'',
-                                'memory':'',
-                                'storage':'',
-                                'comment':'',
-                            },
-                            showDetailedView:false
                         });
                         this.getVendorList();
                         this.searchModels();

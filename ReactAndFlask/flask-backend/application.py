@@ -35,6 +35,7 @@ class FlaskApp(Flask):
         elif isinstance(rv, HTTPStatus):
             rv = jsonify({"status": rv}), rv
 
+        print(rv)
         return super().make_response(rv)
 
 

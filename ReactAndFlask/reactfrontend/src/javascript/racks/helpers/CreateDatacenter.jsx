@@ -56,7 +56,6 @@ class CreateDatacenter extends React.Component {
         axios.post(
             getURL(Constants.DATACENTERS_MAIN_PATH, DatacenterCommand.CREATE), this.generateCreateJSON()).then(
             response => {
-                console.log(response);
                 if (response.status === Constants.HTTPS_STATUS_OK) {
                     this.setState({
                         showCreate: false,

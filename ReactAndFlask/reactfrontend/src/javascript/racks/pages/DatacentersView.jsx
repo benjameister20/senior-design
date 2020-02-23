@@ -73,9 +73,19 @@ class DatacenterView extends React.Component {
     }
 
     deleteDatacenter = () => {
-        axios.get(getURL(Constants.DATACENTERS_MAIN_PATH, DatacenterCommand.GET_ALL_DATACENTERS)).then(
+        axios.post(getURL(Constants.DATACENTERS_MAIN_PATH, DatacenterCommand.DELETE),
+        {
+            "datacenter_name":this.state.currentDatacenter
+        }
+        ).then(
             response => {
-                this.setState({ datacentersList: response.data.datacenters, loadingDCList:false });
+                console.log("Deleteting");
+                console.log(response);
+                if (response.data.message === "success") {
+                    this.setState({ showConfirmationBox: false });
+                    this.getDatacenters();
+                }
+
             }
         );
     }
@@ -89,9 +99,6 @@ class DatacenterView extends React.Component {
     }
 
     openEditDatacenter= (event, datacenterName, datacenterAbbrev) => {
-        console.log("editing");
-        console.log(datacenterName);
-        console.log(datacenterAbbrev);
         this.setState({ editDCName: datacenterName, editDCAbbr: datacenterAbbrev }, () => this.setState({ showEditDC: true, }));
     }
 

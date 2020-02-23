@@ -12,7 +12,6 @@ import RacksView from "../../pages/RacksView";
 
 export default function ShowDatacenters(props) {
     try {
-        console.log(props);
         if (props.datacentersList.length == 0) {
             return <Typography>There are currently no datacenters being managed.</Typography>
         } else {
@@ -60,8 +59,6 @@ export default function ShowDatacenters(props) {
             );
         }
     } catch (exception) {
-        console.log("Error occured in displaying the datacneters. Stack trace for error below...");
-        console.log(exception);
         return <Typography>Could not load any datacenters at this time</Typography>
     }
 }

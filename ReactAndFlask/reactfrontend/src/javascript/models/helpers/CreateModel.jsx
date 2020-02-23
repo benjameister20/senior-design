@@ -319,6 +319,7 @@ class CreateModel extends React.Component {
                         open={this.state.showImportModal}
                     >
                         <div className={classes.grid}>
+                            {this.state.importedFile === null ?
                         <Grid
                             container
                             spacing={1}
@@ -338,7 +339,11 @@ class CreateModel extends React.Component {
                                 </Button>
                             </Grid>
                             <Grid item xs={12}>
-                                <Dropzone onDrop={acceptedFiles => console.log(acceptedFiles)}>
+                                <Dropzone onDrop={acceptedFiles => {
+                                        this.setState({ importedFile: acceptedFiles[0] });
+                                    }}
+                                    accept=".csv"
+                                >
                                     {({getRootProps, getInputProps}) => (
                                         <section>
                                         <div {...getRootProps()}>
@@ -385,7 +390,7 @@ class CreateModel extends React.Component {
                                     Choose File
                                 </Button>
                             </Grid>
-                        </Grid>
+                        </Grid> : null }
                 </div>
                 </Backdrop>
                 </Fade>

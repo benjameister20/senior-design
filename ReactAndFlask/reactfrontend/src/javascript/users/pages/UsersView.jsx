@@ -132,9 +132,9 @@ export default class UsersView extends React.Component {
             ).then(response => {
                 if (response.data.message === 'success') {
                     this.setState({
-                        createStatusOpen: true,
-                        createStatusMessage: "Successfully created user",
-                        createStatusSeverity:"success",
+                        statusOPen: true,
+                        statusMessage: "Successfully created user",
+                        statusSeverity:"success",
                         createdUser : {
                             'username':'',
                             'password':'',
@@ -146,10 +146,10 @@ export default class UsersView extends React.Component {
                     });
                     this.searchUsers();
                 } else {
-                    this.setState({ createStatusOpen: true, createStatusMessage: response.data.message, createStatusSeverity:"error" })
+                    this.setState({ statusOpen: true, statusMessage: response.data.message, statusSeverity:"error" })
                 }
             }).catch(
-                this.setState({ createStatusOpen: true, createStatusMessage: UserConstants.GENERAL_USER_ERROR, createStatusSeverity:"error" })
+                this.setState({ statusOpen: true, statusMessage: UserConstants.GENERAL_USER_ERROR, statusSeverity:"error" })
             );
     }
 

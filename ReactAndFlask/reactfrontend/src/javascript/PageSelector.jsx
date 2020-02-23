@@ -44,24 +44,26 @@ export default class PageSelector extends React.Component {
       privilege:privilege,
       loggedIn:true,
       username: username,
-    })
+	});
+
+	window.history.replaceState({}, "Hyposoft Asset Management", "/")
   }
 
   loginWithOAuth = (token, username, privilege) => {
 	sessionStorage.setItem(storedToken, token);
-    sessionStorage.setItem(storedPrivilege, privilege);
-    sessionStorage.setItem(storedLoggedIn, true);
+	sessionStorage.setItem(storedPrivilege, privilege);
+	sessionStorage.setItem(storedLoggedIn, true);
 	sessionStorage.setItem(storedUsername, username);
 
 	axios.defaults.headers.common['token'] = token;
-    axios.defaults.headers.common['privilege'] = privilege;
+	axios.defaults.headers.common['privilege'] = privilege;
 
-    this.setState({
-      token:token,
-      privilege:privilege,
-      loggedIn:true,
-      username: username,
-    }, () => { window.history.replaceState({}, "Hyposoft Asset Management", "/") });
+	this.setState({
+	token:token,
+	privilege:privilege,
+	loggedIn:true,
+	username: username,
+	}, () => { window.history.replaceState({}, "Hyposoft Asset Management", "/") });
 	//window.location.href = Constants.SHIB_REDIRECT_URI;
   }
 
@@ -80,7 +82,10 @@ export default class PageSelector extends React.Component {
     sessionStorage.removeItem(storedLoggedIn);
     sessionStorage.removeItem(storedUsername);
 
-    window.location = Constants.SHIB_REDIRECT_URI;
+	window.history.replaceState({}, "Hyposoft Asset Management", "/")
+	console.log(window.location.href);
+	console.log(Constants.SHIB_REDIRECT_URI);
+	//window.location = Constants.SHIB_REDIRECT_URI;
   }
 
   render() {

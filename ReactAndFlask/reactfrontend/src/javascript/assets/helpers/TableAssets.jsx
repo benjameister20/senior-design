@@ -180,8 +180,10 @@ class TableAsset extends React.Component {
 		this.setState({ detailAsset: assetNum, showDetailedView: true, detailHostname:hostname });
 	}
 
-	updateItems(assets) {
+	updateItems = (assets) => {
 		var items = [];
+		console.log("assets");
+		console.log(assets);
 
 		assets.map(asset => {
 			items.push(createData(asset.model, asset.hostname, asset.datacenter_id, asset.rack, asset.rack_position, asset.owner, asset.asset_number));

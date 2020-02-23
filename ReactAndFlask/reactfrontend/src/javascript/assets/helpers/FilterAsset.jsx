@@ -166,7 +166,7 @@ class FilterAsset extends React.Component {
 
     search = () => {
         axios.post(
-            getURL(AssetConstants.ASSETS_MAIN_PATH, AssetCommand.search), this.getSearchJSON()
+            getURL(AssetConstants.ASSETS_MAIN_PATH, AssetCommand.search), emptySearch
             ).then(response => {
                 this.props.updateItems(response.data.instances);
             });

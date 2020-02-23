@@ -5,9 +5,6 @@ import axios from 'axios';
 import TextField from "@material-ui/core/TextField";
 import Button from '@material-ui/core/Button';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import Modal from '@material-ui/core/Modal';
-import Backdrop from '@material-ui/core/Backdrop';
-import Fade from '@material-ui/core/Fade';
 import Tooltip from '@material-ui/core/Tooltip';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Grid from '@material-ui/core/Grid';
@@ -236,12 +233,9 @@ class CreateAsset extends React.Component {
     }
 
     getAssetList = () => {
-        console.log(emptySearch);
         axios.post(
             getURL(Constants.ASSETS_MAIN_PATH, searchPath),emptySearch).then(
             response => {
-                console.log("instances")
-                console.log(response);
                 var instances = response.data.instances;
 
                 var assetNums = [];
@@ -263,10 +257,10 @@ class CreateAsset extends React.Component {
         && json.rack_position !== -1
         && json.asset_number >= 100000 && json.asset_number <= 999999)
 
-        Object.entries(json.network_connections).map(([port, vals]) => {
-            var validConnection = (vals.connection_hostname !== undefined && vals.connection_port === undefined) || (vals.connection_hostname === undefined && vals.connection_port !== undefined);
-            valid = valid && validConnection;
-        });
+        // Object.entries(json.network_connections).map(([port, vals]) => {
+        //     var validConnection = (vals.connection_hostname !== undefined && vals.connection_port === undefined) || (vals.connection_hostname === undefined && vals.connection_port !== undefined);
+        //     valid = valid && validConnection;
+        // });
 
         return valid;
     }
@@ -299,8 +293,7 @@ class CreateAsset extends React.Component {
                             asset_number:-1,
                         }, () => { /*this.props.search()*/ });
                     } else {
-                        console.log(response);
-                        this.setState({ statusOpen: true, statusMessage: response.data.message, statusSeverity:AssetConstants.ERROR_TOKEN }, console.log(this.state.statusOpen));
+                        this.setState({ statusOpen: true, statusMessage: response.data.message, statusSeverity:AssetConstants.ERROR_TOKEN });
                     }
                 });
         }
@@ -308,7 +301,21 @@ class CreateAsset extends React.Component {
     }
 
     updateModel = (event) => {
-        this.setState({ model: event.target.value }, () => { this.validateForm() });
+        var model = event.target.value;
+
+        const defaultNetworkPort = {
+            "mac_address":"",
+            "connection_hostname":"",
+            "connection_port":"",
+        }
+
+        var ports = this.state.networkList[model];
+        var networkConns = {};
+        ports.map(port => {
+            networkConns[port] = defaultNetworkPort;
+        })
+
+        this.setState({ model: model, network_connections:networkConns }, () => { this.validateForm() });
     }
 
     updateHostname = (event) => {
@@ -346,8 +353,6 @@ class CreateAsset extends React.Component {
 
         this.setState(prevState => {
             let network_connections = Object.assign({}, prevState.network_connections);
-            console.log(network_connections);
-            console.log(network_connections[port]);
             if (network_connections[port] === undefined) {
                 network_connections[port] = {
                     "mac_address":val,
@@ -356,7 +361,6 @@ class CreateAsset extends React.Component {
                 network_connections[port].mac_address = val;
             }
 
-            console.log(network_connections[port]["mac_address"]);
             network_connections[port] = (network_connections[port] === null) ? {} : network_connections[port];
             network_connections[port].mac_address = val;
             return { network_connections };
@@ -368,7 +372,7 @@ class CreateAsset extends React.Component {
 
         this.setState(prevState => {
             let network_connections = Object.assign({}, prevState.network_connections);
-            network_connections[port] = (network_connections[port] === null) ? {} : network_connections[port];
+            network_connections[port] = (network_connections[port] === undefined) ? {} : network_connections[port];
             network_connections[port].connection_hostname = val;
             return { network_connections };
         }, () => { this.validateForm() });
@@ -439,7 +443,7 @@ class CreateAsset extends React.Component {
             "hostname":this.state.hostname,
             "rack":this.state.rack,
             "rack_position":this.state.rackU,
-            "owner":this.state.owner.split("/")[1],
+            "owner":this.state.owner.split("/")[0],
             "comment":this.state.comment,
             "datacenter_name":this.state.datacenter_name,
             "tags":this.state.tags,
@@ -458,7 +462,6 @@ class CreateAsset extends React.Component {
                 availableNetworks = true;
             }
         });
-        console.log(availableNetworks);
         this.setState({ availableConnections: availableNetworks });
     }
 
@@ -526,11 +529,6 @@ class CreateAsset extends React.Component {
         this.setState({ canSubmit:this.validJSON(this.createJSON()) });
     }
 
-    getNetworksDisabled = () => {
-        return !(this.state.networkList && this.state.networkList[this.state.model]) || (this.state.hostname==="");
-    }
-
-
     render() {
         const { classes } = this.props;
 
@@ -543,7 +541,7 @@ class CreateAsset extends React.Component {
             >
                 Create Asset
             </Button>
-            <Dialog fullScreen open={this.state.showModal} onClose={this.closeModal} TransitionComponent={Transition}>
+            <Dialog fullScreen open={this.state.showModal} onClose={this.closeModal} TransitionComponent={Transition} padding={3}>
                 <AppBar className={classes.appBar}>
                     <Toolbar>
                         <IconButton edge="start" color="inherit" onClick={this.closeModal} aria-label="close">
@@ -554,8 +552,6 @@ class CreateAsset extends React.Component {
                         </Typography>
                     </Toolbar>
                 </AppBar>
-                    <Fade in={this.state.showModal}>
-                    <div className={classes.paper}>
                     {(
                     (this.state.loadingAssetNumber
                     || this.state.loadingDatacenters
@@ -689,6 +685,7 @@ class CreateAsset extends React.Component {
                                 </Tooltip>
                             </Grid>
 
+                            {!(this.state.networkList && this.state.networkList[this.state.model]) ? null :
                             <Grid item xs={12}>
                                 {this.state.networkList[this.state.model].map(networkPort => (
                                 <Grid container spacing={3}>
@@ -704,7 +701,7 @@ class CreateAsset extends React.Component {
                                                 name={this.state.inputs.macAddress.name}
                                                 onChange={(event) => {this.changeNetworkMacAddress(event, networkPort)}}
                                                 fullWidth
-                                                disabled={this.getNetworksDisabled}
+                                                disabled={this.state.hostname===""}
                                                 value={ (this.state.network_connections !== null && this.state.network_connections[networkPort]!==undefined) ? this.state.network_connections[networkPort].mac_address : "" }
                                             />
                                         </Tooltip>
@@ -723,7 +720,8 @@ class CreateAsset extends React.Component {
                                                         onBlur={(event) => {this.changeNetworkHostname(event, networkPort)}}
                                                         variant="outlined"
                                                         fullWidth
-                                                        disabled={this.getNetworksDisabled}
+                                                        required={this.state.network_connections[networkPort].mac_address!==""}
+                                                        disabled={this.state.hostname===""}
                                                         value={ (this.state.network_connections !== null && this.state.network_connections[networkPort]!==undefined) ? this.state.network_connections[networkPort].connection_hostname : "" }
                                                     />
                                                 )}
@@ -744,7 +742,8 @@ class CreateAsset extends React.Component {
                                                         onBlur={(event) => {this.changeNetworkPort(event, networkPort)}}
                                                         variant="outlined"
                                                         fullWidth
-                                                        disabled={this.getNetworksDisabled}
+                                                        required={this.state.network_connections[networkPort].mac_address!==""}
+                                                        disabled={this.state.hostname===""}
                                                         value={ (this.state.network_connections !== null && this.state.network_connections[networkPort]!==undefined) ? this.state.network_connections[networkPort].connection_port : "" }
                                                     />
                                                 )}
@@ -753,7 +752,7 @@ class CreateAsset extends React.Component {
                                     </Grid>
                                 </Grid>
                                 ))}
-                            </Grid>
+                            </Grid>}
 
                             {(
                                 !(this.state.powerPortList
@@ -851,8 +850,6 @@ class CreateAsset extends React.Component {
                             closeStatus={this.statusClose}
                             message={this.statusMessage}
                         />
-                    </div>
-                    </Fade>
                 {/*</Modal>*/}
                 </Dialog>
         </span>

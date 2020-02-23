@@ -5,6 +5,7 @@ import time
 
 import bcrypt
 import jwt
+from app.constants import Constants
 from app.exceptions.UserExceptions import ExpiredTokenError, InvalidTokenError
 
 blacklist_file = "/token_blacklist.json"
@@ -103,7 +104,7 @@ class AuthManager:
     def validate_auth_token(self, headers):
 
         try:
-            auth_token = headers["token"]
+            auth_token = headers[Constants.TOKEN_KEY]
         except KeyError:
             return [False, "Please provide auth token"]
 

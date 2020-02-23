@@ -3,16 +3,21 @@ class Constants:
     API_SUCCESS = "success"
     COMMENT_KEY = "comment"
     RESULTS_KEY = "results"
+    MESSAGE_KEY = "message"
+    FILTER_KEY = "filter"
+    LIMIT_KEY = "limit"
 
     DATACENTER_KEY = "datacenter_id"
 
     # User Keys
-    OLD_USERNAME_KEY = "old_username"
+    ORIGINAL_USERNAME_KEY = "username_original"
     USERNAME_KEY = "username"
     PASSWORD_KEY = "password"
     EMAIL_KEY = "email"
     DISPLAY_NAME_KEY = "display_name"
     PRIVILEGE_KEY = "privilege"
+    NETID_PASSWORD = "netid"
+    TOKEN_KEY = "token"
 
     # Model Keys
     VENDOR_KEY = "vendor"

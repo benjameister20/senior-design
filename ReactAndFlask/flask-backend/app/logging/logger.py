@@ -82,7 +82,7 @@ class Logger:
             log_message = f"""CREATE User (Username: <<{Constants.USERNAME_KEY}>>, Email: <<{Constants.EMAIL_KEY}>>, Display Name: <<{Constants.DISPLAY_NAME_KEY}>>, Privilege: <<{Constants.PRIVILEGE_KEY}>>)"""
 
         if action == Logger.ACTIONS.USERS.EDIT:
-            log_message = f"""EDIT User (Username: <<{Constants.OLD_USERNAME_KEY}>>) becomes (Username: <<{Constants.USERNAME_KEY}>>, Email: <<{Constants.EMAIL_KEY}>>, Display Name: <<{Constants.DISPLAY_NAME_KEY}>>, Privilege: <<{Constants.PRIVILEGE_KEY}>>)"""
+            log_message = f"""EDIT User (Username: <<{Constants.ORIGINAL_USERNAME_KEY}>>) becomes (Username: <<{Constants.USERNAME_KEY}>>, Email: <<{Constants.EMAIL_KEY}>>, Display Name: <<{Constants.DISPLAY_NAME_KEY}>>, Privilege: <<{Constants.PRIVILEGE_KEY}>>)"""
             # log_syntax = "EDIT user (<<old_username>>) to (<<username>>, <<email>>, <<display_name>>, <<privilege>>)"
 
         if action == Logger.ACTIONS.USERS.DELETE:
@@ -108,12 +108,12 @@ class Logger:
     def __log_instance_request(self, action):
 
         if action == Logger.ACTIONS.INSTANCES.CREATE:
-            log_message = f"""CREATE Asset (Model Name: <<{Constants.MODEL_KEY}>>, Datacenter Name: <<{Constants.DC_NAME_KEY}>>, Hostname: <<{Constants.HOSTNAME_KEY}>>, Rack: <<{Constants.RACK_KEY}>>, Rack Position: <<{Constants.RACK_POSITION_KEY}>>, Owner: <<{Constants.OWNER_KEY}>>, Comment: <<{Constants.COMMENT_KEY}>>, MAC Address: <<{Constants.MAC_ADDRESS_KEY}>>, Asset Number: <<{Constants.ASSET_NUMBER_KEY}>>)"""
+            log_message = f"""CREATE Asset (Model Name: <<{Constants.MODEL_KEY}>>, Datacenter Name: <<{Constants.DC_NAME_KEY}>>, Hostname: <<{Constants.HOSTNAME_KEY}>>, Rack: <<{Constants.RACK_KEY}>>, Rack Position: <<{Constants.RACK_POSITION_KEY}>>, Owner: <<{Constants.OWNER_KEY}>>, Comment: <<{Constants.COMMENT_KEY}>>, Network Connections: <<{Constants.NETWORK_CONNECTIONS_KEY}>>, Power Connections: <<{Constants.POWER_CONNECTIONS_KEY}>>, Asset Number: <<{Constants.ASSET_NUMBER_KEY}>>)"""
             # log_syntax = """CREATE instance (
             #     <<model_name>>, <<email>>, <<display_name>>, <<privilege>>)"""
 
         if action == Logger.ACTIONS.INSTANCES.EDIT:
-            log_message = f"""EDIT Asset (Model Name: <<{Constants.MODEL_KEY}>>, Datacenter Name: <<{Constants.DC_NAME_KEY}>>, Hostname: <<{Constants.HOSTNAME_KEY}>>, Rack: <<{Constants.RACK_KEY}>>, Rack Position: <<{Constants.RACK_POSITION_KEY}>>, Owner: <<{Constants.OWNER_KEY}>>, Comment: <<{Constants.COMMENT_KEY}>>, MAC Address: <<{Constants.MAC_ADDRESS_KEY}>>, Asset Number: <<{Constants.ASSET_NUMBER_KEY}>>)"""
+            log_message = f"""EDIT Asset (Model Name: <<{Constants.MODEL_KEY}>>, Datacenter Name: <<{Constants.DC_NAME_KEY}>>, Hostname: <<{Constants.HOSTNAME_KEY}>>, Rack: <<{Constants.RACK_KEY}>>, Rack Position: <<{Constants.RACK_POSITION_KEY}>>, Owner: <<{Constants.OWNER_KEY}>>, Comment: <<{Constants.COMMENT_KEY}>>, Network Connections: <<{Constants.NETWORK_CONNECTIONS_KEY}>>, Power Connections: <<{Constants.POWER_CONNECTIONS_KEY}>>, Asset Number: <<{Constants.ASSET_NUMBER_KEY}>>)"""
             # log_syntax = "EDIT instance (<<old_username>>) to (<<username>>, <<email>>, <<display_name>>, <<privilege>>)"
 
         if action == Logger.ACTIONS.INSTANCES.DELETE:

@@ -115,6 +115,7 @@ class UserManager:
         response = {}
 
         request_data = request.get_json()
+        print(request_data)
         try:
             username = request_data.get(Constants.USERNAME_KEY)
             password = request_data.get(Constants.PASSWORD_KEY)

@@ -17,6 +17,12 @@ import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import FormHelperText from '@material-ui/core/FormHelperText';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import IconButton from '@material-ui/core/IconButton';
+import CloseIcon from '@material-ui/icons/Close';
+import Slide from '@material-ui/core/Slide';
+import Dialog from '@material-ui/core/Dialog';
 
 import StatusDisplay from '../../helpers/StatusDisplay';
 import { AssetInput } from '../enums/AssetInputs.ts';
@@ -73,7 +79,8 @@ const useStyles = theme => ({
         maxWidth: "80%",
         margin:"0 auto",
         minWidth:"70%",
-        overflow: "scroll"
+        maxHeight:"600px",
+        overflow:"scroll",
       },
       paper: {
         backgroundColor: theme.palette.background.paper,
@@ -87,7 +94,18 @@ const useStyles = theme => ({
           marginLeft: theme.spacing(2),
         },
       },
+      appBar: {
+        position: 'relative',
+      },
+      title: {
+        marginLeft: theme.spacing(2),
+        flex: 1,
+      },
 });
+
+const Transition = React.forwardRef(function Transition(props, ref) {
+    return <Slide direction="up" ref={ref} {...props} />;
+  });
 
 class CreateAsset extends React.Component {
     constructor(props) {
@@ -187,7 +205,7 @@ class CreateAsset extends React.Component {
                     powerPortNames[modelKey] = parseInt(model.power_ports);
                 });
 
-                this.setState({ loadingModels: false, modelList: modelNames, networkList: networkNames, powerPortList: powerPortNames }, this.availableNetworkConnections())
+                this.setState({ loadingModels: false, modelList: modelNames, networkList: networkNames, powerPortList: powerPortNames });
             });
     }
 
@@ -196,7 +214,7 @@ class CreateAsset extends React.Component {
             getURL(Constants.USERS_MAIN_PATH, searchPath), emptySearch).then(
             response => {
                 var users = [];
-                response.data.users.map(user => users.push(user.username));
+                response.data.users.map(user => users.push(user.username + "/" + user.display_name));
                 this.setState({ loadingOwners: false, ownerList: users });
             });
     }
@@ -421,7 +439,7 @@ class CreateAsset extends React.Component {
             "hostname":this.state.hostname,
             "rack":this.state.rack,
             "rack_position":this.state.rackU,
-            "owner":this.state.owner,
+            "owner":this.state.owner.split("/")[1],
             "comment":this.state.comment,
             "datacenter_name":this.state.datacenter_name,
             "tags":this.state.tags,
@@ -508,6 +526,10 @@ class CreateAsset extends React.Component {
         this.setState({ canSubmit:this.validJSON(this.createJSON()) });
     }
 
+    getNetworksDisabled = () => {
+        return !(this.state.networkList && this.state.networkList[this.state.model]) || (this.state.hostname==="");
+    }
+
 
     render() {
         const { classes } = this.props;
@@ -521,19 +543,17 @@ class CreateAsset extends React.Component {
             >
                 Create Asset
             </Button>
-            <Modal
-                    aria-labelledby="transition-modal-title"
-                    aria-describedby="transition-modal-description"
-                    className={classes.modal}
-                    open={this.state.showModal}
-                    onClose={this.closeModal}
-                    closeAfterTransition
-                    BackdropComponent={Backdrop}
-                    scroll="body"
-                    BackdropProps={{
-                        timeout: 500,
-                    }}
-                >
+            <Dialog fullScreen open={this.state.showModal} onClose={this.closeModal} TransitionComponent={Transition}>
+                <AppBar className={classes.appBar}>
+                    <Toolbar>
+                        <IconButton edge="start" color="inherit" onClick={this.closeModal} aria-label="close">
+                            <CloseIcon />
+                        </IconButton>
+                        <Typography variant="h6" className={classes.title}>
+                            Create Asset
+                        </Typography>
+                    </Toolbar>
+                </AppBar>
                     <Fade in={this.state.showModal}>
                     <div className={classes.paper}>
                     {(
@@ -670,13 +690,7 @@ class CreateAsset extends React.Component {
                             </Grid>
 
                             <Grid item xs={12}>
-                                {(
-                                    (!(this.state.networkList
-                                        && this.state.networkList[this.state.model])
-                                    || (this.state.hostname===""))
-                                    || !this.state.availableConnections
-                                ) ? null:
-                                this.state.networkList[this.state.model].map(networkPort => (
+                                {this.state.networkList[this.state.model].map(networkPort => (
                                 <Grid container spacing={3}>
                                     <Grid item xs={2}>
                                         <Typography>{networkPort + ": "}</Typography>
@@ -690,6 +704,7 @@ class CreateAsset extends React.Component {
                                                 name={this.state.inputs.macAddress.name}
                                                 onChange={(event) => {this.changeNetworkMacAddress(event, networkPort)}}
                                                 fullWidth
+                                                disabled={this.getNetworksDisabled}
                                                 value={ (this.state.network_connections !== null && this.state.network_connections[networkPort]!==undefined) ? this.state.network_connections[networkPort].mac_address : "" }
                                             />
                                         </Tooltip>
@@ -708,6 +723,7 @@ class CreateAsset extends React.Component {
                                                         onBlur={(event) => {this.changeNetworkHostname(event, networkPort)}}
                                                         variant="outlined"
                                                         fullWidth
+                                                        disabled={this.getNetworksDisabled}
                                                         value={ (this.state.network_connections !== null && this.state.network_connections[networkPort]!==undefined) ? this.state.network_connections[networkPort].connection_hostname : "" }
                                                     />
                                                 )}
@@ -728,6 +744,7 @@ class CreateAsset extends React.Component {
                                                         onBlur={(event) => {this.changeNetworkPort(event, networkPort)}}
                                                         variant="outlined"
                                                         fullWidth
+                                                        disabled={this.getNetworksDisabled}
                                                         value={ (this.state.network_connections !== null && this.state.network_connections[networkPort]!==undefined) ? this.state.network_connections[networkPort].connection_port : "" }
                                                     />
                                                 )}
@@ -836,7 +853,8 @@ class CreateAsset extends React.Component {
                         />
                     </div>
                     </Fade>
-                </Modal>
+                {/*</Modal>*/}
+                </Dialog>
         </span>
         );
     }

@@ -115,25 +115,6 @@ export default class ModelsView extends React.Component {
             // csv data
             csvData:'',
 
-            // detailed view
-            showDetailedView: false,
-            detailViewLoading:false,
-            detailedValues : {
-                'vendor':'',
-                'model_number':'',
-                'height':'',
-                'display_color':'',
-                'ethernet_ports':'',
-                'power_ports':'',
-                'cpu':'',
-                'memory':'',
-                'storage':'',
-                'comment':'',
-            },
-            originalVendor:'',
-            originalModelNumber:'',
-            originalHeight:'',
-
             statusOpen:false,
             statusSeverity:'',
             statusMessage:'',
@@ -205,23 +186,23 @@ export default class ModelsView extends React.Component {
                 );
     }
 
-    editModel = (networkPorts) => {
+    editModel = (originalVendor, originalModelNum, originalHeight, detailedValues, networkPorts) => {
         axios.post(
             getURL(modelsMainPath, ModelCommand.edit),
             {
-                'vendorOriginal':this.state.originalVendor,
-                'model_numberOriginal':this.state.originalModelNumber,
-                'heightOriginal':this.state.originalHeight,
-                'vendor':this.state.detailedValues[ModelInput.Vendor],
-                'model_number':this.state.detailedValues[ModelInput.model_number],
-                'height':this.state.detailedValues[ModelInput.Height],
-                'display_color':this.state.detailedValues[ModelInput.display_color],
+                'vendorOriginal': originalVendor,
+                'model_numberOriginal': originalModelNum,
+                'heightOriginal': originalHeight,
+                'vendor': detailedValues[ModelInput.Vendor],
+                'model_number': detailedValues[ModelInput.model_number],
+                'height': detailedValues[ModelInput.Height],
+                'display_color': detailedValues[ModelInput.display_color],
                 'ethernet_ports': networkPorts,
-                'power_ports':this.state.detailedValues[ModelInput.power_ports],
-                'cpu':this.state.detailedValues[ModelInput.CPU],
-                'memory':this.state.detailedValues[ModelInput.Memory],
-                'storage':this.state.detailedValues[ModelInput.Storage],
-                'comment':this.state.detailedValues[ModelInput.Comment],
+                'power_ports': detailedValues[ModelInput.power_ports],
+                'cpu': detailedValues[ModelInput.CPU],
+                'memory': detailedValues[ModelInput.Memory],
+                'storage': detailedValues[ModelInput.Storage],
+                'comment': detailedValues[ModelInput.Comment],
             }
             ).then(
                 response => {
@@ -230,21 +211,6 @@ export default class ModelsView extends React.Component {
                             showStatus: true,
                             statusSeverity:'success',
                             statusMessage: "Successfully edited model",
-                            originalVendor:'',
-                            originalModelNumber:'',
-                            originalHeight:'',
-                            detailedValues : {
-                                'vendor':'',
-                                'model_number':'',
-                                'height':'',
-                                'display_color':'',
-                                'ethernet_ports':'',
-                                'power_ports':'',
-                                'cpu':'',
-                                'memory':'',
-                                'storage':'',
-                                'comment':'',
-                            },
                             showDetailedView:false
                         });
                         this.getVendorList();
@@ -256,7 +222,6 @@ export default class ModelsView extends React.Component {
                     this.setState({ detailStatusOpen: true, detailStatusMessage: ModelConstants.GENERAL_MODEL_ERROR, detailStatusSeverity:"error" })
                 );
     }
-
 
     deleteModel = () => {
         axios.post(
@@ -408,18 +373,13 @@ export default class ModelsView extends React.Component {
         this.setState({showImportModal: true});
     }
 
-    showDetailedView = (id) => {
+    showDetailedView = (row) => {
         this.setState({
-            showDetailedView: true,
             detailViewLoading: true,
-
-            originalHeight: this.state.items[id]['height'],
-            originalModelNumber: this.state.items[id]['model_number'],
-            originalVendor: this.state.items[id]['vendor'],
          });
 
-        var vendor = this.state.items[id]['vendor'];
-        var modelNum = this.state.items[id]['model_number'];
+        var vendor = row['Vendor'];
+        var modelNum = row['Model Number'];
 
         this.detailViewModel(vendor, modelNum);
     }
@@ -449,11 +409,6 @@ export default class ModelsView extends React.Component {
     updateModelColorDetails = (color) => {
         this.state.detailedValues['display_color'] = color;
         this.forceUpdate();
-    }
-
-    updateModelEdited = (event) => {
-        this.state.detailedValues[event.target.name] = event.target.value;
-        this.forceUpdate()
     }
 
     updateSearchText = (event) => {
@@ -548,13 +503,12 @@ export default class ModelsView extends React.Component {
                             columns={this.props.privilege == Privilege.ADMIN ? adminColumns : columns}
                             vals={this.state.rows}
                             privilege={this.props.privilege}
+                            token={this.props.token}
                             keys={columns}
-                            showDetailedView={this.showDetailedView}
                             filters={this.props.privilege == Privilege.ADMIN ? adminColumns : columns}
-                            updateModelEdited={this.updateModelEdited}
                             updateModelColor={this.updateModelColorDetails}
-                            saveModel={this.editModel}
                             deleteModel={this.deleteModel}
+                            editModel={this.editModel}
                         />
                     </Grid>
                 </Grid>

@@ -43,6 +43,9 @@ class InstanceManager:
                 )
                 print(connect_result)
                 if connect_result != Constants.API_SUCCESS:
+                    self.table.delete_instance_by_asset_number(
+                        new_instance.asset_number
+                    )
                     return connect_result
             except:
                 raise InvalidInputsError("Unable to create instance")

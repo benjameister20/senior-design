@@ -2,6 +2,7 @@ import json
 import os
 
 import requests
+from app.constants import Constants
 from app.dal.user_table import UserTable
 from app.data_models.user import User
 from app.exceptions.InvalidInputsException import InvalidInputsError
@@ -16,16 +17,8 @@ from app.exceptions.UserExceptions import (
 from app.users.authentication import AuthManager
 from app.users.validator import Validator
 
-# self.AUTH_MANAGER = AuthManager()
-# self.VALIDATOR = Validator()
-# self.USER_TABLE = UserTable()
-
 blacklist_file = "/token_blacklist.json"
 dirname = os.path.dirname(__file__)
-# self.BLACKLIST = []
-# with open(dirname + blacklist_file, "r") as infile:
-#     contents = json.load(infile)
-#     self.BLACKLIST = contents.get("blacklist")
 
 
 class UserManager:
@@ -40,43 +33,42 @@ class UserManager:
 
     @staticmethod
     def __add_message_to_JSON(json, message) -> dict:
-        json["message"] = message
+        json[Constants.MESSAGE_KEY] = message
 
         return json
 
     @staticmethod
     def __make_user_from_json(json) -> User:
         return User(
-            username=json.get("username"),
-            display_name=json.get("display_name"),
-            email=json.get("email"),
-            password=json.get("password"),
-            privilege=json.get("privilege"),
+            username=json.get(Constants.USERNAME_KEY),
+            display_name=json.get(Constants.DISPLAY_NAME_KEY),
+            email=json.get(Constants.EMAIL_KEY),
+            password=json.get(Constants.PASSWORD_KEY),
+            privilege=json.get(Constants.PRIVILEGE_KEY),
         )
 
     @staticmethod
     def __match_oauth(request, response):
-        # print(request)
-        # print("RESPONSE")
-        # print(json.dumps(response, indent=4))
-        usernames_match = request.get("username") == response.get("netid")
-        display_names_match = request.get("display_name") == response.get("displayName")
-        emails_match = request.get("email") == response.get("mail")
+        usernames_match = request.get(Constants.USERNAME_KEY) == response.get("netid")
+        display_names_match = request.get(Constants.DISPLAY_NAME_KEY) == response.get(
+            "displayName"
+        )
+        emails_match = request.get(Constants.EMAIL_KEY) == response.get("mail")
 
         return usernames_match and display_names_match and emails_match
 
     def search(self, request):
         request_data = request.get_json()
-        filters = request_data.get("filter")
-        limit = filters.get("limit")
+        filters = request_data.get(Constants.FILTER_KEY)
+        limit = filters.get(Constants.LIMIT_KEY)
         if limit is None:
             limit = 1000
 
         users = self.USER_TABLE.search_users(
-            username=filters.get("username"),
-            display_name=filters.get("display_name"),
-            email=filters.get("email"),
-            privilege=filters.get("privilege"),
+            username=filters.get(Constants.USERNAME_KEY),
+            display_name=filters.get(Constants.DISPLAY_NAME_KEY),
+            email=filters.get(Constants.EMAIL_KEY),
+            privilege=filters.get(Constants.PRIVILEGE_KEY),
             limit=limit,
         )
 
@@ -113,11 +105,11 @@ class UserManager:
 
         request_data = request.get_json()
         try:
-            username = request_data.get("username")
-            password = request_data.get("password")
-            email = request_data.get("email")
-            display_name = request_data.get("display_name")
-            privilege = request_data.get("privilege")
+            username = request_data.get(Constants.USERNAME_KEY)
+            password = request_data.get(Constants.PASSWORD_KEY)
+            email = request_data.get(Constants.EMAIL_KEY)
+            display_name = request_data.get(Constants.DISPLAY_NAME_KEY)
+            privilege = request_data.get(Constants.PRIVILEGE_KEY)
         except:
             raise InvalidInputsError(
                 "Incorrectly formatted message. Application error on the frontend"
@@ -139,7 +131,7 @@ class UserManager:
         except:
             raise UserException("Could not create user")
 
-        return self.__add_message_to_JSON(response, "success")
+        return self.__add_message_to_JSON(response, "Successfully created user")
 
     def delete(self, request):
         """Route for deleting users
@@ -151,9 +143,7 @@ class UserManager:
         response = {}
 
         request_data = request.get_json()
-        print("request data")
-        print(request_data)
-        username = request_data["username"]
+        username = request_data.get(Constants.USERNAME_KEY)
 
         user = self.USER_TABLE.get_user(username)
 
@@ -169,20 +159,19 @@ class UserManager:
 
         self.USER_TABLE.delete_user(user)
 
-        return self.__add_message_to_JSON(response, "Success")
+        return self.__add_message_to_JSON(response, "Successfully deleted user")
 
     def edit(self, request):
 
         response = {}
 
         request_data = request.get_json()
-        print("request:")
-        print(request_data)
-        username_original = request_data.get("username_original")
-        request_data.get("username")
-        request_data.get("email")
-        request_data.get("display_name")
-        request_data.get("privilege")
+
+        username_original = request_data.get(Constants.ORIGINAL_USERNAME_KEY)
+        # request_data.get("username")
+        # request_data.get("email")
+        # request_data.get("display_name")
+        # request_data.get("privilege")
 
         old_user = None
         try:
@@ -213,7 +202,7 @@ class UserManager:
                 f"Success, Demotion to user privilege will take effect within the next {self.AUTH_MANAGER.TOKEN_EXP_DAYS} Days, {self.AUTH_MANAGER.TOKEN_EXP_HOURS} Hours, {self.AUTH_MANAGER.TOKEN_EXP_MINUTES} Minutes, and {self.AUTH_MANAGER.TOKEN_EXP_SECONDS} Seconds.",
             )
 
-        return self.__add_message_to_JSON(response, "Success")
+        return self.__add_message_to_JSON(response, "Successfully edited user")
 
     def authenticate(self, request):
         # TESTED AND FUNCTIONAL
@@ -222,8 +211,8 @@ class UserManager:
         answer = {}
 
         request_data = request.get_json()
-        username = request_data.get("username")
-        attempted_password = request_data.get("password")
+        username = request_data.get(Constants.USERNAME_KEY)
+        attempted_password = request_data.get(Constants.PASSWORD_KEY)
 
         user = self.USER_TABLE.get_user(username)
         if user is None:
@@ -233,10 +222,10 @@ class UserManager:
         if not auth_success:
             raise IncorrectPasswordError("Incorrect password")
 
-        answer["token"] = self.AUTH_MANAGER.encode_auth_token(username)
-        answer["privilege"] = user.privilege
+        answer[Constants.TOKEN_KEY] = self.AUTH_MANAGER.encode_auth_token(username)
+        answer[Constants.PRIVILEGE_KEY] = user.privilege
 
-        return self.__add_message_to_JSON(answer, "success")
+        return self.__add_message_to_JSON(answer, "Successfully authenticated")
 
     def logout(self, request):
         global dirname
@@ -244,7 +233,7 @@ class UserManager:
 
         response = {}
 
-        token = request.headers.get("token")
+        token = request.headers.get(Constants.TOKEN_KEY)
         self.BLACKLIST.append(token)
         # print(self.BLACKLIST)
 
@@ -275,14 +264,14 @@ class UserManager:
         response = {}
         request_data = request.json
 
-        username = request_data.get("username")
-        email = request_data.get("email")
-        display_name = request_data.get("display_name")
-        privilege = "user"
+        username = request_data.get(Constants.USERNAME_KEY)
+        email = request_data.get(Constants.EMAIL_KEY)
+        display_name = request_data.get(Constants.DISPLAY_NAME_KEY)
+        privilege = "admin"
         password = b"netid"
 
         client_id = request_data.get("client_id")
-        token = request_data.get("token")
+        token = request_data.get(Constants.TOKEN_KEY)
 
         headers = {"x-api-key": client_id, "Authorization": f"Bearer {token}"}
         duke_response = requests.get(
@@ -312,10 +301,10 @@ class UserManager:
 
         # TODO: FIgure out what to do when adding netID user overwrites existing user
 
-        response["token"] = self.AUTH_MANAGER.encode_auth_token(username)
-        response["privilege"] = privilege
-        response["message"] = "success"
-        response["username"] = username
+        response[Constants.TOKEN_KEY] = self.AUTH_MANAGER.encode_auth_token(username)
+        response[Constants.PRIVILEGE_KEY] = privilege
+        response[Constants.MESSAGE_KEY] = "Successful oauth"
+        response[Constants.USERNAME_KEY] = username
 
         # print("RESPONSE")
         # print(response)

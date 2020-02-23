@@ -26,7 +26,7 @@ def create()
 {
     "vendor": "VENDOR",
     "model_number": "MODEL_NUMBER",
-    "height": "HEIGHT"||HEIGHT,
+    "height": "HEIGHT" || HEIGHT,
     "display_color": "DISPLAY_COLOR",
     "ethernet_ports": [ETHERNET_PORTS],
     "power_ports": "POWER_PORTS",
@@ -39,7 +39,7 @@ def create()
 - Returns:
 ```language=json
 {
-    "message": "success" || "ERROR_MESSAGE"
+    "message": "success" || "ERROR_MESSAGE",
 }
 ```
 -----------------------------
@@ -54,11 +54,17 @@ def search()
 {
     "filter":
         {
-            "vendor":"VENDOR",
-            "model_number":"MODEL_NUMBER",
-            "height":"HEIGHT"
+            "vendor": "VENDOR",
+            "model_number": "MODEL_NUMBER",
+            "height": "HEIGHT" || HEIGHT,
+            "display_color": "DISPLAY_COLOR",
+            "ethernet_ports": [ETHERNET_PORTS],
+            "power_ports": "POWER_PORTS",
+            "cpu": "CPU",
+            "memory": "MEMORY",
+            "storage": "STORAGE"
         }
-    "limit":"OPTIONAL_LIMIT"||OPTIONAL_LIMIT
+    "limit": "OPTIONAL_LIMIT" || OPTIONAL_LIMIT
 }
 ```
 - Returns:
@@ -67,40 +73,40 @@ def search()
     "message":"success",
     "models": [
         {
-            "vendor":"VENDOR",
-            "model_number":"MODEL_NUMBER",
-            "height":"HEIGHT",
-            "display_color":"DISPLAY_COLOR",
-            "ethernet_ports":"ETHERNET_PORTS",
-            "power_ports":"POWER_PORTS",
-            "cpu":"CPU",
-            "memory":"MEMORY",
-            "storage":"STORAGE",
-            "comment":"COMMENT",
+            "vendor": "VENDOR",
+            "model_number": "MODEL_NUMBER",
+            "height": "HEIGHT",
+            "display_color": "DISPLAY_COLOR",
+            "ethernet_ports": [ETHERNET_PORTS],
+            "power_ports": "POWER_PORTS",
+            "cpu": "CPU",
+            "memory": "MEMORY",
+            "storage": "STORAGE",
+            "comment": "COMMENT",
         },
         {
-            "vendor":"VENDOR",
-            "model_number":"MODEL_NUMBER",
-            "height":"HEIGHT",
-            "display_color":"DISPLAY_COLOR",
-            "ethernet_ports":"ETHERNET_PORTS",
-            "power_ports":"POWER_PORTS",
-            "cpu":"CPU",
-            "memory":"MEMORY",
-            "storage":"STORAGE",
-            "comment":"COMMENT",
+            "vendor": "VENDOR",
+            "model_number": "MODEL_NUMBER",
+            "height": "HEIGHT",
+            "display_color": "DISPLAY_COLOR",
+            "ethernet_ports": [ETHERNET_PORTS],
+            "power_ports": "POWER_PORTS",
+            "cpu": "CPU",
+            "memory": "MEMORY",
+            "storage": "STORAGE",
+            "comment": "COMMENT",
         },
         {
-            "vendor":"VENDOR",
-            "model_number":"MODEL_NUMBER",
-            "height":"HEIGHT",
-            "display_color":"DISPLAY_COLOR",
-            "ethernet_ports":"ETHERNET_PORTS",
-            "power_ports":"POWER_PORTS",
-            "cpu":"CPU",
-            "memory":"MEMORY",
-            "storage":"STORAGE",
-            "comment":"COMMENT",
+            "vendor": "VENDOR",
+            "model_number": "MODEL_NUMBER",
+            "height": "HEIGHT",
+            "display_color": "DISPLAY_COLOR",
+            "ethernet_ports": [ETHERNET_PORTS],
+            "power_ports": "POWER_PORTS",
+            "cpu": "CPU",
+            "memory": "MEMORY",
+            "storage": "STORAGE",
+            "comment": "COMMENT",
         }
     ]
 }
@@ -115,14 +121,14 @@ def delete()
 - Arguments:
 ```language=json
 {
-    "vendor":"VENDOR",
-    "model_number":"MODEL_NUMBER"
+    "vendor": "VENDOR",
+    "model_number": "MODEL_NUMBER"
 }
 ```
 - Returns:
 ```language=json
 {
-    "message":"success"||"ERROR_MESSAGE",
+    "message": "success" || "ERROR_MESSAGE",
 }
 ```
 -----------------------------
@@ -135,25 +141,25 @@ def edit()
 - Arguments:
 ```language=json
 {
-    "vendorOriginal":"VENDOR_ORIGINAL",
-    "model_numberOriginal":"MODEL_NUMBER_ORIGINAL",
-    "heightOriginal":"HEIGHT_ORIGINAL",
-    "vendor":"VENDOR",
-    "model_number":"MODEL_NUMBER",
-    "height":"HEIGHT"||HEIGHT,
-    "display_color":"DISPLAY_COLOR",
-    "ethernet_ports":"ETHERNET_PORTS",
-    "power_ports":"POWER_PORTS",
-    "cpu":"CPU",
-    "memory":"MEMORY",
-    "storage":"STORAGE",
-    "comment":"COMMENT"
+    "vendorOriginal": "VENDOR_ORIGINAL",
+    "model_numberOriginal": "MODEL_NUMBER_ORIGINAL",
+    "heightOriginal": "HEIGHT_ORIGINAL",
+    "vendor": "VENDOR",
+    "model_number": "MODEL_NUMBER",
+    "height": "HEIGHT" || HEIGHT,
+    "display_color": "DISPLAY_COLOR",
+    "ethernet_ports": [ETHERNET_PORTS],
+    "power_ports": "POWER_PORTS",
+    "cpu": "CPU",
+    "memory": "MEMORY",
+    "storage": "STORAGE",
+    "comment": "COMMENT"
 }
 ```
 - Returns:
 ```language=json
 {
-    "message":"success"||"ERROR_MESSAGE",
+    "message": "success" || "ERROR_MESSAGE",
 }
 ```
 -----------------------------
@@ -166,26 +172,26 @@ def detail_view()
 - Arguments:
 ```language=json
 {
-    "vendor":"VENDOR",
-    "model_number":"MODEL_NUMBER"
+    "vendor": "VENDOR",
+    "model_number": "MODEL_NUMBER"
 }
 ```
 - Returns:
 ```language=json
 {
-    "message":"success"||"ERROR_MESSAGE",
+    "message": "success" || "ERROR_MESSAGE",
     "models":[
         {
-            "vendor":"VENDOR",
-            "model_number":"MODEL_NUMBER",
-            "height":"HEIGHT",
-            "display_color":"DISPLAY_COLOR",
-            "ethernet_ports":"ETHERNET_PORTS",
-            "power_ports":"POWER_PORTS",
-            "cpu":"CPU",
-            "memory":"MEMORY",
-            "storage":"STORAGE",
-            "comment":"COMMENT",
+            "vendor": "VENDOR",
+            "model_number": "MODEL_NUMBER",
+            "height": "HEIGHT",
+            "display_color": "DISPLAY_COLOR",
+            "ethernet_ports": [ETHERNET_PORTS],
+            "power_ports": "POWER_PORTS",
+            "cpu": "CPU",
+            "memory": "MEMORY",
+            "storage": "STORAGE",
+            "comment": "COMMENT",
         }
     ]
 }
@@ -201,7 +207,7 @@ def assisted_vendor_input()
 - Returns:
 ```language=json
 {
-    "message":null||"ERROR_MESSAGE",
+    "message": null || "ERROR_MESSAGE",
     "results":[
         "VENDOR_A",
         "VENDOR_B",

@@ -101,10 +101,20 @@ export default class Login extends React.Component {
                     "token":token,
                 }
                 ).then(response => {
+                    console.log("response:")
+                    console.log(response);
                     var valid = response.data['message'];
-                    if (valid === 'success') {
-                        this.setState({ message: '' });
-                        this.props.loginFunc(response.data['token'], this.state.username, response.data['privilege']);
+                    if (response.status === Constants.HTTPS_STATUS_OK) {
+                        this.setState({
+                            username:'',
+                            password:'',
+                            statusMessage:'',
+                            showStatus:false,
+                            statusSeverity:'info',
+                            initialized:false,
+                            oauth:false,
+                         });
+                        this.props.loginFuncOAuth(response.data['token'], response.data.username, response.data['privilege']);
                     } else {
                         this.setState({ showStatus:true, statusMessage:response.data['message'] });
                     }

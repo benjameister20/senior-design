@@ -276,7 +276,7 @@ class CreateAsset extends React.Component {
                             network_connections:[],
                             power_connections:[],
                             asset_number:-1,
-                        }, this.props.search());
+                        }, () => { /*this.props.search()*/ });
                     } else {
                         this.setState({ statusOpen: true, statusMessage: response.data.message, statusSeverity:AssetConstants.ERROR_TOKEN }, console.log(this.state.statusOpen));
                     }

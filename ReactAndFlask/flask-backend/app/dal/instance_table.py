@@ -20,8 +20,7 @@ class InstanceEntry(db.Model):
     owner = db.Column(db.String(80), nullable=True)
     comment = db.Column(db.String(80), nullable=True)
     datacenter_id = db.Column(db.Integer)
-    mac_addresses = db.Column(pg.ARRAY(db.String(50)), nullable=True)
-    network_connections = db.Column(pg.ARRAY(db.String(50)), nullable=True)
+    network_connections = db.Column(pg.JSON, nullable=True)
     power_connections = db.Column(pg.ARRAY(db.String(50)), nullable=True)
     asset_number = db.Column(db.Integer)
 
@@ -33,7 +32,6 @@ class InstanceEntry(db.Model):
         self.owner = instance.owner
         self.comment = instance.comment
         self.datacenter_id = instance.datacenter_id
-        self.mac_addresses = instance.mac_address
         self.network_connections = instance.network_connections
         self.power_connections = instance.power_connections
         self.asset_number = instance.asset_number
@@ -48,7 +46,6 @@ class InstanceEntry(db.Model):
             owner=self.owner,
             comment=self.comment,
             datacenter_id=self.datacenter_id,
-            mac_address=self.mac_addresses,
             network_connections=self.network_connections,
             power_connections=self.power_connections,
             asset_number=self.asset_number,
@@ -63,7 +60,6 @@ class InstanceEntry(db.Model):
             "owner": self.owner,
             "comment": self.comment,
             "datacenter_id": self.datacenter_id,
-            "mac_address": self.mac_addresses,
             "network_connections": self.network_connections,
             "power_connections": self.power_connections,
             "asset_number": self.asset_number,
@@ -145,7 +141,6 @@ class InstanceTable:
             old_entry.owner = instance.owner
             old_entry.comment = instance.comment
             old_entry.datacenter_id = instance.datacenter_id
-            old_entry.mac_addresses = instance.mac_address
             old_entry.network_connections = instance.network_connections
             old_entry.power_connections = instance.power_connections
             old_entry.asset_number = instance.asset_number

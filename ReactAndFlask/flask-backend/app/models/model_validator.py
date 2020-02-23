@@ -14,12 +14,15 @@ class ModelValidator:
         pattern = re.compile("[0-9]+")
         if pattern.fullmatch(str(model.height)) is None:
             return "The value for model height must be a positive integer."
-        # if (
-        #     model.ethernet_ports != ""
-        #     and model.ethernet_ports != None
-        #     and pattern.fullmatch(str(model.ethernet_ports)) is None
-        # ):
-        #     return "The value for ethernet ports must be a positive integer."
+
+        if model.ethernet_ports is not None:
+            port_pattern = re.compile("[a-zA-Z0-9]+")
+            for port_name in model.ethernet_ports:
+                if port_pattern.fullmatch(port_name) is None:
+                    return "Network port names must not have spaces and only contain letters and numbers"
+                if len(port_name) > 20:
+                    return "Netowrk port names must be shorter than 20 characters."
+
         if (
             model.power_ports != ""
             and model.power_ports != None
@@ -45,7 +48,20 @@ class ModelValidator:
 
         return self._validate(model=model)
 
-    def edit_model_validation(self, model: Model) -> str:
+    def edit_model_validation(
+        self, model: Model, original_vendor: str, original_model_number: str
+    ) -> str:
+        if not (
+            original_vendor == model.vendor
+            and original_model_number == model.model_number
+        ):
+            result = self.model_table.get_model_id_by_vendor_number(
+                model.vendor, model.model_number
+            )
+
+            if result is not None:
+                return "This vendor and model number combination already exists."
+
         return self._validate(model=model)
 
     def delete_model_validation(self, vendor, model_number):

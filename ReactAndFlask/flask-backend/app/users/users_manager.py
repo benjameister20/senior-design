@@ -1,6 +1,7 @@
 import json
 import os
 
+import requests
 from app.dal.user_table import UserTable
 from app.data_models.user import User
 from app.exceptions.InvalidInputsException import InvalidInputsError
@@ -52,6 +53,17 @@ class UserManager:
             password=json.get("password"),
             privilege=json.get("privilege"),
         )
+
+    @staticmethod
+    def __match_oauth(request, response):
+        # print(request)
+        # print("RESPONSE")
+        # print(json.dumps(response, indent=4))
+        usernames_match = request.get("username") == response.get("netid")
+        display_names_match = request.get("display_name") == response.get("displayName")
+        emails_match = request.get("email") == response.get("mail")
+
+        return usernames_match and display_names_match and emails_match
 
     def search(self, request):
         request_data = request.get_json()
@@ -118,24 +130,6 @@ class UserManager:
             raise UserException(e.message)
         except:
             raise UserException("Could not create user")
-        # try:
-        #     self.VALIDATOR.validate_privilege(privilege, username)
-        # except InvalidPrivilegeError as e:
-        #     raise e
-
-        # try:
-        #     self.VALIDATOR.validate_username(username)
-        # except (InvalidUsernameError, UsernameTakenError) as e:
-        #     return self.__add_message_to_JSON(response, e.message)
-
-        # if not self.VALIDATOR.validate_email(email):
-        #     return self.__add_message_to_JSON(response, "Invalid email address")
-
-        # if not self.VALIDATOR.validate_password(password):
-        #     return self.__add_message_to_JSON(
-        #         response,
-        #         "Password too weak. Passwords must contain uppercase and lowercase characters, numbers, special characters, and be 8 to 20 characters long",
-        #     )
 
         try:
             encrypted_password = self.AUTH_MANAGER.encrypt_pw(password)
@@ -162,14 +156,20 @@ class UserManager:
         username = request_data["username"]
 
         user = self.USER_TABLE.get_user(username)
-        if user is None:
+
+        try:
+            self.VALIDATOR.validate_delete_user(user)
+        except UserException as e:
+            return self.__add_message_to_JSON(response, e.message)
+        except Exception as e:
+            print(e)
             return self.__add_message_to_JSON(
-                response, f"User <{username}> does not exist"
+                response, f"User '{username}' does not exist"
             )
 
         self.USER_TABLE.delete_user(user)
 
-        return self.__add_message_to_JSON(response, "success")
+        return self.__add_message_to_JSON(response, "Success")
 
     def edit(self, request):
 
@@ -207,7 +207,13 @@ class UserManager:
         self.USER_TABLE.delete_user(old_user)
         self.USER_TABLE.add_user(updated_user)
 
-        return self.__add_message_to_JSON(response, "success")
+        if old_user.privilege == "admin" and updated_user.privilege != "admin":
+            return self.__add_message_to_JSON(
+                response,
+                f"Success, Demotion to user privilege will take effect within the next {self.AUTH_MANAGER.TOKEN_EXP_DAYS} Days, {self.AUTH_MANAGER.TOKEN_EXP_HOURS} Hours, {self.AUTH_MANAGER.TOKEN_EXP_MINUTES} Minutes, and {self.AUTH_MANAGER.TOKEN_EXP_SECONDS} Seconds.",
+            )
+
+        return self.__add_message_to_JSON(response, "Success")
 
     def authenticate(self, request):
         # TESTED AND FUNCTIONAL
@@ -258,8 +264,60 @@ class UserManager:
 
         user = self.USER_TABLE.get_user(username)
         if user is None:
-            raise NonexistantUserError(f"User <{username}> does not exist")
+            raise NonexistantUserError(f"User '{username}' does not exist")
 
         response["user"] = user.make_json()
+
+        return response
+
+    def oauth(self, request):
+
+        response = {}
+        request_data = request.json
+
+        username = request_data.get("username")
+        email = request_data.get("email")
+        display_name = request_data.get("display_name")
+        privilege = "user"
+        password = b"netid"
+
+        client_id = request_data.get("client_id")
+        token = request_data.get("token")
+
+        headers = {"x-api-key": client_id, "Authorization": f"Bearer {token}"}
+        duke_response = requests.get(
+            "https://api.colab.duke.edu/identity/v1/", headers=headers
+        )
+
+        data_matches = self.__match_oauth(request_data, duke_response.json())
+
+        if not data_matches:
+            raise UserException(f"Cannot confirm NetID user {username}")
+
+        user = User(username, display_name, email, password, privilege)
+
+        try:
+            self.VALIDATOR.validate_shibboleth_login(user)
+        except UserException as e:
+            raise UserException(e.message)
+        except Exception as e:
+            print(str(e))
+            raise UserException("Could not authorize shibboleth login")
+
+        existing_user = self.USER_TABLE.get_user(user.username)
+        if existing_user is None:
+            self.USER_TABLE.add_user(user)
+        else:
+            privilege = existing_user.privilege
+
+        # TODO: FIgure out what to do when adding netID user overwrites existing user
+
+        response["token"] = self.AUTH_MANAGER.encode_auth_token(username)
+        response["privilege"] = privilege
+        response["message"] = "success"
+        response["username"] = username
+
+        # print("RESPONSE")
+        # print(response)
 
         return response

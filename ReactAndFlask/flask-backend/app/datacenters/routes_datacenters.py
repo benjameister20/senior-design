@@ -2,7 +2,9 @@ from typing import List
 
 from app.datacenters.datacenter_manager import DatacenterManager
 from app.decorators.auth import requires_auth, requires_role
+from app.decorators.logs import log
 from app.exceptions.InvalidInputsException import InvalidInputsError
+from app.logging.logger import Logger
 from flask import Blueprint, request
 
 datacenters = Blueprint(
@@ -10,6 +12,7 @@ datacenters = Blueprint(
 )
 
 DATACENTER_MANAGER = DatacenterManager()
+LOGGER = Logger()
 
 
 @datacenters.route("/datacenters/test", methods=["GET"])
@@ -40,8 +43,10 @@ def list_all():
 @datacenters.route("/datacenters/create/", methods=["POST"])
 @requires_auth(request)
 @requires_role(request, "admin")
+@log(request, LOGGER.DATACENTERS, LOGGER.ACTIONS.DATACENTERS.CREATE)
 def create():
-    """ Route for creating datacenters """
+    """ Route for creating datacenters"""
+
     global DATACENTER_MANAGER
     returnJSON = createJSON()
 
@@ -57,8 +62,9 @@ def create():
 
 
 @datacenters.route("/datacenters/edit/", methods=["POST"])
-# @requires_auth(request)
-# @requires_role(request, "admin")
+@requires_auth(request)
+@requires_role(request, "admin")
+@log(request, LOGGER.DATACENTERS, LOGGER.ACTIONS.DATACENTERS.EDIT)
 def edit():
     """ Route for creating datacenters """
     global DATACENTER_MANAGER
@@ -78,6 +84,7 @@ def edit():
 @datacenters.route("/datacenters/delete/", methods=["POST"])
 @requires_auth(request)
 @requires_role(request, "admin")
+@log(request, LOGGER.DATACENTERS, LOGGER.ACTIONS.DATACENTERS.DELETE)
 def delete():
     """ Route for deleting datacenters """
     global DATACENTER_MANAGER

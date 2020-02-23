@@ -1,3 +1,5 @@
+# TODO: Fix whole log_syntax thing
+# TODO: Finish log messages for models and racks
 # TODO: Test logger
 # TODO: Add power and network connections for assets
 # TODO: Store messages as lists of strings to get newlines in messages in frontend

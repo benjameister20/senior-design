@@ -33,36 +33,39 @@ const useStyles = theme => ({
     },
   });
 
-class CreateDatacenter extends React.Component {
+class EditDatacenter extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            showCreate:false,
+            datacenterName:props.dcName,
+            datacenterAbbreviation:props.dcAbbrev,
+		};
 
-            datacenterName:"",
-            datacenterAbbreviation:"",
-        };
-    }
+	}
 
-    generateCreateJSON = () => {
+    generateEditJSON = () => {
+		console.log("generating edit")
+		console.log(this.props.dcName);
         return {
-            "abbreviation" : this.state.datacenterAbbreviation,
-            "datacenter_name": this.state.datacenterName
+			"nameOriginal": this.props.dcName,
+            "abbreviation" : this.state.datacenterAbbreviation||this.props.dcAbbrev,
+            "datacenter_name": this.state.datacenterName||this.props.dcName,
         }
     }
 
-    createDatacenter = () => {
+    editDatacenter = () => {
+		console.log("sending");
+		console.log(this.state.datacenterName);
         axios.post(
-            getURL(Constants.DATACENTERS_MAIN_PATH, DatacenterCommand.CREATE), this.generateCreateJSON()).then(
+            getURL(Constants.DATACENTERS_MAIN_PATH, DatacenterCommand.EDIT), this.generateEditJSON()).then(
             response => {
                 console.log(response);
                 if (response.status === Constants.HTTPS_STATUS_OK) {
                     this.setState({
-                        showCreate: false,
                         datacenterName:"",
                         datacenterAbbreviation:"",
-                    }, () => this.props.search());
+                    }, () => {this.props.search(); this.props.close() } );
                 } else {
                     this.setState({
                     })
@@ -84,38 +87,19 @@ class CreateDatacenter extends React.Component {
         }
 
         return val;
-    }
-
-    showCreate = () => {
-        this.setState({ showCreate: true });
-    }
-
-    closeCreate = () => {
-        this.setState({
-            showCreate: false,
-            datacenterName:"",
-            datacenterAbbreviation:"",
-         });
-    }
+	}
 
     render() {
         const { classes } = this.props;
 
         return (
             <React.Fragment>
-            <Button
-                variant="contained"
-                color="primary"
-                onClick={() => {this.showCreate()} }
-            >
-                Create New Datacenter
-            </Button>
             <Modal
                 aria-labelledby="transition-modal-title"
                 aria-describedby="transition-modal-description"
                 className={classes.modal}
-                open={this.state.showCreate}
-                onClose={this.closeCreate}
+                open={this.props.show}
+                onClose={this.props.close}
                 closeAfterTransition
                 BackdropComponent={Backdrop}
                 scroll="body"
@@ -123,7 +107,7 @@ class CreateDatacenter extends React.Component {
                     timeout: 500,
                 }}
             >
-                <Fade in={this.state.showCreate}>
+                <Fade in={this.props.show}>
                     <div className={classes.paper}>
                         <Grid container spacing={3}>
                             <Grid item xs={2}>
@@ -135,9 +119,10 @@ class CreateDatacenter extends React.Component {
                                     variant="outlined"
                                     label={"datacenter-name"}
                                     name={"datacenter-name"}
-                                    onChange={this.updateDatacenterName}
+									onChange={this.updateDatacenterName}
+									value={this.state.datacenterName||this.props.dcName}
                                     required
-                                    fullWidth
+									fullWidth
                                 />
                             </Grid>
                             <Grid item xs={2}>
@@ -151,22 +136,30 @@ class CreateDatacenter extends React.Component {
                                         label={"datacenter-abbreviation"}
                                         name={"datacenter-abbreviation"}
                                         onChange={this.updateDatacenterAbbrevation}
-                                        value={this.state.datacenterAbbreviation}
+										value={this.state.datacenterAbbreviation||this.props.dcAbbrev}
                                         required
-                                        fullWidth
+										fullWidth
                                     />
                                 </Tooltip>
                             </Grid>
                             <Grid item xs={12}>
-                            <Button
-                                variant="contained"
-                                color="primary"
-                                type="submit"
-                                disabled={!(this.state.datacenterAbbreviation && this.state.datacenterName)}
-                                onClick={() => { this.createDatacenter() }}
-                            >
-                                Create Datacenter
-                            </Button>
+								<Button
+									variant="contained"
+									color="primary"
+									type="submit"
+									onClick={() => { this.editDatacenter() }}
+								>
+									Save Edits
+								</Button>
+                            </Grid>
+							<Grid item xs={12}>
+								<Button
+									variant="contained"
+									color="primary"
+									onClick={this.props.close}
+								>
+									Cancel
+								</Button>
                             </Grid>
                         </Grid>
                     </div>
@@ -177,4 +170,4 @@ class CreateDatacenter extends React.Component {
     }
 }
 
-export default withStyles(useStyles)(CreateDatacenter);
+export default withStyles(useStyles)(EditDatacenter);

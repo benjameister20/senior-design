@@ -8,8 +8,6 @@ import Paper from '@material-ui/core/Paper';
 
 import ErrorBoundary from "../../errors/ErrorBoundry";
 import DatacenterView from "./DatacentersView";
-import CreateDatacenter from "../helpers/CreateDatacenter";
-import { Privilege } from '../../enums/privilegeTypes.ts';
 
 const useStyles = theme => ({
 
@@ -30,14 +28,7 @@ class DatacenterManagerView extends React.Component {
             <React.Fragment>
                 <ErrorBoundary>
                     <Paper>
-                        <Grid container spacing={1}>
-                            <Grid item xs={12}>
-                                {this.props.privilege === Privilege.ADMIN ? <CreateDatacenter /> : null }
-                            </Grid>
-                            <Grid item xs={12}>
-                                <DatacenterView privilege={this.props.privilege} />
-                            </Grid>
-                        </Grid>
+                        <DatacenterView privilege={this.props.privilege} />
                     </Paper>
                 </ErrorBoundary>
             </React.Fragment>

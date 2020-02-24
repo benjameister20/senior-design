@@ -122,10 +122,12 @@ def authenticate():
     except UserException as e:
         return add_message_to_JSON(response, e.message)
 
+    # print(response)
     return response
 
 
 @users.route("/users/oauth", methods=["POST"])
+@log(request, LOGGER.USERS, LOGGER.ACTIONS.USERS.OAUTH)
 def oauth():
 
     response = {}

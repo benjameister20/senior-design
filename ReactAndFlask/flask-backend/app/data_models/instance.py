@@ -1,5 +1,6 @@
 from typing import Any, Dict, List, Optional
 
+from app.constants import Constants
 from app.main.types import JSON
 
 
@@ -55,43 +56,43 @@ class Instance:
     @classmethod
     def headers(cls) -> List[str]:
         return [
-            "hostname",
-            "rack",
-            "rack_position",
-            "vendor",
-            "model_number",
-            "owner",
-            "comment",
+            Constants.HOSTNAME_KEY,
+            Constants.RACK_KEY,
+            Constants.RACK_POSITION_KEY,
+            Constants.VENDOR_KEY,
+            Constants.MODEL_NUMBER_KEY,
+            Constants.OWNER_KEY,
+            Constants.COMMENT_KEY,
         ]
 
     def make_json(self) -> JSON:
         return {
-            "model": self.model_id,
-            "hostname": self.hostname,
-            "rack": f"{self.rack_label}",
-            "rack_position": self.rack_position,
-            "owner": self.owner,
-            "comment": self.comment,
-            "datacenter_id": self.datacenter_id,
-            "network_connections": self.network_connections,
-            "power_connections": self.power_connections,
-            "asset_number": self.asset_number,
+            Constants.MODEL_KEY: self.model_id,
+            Constants.HOSTNAME_KEY: self.hostname,
+            Constants.RACK_KEY: f"{self.rack_label}",
+            Constants.RACK_POSITION_KEY: self.rack_position,
+            Constants.OWNER_KEY: self.owner,
+            Constants.COMMENT_KEY: self.comment,
+            Constants.DC_ID_KEY: self.datacenter_id,
+            Constants.NETWORK_CONNECTIONS_KEY: self.network_connections,
+            Constants.POWER_CONNECTIONS_KEY: self.power_connections,
+            Constants.ASSET_NUMBER_KEY: self.asset_number,
         }
 
     def make_json_with_model_and_datacenter(self, model, datacenter):
         return {
-            "model": f"{model.vendor} {model.model_number}",
-            "height": f"{model.height}",
-            "hostname": self.hostname,
-            "rack": f"{self.rack_label}",
-            "rack_position": self.rack_position,
-            "owner": self.owner,
-            "comment": self.comment,
-            "datacenter_name": datacenter.name,
-            "datacenter_abbreviation": datacenter.abbreviation,
-            "network_connections": self.network_connections,
-            "power_connections": self.power_connections,
-            "asset_number": self.asset_number,
+            Constants.MODEL_KEY: f"{model.vendor} {model.model_number}",
+            Constants.HEIGHT_KEY: f"{model.height}",
+            Constants.HOSTNAME_KEY: self.hostname,
+            Constants.RACK_KEY: f"{self.rack_label}",
+            Constants.RACK_POSITION_KEY: self.rack_position,
+            Constants.OWNER_KEY: self.owner,
+            Constants.COMMENT_KEY: self.comment,
+            Constants.DC_NAME_KEY: datacenter.name,
+            Constants.DC_ABRV_KEY: datacenter.abbreviation,
+            Constants.NETWORK_CONNECTIONS_KEY: self.network_connections,
+            Constants.POWER_CONNECTIONS_KEY: self.power_connections,
+            Constants.ASSET_NUMBER_KEY: self.asset_number,
         }
 
     @classmethod
@@ -101,16 +102,16 @@ class Instance:
                 csv_row[key] = ""
 
         return Instance(
-            model_id=csv_row["model_id"],
-            hostname=csv_row["hostname"],
-            rack_label=csv_row["rack"],
-            rack_position=csv_row["rack_position"],
-            owner=csv_row["owner"],
-            comment=csv_row["comment"],
-            datacenter_id=csv_row["datacenter_id"],
-            network_connections=csv_row["network_connections"],
-            power_connections=csv_row["power_connections"],
-            asset_number=csv_row["asset_number"],
+            model_id=csv_row[Constants.MODEL_ID_KEY],
+            hostname=csv_row[Constants.HOSTNAME_KEY],
+            rack_label=csv_row[Constants.RACK_KEY],
+            rack_position=csv_row[Constants.RACK_POSITION_KEY],
+            owner=csv_row[Constants.OWNER_KEY],
+            comment=csv_row[Constants.COMMENT_KEY],
+            datacenter_id=csv_row[Constants.DC_ID_KEY],
+            network_connections=csv_row[Constants.NETWORK_CONNECTIONS_KEY],
+            power_connections=csv_row[Constants.POWER_CONNECTIONS_KEY],
+            asset_number=csv_row[Constants.ASSET_NUMBER_KEY],
         )
 
     def _format_csv_entry(self, entry: str) -> str:
@@ -129,8 +130,8 @@ class Instance:
     def to_csv(self, vendor: str, model_number: str) -> str:
         """ Get the model as a csv row """
         json_data: JSON = self.make_json()
-        json_data["vendor"] = vendor
-        json_data["model_number"] = model_number
+        json_data[Constants.VENDOR_KEY] = vendor
+        json_data[Constants.MODEL_NUMBER_KEY] = model_number
 
         values: List[str] = list(
             map(

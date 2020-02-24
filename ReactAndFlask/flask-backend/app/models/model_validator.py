@@ -1,5 +1,6 @@
 import re
 
+from app.constants import Constants
 from app.dal.instance_table import InstanceTable
 from app.dal.model_table import ModelTable
 from app.data_models.model import Model
@@ -21,7 +22,7 @@ class ModelValidator:
                 if port_pattern.fullmatch(port_name) is None:
                     return "Network port names must not have spaces and only contain letters and numbers"
                 if len(port_name) > 20:
-                    return "Netowrk port names must be shorter than 20 characters."
+                    return "Network port names must be shorter than 20 characters."
 
         if (
             model.power_ports != ""
@@ -36,7 +37,7 @@ class ModelValidator:
         ):
             return "The value for memory must be a positive integer in terms of GB."
 
-        return "success"
+        return Constants.API_SUCCESS
 
     def create_model_validation(self, model: Model) -> str:
         result = self.model_table.get_model_id_by_vendor_number(
@@ -69,7 +70,7 @@ class ModelValidator:
         print("MODEL_ID")
         print(model_id)
         if self.instance_table.get_instances_by_model_id(model_id) is None:
-            return "success"
+            return Constants.API_SUCCESS
         else:
             result = "There are still existing instances for this model. "
             result += "Please delete them before deleting the model."

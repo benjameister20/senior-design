@@ -1,3 +1,4 @@
+from app.constants import Constants
 from app.main.types import JSON
 
 
@@ -17,6 +18,6 @@ class Datacenter:
 
     def make_json(self) -> JSON:
         return {
-            "abbreviation": self.abbreviation,
+            Constants.DC_ABRV_KEY: self.abbreviation,
             "name": self.name,
         }

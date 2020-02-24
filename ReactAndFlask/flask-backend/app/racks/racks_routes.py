@@ -112,15 +112,15 @@ def get_rack_details():
         )
 
         pdf_file: str = DiagramManager().generate_diagram(rack_details=racks)
-        return {"message": "success", "link": pdf_file}
+        return {Constants.MESSAGE_KEY: "success", "link": pdf_file}
     except KeyError:
-        return {"message": "Unable to retrieve rack data."}
+        return {Constants.MESSAGE_KEY: "Unable to retrieve rack data."}
     except InvalidRangeError:
         return {
-            "message": "Invalid range of racks to add. Please make sure you provide a valid rack range."
+            Constants.MESSAGE_KEY: "Invalid range of racks to add. Please make sure you provide a valid rack range."
         }
     except RackDoesNotExistError as e:
-        return {"message": e.message}
+        return {Constants.MESSAGE_KEY: e.message}
 
 
 @racks.route("/delete", methods=["POST"])
@@ -176,7 +176,7 @@ def createJSON() -> dict:
 
 
 def addMessageToJSON(json, message) -> dict:
-    json["message"] = message
+    json[Constants.MESSAGE_KEY] = message
     return json
 
 

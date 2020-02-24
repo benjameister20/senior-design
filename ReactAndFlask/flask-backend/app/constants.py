@@ -3,20 +3,27 @@ class Constants:
     API_SUCCESS = "success"
     COMMENT_KEY = "comment"
     RESULTS_KEY = "results"
+    MESSAGE_KEY = "message"
+    FILTER_KEY = "filter"
+    LIMIT_KEY = "limit"
+    LABEL_KEY = "label"
 
     DATACENTER_KEY = "datacenter_id"
 
     # User Keys
-    OLD_USERNAME_KEY = "old_username"
+    ORIGINAL_USERNAME_KEY = "username_original"
     USERNAME_KEY = "username"
     PASSWORD_KEY = "password"
     EMAIL_KEY = "email"
     DISPLAY_NAME_KEY = "display_name"
     PRIVILEGE_KEY = "privilege"
+    NETID_PASSWORD = "netid"
+    TOKEN_KEY = "token"
 
     # Model Keys
     VENDOR_KEY = "vendor"
     MODEL_NUMBER_KEY = "model_number"
+    MODEL_ID_KEY = "model_id"
     HEIGHT_KEY = "height"
     DISPLAY_COLOR_KEY = "display_color"
     ETHERNET_PORT_KEY = "ethernet_ports"
@@ -52,5 +59,6 @@ class Constants:
     # Datacenter Keys
     DC_ABRV_KEY = "abbreviation"
     DC_NAME_KEY = "datacenter_name"
+    DC_ID_KEY = "datacenter_id"
 
     NAME_ORIG_KEY = "nameOriginal"

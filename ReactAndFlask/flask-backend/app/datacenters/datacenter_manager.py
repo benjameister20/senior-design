@@ -34,7 +34,7 @@ class DatacenterManager:
                 )
             except InvalidInputsError as e:
                 return e.message
-            if create_validation_result == "success":
+            if create_validation_result == Constants.API_SUCCESS:
                 self.dc_table.add_datacenter(new_datacenter)
             else:
                 return InvalidInputsError(create_validation_result)
@@ -61,7 +61,7 @@ class DatacenterManager:
                 )
             except InvalidInputsError as e:
                 return e.message
-            if edit_validation_result == "success":
+            if edit_validation_result == Constants.API_SUCCESS:
                 print("Updating table")
                 self.dc_table.edit_datacenter(updated_datacenter, original_name)
             else:
@@ -83,7 +83,7 @@ class DatacenterManager:
                 delete_validation_result = self.validate.delete_dc_validation(dc_name)
             except InvalidInputsError as e:
                 return e.message
-            if delete_validation_result == "success":
+            if delete_validation_result == Constants.API_SUCCESS:
                 self.dc_table.delete_datacenter_by_name(dc_name)
             else:
                 return InvalidInputsError(delete_validation_result)

@@ -58,7 +58,7 @@ class InstanceValidator:
             instance.rack_label, instance.datacenter_id
         )
         if instance_list is None:
-            return "success"
+            return Constants.API_SUCCESS
 
         for current_instance in instance_list:
             model = self.model_table.get_model(instance.model_id)
@@ -130,7 +130,7 @@ class InstanceValidator:
             instance.rack_label, instance.datacenter_id
         )
         if instance_list is None:
-            return "success"
+            return Constants.API_SUCCESS
 
         for current_instance in instance_list:
             model = self.model_table.get_model(instance.model_id)

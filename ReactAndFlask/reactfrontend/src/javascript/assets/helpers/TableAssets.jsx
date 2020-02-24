@@ -10,7 +10,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import { Button } from '@material-ui/core';
 import Paper from '@material-ui/core/Paper';
-import { withStyles, makeStyles } from '@material-ui/core/styles';
+import { withStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
 
@@ -23,17 +23,15 @@ import FilterAsset from './FilterAsset';
 import stableSort from "../../helpers/functions/StableSort";
 import getComparator from "../../helpers/functions/GetComparator";
 import { Privilege } from "../../enums/privilegeTypes.ts";
+import AddAsset from "./AddAsset";
+import ExportAsset from "./ExportAsset";
+import * as Constants from '../../Constants';
 
 
 const useStyles = theme => ({
 	styledTableRow: {
-	'&:nth-of-type(odd)': {
-		backgroundColor: theme.palette.primary.light,
-	},
 	},
 	tableCellHead: {
-		backgroundColor: theme.palette.primary.light,
-		color: theme.palette.common.white,
 	},
 	styledTableCell:{
 		fontSize: 14,
@@ -58,26 +56,43 @@ const useStyles = theme => ({
 	  },
 });
 
-function createData(model, hostname, datacenter, rack, rackU, owner, assetNum) {
-  return { model, hostname, datacenter, rack, rackU, owner, assetNum };
+const emptySearch = {
+    "filter": {
+            "vendor":null,
+            "model_number":null,
+            "height":null,
+            "model":null,
+            "hostname":null,
+            "rack":null,
+            "rack_position":null,
+            "username":null,
+            "display_name":null,
+            "email":null,
+            "privilege":null,
+            "model":null,
+            "hostname":null,
+            "starting_rack_letter":null,
+            "ending_rack_letter":null,
+            "starting_rack_number":null,
+            "ending_rack_number":null,
+            "rack":null,
+            "rack_position":null
+        },
+    "datacenter_name":"",
+}
+
+function createData(model, hostname, datacenter_name, rack, owner, asset_number) {
+  return { model, hostname, datacenter_name, rack, owner, asset_number };
 }
 
 const headCells = [
-	{ id: 'datacenter', numeric: false, label:"Datacenter", align:"left" },
+	{ id: 'datacenter_name', numeric: false, label:"Datacenter", align:"left" },
 	{ id: 'hostname', numeric: false, label:"Hostname", align:"left" },
 	{ id: 'model', numeric: false, label:"Model", align:"left" },
-	{ id: 'rack', numeric: false, label:"Location", align:"left" },
+	{ id: 'rack', numeric: false, label:"Rack", align:"left" },
 	{ id: 'owner', numeric: false, label:"Owner", align:"left" },
-	{ id: 'assetNumber', numeric: false, label:"Asset Number", align:"right" },
+	{ id: 'asset_number', numeric: false, label:"Asset Number", align:"right" },
 ];
-
-const testRows = [
-	createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-	createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-	createData('Eclair', 262, 16.0, 24, 6.0),
-	createData('Cupcake', 305, 3.7, 67, 4.3),
-	createData('Gingerbread', 356, 16.0, 49, 3.9),
-  ];
 
 
 class TableAsset extends React.Component {
@@ -85,6 +100,7 @@ class TableAsset extends React.Component {
     super(props);
 
     this.state = {
+		allAssets:[],
 	  tableItems:[],
 
 	  detailStatusOpen:false,
@@ -105,6 +121,19 @@ class TableAsset extends React.Component {
 	  orderBy:"datacenter",
     };
   }
+
+  	componentDidMount() {
+		axios.post(
+            getURL(Constants.ASSETS_MAIN_PATH, AssetCommand.search),emptySearch).then(
+            response => {
+				var items = [];
+
+				response.data.instances.map(asset => {
+					items.push(createData(asset.model, asset.hostname, asset.datacenter_name, asset.rack+" U"+asset.rack_position, asset.owner, asset.asset_number));
+				});
+				this.setState({ allAssets: response.data.instances, tableItems:items });
+			});
+	}
 
 	editAsset = () => {
 		let body = this.state.detailedValues.getAssetAsJSON();
@@ -180,15 +209,21 @@ class TableAsset extends React.Component {
 		this.setState({ detailAsset: assetNum, showDetailedView: true, detailHostname:hostname });
 	}
 
-	updateItems(assets) {
+	updateItems = (assets) => {
 		var items = [];
 
 		assets.map(asset => {
-			items.push(createData(asset.model, asset.hostname, asset.datacenter_id, asset.rack, asset.rack_position, asset.owner, asset.asset_number));
+			items.push(createData(asset.model, asset.hostname, asset.datacenter_name, asset.rack+" U"+asset.rack_position, asset.owner, asset.asset_number));
 		});
 
 		this.setState({ tableItems : items });
 	}
+
+	getAssetList = () => {
+        axios.post(
+            getURL(Constants.ASSETS_MAIN_PATH, AssetCommand.search),emptySearch).then(
+            response => { this.setState({ allAssets: response.data.instances }); });
+    }
 
 	render() {
 	const { classes } = this.props;
@@ -196,10 +231,19 @@ class TableAsset extends React.Component {
 	return (
 		<React.Fragment>
 			<Grid container spacing={3}>
-				<Grid item xs={6}>
+
+				<Grid item xs={12} sm={6} md={4} lg={3}>
+					{(this.props.privilege === Privilege.ADMIN) ? <AddAsset getAssetList={this.getAssetList} /> : null}
+				</Grid>
+				<Grid item xs={12} sm={6} md={4} lg={6}>
 					<FilterAsset
 						updateItems={this.updateItems}
+						getAssetList={this.getAssetList}
+						allAssets={this.state.allAssets}
 					/>
+				</Grid>
+				<Grid item xs={12} sm={6} md={4} lg={3}>
+					{(this.props.privilege === Privilege.ADMIN) ? <ExportAsset downloadTable={this.downloadTable} />:null}
 				</Grid>
 				<Grid item xs={12}>
 					<TableContainer component={Paper}>
@@ -218,7 +262,7 @@ class TableAsset extends React.Component {
 										direction={this.state.orderBy === headCell.id ? this.state.order : 'asc'}
 										onClick={(event) => {this.createSortHandler(event, headCell.id)} }
 									>
-									{headCell.label}
+									<span style={{fontWeight: "bold"}}>{headCell.label}</span>
 									{this.state.orderBy === headCell.id ? (
 										<span className={classes.visuallyHidden}>
 											{this.state.order === 'desc' ? 'sorted descending' : 'sorted ascending'}
@@ -244,12 +288,12 @@ class TableAsset extends React.Component {
 												tabIndex={-1}
 												key={row.assetNum}
 											>
-												<TableCell component="th" id={labelId} scope="row">{row.model}</TableCell>
+												<TableCell component="th" id={labelId} scope="row">{row.datacenter_name}</TableCell>
 												<TableCell align="left">{row.hostname}</TableCell>
-												<TableCell align="left">{row.datacenter}</TableCell>
-												<TableCell align="left">{row.rack + " U" + row.rackU}</TableCell>
+												<TableCell align="left">{row.model}</TableCell>
+												<TableCell align="left">{row.rack}</TableCell>
 												<TableCell align="left">{row.owner}</TableCell>
-												<TableCell align="right">{row.assetNum}</TableCell>
+												<TableCell align="right">{row.asset_number}</TableCell>
 												<TableCell align="center">
 													<Button
 														color="primary"
@@ -262,11 +306,6 @@ class TableAsset extends React.Component {
 											</TableRow>
 										);
 									})}
-									{/*emptyRows > 0 && (
-										<TableRow style={{ height: (dense ? 33 : 53) * emptyRows }}>
-										<TableCell colSpan={6} />
-										</TableRow>
-									)*/}
 							</TableBody>
 						</Table>
 					</TableContainer>

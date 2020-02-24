@@ -23,7 +23,7 @@ class InstanceManager:
                 print(new_instance)
             except InvalidInputsError as e:
                 return e.message
-            create_validation_result = "success"
+            create_validation_result = Constants.API_SUCCESS
             print(create_validation_result)
             try:
                 create_validation_result = self.validate.create_instance_validation(
@@ -31,7 +31,7 @@ class InstanceManager:
                 )
             except InvalidInputsError as e:
                 return e.message
-            if create_validation_result == "success":
+            if create_validation_result == Constants.API_SUCCESS:
                 self.table.add_instance(new_instance)
             else:
                 return InvalidInputsError(create_validation_result)
@@ -81,7 +81,7 @@ class InstanceManager:
             )
         except InvalidInputsError as e:
             return e.message
-        if edit_validation_result == "success":
+        if edit_validation_result == Constants.API_SUCCESS:
             self.table.edit_instance(new_instance, original_asset_number)
         else:
             return InvalidInputsError(edit_validation_result)
@@ -90,7 +90,7 @@ class InstanceManager:
             return new_instance
 
     def get_instances(self, filter, dc_name, limit: int):
-        model_name = filter.get("model")
+        model_name = filter.get(Constants.MODEL_KEY)
 
         try:
             if model_name is not None and model_name != "":
@@ -114,9 +114,9 @@ class InstanceManager:
                 "An error occurred while trying to filter by datacenter name. Please input a different model name"
             )
 
-        hostname = filter.get("hostname")
-        rack_label = filter.get("rack")
-        rack_position = filter.get("rack_position")
+        hostname = filter.get(Constants.HOSTNAME_KEY)
+        rack_label = filter.get(Constants.RACK_KEY)
+        rack_position = filter.get(Constants.RACK_POSITION_KEY)
 
         try:
             instance_list = self.table.get_instances_with_filters(

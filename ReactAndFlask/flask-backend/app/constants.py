@@ -6,6 +6,7 @@ class Constants:
     MESSAGE_KEY = "message"
     FILTER_KEY = "filter"
     LIMIT_KEY = "limit"
+    LABEL_KEY = "label"
 
     DATACENTER_KEY = "datacenter_id"
 
@@ -22,6 +23,7 @@ class Constants:
     # Model Keys
     VENDOR_KEY = "vendor"
     MODEL_NUMBER_KEY = "model_number"
+    MODEL_ID_KEY = "model_id"
     HEIGHT_KEY = "height"
     DISPLAY_COLOR_KEY = "display_color"
     ETHERNET_PORT_KEY = "ethernet_ports"
@@ -57,5 +59,6 @@ class Constants:
     # Datacenter Keys
     DC_ABRV_KEY = "abbreviation"
     DC_NAME_KEY = "datacenter_name"
+    DC_ID_KEY = "datacenter_id"
 
     NAME_ORIG_KEY = "nameOriginal"

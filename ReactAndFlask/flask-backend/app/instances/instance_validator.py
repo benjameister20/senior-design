@@ -1,5 +1,6 @@
 import re
 
+from app.constants import Constants
 from app.dal.instance_table import InstanceTable
 from app.dal.model_table import ModelTable
 from app.dal.rack_table import RackTable
@@ -57,7 +58,7 @@ class InstanceValidator:
             instance.rack_label, instance.datacenter_id
         )
         if instance_list is None:
-            return "success"
+            return Constants.API_SUCCESS
 
         for current_instance in instance_list:
             model = self.model_table.get_model(instance.model_id)
@@ -73,7 +74,7 @@ class InstanceValidator:
             ):
                 return self.return_conflict(current_instance)
 
-        return "success"
+        return Constants.API_SUCCESS
 
     def edit_instance_validation(self, instance, original_asset_number):
         if (
@@ -123,7 +124,7 @@ class InstanceValidator:
             instance.rack_label, instance.datacenter_id
         )
         if instance_list is None:
-            return "success"
+            return Constants.API_SUCCESS
 
         for current_instance in instance_list:
             model = self.model_table.get_model(instance.model_id)
@@ -139,7 +140,7 @@ class InstanceValidator:
             ):
                 return self.return_conflict(current_instance)
 
-        return "success"
+        return Constants.API_SUCCESS
 
     def return_conflict(self, current_instance):
         result = f"The instance placement conflicts with instance with hostname {current_instance.hostname} "

@@ -1,3 +1,4 @@
+import json
 from typing import List
 
 from app.decorators.auth import requires_auth, requires_role
@@ -129,7 +130,7 @@ def edit():
 @requires_auth(request)
 def detail_view():
     """ Route for table view of instances """
-
+    print(json.dumps(request.json, indent=4))
     global INSTANCE_MANAGER
     global instancesArr
     returnJSON = createJSON()

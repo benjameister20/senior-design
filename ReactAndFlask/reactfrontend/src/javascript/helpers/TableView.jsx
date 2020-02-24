@@ -16,24 +16,26 @@ export default class TableView extends React.Component {
     };
   }
 
-  showDetailedView(event) {
-    this.props.showDetailedView(event.target.id);
+  showDetailedView(index) {
+    this.props.showDetailedView(index);
   }
 
   render() {
     return (
       <div>
         <TableContainer component={Paper}>
-          <Table className={{minWidth: 650}} aria-label="simple table">
+          <Table style={{minWidth: 1000}} aria-label="simple table">
             <TableHead>
               <TableRow >
-                {this.props.columns.map(col => (<TableCell><span id={col}>{col}</span></TableCell>))}
+                {this.props.columns.map(col => (<TableCell align="center"><span id={col} style={{fontWeight: "bold"}}>{col}</span></TableCell>))}
               </TableRow>
             </TableHead>
             <TableBody>
               {this.props.vals.map((row, index)=> (
-              <TableRow>
-                {this.props.keys.map(key => (<TableCell scope="row"><span id={index} onClick={this.showDetailedView.bind(this)}>{row[key]}</span></TableCell>))}
+              <TableRow id={index} onClick={() => this.showDetailedView(index)}>
+                {this.props.keys.map(key => {
+                  return (<TableCell scope="row" align="center">{row[key]}</TableCell>)
+                })}
               </TableRow>
               ))}
             </TableBody>

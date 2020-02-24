@@ -152,13 +152,13 @@ class Logger:
     def __log_datacenter_request(self, action):
 
         if action == Logger.ACTIONS.DATACENTERS.CREATE:
-            log_message = f"""CREATE Datacenter (Name: {Constants.DC_NAME_KEY}, Abbreviation: {Constants.DC_ABRV_KEY})"""
+            log_message = f"""CREATE Datacenter (Name: <<{Constants.DC_NAME_KEY}>>, Abbreviation: <<{Constants.DC_ABRV_KEY}>>)"""
 
         if action == Logger.ACTIONS.DATACENTERS.DELETE:
-            log_message = f"""DELETE Datacenter (Name: {Constants.DC_NAME_KEY}, Abbreviation: {Constants.DC_ABRV_KEY})"""
+            log_message = f"""DELETE Datacenter (Name: <<{Constants.DC_NAME_KEY}>>, Abbreviation: <<{Constants.DC_ABRV_KEY}>>)"""
 
         if action == Logger.ACTIONS.DATACENTERS.EDIT:
-            log_message = f"""EDIT Datacenter (Name: {Constants.NAME_ORIG_KEY}) to (Name: {Constants.DC_NAME_KEY}, Abbreviation: {Constants.DC_ABRV_KEY})"""
+            log_message = f"""EDIT Datacenter (Name: <<{Constants.NAME_ORIG_KEY}>>) to (Name: <<{Constants.DC_NAME_KEY}>>, Abbreviation: <<{Constants.DC_ABRV_KEY}>>)"""
 
         return log_message
 
@@ -221,6 +221,15 @@ class Logger:
             print(str(e))
 
     def log_request(self, request, resource, action, username):
+        # print("resource")
+        # print(resource)
+        # print("request")
+        # print(request)
+        # print("action")
+        # print(action)
+        # print("username")
+        # print("username")
+
         if resource == Logger.USERS:
             log_message = self.__log_user_request(action)
         if resource == Logger.MODELS:
@@ -229,6 +238,8 @@ class Logger:
             log_message = self.__log_instance_request(action)
         if resource == Logger.RACKS:
             log_message = self.__log_rack_request(action)
+        if resource == Logger.DATACENTERS:
+            log_message = self.__log_datacenter_request(action)
 
         self.__create_log_entry_request(
             request, resource, log_message, username, action

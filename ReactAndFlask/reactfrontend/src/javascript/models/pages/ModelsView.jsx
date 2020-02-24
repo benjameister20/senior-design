@@ -5,26 +5,58 @@ import { CSVLink } from "react-csv";
 import { ModelCommand } from '../enums/ModelCommands.ts'
 import { ModelInput } from '../enums/ModelInputs.ts'
 
-import ButtonsModel from '../helpers/ButtonsModel';
+import ExportModel from '../helpers/ExportModel';
 import FilterModel from '../helpers/FilterModel';
-import DetailModel from '../helpers/DetailModel';
 import CreateModel from '../helpers/CreateModel';
 
 import { Privilege } from '../../enums/privilegeTypes.ts'
 
-import UploadModal from '../../helpers/UploadModal';
 import getURL from '../../helpers/functions/GetURL';
-import TableView from '../../helpers/TableView';
-import StatusDisplay from '../../helpers/StatusDisplay';
+import ModelsTable from '../helpers/ModelsTable';
+import { Typography } from '@material-ui/core';
 
-import ErrorBoundray from '../../errors/ErrorBoundry';
 import * as ModelConstants from "../ModelConstants";
+import Grid from '@material-ui/core/Grid';
 
 const columns = [
-    'vendor',
-    'model_number',
-    'height',
+    'Vendor',
+    'Model Number',
+    'Height',
+    'Display Color',
+    'Network Ports',
+    'Power Ports',
+    'CPU',
+    'Memory',
+    'Storage',
+    'Comment',
 ]
+
+const adminColumns = [
+    'Actions',
+    'Vendor',
+    'Model Number',
+    'Height',
+    'Display Color',
+    'Network Ports',
+    'Power Ports',
+    'CPU',
+    'Memory',
+    'Storage',
+    'Comment',
+]
+
+const columnLookup = {
+    "vendor": "Vendor",
+    "model_number": "Model Number",
+    "height": "Height",
+    'display_color': 'Display Color',
+    'ethernet_ports': 'Network Ports',
+    'power_ports': 'Power Ports',
+    'cpu': 'CPU',
+    'memory': 'Memory',
+    'storage': 'Storage',
+    'comment': "Comment"
+}
 
 const modelsMainPath = 'models/';
 const modelDownloadFileName = 'models.csv';
@@ -34,13 +66,13 @@ export default class ModelsView extends React.Component {
         super(props);
 
         this.state = {
-
             // modals
-            showCreateModal:false,
-            showImportModal:false,
+            showCreateModal: false,
+            showImportModal: false,
 
             // table items
-            items:[], //Constants.testModelArray,
+            items: [],
+            rows: [],
 
             // vals for creating a new model
             createdModel : {
@@ -82,26 +114,6 @@ export default class ModelsView extends React.Component {
 
             // csv data
             csvData:'',
-            importedFile:null,
-
-            // detailed view
-            showDetailedView: false,
-            detailViewLoading:false,
-            detailedValues : {
-                'vendor':'',
-                'model_number':'',
-                'height':'',
-                'display_color':'',
-                'ethernet_ports':'',
-                'power_ports':'',
-                'cpu':'',
-                'memory':'',
-                'storage':'',
-                'comment':'',
-            },
-            originalVendor:'',
-            originalModelNumber:'',
-            originalHeight:'',
 
             statusOpen:false,
             statusSeverity:'',
@@ -127,7 +139,7 @@ export default class ModelsView extends React.Component {
         this.getVendorList();
     }
 
-    createModel = () => {
+    createModel = (networkPorts) => {
         axios.post(
             getURL(modelsMainPath, ModelCommand.create),
             {
@@ -141,7 +153,7 @@ export default class ModelsView extends React.Component {
                 'memory':this.state.createdModel[ModelInput.Memory],
                 'storage':this.state.createdModel[ModelInput.Storage],
                 'comment':this.state.createdModel[ModelInput.Comment],
-                'ethernet_ports':["eth0", "eth1", "eth2", "eth3"],
+                'ethernet_ports': networkPorts,
             }
             ).then(
                 response => {
@@ -174,24 +186,23 @@ export default class ModelsView extends React.Component {
                 );
     }
 
-    editModel = () => {
+    editModel = (originalVendor, originalModelNum, originalHeight, detailedValues, networkPorts) => {
         axios.post(
             getURL(modelsMainPath, ModelCommand.edit),
             {
-                'vendorOriginal':this.state.originalVendor,
-                'model_numberOriginal':this.state.originalModelNumber,
-                'heightOriginal':this.state.originalHeight,
-
-                'vendor':this.state.detailedValues[ModelInput.Vendor],
-                'model_number':this.state.detailedValues[ModelInput.model_number],
-                'height':this.state.detailedValues[ModelInput.Height],
-                'display_color':this.state.detailedValues[ModelInput.display_color],
-                'ethernet_ports':this.state.detailedValues[ModelInput.ethernet_ports],
-                'power_ports':this.state.detailedValues[ModelInput.power_ports],
-                'cpu':this.state.detailedValues[ModelInput.CPU],
-                'memory':this.state.detailedValues[ModelInput.Memory],
-                'storage':this.state.detailedValues[ModelInput.Storage],
-                'comment':this.state.detailedValues[ModelInput.Comment],
+                'vendorOriginal': originalVendor,
+                'model_numberOriginal': originalModelNum,
+                'heightOriginal': originalHeight,
+                'vendor': detailedValues[ModelInput.Vendor],
+                'model_number': detailedValues[ModelInput.model_number],
+                'height': detailedValues[ModelInput.Height],
+                'display_color': detailedValues[ModelInput.display_color],
+                'ethernet_ports': networkPorts,
+                'power_ports': detailedValues[ModelInput.power_ports],
+                'cpu': detailedValues[ModelInput.CPU],
+                'memory': detailedValues[ModelInput.Memory],
+                'storage': detailedValues[ModelInput.Storage],
+                'comment': detailedValues[ModelInput.Comment],
             }
             ).then(
                 response => {
@@ -200,21 +211,6 @@ export default class ModelsView extends React.Component {
                             showStatus: true,
                             statusSeverity:'success',
                             statusMessage: "Successfully edited model",
-                            originalVendor:'',
-                            originalModelNumber:'',
-                            originalHeight:'',
-                            detailedValues : {
-                                'vendor':'',
-                                'model_number':'',
-                                'height':'',
-                                'display_color':'',
-                                'ethernet_ports':'',
-                                'power_ports':'',
-                                'cpu':'',
-                                'memory':'',
-                                'storage':'',
-                                'comment':'',
-                            },
                             showDetailedView:false
                         });
                         this.getVendorList();
@@ -227,13 +223,13 @@ export default class ModelsView extends React.Component {
                 );
     }
 
-
-    deleteModel = () => {
+    deleteModel = (originalVendor, originalModelNumber) => {
+        console.log(originalVendor);
         axios.post(
             getURL(modelsMainPath, ModelCommand.delete),
             {
-                'vendor':this.state.originalVendor,
-                'model_number':this.state.originalModelNumber,
+                'vendor': originalVendor,
+                'model_number': originalModelNumber,
             }
             ).then(
                 response => {
@@ -242,19 +238,6 @@ export default class ModelsView extends React.Component {
                             showStatus: true,
                             statusSeverity:'success',
                             statusMessage: "Successfully deleted model",
-                            detailedValues : {
-                                'vendor':'',
-                                'model_number':'',
-                                'height':'',
-                                'display_color':'',
-                                'ethernet_ports':'',
-                                'power_ports':'',
-                                'cpu':'',
-                                'memory':'',
-                                'storage':'',
-                                'comment':'',
-                            },
-                            showDetailedView:false
                         });
                         this.getVendorList();
                         this.searchModels();
@@ -270,20 +253,19 @@ export default class ModelsView extends React.Component {
         axios.post(
             getURL(modelsMainPath, ModelCommand.detailView),
             {
-                'vendor':vendor,
-                'model_number':modelNum,
+                'vendor': vendor,
+                'model_number': modelNum,
             }
             ).then(response => {
-                this.setState({ detailedValues: response.data['models'][0], detailViewLoading:false});
+                this.setState({ detailedValues: response.data['models'][0], detailViewLoading: false});
             }
             ).catch(function(error) {
-                console.log(error);
                 this.setState({ showStatus: true, statusMessage: ModelConstants.GENERAL_MODEL_ERROR, statusSeverity:"error" });
             });
 
         this.setState({
-            viewVendor:'',
-            viewModel:'',
+            viewVendor: '',
+            viewModel: '',
         });
     }
 
@@ -291,18 +273,32 @@ export default class ModelsView extends React.Component {
         axios.post(
             getURL(modelsMainPath, ModelCommand.search),
             {
-                'filter':{
-                    'vendor':this.state.searchVendor,
-                    'model_number':this.state.searchModelNum,
-                    'height':this.state.searchHeight,
+                'filter': {
+                    'vendor': this.state.searchVendor,
+                    'model_number': this.state.searchModelNum,
+                    'height': this.state.searchHeight,
                 }
             }
             ).then(response => {
-                this.setState({ items: response.data['models'] })
+                const models = response.data['models'] === undefined ? [] : response.data['models'];
+                var rows = [];
+                Object.values(models).forEach(model => {
+                    var row = {};
+                    Object.keys(model).forEach(key => {
+                        if (key in columnLookup) {
+                            row[columnLookup[key]] = model[key];
+                        } else {
+                            row[key] = model[key];
+                        }
+                    });
+                    rows.push(row);
+                });
+
+                this.setState({ rows: rows, items: models })
             });
 
         this.setState({
-            searchText:'',
+            searchText: '',
         });
     }
 
@@ -331,7 +327,7 @@ export default class ModelsView extends React.Component {
         axios.post(
             getURL(modelsMainPath, ModelCommand.EXPORT_FILE),
             {
-                'filter':{
+                'filter': {
                     'vendor':this.state.searchVendor,
                     'model_number':this.state.searchModelNum,
                     'height':this.state.searchHeight,
@@ -344,7 +340,17 @@ export default class ModelsView extends React.Component {
     }
 
     search = (filters) => {
-        this.setState({ searchVendor:filters['vendor'], searchModelNum:filters['model_number'], searchHeight:filters['height']}, this.searchModels);
+        this.setState({ searchVendor: filters['vendor'], searchModelNum: filters['model_number'], searchHeight: filters['height']}, this.searchModels);
+    }
+
+    searchAll = () => {
+        var filters = {
+            'vendor': '',
+            'model_number': '',
+            'height': ''
+        };
+
+        this.search(filters);
     }
 
     openCreateModal = () => {
@@ -355,18 +361,13 @@ export default class ModelsView extends React.Component {
         this.setState({showImportModal: true});
     }
 
-    showDetailedView = (id) => {
+    showDetailedView = (row) => {
         this.setState({
-            showDetailedView: true,
-            detailViewLoading:true,
-
-            originalHeight:this.state.items[id]['height'],
-            originalModelNumber:this.state.items[id]['model_number'],
-            originalVendor:this.state.items[id]['vendor'],
+            detailViewLoading: true,
          });
 
-        var vendor = this.state.items[id]['vendor'];
-        var modelNum = this.state.items[id]['model_number'];
+        var vendor = row['Vendor'];
+        var modelNum = row['Model Number'];
 
         this.detailViewModel(vendor, modelNum);
     }
@@ -389,20 +390,13 @@ export default class ModelsView extends React.Component {
     }
 
     updateModelColor = (color) => {
-        console.log("updating color to " + color);
         this.state.createdModel['display_color'] = color;
         this.forceUpdate();
     }
 
     updateModelColorDetails = (color) => {
-        console.log("updating color to " + color);
         this.state.detailedValues['display_color'] = color;
         this.forceUpdate();
-    }
-
-    updateModelEdited = (event) => {
-        this.state.detailedValues[event.target.name] = event.target.value;
-        this.forceUpdate()
     }
 
     updateSearchText = (event) => {
@@ -430,93 +424,82 @@ export default class ModelsView extends React.Component {
         this.setState({ detailStatusOpen: false })
     }
 
-    uploadFile = () => {
-        const data = new FormData();
-        data.append('file', this.state.importedFile);
-        this.sendUploadedFile(data);
-    }
-
-    chooseFile = (event) => {
-        this.setState({ importedFile: event.target.files[0] })
-    }
-
     render() {
         return (
             <div>
-                <ErrorBoundray>
-                <StatusDisplay
-                    open={this.state.showStatus}
-                    severity={this.state.statusSeverity}
-                    closeStatus={this.closeShowStatus}
-                    message={this.state.statusMessage}
-                    autoHideDuration={6000}
-                />
-                {(this.props.privilege === Privilege.ADMIN) ?
-                    (<div><ButtonsModel
-                    openCreateModal={this.openCreateModal}
-                    openImportModal={this.openImportModal}
-                    downloadTable={this.downloadTable}
-                />
-                <CSVLink
-                    data={this.state.csvData}
-                    filename={modelDownloadFileName}
-                    className="hidden"
-                    ref={(r) => this.csvLink = r}
-                    target="_blank"
-                />
-                <CreateModel
-                    statusOpen={this.state.createStatusOpen}
-                    statusSeverity={this.state.createStatusSeverity}
-                    statusClose={this.createStatusClose}
-                    statusMessage={this.state.createStatusMessage}
+                <Grid
+                    container
+                    spacing={5}
+                    direction="row"
+                    justify="flex-start"
+                    alignItems="center"
+                    style={{margin: "0px", maxWidth: "95vw"}}
+                >
+                    <Grid item xs={12}>
+                        <Typography variant="h4">
+                            Models
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={6} md={4} lg={3}>
+                        {(this.props.privilege == Privilege.ADMIN) ?
+                        (<div>
+                            <CreateModel
+                                statusOpen={this.state.createStatusOpen}
+                                statusSeverity={this.state.createStatusSeverity}
+                                statusClose={this.createStatusClose}
+                                statusMessage={this.state.createStatusMessage}
+                                showCreateModal={this.state.showCreateModal}
+                                closeCreateModal={this.closeCreateModal}
+                                createModel={this.createModel}
+                                updateModelCreator={this.updateModelCreator}
+                                options={this.state.vendorsList}
+                                useAutocomplete={true}
+                                updateModelColor={this.updateModelColor}
+                            />
+                        </div>) : null}
+                    </Grid>
+                    <Grid item xs={12} sm={6} md={6} lg={6}>
+                        <FilterModel
+                            updateSearchText={this.updateSearchText}
+                            search={this.search}
+                            filters={columns}
+                            options={this.state.vendorsList}
+                            useAutocomplete={true}
+                        />
+                    </Grid>
+                    <Grid item xs={12} sm={6} md={4} lg={3}>
+                        {(this.props.privilege === Privilege.ADMIN) ?
+                        (<div>
 
-                    showCreateModal={this.state.showCreateModal}
-                    closeCreateModal={this.closeCreateModal}
-                    createModel={this.createModel}
-                    updateModelCreator={this.updateModelCreator}
-                    options={this.state.vendorsList}
-                    useAutocomplete={true}
-                    updateModelColor={this.updateModelColor}
-                />
-                <UploadModal
-                    showImportModal={this.state.showImportModal}
-                    closeImportModal={this.closeImportModal}
-                    uploadFile={this.uploadFile}
-                    chooseFile={this.chooseFile}
-                    textDescription="The following format should be used for each row: vendor,model_number,height,display_color,ethernet_ports,power_ports,cpu,memory,storage,comment"
-                /></div>):null
-                }
-                <FilterModel
-                    updateSearchText={this.updateSearchText}
-                    search={this.search}
-                    filters={columns}
-                />
-                <TableView
-                    columns={columns}
-                    vals={this.state.items}
-                    keys={columns}
-                    showDetailedView={this.showDetailedView}
-                    filters={columns}
-                />
-                <DetailModel
-                    statusOpen={this.state.detailStatusOpen}
-                    statusSeverity={this.state.detailStatusSeverity}
-                    statusClose={this.detailStatusClose}
-                    statusMessage={this.state.detailStatusMessage}
+                        <ExportModel
+                            downloadTable={this.downloadTable}
+                            showAll={this.searchAll}
+                        />
 
-                    showDetailedView={this.state.showDetailedView}
-                    closeDetailedView={this.closeDetailedView}
-                    updateModelEdited={this.updateModelEdited}
-                    defaultValues={this.state.detailedValues}
-                    loading={this.state.detailViewLoading}
-                    edit={this.editModel}
-                    delete={this.deleteModel}
-                    disabled={this.props.privilege===Privilege.USER}
-                    options={this.state.vendorsList}
-                    useAutocomplete={true}
-                    updateModelColorDetails={this.updateModelColorDetails}
-                />
-            </ErrorBoundray>
+                        <CSVLink
+                            data={this.state.csvData}
+                            filename={modelDownloadFileName}
+                            className="hidden"
+                            ref={(r) => this.csvLink = r}
+                            target="_blank"
+                        />
+                        </div>):null
+                        }
+                    </Grid>
+                    <Grid item xs={12}>
+                        <ModelsTable
+                            columns={this.props.privilege == Privilege.ADMIN ? adminColumns : columns}
+                            vals={this.state.rows}
+                            privilege={this.props.privilege}
+                            token={this.props.token}
+                            keys={columns}
+                            filters={this.props.privilege == Privilege.ADMIN ? adminColumns : columns}
+                            updateModelColor={this.updateModelColorDetails}
+                            deleteModel={this.deleteModel}
+                            editModel={this.editModel}
+                        />
+                    </Grid>
+                </Grid>
             </div>
         );
     }

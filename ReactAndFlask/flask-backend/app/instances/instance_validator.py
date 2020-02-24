@@ -133,6 +133,8 @@ class InstanceValidator:
             return Constants.API_SUCCESS
 
         for current_instance in instance_list:
+            if current_instance.asset_number == original_asset_number:
+                continue
             model = self.model_table.get_model(instance.model_id)
             current_instance_top = current_instance.rack_position + model.height - 1
             if (

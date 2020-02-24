@@ -53,6 +53,7 @@ export default class Login extends React.Component {
                 username: this.state.username,
                 password: this.state.password,
             }).then(response => {
+                console.log(response);
                 var valid = response.data['message'];
                 if (valid === 'success') {
                     this.setState({ message: '' });

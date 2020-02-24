@@ -205,8 +205,8 @@ class TableAsset extends React.Component {
 		this.setState({ order: isAsc ? 'desc' : 'asc', orderBy:property });
 	}
 
-	openDetailedView = (event, assetNum, hostname) => {
-		this.setState({ detailAsset: assetNum, showDetailedView: true, detailHostname:hostname });
+	openDetailedView = (event, asset) => {
+		this.setState({ detailAsset: asset, showDetailedView: true });
 	}
 
 	updateItems = (assets) => {
@@ -231,7 +231,6 @@ class TableAsset extends React.Component {
 	return (
 		<React.Fragment>
 			<Grid container spacing={3}>
-
 				<Grid item xs={12} sm={6} md={4} lg={3}>
 					{(this.props.privilege === Privilege.ADMIN) ? <AddAsset getAssetList={this.getAssetList} /> : null}
 				</Grid>
@@ -275,8 +274,6 @@ class TableAsset extends React.Component {
 							</TableRow>
 							</TableHead>
 							<TableBody>
-
-
 								{stableSort(this.state.tableItems, getComparator(this.state.order, this.state.orderBy))
 									//.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
 									.map((row, index) => {
@@ -298,7 +295,7 @@ class TableAsset extends React.Component {
 													<Button
 														color="primary"
 														variant="contained"
-														onClick={(event) => {this.openDetailedView(event, row.assetNum, row.hostname)}}
+														onClick={(event) => {this.openDetailedView(event, row)}}
 													>
 														More Details
 													</Button>
@@ -317,7 +314,6 @@ class TableAsset extends React.Component {
 			search={this.search}
 			disabled={this.props.privilege===Privilege.USER /* && username !== row.owner*/}
 			asset={this.state.detailAsset}
-			hostname={this.state.detailHostname}
 		/>
 		</React.Fragment>
 	);

@@ -109,7 +109,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
   });
 
-class CreateAsset extends React.Component {
+class EditAsset extends React.Component {
     constructor(props) {
         super(props);
 
@@ -786,17 +786,7 @@ class CreateAsset extends React.Component {
                             onClick={(event) => {this.createAsset(event)}}
                             disabled={!this.state.canSubmit}
                         >
-                            Create
-                        </Button>
-                    </Grid>
-                    <Grid item xs={9}>
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            type="submit"
-                            onClick={this.closeModal}
-                        >
-                            Cancel
+                            Save Edits
                         </Button>
                     </Grid>
                 </Grid></div></form>}
@@ -824,4 +814,4 @@ class CreateAsset extends React.Component {
 }
 
 
-export default withStyles(useStyles)(CreateAsset);
+export default withStyles(useStyles)(EditAsset);

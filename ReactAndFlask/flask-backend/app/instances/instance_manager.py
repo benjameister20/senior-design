@@ -112,9 +112,9 @@ class InstanceManager:
                 self.make_corresponding_connections(
                     original_instance.network_connections, original_instance.hostname
                 )
-                return InvalidInputsError(edit_validation_result)
+                raise InvalidInputsError(edit_validation_result)
         except InvalidInputsError as e:
-            return e.message
+            raise InvalidInputsError(e.message)
 
         edit_connection_result = self.make_corresponding_connections(
             new_instance.network_connections, new_instance.hostname

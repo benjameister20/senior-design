@@ -311,6 +311,34 @@ class InstanceManager:
 
         return Constants.API_SUCCESS
 
+    def get_network_neighborhood(self, asset_data):
+        asset_number = self.check_null(asset_data[Constants.ASSET_NUMBER_KEY])
+        if asset_number is None or asset_number == "":
+            raise InvalidInputsError("No asset number found in the request.")
+
+        asset = self.table.get_instance_by_asset_number(asset_number)
+        if asset_number is None or asset_number == "":
+            raise InvalidInputsError("The asset requested could not be found.")
+
+        connections_dict = {}
+        for port in asset.network_connections:
+            hostname = asset.network_connections[port]["connection_hostname"]
+            connected_asset = self.table.get_instance_by_hostname(hostname)
+            if connected_asset is None:
+                raise InvalidInputsError(
+                    f"Connection to asset with hostname {hostname} was not found."
+                )
+            two_deep_list = []
+            for port2 in connected_asset.network_connections:
+                host2 = connected_asset.network_connections[port2][
+                    "connection_hostname"
+                ]
+                two_deep_list.append(host2)
+
+            connections_dict[hostname] = two_deep_list
+
+        return connections_dict
+
     def check_null(self, val):
         if val is None:
             return ""

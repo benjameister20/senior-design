@@ -177,6 +177,21 @@ def get_next_asset_number():
     return addMessageToJSON(returnJSON, "success")
 
 
+@instances.route("/instances/networkNeighborhood", methods=["POST"])
+# @requires_auth(request)
+def get_network_neighborhood():
+    """ Route to get network neighborhood"""
+    global INSTANCE_MANAGER
+    returnJSON = createJSON()
+
+    try:
+        asset_data = request.get_json()
+        returnJSON = INSTANCE_MANAGER.get_network_neighborhood(asset_data)
+        return addMessageToJSON(returnJSON, "success")
+    except InvalidInputsError as e:
+        return addMessageToJSON(returnJSON, e.message)
+
+
 def createJSON() -> dict:
     return {"metadata": "none"}
 

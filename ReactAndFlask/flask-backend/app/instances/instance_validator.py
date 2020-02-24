@@ -1,5 +1,6 @@
 import re
 
+from app.constants import Constants
 from app.dal.instance_table import InstanceTable
 from app.dal.model_table import ModelTable
 from app.dal.rack_table import RackTable
@@ -57,7 +58,7 @@ class InstanceValidator:
             instance.rack_label, instance.datacenter_id
         )
         if instance_list is None:
-            return "success"
+            return Constants.API_SUCCESS
 
         for current_instance in instance_list:
             model = self.model_table.get_model(instance.model_id)
@@ -73,7 +74,13 @@ class InstanceValidator:
             ):
                 return self.return_conflict(current_instance)
 
-        return "success"
+        connection_validation_result = self.validate_connections(
+            instance.network_connections, instance.hostname
+        )
+        if connection_validation_result != Constants.API_SUCCESS:
+            return connection_validation_result
+
+        return Constants.API_SUCCESS
 
     def edit_instance_validation(self, instance, original_asset_number):
         if (
@@ -123,9 +130,11 @@ class InstanceValidator:
             instance.rack_label, instance.datacenter_id
         )
         if instance_list is None:
-            return "success"
+            return Constants.API_SUCCESS
 
         for current_instance in instance_list:
+            if current_instance.asset_number == original_asset_number:
+                continue
             model = self.model_table.get_model(instance.model_id)
             current_instance_top = current_instance.rack_position + model.height - 1
             if (
@@ -139,7 +148,73 @@ class InstanceValidator:
             ):
                 return self.return_conflict(current_instance)
 
-        return "success"
+        connection_validation_result = self.validate_connections(
+            instance.network_connections, instance.hostname
+        )
+        if connection_validation_result != Constants.API_SUCCESS:
+            return connection_validation_result
+
+        return Constants.API_SUCCESS
+
+    def validate_connections(self, network_connections, hostname):
+        result = ""
+        for my_port in network_connections:
+            mac_adress = network_connections[my_port][Constants.MAC_ADDRESS_KEY]
+            connection_hostname = network_connections[my_port]["connection_hostname"]
+            connection_port = network_connections[my_port]["connection_port"]
+
+            mac_pattern = re.compile(
+                "[a-f0-9]{2}:[a-f0-9]{2}:[a-f0-9]{2}:[a-f0-9]{2}:[a-f0-9]{2}:[a-f0-9]{2}"
+            )
+            if mac_adress != "" and mac_pattern.fullmatch(mac_adress.lower()) is None:
+                result += f"Invalid MAC address for port {my_port}. MAC addresses must be 6 byte, colon separated hexidecimal strings (i.e. a1:b2:c3:d4:e5:f6). \n"
+
+            if (connection_hostname == "" or connection_hostname is None) and (
+                connection_port == "" or connection_port is None
+            ):
+                continue
+
+            if not (connection_hostname != "" and connection_port != ""):
+                result += "Connections require both a hostname and connection port."
+
+            other_instance = self.instance_table.get_instance_by_hostname(
+                connection_hostname
+            )
+            if other_instance is None:
+                result += f"The asset with hostname {connection_hostname} does not exist. Connections must be between assets with existing hostnames. \n"
+                continue
+
+            if connection_port in other_instance.network_connections:
+                if (
+                    other_instance.network_connections[connection_port][
+                        "connection_port"
+                    ]
+                    != my_port
+                ) and (
+                    other_instance.network_connections[connection_port][
+                        "connection_port"
+                    ]
+                    != ""
+                ):
+                    result += f"The port {connection_port} on asset with hostname {connection_hostname} is connected to another asset. \n"
+                    continue
+                if (
+                    other_instance.network_connections[connection_port][
+                        "connection_hostname"
+                    ]
+                    != hostname
+                ) and (
+                    other_instance.network_connections[connection_port][
+                        "connection_hostname"
+                    ]
+                    != ""
+                ):
+                    result += f"The port {connection_port} on asset with hostname {connection_hostname} is already connected to another asset. \n"
+
+        if result == "":
+            return Constants.API_SUCCESS
+        else:
+            return result
 
     def return_conflict(self, current_instance):
         result = f"The instance placement conflicts with instance with hostname {current_instance.hostname} "

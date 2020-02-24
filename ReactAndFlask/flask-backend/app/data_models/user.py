@@ -1,3 +1,4 @@
+from app.constants import Constants
 from app.main.types import JSON
 
 
@@ -24,11 +25,11 @@ class User:
 
     def make_json(self) -> JSON:
         return {
-            "username": self.username,
-            "display_name": self.display_name,
-            "email": self.email,
-            "password": self.password.decode("utf-8"),
-            "privilege": self.privilege,
+            Constants.USERNAME_KEY: self.username,
+            Constants.DISPLAY_NAME_KEY: self.display_name,
+            Constants.EMAIL_KEY: self.email,
+            Constants.PASSWORD_KEY: self.password.decode("utf-8"),
+            Constants.PRIVILEGE_KEY: self.privilege,
         }
 
     def __repr__(self) -> str:

@@ -1,7 +1,10 @@
 from typing import List
 
+from app.constants import Constants
 from app.decorators.auth import requires_auth, requires_role
+from app.decorators.logs import log
 from app.exceptions.InvalidInputsException import InvalidInputsError
+from app.logging.logger import Logger
 from app.models.model_manager import ModelManager
 from flask import Blueprint, request
 
@@ -10,6 +13,7 @@ models = Blueprint(
 )
 
 MODEL_MANAGER = ModelManager()
+LOGGER = Logger()
 
 
 @models.route("/models/test", methods=["GET"])
@@ -21,6 +25,7 @@ def test():
 @models.route("/models/create", methods=["POST"])
 @requires_auth(request)
 @requires_role(request, "admin")
+@log(request, LOGGER.MODELS, LOGGER.ACTIONS.MODELS.CREATE)
 def create():
     """ Route for creating models """
 
@@ -31,7 +36,7 @@ def create():
         model_data = request.get_json()
         MODEL_MANAGER.create_model(model_data)
 
-        return addMessageToJSON(returnJSON, "success")
+        return addMessageToJSON(returnJSON, Constants.API_SUCCESS)
     except InvalidInputsError as e:
         return addMessageToJSON(returnJSON, e.message)
 
@@ -39,6 +44,7 @@ def create():
 @models.route("/models/delete", methods=["POST"])
 @requires_auth(request)
 @requires_role(request, "admin")
+@log(request, LOGGER.MODELS, LOGGER.ACTIONS.MODELS.DELETE)
 def delete():
     """ Route for deleting models """
 
@@ -51,7 +57,7 @@ def delete():
         print(model_data)
         error = MODEL_MANAGER.delete_model(model_data)
         if error is None:
-            return addMessageToJSON(returnJSON, "success")
+            return addMessageToJSON(returnJSON, Constants.API_SUCCESS)
         else:
             return addMessageToJSON(returnJSON, error.message)
     except InvalidInputsError as e:
@@ -67,18 +73,18 @@ def search():
     global modelsArr
     returnJSON = createJSON()
 
-    filter = request.json["filter"]
+    filter = request.json[Constants.FILTER_KEY]
     print("filter")
     print(filter)
     try:
-        limit = int(request.json["limit"])
+        limit = int(request.json[Constants.LIMIT_KEY])
     except:
         limit = 1000
 
     try:
         model_list = MODEL_MANAGER.get_models(filter, limit)
         returnJSON = addModelsTOJSON(
-            addMessageToJSON(returnJSON, "success"),
+            addMessageToJSON(returnJSON, Constants.API_SUCCESS),
             list(map(lambda x: x.make_json(), model_list)),
         )
         return returnJSON
@@ -89,6 +95,7 @@ def search():
 @models.route("/models/edit", methods=["POST"])
 @requires_auth(request)
 @requires_role(request, "admin")
+@log(request, LOGGER.MODELS, LOGGER.ACTIONS.MODELS.EDIT)
 def edit():
     """ Route for editing models """
 
@@ -101,7 +108,7 @@ def edit():
 
         if error is not None:
             return addMessageToJSON(returnJSON, error.message)
-        return addMessageToJSON(returnJSON, "success")
+        return addMessageToJSON(returnJSON, Constants.API_SUCCESS)
     except InvalidInputsError as e:
         return addMessageToJSON(returnJSON, e.message)
 
@@ -119,7 +126,7 @@ def detail_view():
         model_data = request.get_json()
         model = MODEL_MANAGER.detail_view(model_data)
         return addModelsTOJSON(
-            addMessageToJSON(returnJSON, "success"), [model.make_json()]
+            addMessageToJSON(returnJSON, Constants.API_SUCCESS), [model.make_json()]
         )
     except InvalidInputsError as e:
         return addMessageToJSON(returnJSON, e.message)
@@ -135,7 +142,7 @@ def assisted_vendor_input():
         prefix_json = request.get_json()
         vendor_list = MODEL_MANAGER.get_distinct_vendors_with_prefix(prefix_json)
         returnJSON["results"] = vendor_list
-        return addMessageToJSON(returnJSON, "success")
+        return addMessageToJSON(returnJSON, Constants.API_SUCCESS)
     except InvalidInputsError as e:
         return addMessageToJSON(returnJSON, e.message)
 
@@ -145,7 +152,7 @@ def createJSON() -> dict:
 
 
 def addMessageToJSON(json, message) -> dict:
-    json["message"] = message
+    json[Constants.MESSAGE_KEY] = message
     return json
 
 

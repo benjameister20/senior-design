@@ -136,7 +136,7 @@ def create()
             "connection_port":CONNECTION_PORT_NAME,
         }
     }
-    "power_connections": "POWER CONNECTIONS",
+    "power_connections": [ L3, R5, ... ]
     "asset_number": "ASSET NUMBER",  
 }
 ```

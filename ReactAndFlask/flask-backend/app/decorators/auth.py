@@ -1,5 +1,6 @@
 from functools import wraps
 
+from app.constants import Constants
 from app.dal.user_table import UserTable
 from app.users.authentication import AuthManager
 
@@ -12,13 +13,15 @@ def requires_auth(request):
         @wraps(f)
         def wrapper(*args, **kwargs):
             try:
-                request.headers["token"]
-            except KeyError:
-                # return Response('Please provide auth token', 401, {'WWW-Authenticate': 'Basic realm="Login!"'})
-                return {"message": "Please provide auth token"}
+                # print(request.headers)
+                request.headers[Constants.TOKEN_KEY]
+            except KeyError as e:
+                print(str(e))
+                return {Constants.MESSAGE_KEY: "Please provide auth token"}
             is_validated, message = AUTH_MANAGER.validate_auth_token(request.headers)
             if not is_validated:
-                return {"message": message}
+                return {Constants.MESSAGE_KEY: message}
+
             return f(*args, **kwargs)
 
         return wrapper
@@ -31,18 +34,18 @@ def requires_role(request, role):
         @wraps(f)
         def wrapper(*args, **kwargs):
             try:
-                request.headers["privilege"]
-                token = request.headers["token"]
-            except KeyError:
-                return {"message": "Please provide auth token"}
+                request.headers[Constants.PRIVILEGE_KEY]
+                token = request.headers[Constants.TOKEN_KEY]
+            except KeyError as e:
+                print(str(e))
+                return {Constants.MESSAGE_KEY: "Please provide auth token"}
             username = AUTH_MANAGER.decode_auth_token(token)
             user = USER_TABLE.get_user(username)
             if user is None:
-                return {"message": f"User {username} does not exist"}
+                return {Constants.MESSAGE_KEY: f"User {username} does not exist"}
             if not user.privilege == role:
-                print(user)
-                print(request)
-                return {"message": "Access denied"}
+                return {Constants.MESSAGE_KEY: "Access denied"}
+
             return f(*args, **kwargs)
 
         return wrapper

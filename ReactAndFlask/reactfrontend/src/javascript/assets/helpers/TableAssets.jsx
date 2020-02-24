@@ -10,8 +10,9 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import { Button } from '@material-ui/core';
 import Paper from '@material-ui/core/Paper';
-import { withStyles, makeStyles } from '@material-ui/core/styles';
+import { withStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
+import TableSortLabel from '@material-ui/core/TableSortLabel';
 
 import { AssetInput } from '../enums/AssetInputs.ts';
 import { AssetCommand } from '../enums/AssetCommands.ts';
@@ -21,54 +22,85 @@ import DetailAsset from "./DetailsAsset";
 import FilterAsset from './FilterAsset';
 import stableSort from "../../helpers/functions/StableSort";
 import getComparator from "../../helpers/functions/GetComparator";
+import { Privilege } from "../../enums/privilegeTypes.ts";
+import AddAsset from "./AddAsset";
+import ExportAsset from "./ExportAsset";
+import * as Constants from '../../Constants';
 
 
 const useStyles = theme => ({
-  styledTableRow: {
-    '&:nth-of-type(odd)': {
-      backgroundColor: theme.palette.background.default,
-    },
-  },
-  tableCellHead: {
-	backgroundColor: theme.palette.primary.main,
-	color: theme.palette.common.white,
-  },
-  styledTableCell:{
-      fontSize: 14,
-  },
-  table: {
-    minWidth: 700,
-  },
+	styledTableRow: {
+	},
+	tableCellHead: {
+	},
+	styledTableCell:{
+		fontSize: 14,
+	},
+	table: {
+		minWidth: 700,
+	},
   	paper: {
 		width: '100%',
 		marginBottom: theme.spacing(2),
 	},
+	visuallyHidden: {
+		border: 0,
+		clip: 'rect(0 0 0 0)',
+		height: 1,
+		margin: -1,
+		overflow: 'hidden',
+		padding: 0,
+		position: 'absolute',
+		top: 20,
+		width: 1,
+	  },
 });
 
-function createData(model, hostname, datacenter, rack, rackU, owner, assetNum) {
-  return { model, hostname, datacenter, rack, rackU, owner, assetNum };
+const emptySearch = {
+    "filter": {
+            "vendor":null,
+            "model_number":null,
+            "height":null,
+            "model":null,
+            "hostname":null,
+            "rack":null,
+            "rack_position":null,
+            "username":null,
+            "display_name":null,
+            "email":null,
+            "privilege":null,
+            "model":null,
+            "hostname":null,
+            "starting_rack_letter":null,
+            "ending_rack_letter":null,
+            "starting_rack_number":null,
+            "ending_rack_number":null,
+            "rack":null,
+            "rack_position":null
+        },
+    "datacenter_name":"",
 }
 
-const rows = [
-	createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-	createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-	createData('Eclair', 262, 16.0, 24, 6.0),
-	createData('Cupcake', 305, 3.7, 67, 4.3),
-	createData('Gingerbread', 356, 16.0, 49, 3.9),
-  ];
+function createData(model, hostname, datacenter_name, rack, owner, asset_number) {
+  return { model, hostname, datacenter_name, rack, owner, asset_number };
+}
 
-const columns = [
-    'model',
-    'hostname',
-    'rack',
-    'rack_position',
-]
+const headCells = [
+	{ id: 'datacenter_name', numeric: false, label:"Datacenter", align:"left" },
+	{ id: 'hostname', numeric: false, label:"Hostname", align:"left" },
+	{ id: 'model', numeric: false, label:"Model", align:"left" },
+	{ id: 'rack', numeric: false, label:"Rack", align:"left" },
+	{ id: 'owner', numeric: false, label:"Owner", align:"left" },
+	{ id: 'asset_number', numeric: false, label:"Asset Number", align:"right" },
+];
+
 
 class TableAsset extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
+		allAssets:[],
 	  tableItems:[],
 
 	  detailStatusOpen:false,
@@ -80,33 +112,48 @@ class TableAsset extends React.Component {
 
 	  showDetailedView: false,
 	  detailViewLoading:false,
+	  detailAsset:-1,
+	  detailHostname:"",
 	  originalRack:'',
 	  originalrack_position:'',
 
 	  order:"asc",
-	  orderBy:"model",
+	  orderBy:"datacenter",
     };
   }
 
-  editAsset = () => {
-	let body = this.state.detailedValues.getAssetAsJSON();
-	body[AssetInput.RACK_ORIGINAL] = this.state.originalRack;
-	body[AssetInput.RACK_U_ORIGINAL] = this.state.originalrack_position;
-	axios.post(
-		getURL(AssetConstants.ASSETS_MAIN_PATH, AssetCommand.edit),body
-		).then(response => {
-			if (response.data.message === AssetConstants.SUCCESS_TOKEN) {
-				this.setState({
-					showStatus: true,
-					statusMessage: "Successfully edited asset",
-					statusSeverity:AssetConstants.SUCCESS_TOKEN,
-					detailedValues : null,
-					showDetailedView:false,
+  	componentDidMount() {
+		axios.post(
+            getURL(Constants.ASSETS_MAIN_PATH, AssetCommand.search),emptySearch).then(
+            response => {
+				var items = [];
+
+				response.data.instances.map(asset => {
+					items.push(createData(asset.model, asset.hostname, asset.datacenter_name, asset.rack+" U"+asset.rack_position, asset.owner, asset.asset_number));
 				});
-			} else {
-				this.setState({ detailStatusOpen: true, detailStatusMessage: response.data.message, detailStatusSeverity:AssetConstants.ERROR_TOKEN })
-			}
-		});
+				this.setState({ allAssets: response.data.instances, tableItems:items });
+			});
+	}
+
+	editAsset = () => {
+		let body = this.state.detailedValues.getAssetAsJSON();
+		body[AssetInput.RACK_ORIGINAL] = this.state.originalRack;
+		body[AssetInput.RACK_U_ORIGINAL] = this.state.originalrack_position;
+		axios.post(
+			getURL(AssetConstants.ASSETS_MAIN_PATH, AssetCommand.edit),body
+			).then(response => {
+				if (response.data.message === AssetConstants.SUCCESS_TOKEN) {
+					this.setState({
+						showStatus: true,
+						statusMessage: "Successfully edited asset",
+						statusSeverity:AssetConstants.SUCCESS_TOKEN,
+						detailedValues : null,
+						showDetailedView:false,
+					});
+				} else {
+					this.setState({ detailStatusOpen: true, detailStatusMessage: response.data.message, detailStatusSeverity:AssetConstants.ERROR_TOKEN })
+				}
+			});
 	}
 
 
@@ -153,7 +200,30 @@ class TableAsset extends React.Component {
 		this.setState({ showStatus: false })
 	}
 
+	createSortHandler = (event, property) => {
+		const isAsc = this.state.orderBy === property && this.state.order === 'asc';
+		this.setState({ order: isAsc ? 'desc' : 'asc', orderBy:property });
+	}
 
+	openDetailedView = (event, asset) => {
+		this.setState({ detailAsset: asset, showDetailedView: true });
+	}
+
+	updateItems = (assets) => {
+		var items = [];
+
+		assets.map(asset => {
+			items.push(createData(asset.model, asset.hostname, asset.datacenter_name, asset.rack+" U"+asset.rack_position, asset.owner, asset.asset_number));
+		});
+
+		this.setState({ tableItems : items });
+	}
+
+	getAssetList = () => {
+        axios.post(
+            getURL(Constants.ASSETS_MAIN_PATH, AssetCommand.search),emptySearch).then(
+            response => { this.setState({ allAssets: response.data.instances }); });
+    }
 
 	render() {
 	const { classes } = this.props;
@@ -161,45 +231,78 @@ class TableAsset extends React.Component {
 	return (
 		<React.Fragment>
 			<Grid container spacing={3}>
-				<Grid item xs={6}>
-					<FilterAsset />
+				<Grid item xs={12} sm={6} md={4} lg={3}>
+					{(this.props.privilege === Privilege.ADMIN) ? <AddAsset getAssetList={this.getAssetList} /> : null}
+				</Grid>
+				<Grid item xs={12} sm={6} md={4} lg={6}>
+					<FilterAsset
+						updateItems={this.updateItems}
+						getAssetList={this.getAssetList}
+						allAssets={this.state.allAssets}
+					/>
+				</Grid>
+				<Grid item xs={12} sm={6} md={4} lg={3}>
+					{(this.props.privilege === Privilege.ADMIN) ? <ExportAsset downloadTable={this.downloadTable} />:null}
 				</Grid>
 				<Grid item xs={12}>
 					<TableContainer component={Paper}>
 						<Table className={classes.table} aria-label="customized table">
 							<TableHead>
 							<TableRow className={classes.styledTableRow}>
-								<TableCell className={classes.tableCellHead}>Model</TableCell>
-								<TableCell align="right" className={classes.tableCellHead}>Hostname</TableCell>
-								<TableCell align="right" className={classes.tableCellHead}>Datacenter</TableCell>
-								<TableCell align="right" className={classes.tableCellHead}>Rack</TableCell>
-								<TableCell align="right" className={classes.tableCellHead}>Rack U</TableCell>
-								<TableCell align="right" className={classes.tableCellHead}>Owner</TableCell>
-								<TableCell align="right" className={classes.tableCellHead}>Asset Number</TableCell>
-								<TableCell align="right" className={classes.tableCellHead}></TableCell>
+							{headCells.map(headCell => (
+								<TableCell
+									className={classes.tableCellHead}
+									key={headCell.id}
+									align={headCell.align}
+									sortDirection={this.state.orderBy === headCell.id ? this.state.order : false}
+								>
+									<TableSortLabel
+										active={this.state.orderBy === headCell.id}
+										direction={this.state.orderBy === headCell.id ? this.state.order : 'asc'}
+										onClick={(event) => {this.createSortHandler(event, headCell.id)} }
+									>
+									<span style={{fontWeight: "bold"}}>{headCell.label}</span>
+									{this.state.orderBy === headCell.id ? (
+										<span className={classes.visuallyHidden}>
+											{this.state.order === 'desc' ? 'sorted descending' : 'sorted ascending'}
+										</span>
+									) : null}
+									</TableSortLabel>
+								</TableCell>
+								))}
+								<TableCell align="left" className={classes.tableCellHead}>{""}</TableCell>
 							</TableRow>
 							</TableHead>
 							<TableBody>
-							{rows.map(row =>
-								<TableRow key={row.name}>
-									<TableCell component="th" scope="row">{row.model}</TableCell>
-									<TableCell align="right">{row.hostname}</TableCell>
-									<TableCell align="right">{row.datacenter}</TableCell>
-									<TableCell align="right">{row.rack}</TableCell>
-									<TableCell align="right">{row.rackU}</TableCell>
-									<TableCell align="right">{row.owner}</TableCell>
-									<TableCell align="right">{row.assetNum}</TableCell>
-									<TableCell align="center">
-										<Button
-											color="primary"
-											variant="contained"
-											onClick={() => this.setState({ showDetailedView: true })}
-										>
-											More Details
-										</Button>
-									</TableCell>
-								</TableRow>
-							)}
+								{stableSort(this.state.tableItems, getComparator(this.state.order, this.state.orderBy))
+									//.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+									.map((row, index) => {
+										const labelId = `enhanced-table-checkbox-${index}`;
+
+										return (
+											<TableRow
+												hover
+												tabIndex={-1}
+												key={row.assetNum}
+											>
+												<TableCell component="th" id={labelId} scope="row">{row.datacenter_name}</TableCell>
+												<TableCell align="left">{row.hostname}</TableCell>
+												<TableCell align="left">{row.model}</TableCell>
+												<TableCell align="left">{row.rack}</TableCell>
+												<TableCell align="left">{row.owner}</TableCell>
+												<TableCell align="right">{row.asset_number}</TableCell>
+												<TableCell align="center">
+													<Button
+														color="primary"
+														variant="contained"
+														onClick={(event) => {this.openDetailedView(event, row)}}
+													>
+														More Details
+													</Button>
+												</TableCell>
+											</TableRow>
+										);
+									})}
 							</TableBody>
 						</Table>
 					</TableContainer>
@@ -208,8 +311,9 @@ class TableAsset extends React.Component {
 		<DetailAsset
 			open={this.state.showDetailedView}
 			close={this.closeDetailedView}
-			search={this.props.search}
-			/*disabled={this.props.privilege===Privilege.USER}*/
+			search={this.search}
+			disabled={this.props.privilege===Privilege.USER /* && username !== row.owner*/}
+			asset={this.state.detailAsset}
 		/>
 		</React.Fragment>
 	);

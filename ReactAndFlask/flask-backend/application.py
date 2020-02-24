@@ -6,6 +6,7 @@ from app.data_models.user import User
 from app.datacenters.routes_datacenters import datacenters
 from app.import_export.routes import import_export
 from app.instances.routes_instances import instances
+from app.logging.routes_logging import logs
 from app.models.routes_models import models
 from app.racks.racks_routes import racks
 from app.stats.routes_stats import stats
@@ -34,6 +35,7 @@ class FlaskApp(Flask):
         elif isinstance(rv, HTTPStatus):
             rv = jsonify({"status": rv}), rv
 
+        # print(rv)
         return super().make_response(rv)
 
 
@@ -64,6 +66,7 @@ def _register_routes() -> None:
     application.register_blueprint(database)
     application.register_blueprint(stats)
     application.register_blueprint(import_export)
+    application.register_blueprint(logs)
     application.register_blueprint(datacenters)
 
 

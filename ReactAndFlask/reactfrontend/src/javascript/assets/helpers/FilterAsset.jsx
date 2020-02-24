@@ -2,102 +2,34 @@ import React from 'react';
 
 import axios from 'axios';
 
-import SearchIcon from '@material-ui/icons/Search';
-import InputBase from '@material-ui/core/InputBase';
-import Grid from '@material-ui/core/Grid';
-import { fade, withStyles } from '@material-ui/core/styles';
-import FormHelperText from '@material-ui/core/FormHelperText';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
-import { MenuItem, Button, TextField } from '@material-ui/core';
+import {
+    Grid,
+    FormHelperText,
+    FormControl,
+    Select,
+    MenuItem,
+    TextField,
+    Paper,
+    Typography,
+    Button,
+} from '@material-ui/core/';
 
-import createAssetJSON from "./functions/createAssetJSON";
-import { AssetCommand } from '../enums/AssetCommands.ts'
-import getURL from '../../helpers/functions/GetURL';
-import * as AssetConstants from "../AssetConstants";
+
 import * as Constants from '../../Constants';
-
-const useStyles = theme => ({
-    grow: {
-      flexGrow: 1,
-    },
-    menuButton: {
-      marginRight: theme.spacing(2),
-    },
-    title: {
-      display: 'none',
-      [theme.breakpoints.up('sm')]: {
-        display: 'block',
-      },
-    },
-    search: {
-      position: 'relative',
-      borderRadius: theme.shape.borderRadius,
-      backgroundColor: fade(theme.palette.common.white, 0.15),
-      '&:hover': {
-        backgroundColor: fade(theme.palette.common.white, 0.25),
-      },
-      marginRight: theme.spacing(2),
-      marginLeft: 0,
-      width: '100%',
-      [theme.breakpoints.up('sm')]: {
-        marginLeft: theme.spacing(3),
-        width: 'auto',
-      },
-    },
-    searchIcon: {
-      width: theme.spacing(7),
-      height: '100%',
-      position: 'absolute',
-      pointerEvents: 'none',
-      display: 'flex',
-      alignItems: 'left',
-      justifyContent: 'left',
-    },
-    inputRoot: {
-      color: 'inherit',
-    },
-    inputInput: {
-      padding: theme.spacing(1, 1, 1, 7),
-      transition: theme.transitions.create('width'),
-      width: '100%',
-      [theme.breakpoints.up('md')]: {
-        width: 200,
-      },
-    },
-    sectionDesktop: {
-      display: 'none',
-      [theme.breakpoints.up('md')]: {
-        display: 'flex',
-      },
-    },
-    sectionMobile: {
-      display: 'flex',
-      [theme.breakpoints.up('md')]: {
-        display: 'none',
-      },
-    },
-  });
 
 class FilterAsset extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
+            allAssets:[],
+            datacenter:"",
             model:"",
             hostname:"",
-            rack:"",
-            rackU:-1,
-            owner:"",
-            comment:"",
-            datacenter_id:"",
-            tags:[],
-            network_connections:"",
-            power_connections:"",
-            asset_number:-1,
-
-            startingRackNumber:1,
-            endingRackNumber:1,
+            startingLetter:"A",
+            endingLetter:"Z",
+            startingNum:1,
+            endingNum:1000,
         };
     }
 
@@ -105,163 +37,152 @@ class FilterAsset extends React.Component {
         this.search();
     }
 
-    updateModel = (event, newValue) => {
-        this.setState({ model: newValue });
+    updateDatacenter = (event) => {
+        this.setState({ datacenter: event.target.value }, () => { this.search() });
     }
 
-    updateHostname = (event, newValue) => {
-        this.setState({ hostname: newValue})
+    updateModel = (event) => {
+        this.setState({ model: event.target.value }, () => { this.search() });
     }
 
-    updateRack = (event, newValue) => {
-        this.setState({ rack: newValue });
+    updateHostname = (event) => {
+        this.setState({ hostname: event.target.value }, () => { this.search() });
     }
 
-    updateRackU = (event, newValue) => {
-        this.setState({ rackU: newValue });
+    updateStartingLetter = (event) => {
+        this.setState({ startingLetter: event.target.value }, () => { this.search() });
     }
 
-    updateOwner = (event, newValue) => {
-        this.setState({ owner: newValue });
+    updateEndingLetter = (event) => {
+        this.setState({ endingLetter: event.target.value }, () => { this.search() });
     }
 
-    updateComment = (event, newValue) => {
-        this.setState({ comment: newValue });
+    updateStartingNum = (event) => {
+        this.setState({ startingNum: event.target.value }, () => { this.search() });
     }
 
-    updateDatacenter = (event, newValue) => {
-        this.setState({ datacenter_id: newValue });
+    updateEndingNum = (event) => {
+        this.setState({ endingNum: event.target.value }, () => { this.search() });
     }
 
-    updateTags = (event, newValue) => {
-        this.setState({ tags: newValue });
-    }
+    componentDidUpdate() {
 
-    updateNetworkConnections = (event, newValue) => {
-        this.setState({ network_connections: newValue });
-    }
-
-    updatePowerConnections = (event, newValue) => {
-        this.setState({ power_connections: newValue });
-    }
-
-    updateAssetNumber = (event, newValue) => {
-        this.setState({ asset_number: newValue });
     }
 
     search = () => {
-        axios.post(
-            getURL(AssetConstants.ASSETS_MAIN_PATH, AssetCommand.search),{ 'filter':createAssetJSON() }
-            ).then(response => {
-                this.props.updateSearchItems(response.data.assets);
-            });
+         var items = [];
+
+         this.props.allAssets.map(asset => {
+            if (
+                (asset.datacenter_name.includes(this.state.datacenter) || asset.datacenter_abbreviation.includes(this.state.datacenter))
+                && asset.model.includes(this.state.model)
+                && asset.hostname.includes(this.state.hostname)
+                && asset.rack >= this.state.startingLetter + "" + this.state.startingNum
+                && asset.rack <= this.state.endingLetter + "" + this.state.endingNum
+            ) {
+                items.push(asset);
+            }
+         });
+
+         this.props.updateItems(items);
     }
 
     render() {
-        const { classes } = this.props;
-
         return (
             <React.Fragment>
-                <Grid container spacing={3}>
-                    <Grid item xs={3}>
+                <Paper elevation={3}>
+                <Grid
+                    container
+                    spacing={2}
+                    direction="row"
+                    justify="flex-start"
+                    alignItems="center"
+                    style={{"padding": "10px"}}
+                >
+                    <Grid item xs={12}>
+                        <Typography variant="h5">Filter</Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={6} md={4} lg={3}>
+                        <TextField
+                            id="datacenter"
+                            label="Datacenter"
+                            name="datacenter"
+                            onChange={(event) => { this.updateDatacenter(event) } }
+                            style={{width: "100%"}}
+                        />
+                    </Grid>
+                    <Grid item xs={12} sm={6} md={4} lg={3}>
+                        <TextField
+                            id="model"
+                            label="Model"
+                            name="model"
+                            onChange={(event) => { this.updateModel(event)} }
+                            style={{width: "100%"}}
+                        />
+                    </Grid>
+                    <Grid item xs={12} sm={6} md={4} lg={3}>
+                        <TextField
+                            id="hostname"
+                            label="Hostname"
+                            name="hostname"
+                            onChange={(event) => this.updateHostname(event)}
+                            style={{width: "100%"}}
+                        />
+                    </Grid>
+                    <Grid item item xs={12} sm={6} md={4} lg={3}></Grid>
+                    <Grid item xs={12} sm={6} md={4} lg={2}>
                         <FormControl>
-                            <div>
-                                <TextField
-                                    placeholder="Search…"
-                                    classes={{
-                                        root: classes.inputRoot,
-                                        input: classes.inputInput,
-                                    }}
-                                    inputProps={{ 'aria-label': 'search' }}
-                                />
-                            </div>
-                            <FormHelperText>Filter by Datacenter</FormHelperText>
+                            <Select
+                                id="starting-letter-selector"
+                                value={this.state.startingLetter}
+                                onChange={this.updateStartingLetter}
+                            >
+                                {Constants.RackX.map(val => (<MenuItem value={val}>{val}</MenuItem>))}
+                            </Select>
+                            <FormHelperText>Starting Letter</FormHelperText>
                         </FormControl>
                     </Grid>
-                    <Grid item xs={3}>
+                    <Grid item xs={12} sm={6} md={4} lg={2}>
                         <FormControl>
-                            <div>
-                                <TextField
-                                    placeholder="Search…"
-                                    classes={{
-                                        root: classes.inputRoot,
-                                        input: classes.inputInput,
-                                    }}
-                                    inputProps={{ 'aria-label': 'search' }}
-                                />
-                            </div>
-                            <FormHelperText>Filter by model</FormHelperText>
+                            <Select
+                                id="ending-letter-selector"
+                                value={this.state.endingLetter}
+                                onChange={this.updateEndingLetter}
+                            >
+                                {Constants.RackX.map(val => (<MenuItem value={val}>{val}</MenuItem>))}
+                            </Select>
+                            <FormHelperText>Ending Letter</FormHelperText>
                         </FormControl>
                     </Grid>
-                    <Grid item xs={6}>
+                    <Grid item xs={12} sm={6} md={4} lg={3}>
                         <FormControl>
-                            <div>
-                                <TextField
-                                    placeholder="Search…"
-                                    classes={{
-                                        root: classes.inputRoot,
-                                        input: classes.inputInput,
-                                    }}
-                                    inputProps={{ 'aria-label': 'search' }}
-                                />
-                            </div>
-                            <FormHelperText>Filter by hostname</FormHelperText>
+                            <TextField
+                                id="starting-num-selector"
+                                type="number"
+                                value={this.state.startingNum}
+                                onChange={this.updateStartingNum}
+                                InputProps={{ inputProps: { min: 1} }}
+                            />
+                            <FormHelperText>Starting Number</FormHelperText>
                         </FormControl>
                     </Grid>
-                    <Grid item xs={1}>
+                    <Grid item xs={12} sm={6} md={4} lg={3}>
                         <FormControl>
-                                <Select
-                                    id="starting-letter-selector"
-                                    value={this.state.startingRackLetter}
-                                    onChange={this.changeStartingLetter}
-                                    defaultValue={Constants.RackX[0]}
-                                >
-                                    {Constants.RackX.map(val => (<MenuItem value={val}>{val}</MenuItem>))}
-                                </Select>
-                                <FormHelperText>Starting Letter</FormHelperText>
-                        </FormControl>
-                    </Grid>
-                    <Grid item xs={1}>
-                        <FormControl>
-                                <Select
-                                    id="ending-letter-selector"
-                                    value={this.state.endingRackLetter}
-                                    onChange={this.changeEndingLetter}
-                                    defaultValue={Constants.RackX[0]}
-                                >
-                                    {Constants.RackX.map(val => (<MenuItem value={val}>{val}</MenuItem>))}
-                                </Select>
-                                <FormHelperText>Ending Letter</FormHelperText>
-                        </FormControl>
-                    </Grid>
-                    <Grid item xs={1}>
-                        <FormControl>
-                                <TextField
-                                    id="starting-num-selector"
-                                    type="number"
-                                    value={this.state.startingRackNumber}
-                                    onChange={this.changeStartingNum}
-                                    InputProps={{ inputProps: { min: 1} }}
-                                />
-                                <FormHelperText>Starting Number</FormHelperText>
-                        </FormControl>
-                    </Grid>
-                    <Grid item xs={1}>
-                        <FormControl>
-                                <TextField
-                                    id="ending-num-selector"
-                                    type="number"
-                                    value={this.state.endingRackNumber}
-                                    onChange={this.changeEndingNum}
-                                    InputProps={{ inputProps: { min: 1} }}
-                                />
-                                <FormHelperText>Ending Number</FormHelperText>
+                            <TextField
+                                id="ending-num-selector"
+                                type="number"
+                                value={this.state.endingNum}
+                                onChange={this.updateEndingNum}
+                                InputProps={{ inputProps: { min: 1} }}
+                            />
+                            <FormHelperText>Ending Number</FormHelperText>
                         </FormControl>
                     </Grid>
                 </Grid>
+            </Paper>
             </React.Fragment>
         );
     }
 }
 
-export default withStyles(useStyles)(FilterAsset);
+export default FilterAsset;

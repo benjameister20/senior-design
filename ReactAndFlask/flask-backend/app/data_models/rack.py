@@ -1,5 +1,6 @@
 from typing import List
 
+from app.constants import Constants
 from app.main.types import JSON
 
 
@@ -21,8 +22,8 @@ class Rack:
 
     def make_json(self) -> JSON:
         return {
-            "label": self.label,
-            "datacenter_id": self.datacenter_id,
+            Constants.LABEL_KEY: self.label,
+            Constants.DC_ID_KEY: self.datacenter_id,
             "pdu_left": self.pdu_left,
             "pdu_right": self.pdu_right,
         }

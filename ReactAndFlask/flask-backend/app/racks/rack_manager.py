@@ -1,6 +1,7 @@
 import string
 from typing import Any, Callable, List, Optional
 
+from app.constants import Constants
 from app.dal.database import DBWriteException
 from app.dal.instance_table import InstanceTable, RackDoesNotExistError
 from app.dal.model_table import ModelTable
@@ -24,7 +25,7 @@ def _add_rack_modifier(rack: Rack, datacenter_name: str) -> JSON:
         label=rack.label, datacenter_id=rack.datacenter_id
     )
     if rack_db is not None:
-        return {"message": f"Rack {rack.label} already exists!"}
+        return {Constants.MESSAGE_KEY: f"Rack {rack.label} already exists!"}
 
     RackTable().add_rack(rack=rack)
 

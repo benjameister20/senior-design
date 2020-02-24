@@ -1,5 +1,7 @@
 from app.decorators.auth import requires_auth, requires_role
+from app.decorators.logs import log
 from app.exceptions.UserExceptions import UserException
+from app.logging.logger import Logger
 from app.users.users_manager import UserManager
 from flask import Blueprint, request
 
@@ -8,6 +10,7 @@ users = Blueprint(
 )
 
 USER_MANAGER = UserManager()
+LOGGER = Logger()
 
 
 @users.route("/users/test", methods=["GET"])
@@ -36,6 +39,7 @@ def search():
 @users.route("/users/create", methods=["POST"])
 @requires_auth(request)
 @requires_role(request, "admin")
+@log(request, LOGGER.USERS, LOGGER.ACTIONS.USERS.CREATE)
 def create():
     # TESTED AND FUNCTIONAL
     """Route for creating users
@@ -61,7 +65,6 @@ def create():
     Returns:
         string: Success or failure, if failure provide message
     """
-
     response = {}
     try:
         response = USER_MANAGER.create_user(request)
@@ -74,6 +77,7 @@ def create():
 @users.route("/users/delete", methods=["POST"])
 @requires_auth(request)
 @requires_role(request, "admin")
+@log(request, LOGGER.USERS, LOGGER.ACTIONS.USERS.DELETE)
 def delete():
     # TESTED AND FUNCTIONAL
     """Route for deleting users
@@ -94,6 +98,7 @@ def delete():
 @users.route("/users/edit", methods=["POST"])
 @requires_auth(request)
 @requires_role(request, "admin")
+@log(request, LOGGER.USERS, LOGGER.ACTIONS.USERS.EDIT)
 def edit():
 
     response = {}
@@ -106,6 +111,7 @@ def edit():
 
 
 @users.route("/users/authenticate", methods=["POST"])
+@log(request, LOGGER.USERS, LOGGER.ACTIONS.USERS.AUTHENTICATE)
 def authenticate():
     # TESTED AND FUNCTIONAL
     """ Route for authenticating users """
@@ -116,10 +122,25 @@ def authenticate():
     except UserException as e:
         return add_message_to_JSON(response, e.message)
 
+    # print(response)
+    return response
+
+
+@users.route("/users/oauth", methods=["POST"])
+@log(request, LOGGER.USERS, LOGGER.ACTIONS.USERS.OAUTH)
+def oauth():
+
+    response = {}
+    try:
+        response = USER_MANAGER.oauth(request)
+    except UserException as e:
+        return add_message_to_JSON(response, e.message)
+
     return response
 
 
 @users.route("/users/logout", methods=["GET"])
+@log(request, LOGGER.USERS, LOGGER.ACTIONS.USERS.LOGOUT)
 def logout():
 
     response = {}

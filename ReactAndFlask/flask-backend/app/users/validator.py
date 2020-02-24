@@ -1,5 +1,6 @@
 import re
 
+from app.constants import Constants
 from app.dal.user_table import UserTable
 from app.data_models.user import User
 from app.exceptions.UserExceptions import (
@@ -8,10 +9,9 @@ from app.exceptions.UserExceptions import (
     InvalidPrivilegeError,
     InvalidUsernameError,
     NoEditsError,
+    UserException,
     UsernameTakenError,
 )
-
-# TODO: implement error class to return from validator functions so can provide error messages for each situation
 
 USER_TABLE = UserTable()
 
@@ -39,7 +39,6 @@ class Validator:
         Returns:
             Boolean: True if password adheres to guidelines, false if not
         """
-
         reg = (
             r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!#%*?&]{8,20}$"
         )
@@ -111,7 +110,9 @@ class Validator:
         pattern = re.compile(reg)
         is_valid = bool(re.search(pattern, username))
         if not is_valid:
-            raise InvalidUsernameError(f"Username '{username}' is not valid")
+            raise InvalidUsernameError(
+                f"Username '{username}' is not valid. Usernames must be between 4 and 20 characters, can only contain alphanumeric characters or special characters '.' and '_', cannot start with a special character, and cannot have doubles of special chacacters ('..' or '__')"
+            )
 
         user = USER_TABLE.get_user(username)
         if user is not None:
@@ -146,17 +147,51 @@ class Validator:
 
     def validate_edit_user(self, user: User, original_username: str):
         old_user = self.validate_existing_username(original_username)
+
+        if old_user.password.decode("utf-8") == Constants.NETID_PASSWORD:
+            raise UserException("Cannot edit NetID user")
+
         if old_user == user:
             raise NoEditsError("No edits made")
 
         if not (user.email == old_user.email):
             self.validate_email(user.email)
+
         if user.password is not None:
             self.validate_password(user.password)
-        self.validate_privilege(user.privilege, user.username)
+
+        if not (user.privilege == old_user.privilege):
+            self.validate_privilege(user.privilege, user.username)
+
         if not (original_username == user.username):
             self.validate_new_username(user.username)
 
         user.password = old_user.password
 
         return [user, old_user]
+
+    def validate_delete_user(self, user: User):
+
+        if user.password.decode("utf-8") == Constants.NETID_PASSWORD:
+            raise UserException("Cannot delete NetID user")
+
+        if user is None:
+            raise UserException(f"User '{user.username}' does not exist")
+
+        return True
+
+    def validate_shibboleth_login(self, user: User):
+        # Upon shibboleth login
+        # 1 check to see if a user with netid exists, if not create a new one
+        # 2 check to see if that user has a password equal to "netid", if not, reject the new user
+        # 3 make new user
+
+        result = USER_TABLE.get_user(user.username)
+
+        if result is None:
+            return True
+
+        if not result.password == user.password:
+            raise UserException(f"User {user.username} already exists")
+
+        return True

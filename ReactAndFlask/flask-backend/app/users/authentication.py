@@ -5,6 +5,8 @@ import time
 
 import bcrypt
 import jwt
+from app.constants import Constants
+from app.exceptions.UserExceptions import ExpiredTokenError, InvalidTokenError
 
 blacklist_file = "/token_blacklist.json"
 dirname = os.path.dirname(__file__)
@@ -95,14 +97,14 @@ class AuthManager:
             payload = jwt.decode(auth_token, self.TOKEN_SECRET_KEY)
             return payload["sub"]
         except jwt.ExpiredSignatureError:
-            return self.SESSION_EXPIRED
+            raise ExpiredTokenError(self.SESSION_EXPIRED)
         except jwt.InvalidTokenError:
-            return self.INVALID_TOKEN
+            raise InvalidTokenError(self.INVALID_TOKEN)
 
     def validate_auth_token(self, headers):
 
         try:
-            auth_token = headers["token"]
+            auth_token = headers[Constants.TOKEN_KEY]
         except KeyError:
             return [False, "Please provide auth token"]
 

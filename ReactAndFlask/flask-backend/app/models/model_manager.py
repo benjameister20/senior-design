@@ -1,3 +1,4 @@
+from app.constants import Constants
 from app.dal.instance_table import InstanceTable
 from app.dal.model_table import ModelTable
 from app.data_models.model import Model
@@ -15,7 +16,7 @@ class ModelManager:
         try:
             new_model: Model = self.make_model(model_data)
             create_validation_result = self.validate.create_model_validation(new_model)
-            if create_validation_result == "success":
+            if create_validation_result == Constants.API_SUCCESS:
                 self.table.add_model(new_model)
             else:
                 raise InvalidInputsError(create_validation_result)
@@ -25,8 +26,8 @@ class ModelManager:
             raise InvalidInputsError("Unable to add the new model")
 
     def delete_model(self, model_data):
-        vendor = self.check_null(model_data["vendor"])
-        model_number = self.check_null(model_data["model_number"])
+        vendor = self.check_null(model_data[Constants.VENDOR_KEY])
+        model_number = self.check_null(model_data[Constants.MODEL_NUMBER_KEY])
 
         print("Got vendor and model_number")
 
@@ -43,7 +44,7 @@ class ModelManager:
             )
             print("Validation complete")
             print(delete_validation_result)
-            if delete_validation_result == "success":
+            if delete_validation_result == Constants.API_SUCCESS:
                 print("Validation successful")
                 self.table.delete_model_str(vendor, model_number)
                 print("Successfully deleted from ModelTable")
@@ -59,8 +60,8 @@ class ModelManager:
     def detail_view(self, model_data):
         print("model data")
         print(model_data)
-        vendor = self.check_null(model_data["vendor"])
-        model_number = self.check_null(model_data["model_number"])
+        vendor = self.check_null(model_data[Constants.VENDOR_KEY])
+        model_number = self.check_null(model_data[Constants.MODEL_NUMBER_KEY])
 
         try:
             model = self.table.get_model_by_vendor_number(vendor, model_number)
@@ -73,9 +74,11 @@ class ModelManager:
     def edit_model(self, model_data):
         # try:
         updated_model = self.make_model(model_data)
-        original_vendor = self.check_null(model_data.get("vendorOriginal"))
-        original_model_number = self.check_null(model_data.get("model_numberOriginal"))
-        original_height = self.check_null(model_data.get("heightOriginal"))
+        original_vendor = self.check_null(model_data.get(Constants.VENDOR_ORIG_KEY))
+        original_model_number = self.check_null(
+            model_data.get(Constants.MODEL_NUMBER_ORIG_KEY)
+        )
+        original_height = self.check_null(model_data.get(Constants.HEIGHT_ORIG_KEY))
 
         model_id = self.table.get_model_id_by_vendor_number(
             original_vendor, original_model_number
@@ -89,9 +92,9 @@ class ModelManager:
                     "Cannot edit height while instances are deployed"
                 )
         edit_validation_result = self.validate.edit_model_validation(
-            self.make_model(model_data)
+            self.make_model(model_data), original_vendor, original_model_number
         )
-        if edit_validation_result == "success":
+        if edit_validation_result == Constants.API_SUCCESS:
             self.table.edit_model(model_id, updated_model)
         else:
             return InvalidInputsError(edit_validation_result)
@@ -101,9 +104,9 @@ class ModelManager:
         #     )
 
     def get_models(self, filter, limit: int):
-        vendor = filter.get("vendor")
-        model_number = filter.get("model_number")
-        height = filter.get("height")
+        vendor = filter.get(Constants.VENDOR_KEY)
+        model_number = filter.get(Constants.MODEL_NUMBER_KEY)
+        height = filter.get(Constants.HEIGHT_KEY)
 
         try:
             model_list = self.table.get_models_with_filter(

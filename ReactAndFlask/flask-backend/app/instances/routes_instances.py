@@ -31,11 +31,11 @@ def search():
     global instancesArr
     returnJSON = createJSON()
 
-    print("THIS ONE RIGHT HERE THIS ONE RIGHT HERE THIS ONE RIGHT HERE")
     print(request.json)
-    filter = request.json["filter"]
-    print("FILTER")
-    print(filter)
+    filter = request.json.get("filter")
+    if filter is None:
+        return addMessageToJSON(returnJSON, "Please include a filter")
+
     try:
         limit = int(request.json["limit"])
     except:
@@ -45,6 +45,10 @@ def search():
         print(request.json)
         datacenter_name = request.json["datacenter_name"]
         instance_list = INSTANCE_MANAGER.get_instances(filter, datacenter_name, limit)
+        # print(f"INSTANCE LIST: {instance_list}, {len(instance_list)}")
+        # if len(instance_list) == 0:
+        #     print("CAUGHT THE PROBLEM")
+        #     return addMessageToJSON(returnJSON, "No instances to show")
         returnJSON = addInstancesTOJSON(
             addMessageToJSON(returnJSON, "success"),
             list(
@@ -138,6 +142,8 @@ def detail_view():
     try:
         instance_data = request.get_json()
         instance = INSTANCE_MANAGER.detail_view(instance_data)
+        if instance is None:
+            return addMessageToJSON(returnJSON, "Cannot view instance of type None")
         return addInstancesTOJSON(
             addMessageToJSON(returnJSON, "success"),
             [

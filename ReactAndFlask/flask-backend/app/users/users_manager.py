@@ -231,7 +231,7 @@ class UserManager:
         answer[Constants.TOKEN_KEY] = self.AUTH_MANAGER.encode_auth_token(username)
         answer[Constants.PRIVILEGE_KEY] = user.privilege
 
-        return self.__add_message_to_JSON(answer, "Successfully authenticated")
+        return self.__add_message_to_JSON(answer, Constants.API_SUCCESS)
 
     def logout(self, request):
         global dirname
@@ -246,7 +246,7 @@ class UserManager:
         with open(dirname + blacklist_file, "w") as outfile:
             json.dump({"blacklist": self.BLACKLIST}, outfile, indent=4)
 
-        return self.__add_message_to_JSON(response, "Successfully logged out")
+        return self.__add_message_to_JSON(response, Constants.API_SUCCESS)
 
     def detail_view(self, request):
 
@@ -309,7 +309,7 @@ class UserManager:
 
         response[Constants.TOKEN_KEY] = self.AUTH_MANAGER.encode_auth_token(username)
         response[Constants.PRIVILEGE_KEY] = privilege
-        response[Constants.MESSAGE_KEY] = "success"
+        response[Constants.MESSAGE_KEY] = Constants.API_SUCCESS
         response[Constants.USERNAME_KEY] = username
 
         # print("RESPONSE")

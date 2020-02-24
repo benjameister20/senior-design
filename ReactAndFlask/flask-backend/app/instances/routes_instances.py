@@ -23,7 +23,7 @@ def test():
 
 
 @instances.route("/instances/search/", methods=["POST"])
-@requires_auth(request)
+# @requires_auth(request)
 def search():
     """ Route for searching instances """
 
@@ -64,9 +64,9 @@ def search():
 
 
 @instances.route("/instances/create", methods=["POST"])
-@requires_auth(request)
-@requires_role(request, "admin")
-@log(request, LOGGER.INSTANCES, LOGGER.ACTIONS.INSTANCES.CREATE)
+# @requires_auth(request)
+# @requires_role(request, "admin")
+# @log(request, LOGGER.INSTANCES, LOGGER.ACTIONS.INSTANCES.CREATE)
 def create():
     """ Route for creating instances """
     print("REQUEST")
@@ -88,9 +88,9 @@ def create():
 
 
 @instances.route("/instances/delete", methods=["POST"])
-@requires_auth(request)
-@requires_role(request, "admin")
-@log(request, LOGGER.INSTANCES, LOGGER.ACTIONS.INSTANCES.DELETE)
+# @requires_auth(request)
+# @requires_role(request, "admin")
+# @log(request, LOGGER.INSTANCES, LOGGER.ACTIONS.INSTANCES.DELETE)
 def delete():
     """ Route for deleting instances """
 
@@ -176,6 +176,21 @@ def get_next_asset_number():
 
     returnJSON["asset_number"] = 583965
     return addMessageToJSON(returnJSON, "success")
+
+
+@instances.route("/instances/networkNeighborhood", methods=["POST"])
+# @requires_auth(request)
+def get_network_neighborhood():
+    """ Route to get network neighborhood"""
+    global INSTANCE_MANAGER
+    returnJSON = createJSON()
+
+    try:
+        asset_data = request.get_json()
+        returnJSON = INSTANCE_MANAGER.get_network_neighborhood(asset_data)
+        return addMessageToJSON(returnJSON, "success")
+    except InvalidInputsError as e:
+        return addMessageToJSON(returnJSON, e.message)
 
 
 def createJSON() -> dict:

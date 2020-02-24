@@ -1,24 +1,16 @@
 import React from 'react';
 import axios from 'axios';
-import ExpansionPanel from '@material-ui/core/ExpansionPanel';
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
-import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import getURL from '../../helpers/functions/GetURL';
-import  Button from '@material-ui/core/Button';
+import * as Constants from "../../Constants";
+import { DatacenterCommand } from "../../racks/enums/DatacenterCommands.ts";
 import { StatsCommand } from "../enums/StatsCommands.ts";
 import JSONtoArr from "../../helpers/functions/JSONtoArr";
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
 import StatusDisplay from '../../helpers/StatusDisplay';
-import Paper from '@material-ui/core/Paper';
 import ErrorBoundray from '../../errors/ErrorBoundry';
-import Grid from '@material-ui/core/Grid';
+import { Select, MenuItem, InputLabel, Grid, Paper, Typography, Button } from '@material-ui/core';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from '@material-ui/core';
+import { ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails } from '@material-ui/core';
 
 const statsMainPath = 'stats/';
 const tables = {
@@ -42,6 +34,9 @@ export default class StatisticsView extends React.Component {
         super(props);
 
         this.state = {
+            loadingDatacenters: true,
+            datacenterList: [],
+            selectedDatacenter: '',
             tableValues: {
                 "totalUsage":[],
                 "spaceUsage": [],
@@ -67,8 +62,23 @@ export default class StatisticsView extends React.Component {
         axios.defaults.headers.common['privilege'] = this.props.privilege;
     }
 
+    componentDidMount() {
+        this.getDatacenters();
+    }
+
+    getDatacenters = () => {
+        axios.get(getURL(Constants.DATACENTERS_MAIN_PATH, DatacenterCommand.GET_ALL_DATACENTERS)).then(
+            response => {
+                console.log(response);
+                this.setState({ datacenterList: response.data.datacenters, loadingDatacenters: false });
+            }
+        );
+    }
+
     generateReport() {
-        axios.post(getURL(statsMainPath, StatsCommand.GENERATE_REPORT)).then(response => {
+        axios.post(getURL(statsMainPath, StatsCommand.GENERATE_REPORT), {
+            'datacenter_name': this.state.selectedDatacenter,
+        }).then(response => {
                 try {
                     var data = response.data;
                     var totalUsage = [];
@@ -129,7 +139,7 @@ export default class StatisticsView extends React.Component {
                     container
                     spacing={5}
                     direction="row"
-                    justify="flex-start"
+                    justify="center"
                     alignItems="center"
                     style={{margin: "0px", maxWidth: "95vw"}}
                 >
@@ -138,15 +148,33 @@ export default class StatisticsView extends React.Component {
                             Reports
                         </Typography>
                     </Grid>
+                    <Grid item xs={3}>
+                        <InputLabel id="datacenter-select-label">Select Datacenter</InputLabel>
+                        <Select
+                            name='datacenter_name'
+                            id="datacenter-select"
+                            onChange={(e) => this.setState({ selectedDatacenter: e.target.value })}
+                            style={{ width: "100%" }}
+                        >
+                            <MenuItem value="">All Datacenters</MenuItem>
+                            {this.state.datacenterList.map(value => {
+                                return (<MenuItem value={value}>{value["name"]}</MenuItem>);
+                            })}
+                        </Select>
+                    </Grid>
+                    <Grid item xs={3}>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={this.generateReport}
+                            disabled={this.state.loadingDatacenters}
+                        >
+                            Generate Report
+                        </Button>
+                    </Grid>
                 </Grid>
                 <div>
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={this.generateReport}
-                    >
-                        Generate New Report
-                    </Button>
+
                 </div>
                 {Object.keys(tables).map(key => (
                 <ExpansionPanel>

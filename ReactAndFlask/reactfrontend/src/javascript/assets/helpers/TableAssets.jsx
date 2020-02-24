@@ -30,13 +30,8 @@ import * as Constants from '../../Constants';
 
 const useStyles = theme => ({
 	styledTableRow: {
-	'&:nth-of-type(odd)': {
-		backgroundColor: theme.palette.primary.light,
-	},
 	},
 	tableCellHead: {
-		backgroundColor: theme.palette.primary.light,
-		color: theme.palette.common.white,
 	},
 	styledTableCell:{
 		fontSize: 14,
@@ -86,17 +81,17 @@ const emptySearch = {
     "datacenter_name":"",
 }
 
-function createData(model, hostname, datacenter, rack, rackU, owner, assetNum) {
-  return { model, hostname, datacenter, rack, rackU, owner, assetNum };
+function createData(model, hostname, datacenter_name, rack, owner, asset_number) {
+  return { model, hostname, datacenter_name, rack, owner, asset_number };
 }
 
 const headCells = [
-	{ id: 'datacenter', numeric: false, label:"Datacenter", align:"left" },
+	{ id: 'datacenter_name', numeric: false, label:"Datacenter", align:"left" },
 	{ id: 'hostname', numeric: false, label:"Hostname", align:"left" },
 	{ id: 'model', numeric: false, label:"Model", align:"left" },
-	{ id: 'rack', numeric: false, label:"Location", align:"left" },
+	{ id: 'rack', numeric: false, label:"Rack", align:"left" },
 	{ id: 'owner', numeric: false, label:"Owner", align:"left" },
-	{ id: 'assetNumber', numeric: false, label:"Asset Number", align:"right" },
+	{ id: 'asset_number', numeric: false, label:"Asset Number", align:"right" },
 ];
 
 
@@ -130,7 +125,14 @@ class TableAsset extends React.Component {
   	componentDidMount() {
 		axios.post(
             getURL(Constants.ASSETS_MAIN_PATH, AssetCommand.search),emptySearch).then(
-            response => { this.setState({ allAssets: response.data.instances, tableItems:response.data.instances }); });
+            response => {
+				var items = [];
+
+				response.data.instances.map(asset => {
+					items.push(createData(asset.model, asset.hostname, asset.datacenter_name, asset.rack+" U"+asset.rack_position, asset.owner, asset.asset_number));
+				});
+				this.setState({ allAssets: response.data.instances, tableItems:items });
+			});
 	}
 
 	editAsset = () => {
@@ -211,7 +213,7 @@ class TableAsset extends React.Component {
 		var items = [];
 
 		assets.map(asset => {
-			items.push(createData(asset.model, asset.hostname, asset.datacenter_id, asset.rack, asset.rack_position, asset.owner, asset.asset_number));
+			items.push(createData(asset.model, asset.hostname, asset.datacenter_name, asset.rack+" U"+asset.rack_position, asset.owner, asset.asset_number));
 		});
 
 		this.setState({ tableItems : items });
@@ -260,7 +262,7 @@ class TableAsset extends React.Component {
 										direction={this.state.orderBy === headCell.id ? this.state.order : 'asc'}
 										onClick={(event) => {this.createSortHandler(event, headCell.id)} }
 									>
-									{headCell.label}
+									<span style={{fontWeight: "bold"}}>{headCell.label}</span>
 									{this.state.orderBy === headCell.id ? (
 										<span className={classes.visuallyHidden}>
 											{this.state.order === 'desc' ? 'sorted descending' : 'sorted ascending'}
@@ -286,12 +288,12 @@ class TableAsset extends React.Component {
 												tabIndex={-1}
 												key={row.assetNum}
 											>
-												<TableCell component="th" id={labelId} scope="row">{row.model}</TableCell>
+												<TableCell component="th" id={labelId} scope="row">{row.datacenter_name}</TableCell>
 												<TableCell align="left">{row.hostname}</TableCell>
-												<TableCell align="left">{row.datacenter}</TableCell>
-												<TableCell align="left">{row.rack + " U" + row.rackU}</TableCell>
+												<TableCell align="left">{row.model}</TableCell>
+												<TableCell align="left">{row.rack}</TableCell>
 												<TableCell align="left">{row.owner}</TableCell>
-												<TableCell align="right">{row.assetNum}</TableCell>
+												<TableCell align="right">{row.asset_number}</TableCell>
 												<TableCell align="center">
 													<Button
 														color="primary"
@@ -304,11 +306,6 @@ class TableAsset extends React.Component {
 											</TableRow>
 										);
 									})}
-									{/*emptyRows > 0 && (
-										<TableRow style={{ height: (dense ? 33 : 53) * emptyRows }}>
-										<TableCell colSpan={6} />
-										</TableRow>
-									)*/}
 							</TableBody>
 						</Table>
 					</TableContainer>

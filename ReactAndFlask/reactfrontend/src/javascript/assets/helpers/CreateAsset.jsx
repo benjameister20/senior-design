@@ -20,6 +20,8 @@ import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import Slide from '@material-ui/core/Slide';
 import Dialog from '@material-ui/core/Dialog';
+import Alert from '@material-ui/lab/Alert';
+import Collapse from '@material-ui/core/Collapse';
 
 import StatusDisplay from '../../helpers/StatusDisplay';
 import { AssetInput } from '../enums/AssetInputs.ts';
@@ -157,6 +159,7 @@ class CreateAsset extends React.Component {
             powerPortState:null,
             leftRight:null,
             availableConnections:false,
+            portOptions:[],
 
             canSubmit:false,
 
@@ -241,14 +244,14 @@ class CreateAsset extends React.Component {
             response => {
                 var instances = response.data.instances;
 
-                var assetNums = [];
-                var assetNumToModel = {};
+                var hostnames = [];
+                var hostToModel = {};
                 instances.map(instance => {
-                    assetNums.push(instance.asset_number);
-                    assetNumToModel[instance.asset_number] = instance.model;
+                    hostnames.push(instance.hostname);
+                    hostToModel[instance.hostname] = instance.model;
                 })
 
-                this.setState({ loadingHostnames: false, assetNumList: assetNums, assetNumToModelList: assetNumToModel }, this.availableNetworkConnections());
+                this.setState({ loadingHostnames: false, assetNumList: hostnames, assetNumToModelList: hostToModel }, this.availableNetworkConnections());
             });
     }
 
@@ -276,25 +279,9 @@ class CreateAsset extends React.Component {
                 getURL(AssetConstants.ASSETS_MAIN_PATH, AssetCommand.create),
                 json).then(
                     response => {
+                    console.log(response);
                     if (response.data.message === AssetConstants.SUCCESS_TOKEN) {
-                        this.setState({
-                            statusOpen: true,
-                            statusMessage: "Successfully created asset",
-                            statusSeverity:AssetConstants.SUCCESS_TOKEN,
-                            showModal:false,
-
-                            model:"",
-                            hostname:"",
-                            rack:"",
-                            rackU:-1,
-                            owner:"",
-                            comment:"",
-                            datacenter_name:"",
-                            tags:[],
-                            network_connections:[],
-                            power_connections:[],
-                            asset_number:-1,
-                        }, () => { /*this.props.search()*/ });
+                        this.closeModal();
                     } else {
                         this.setState({ statusOpen: true, statusMessage: response.data.message, statusSeverity:AssetConstants.ERROR_TOKEN });
                     }
@@ -363,26 +350,24 @@ class CreateAsset extends React.Component {
         }, () => { this.validateForm() });
     }
 
-    changeNetworkHostname = (event, port) => {
-        var val = event.target.value;
-
+    changeNetworkHostname = (value, port) => {
+        var val = value===undefined ? "" : value;
         this.setState(prevState => {
             let network_connections = Object.assign({}, prevState.network_connections);
-            network_connections[port] = (network_connections[port] === undefined) ? {} : network_connections[port];
             network_connections[port].connection_hostname = val;
             return { network_connections };
-        }, () => { this.validateForm() });
+        }, () => { this.getPortOptions(val); this.validateForm() });
     }
 
-    changeNetworkPort = (event, port) => {
-        var val = event.target.value;
+    changeNetworkPort = (value, port) => {
+        var val = value===undefined ? "" : value;
 
         this.setState(prevState => {
             let network_connections = Object.assign({}, prevState.network_connections);
             network_connections[port] = (network_connections[port] === null) ? {} : network_connections[port];
             network_connections[port].connection_port = val;
             return { network_connections };
-        }, () => { this.validateForm() });
+        }, () => {  this.validateForm() });
     }
 
     updatePowerPort = (event, port) => {
@@ -467,28 +452,18 @@ class CreateAsset extends React.Component {
 
     closeModal = () => {
         this.setState({
-            // next available asset number
             loadingAssetNumber:true,
-
-            // model information
             loadingModels:true,
             modelList:[],
             networkList:null,
             powerPortList:null,
-
-            // owner information
             loadingOwners:true,
             ownerList:[],
-
-            // datacenter information
             loadingDatacenters:true,
             datacenterList:[],
-
-            // hostname information
             loadingHostnames:true,
             assetNumList:[],
             assetNumToModelList:null,
-
             model:"",
             hostname:"",
             rack:"",
@@ -500,19 +475,15 @@ class CreateAsset extends React.Component {
             network_connections:null,
             power_connections:null,
             asset_number:100000,
-
             selectedConnection:null,
-
             statusOpen: false,
             statusMessage: "",
             statusSeverity:"",
-
             showModal:false,
-
             powerPortState:null,
             leftRight:null,
             availableConnections:false,
-
+            portOptions:[],
             canSubmit:false,
         }, () => {this.getLists(); this.props.getAssetList(); this.props.close(); });
     }
@@ -523,6 +494,14 @@ class CreateAsset extends React.Component {
 
     validateForm = () => {
         this.setState({ canSubmit:this.validJSON(this.createJSON()) });
+    }
+
+    getPortOptions = (hostname) => {
+        try {
+            this.setState({ portOptions:this.state.networkList[this.state.assetNumToModelList[hostname]] });
+        } catch {
+
+        }
     }
 
     render() {
@@ -702,17 +681,16 @@ class CreateAsset extends React.Component {
                                                 id="input-network-ports"
                                                 options={this.state.assetNumList}
                                                 includeInputInList
+                                                onChange={(event, value) => {this.changeNetworkHostname(value, networkPort)}}
+                                                required={this.state.network_connections[networkPort].connection_port!==""}
                                                 renderInput={params => (
                                                     <TextField
                                                         {...params}
                                                         label={"Connection Hostname"}
                                                         name={"Connection Hostname"}
-                                                        onBlur={(event) => {this.changeNetworkHostname(event, networkPort)}}
                                                         variant="outlined"
                                                         fullWidth
-                                                        required={this.state.network_connections[networkPort].connection_port!==""}
                                                         disabled={this.state.hostname===""}
-                                                        value={ (this.state.network_connections !== null && this.state.network_connections[networkPort]!==undefined) ? this.state.network_connections[networkPort].connection_hostname : "" }
                                                     />
                                                 )}
                                             />
@@ -722,19 +700,18 @@ class CreateAsset extends React.Component {
                                         <Tooltip placement="top" open={this.state.inputs.networkConnections.Tooltip} title={this.state.inputs.networkConnections.description}>
                                             <Autocomplete
                                                 id="input-network-ports"
-                                                options={this.state.networkList[this.state.assetNumToModelList[networkPort]]}
+                                                options={this.state.portOptions}
                                                 includeInputInList
+                                                onChange={(event, value) => {this.changeNetworkPort(value, networkPort)}}
                                                 renderInput={params => (
                                                     <TextField
                                                         {...params}
                                                         label={"Connection Port"}
                                                         name={"Connection Port"}
-                                                        onBlur={(event) => {this.changeNetworkPort(event, networkPort)}}
                                                         variant="outlined"
                                                         fullWidth
                                                         required={this.state.network_connections[networkPort].connection_hostname!==""}
                                                         disabled={this.state.hostname===""}
-                                                        value={ (this.state.network_connections !== null && this.state.network_connections[networkPort]!==undefined) ? this.state.network_connections[networkPort].connection_port : "" }
                                                     />
                                                 )}
                                             />
@@ -834,13 +811,24 @@ class CreateAsset extends React.Component {
                                 </Button>
                             </Grid>
                         </Grid></div></form>}
-                        <StatusDisplay
-                            open={this.statusOpen}
-                            severity={this.statusSeverity}
-                            closeStatus={this.statusClose}
-                            message={this.statusMessage}
-                        />
-                {/*</Modal>*/}
+                        {this.state.statusOpen ?
+                        <Alert
+                                severity={this.statusSeverity}
+                                action={
+                                    <IconButton
+                                      aria-label="close"
+                                      color="inherit"
+                                      size="small"
+                                      onClick={() => {
+                                        this.statusClose()
+                                      }}
+                                    >
+                                      <CloseIcon fontSize="inherit" />
+                                    </IconButton>
+                                  }
+                            >
+                                {this.statusMessage}
+                            </Alert>:null}
                 </Dialog>
         </span>
         );

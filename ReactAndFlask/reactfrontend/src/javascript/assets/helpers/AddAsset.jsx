@@ -5,11 +5,32 @@ import {
 	Typography,
 	Button,
 	Paper,
+	Dialog,
+	withStyles,
+	AppBar,
+	Toolbar,
+	IconButton,
+	Slide
 } from "@material-ui/core/";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
+import CloseIcon from '@material-ui/icons/Close';
 
 import CreateAsset from "./CreateAsset";
 import ImportAsset from "./ImportAsset";
+
+const useStyles = theme => ({
+	appBar: {
+	  position: 'relative',
+	},
+	title: {
+	  marginLeft: theme.spacing(2),
+	  flex: 1,
+	},
+});
+
+const Transition = React.forwardRef(function Transition(props, ref) {
+    return <Slide direction="up" ref={ref} {...props} />;
+  });
 
 class AddAsset extends React.Component {
 	constructor(props) {
@@ -38,6 +59,7 @@ class AddAsset extends React.Component {
 	}
 
 	render() {
+		const { classes } = this.props;
 		return (
 			<React.Fragment>
 				<Paper elevation={3}>
@@ -89,11 +111,24 @@ class AddAsset extends React.Component {
 						</Grid>
 					</Grid>
 				</Paper>
-				<CreateAsset
-					open={this.state.showCreate}
-					close={this.closeCreate}
-					getAssetList={this.props.getAssetList}
-				/>
+
+				<Dialog fullScreen open={this.state.showCreate} onClose={this.closeCreate} TransitionComponent={Transition} padding={3}>
+					<AppBar className={classes.appBar}>
+						<Toolbar>
+							<IconButton edge="start" color="inherit" onClick={this.closeCreate} aria-label="close">
+								<CloseIcon />
+							</IconButton>
+							<Typography variant="h6" className={classes.title}>
+								Create Asset
+							</Typography>
+						</Toolbar>
+					</AppBar>
+					<CreateAsset
+						close={this.closeCreate}
+						getAssetList={this.props.getAssetList}
+					/>
+				</Dialog>
+
 				<ImportAsset
 					open={this.state.showImport}
 					close={this.closeImport}
@@ -103,4 +138,4 @@ class AddAsset extends React.Component {
 	}
 }
 
-export default AddAsset;
+export default withStyles(useStyles)(AddAsset);

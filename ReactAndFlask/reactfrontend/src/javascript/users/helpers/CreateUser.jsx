@@ -55,6 +55,7 @@ export default class CreateModal extends React.Component {
                                 >
                                     <InputLabel id="privilege-select">Privilege</InputLabel>
                                     <Select
+                                        name='privilege'
                                         id="privilege-select"
                                         onChange={this.props.updateModelCreator}>
                                         <MenuItem value="admin">Administrator</MenuItem>

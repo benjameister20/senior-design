@@ -131,19 +131,11 @@ class InstanceTable:
     def edit_instance(self, instance: Instance, original_asset_number) -> None:
         """ Updates a model to the database """
         try:
+            new_entry = InstanceEntry(instance=instance)
+
             old_entry = InstanceEntry.query.filter_by(
                 asset_number=original_asset_number
-            ).first()
-            old_entry.model_id = instance.model_id
-            old_entry.hostname = instance.hostname
-            old_entry.rack_label = instance.rack_label
-            old_entry.rack_position = instance.rack_position
-            old_entry.owner = instance.owner
-            old_entry.comment = instance.comment
-            old_entry.datacenter_id = instance.datacenter_id
-            old_entry.network_connections = instance.network_connections
-            old_entry.power_connections = instance.power_connections
-            old_entry.asset_number = instance.asset_number
+            ).update(new_entry.make_json())
             db.session.commit()
         except:
             raise ChangeModelDBException(f"Failed to udpate asset {instance.model_id}")

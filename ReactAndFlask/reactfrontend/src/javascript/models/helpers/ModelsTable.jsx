@@ -26,6 +26,12 @@ import { Privilege } from '../../enums/privilegeTypes.ts'
 import EditIcon from '@material-ui/icons/Edit';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import CommentIcon from '@material-ui/icons/Comment';
+import axios from 'axios';
+import { CircularProgress } from '@material-ui/core';
+import { ModelCommand } from '../enums/ModelCommands.ts'
+import getURL from '../../helpers/functions/GetURL';
+import * as ModelConstants from "../ModelConstants";
+
 
 const useStyles = theme => ({
     root: {
@@ -52,6 +58,8 @@ const useStyles = theme => ({
         },
       },
 });
+
+const modelsMainPath = 'models/';
 
 function createInputs(name, label) {
     return {label, name};
@@ -84,7 +92,27 @@ class ModelsTable extends React.Component {
         row: null,
         comment: "",
         color: '#000',
+        detailViewLoading: false,
+
+        detailedValues : {
+            'vendor':'',
+            'model_number':'',
+            'height':'',
+            'display_color':'',
+            'ethernet_ports':[],
+            'power_ports':'',
+            'cpu':'',
+            'memory':'',
+            'storage':'',
+            'comment':'',
+        },
+        originalVendor:'',
+        originalModelNumber:'',
+        originalHeight:'',
     };
+
+    axios.defaults.headers.common['token'] = this.props.token;
+    axios.defaults.headers.common['privilege'] = this.props.privilege;
   }
 
   updateColor = (color) => {
@@ -96,25 +124,51 @@ class ModelsTable extends React.Component {
     this.setState({
         row: row,
         showDetailedView: true,
+        detailViewLoading: true,
         color: row["Display Color"] === null ? "#000000" : row["Display Color"],
         networkPorts: row["Network Ports"] === null ? [] : row["Network Ports"],
-        numPorts: row["Network Ports"] === null ? 0 : row["Network Ports"].length });
+        numPorts: row["Network Ports"] === null ? 0 : row["Network Ports"].length
+    });
+
+    this.detailViewModel(row["Vendor"], row["Model Number"]);
   }
+
+  detailViewModel = (vendor, modelNum) => {
+    axios.post(
+        getURL(modelsMainPath, ModelCommand.detailView),
+        {
+            'vendor': vendor,
+            'model_number': modelNum,
+        }
+        ).then(response => {
+            const model = response.data['models'][0];
+            this.setState({
+                detailedValues: model,
+                detailViewLoading: false,
+                originalVendor: model["vendor"],
+                originalModelNumber: model["model_number"],
+                originalHeight: model["height"]
+            });
+        }
+        ).catch(function(error) {
+            this.setState({ showStatus: true, statusMessage: ModelConstants.GENERAL_MODEL_ERROR, statusSeverity:"error" });
+        });
+}
 
   closeDetailedView = () => {
-      this.setState({ showDetailedView: false, row: null, color: "#000000" });
+      this.setState({ showDetailedView: false, row: null, color: "#000000", originalVendor: "", originalModelNumber: "", originalHeight: "" });
   }
 
-  showDeleteModal = () => {
-      this.setState({ showDeleteModal: true });
+  showDeleteModal = (row) => {
+      this.setState({ showDeleteModal: true, originalVendor: row["Vendor"], originalModelNumber: row["Model Number"] });
   }
 
   closeDeleteModal = () => {
-        this.setState({ showDeleteModal: false });
+        this.setState({ showDeleteModal: false, originalVendor: "", originalModelNumber: "", originalHeight: "" });
   }
 
   delete = () => {
-      this.props.deleteModel();
+      this.props.deleteModel(this.state.originalVendor, this.state.originalModelNumber);
       this.closeDeleteModal();
   }
 
@@ -154,9 +208,16 @@ class ModelsTable extends React.Component {
     }
 
     save = () => {
-        this.props.saveModel(this.state.networkPorts);
+        this.props.editModel(this.state.originalVendor, this.state.originalModelNumber, this.state.originalHeight, this.state.detailedValues, this.state.networkPorts);
         this.closeDetailedView();
     }
+
+    updateModelEdited = (event) => {
+        this.state.detailedValues[event.target.name] = event.target.value;
+        this.forceUpdate()
+    }
+
+
 
   render() {
     const { classes } = this.props;
@@ -178,7 +239,7 @@ class ModelsTable extends React.Component {
                         <EditIcon onClick={() => this.showDetailedView(row)} />
                       </Button>
                       <Button>
-                        <DeleteIcon onClick={this.showDeleteModal} />
+                        <DeleteIcon onClick={() => this.showDeleteModal(row)} />
                       </Button>
                   </TableCell> : null }
                 {this.props.keys.map(key => {
@@ -291,6 +352,7 @@ class ModelsTable extends React.Component {
                         open={this.state.showDetailedView}
                     >
                         <div className={classes.grid}>
+                            {this.state.detailViewLoading ? <CircularProgress /> :
                         <Grid
                             container
                             spacing={1}
@@ -305,37 +367,37 @@ class ModelsTable extends React.Component {
                                 <Autocomplete
                                     id="select-vendor"
                                     options={this.props.options}
-                                    defaultValue={this.state.row == null ? '' : this.state.row["Vendor"]}
+                                    defaultValue={this.state.detailedValues == null ? '' : this.state.detailedValues.vendor}
                                     includeInputInList
                                     freeSolo
                                     renderInput={params => (
-                                        <TextField {...params} label={inputs.vendor.label} name={inputs.vendor.name} onChange={this.props.updateModelEdited} onBlur={this.props.updateModelEdited} variant="outlined" fullWidth />
+                                        <TextField {...params} label={inputs.vendor.label} name={inputs.vendor.name} onChange={this.updateModelEdited} onBlur={this.updateModelEdited} variant="outlined" fullWidth />
                                     )}
                                 />
                             </Grid>
                             <Grid item xs={12} sm={6} md={4} lg={3}>
-                                <TextField id="standard-basic" variant="outlined" label={inputs.modelNumber.label} name={inputs.modelNumber.name} defaultValue={this.state.row == null ? '' : this.state.row["Model Number"]} onChange={this.props.updateModelEdited}/>
+                                <TextField id="standard-basic" variant="outlined" label={inputs.modelNumber.label} name={inputs.modelNumber.name} defaultValue={this.state.detailedValues == null ? '' : this.state.detailedValues.model_number} onChange={this.updateModelEdited}/>
                             </Grid>
                             <Grid item xs={3}>
-                                <TextField type="number" id="standard-basic" variant="outlined" label={inputs.height.label} name={inputs.height.name} defaultValue={this.state.row == null ? '' : this.state.row["Height"]} onChange={this.props.updateModelEdited} InputProps={{ inputProps: { min: 1, max: 42} }} style={{ width: "100%" }} />
+                                <TextField type="number" id="standard-basic" variant="outlined" label={inputs.height.label} name={inputs.height.name} defaultValue={this.state.detailedValues == null ? '' : this.state.detailedValues.height} onChange={this.updateModelEdited} InputProps={{ inputProps: { min: 1, max: 42} }} style={{ width: "100%" }} />
                             </Grid>
                             <Grid item xs={3}>
-                                <TextField type="number" id="standard-basic" variant="outlined" label={inputs.ethernetPorts.label} name={inputs.ethernetPorts.name} defaultValue={this.state.row == null ? '' : (this.state.row["Network Ports"] == null ? '' : this.state.row["Network Ports"].length)} onChange={this.updateNetworkPorts} InputProps={{ inputProps: { min: 0} }} />
+                                <TextField type="number" id="standard-basic" variant="outlined" label={inputs.ethernetPorts.label} name={inputs.ethernetPorts.name} defaultValue={this.state.detailedValues == null ? '' : (this.state.detailedValues.ethernet_ports == null ? '' : this.state.detailedValues.ethernet_ports.length)} onChange={this.updateNetworkPorts} InputProps={{ inputProps: { min: 0} }} />
                             </Grid>
                             <Grid item xs={3}>
-                                <TextField type="number" id="standard-basic" variant="outlined" label={inputs.powerPorts.label} name={inputs.powerPorts.name} defaultValue={this.state.row == null ? '' : this.state.row["Power Ports"]} onChange={this.props.updateModelEdited} InputProps={{ inputProps: { min: 0} }}/>
+                                <TextField type="number" id="standard-basic" variant="outlined" label={inputs.powerPorts.label} name={inputs.powerPorts.name} defaultValue={this.state.detailedValues == null ? '' : this.state.detailedValues.power_ports} onChange={this.updateModelEdited} InputProps={{ inputProps: { min: 0} }}/>
                             </Grid>
                             <Grid item xs={3}>
-                                <TextField id="standard-basic" variant="outlined" label={inputs.cpu.label} name={inputs.cpu.name} defaultValue={this.state.row == null ? '' : this.state.row["CPU"]} onChange={this.props.updateModelCreator}/>
+                                <TextField id="standard-basic" variant="outlined" label={inputs.cpu.label} name={inputs.cpu.name} defaultValue={this.state.detailedValues == null ? '' : this.state.detailedValues.cpu} onChange={this.updateModelEdited}/>
                             </Grid>
                             <Grid item xs={3}>
-                                <TextField type="number" id="standard-basic" variant="outlined" label={inputs.memory.label} name={inputs.memory.name} defaultValue={this.state.row == null ? '' : this.state.row["Memory"]} onChange={this.props.updateModelEdited} InputProps={{ inputProps: { min: 0} }} style={{ width: "100%" }}/>
+                                <TextField type="number" id="standard-basic" variant="outlined" label={inputs.memory.label} name={inputs.memory.name} defaultValue={this.state.detailedValues == null ? '' : this.state.detailedValues.memory} onChange={this.updateModelEdited} InputProps={{ inputProps: { min: 0} }} style={{ width: "100%" }}/>
                             </Grid>
                             <Grid item xs={3}>
-                                <TextField id="standard-basic" variant="outlined" label={inputs.storage.label} name={inputs.storage.name} defaultValue={this.state.row == null ? '' : this.state.row["Storage"]} onChange={this.props.updateModelEdited}/>
+                                <TextField id="standard-basic" variant="outlined" label={inputs.storage.label} name={inputs.storage.name} defaultValue={this.state.detailedValues == null ? '' : this.state.detailedValues.storage} onChange={this.updateModelEdited}/>
                             </Grid>
                             <Grid item xs={3}>
-                                <TextField id="standard-basic" variant="outlined" label={inputs.comment.label} name={inputs.comment.name} defaultValue={this.state.row == null ? '' : this.state.row["Comment"]} onChange={this.props.updateModelEdited}/>
+                                <TextField id="standard-basic" variant="outlined" label={inputs.comment.label} name={inputs.comment.name} defaultValue={this.state.detailedValues == null ? '' : this.state.detailedValues.comment} onChange={this.updateModelEdited}/>
                             </Grid>
                             <Grid item xs={6}>
                                 <Typography>Display Color</Typography>
@@ -392,7 +454,7 @@ class ModelsTable extends React.Component {
                                     Cancel
                                 </Button>
                             </Grid>
-                        </Grid>
+                        </Grid>}
                 </div>
                 </Backdrop>
 

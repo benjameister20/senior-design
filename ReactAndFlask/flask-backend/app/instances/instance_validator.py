@@ -172,6 +172,9 @@ class InstanceValidator:
             ):
                 continue
 
+            if not (connection_hostname != "" and connection_port != ""):
+                result += "Connections require both a hostname and connection port."
+
             other_instance = self.instance_table.get_instance_by_hostname(
                 connection_hostname
             )

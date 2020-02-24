@@ -17,7 +17,23 @@ export default class CreateModal extends React.Component {
     constructor(props) {
         super(props);
 
-        this.state = {};
+        this.state = {
+            username: "",
+            display_name: "",
+            password: "",
+            email: "",
+            privilege: "",
+        };
+    }
+
+    resetCreate = (success) => {
+        if (success) {
+            this.setState({username: "", display_name: "", password: "", email: "", privilege: ""});
+        }
+    }
+
+    createModel = () => {
+        this.props.createModel(this.state.username, this.state.password, this.state.display_name, this.state.email, this.state.privilege, this.resetCreate);
     }
 
     render() {
@@ -37,27 +53,28 @@ export default class CreateModal extends React.Component {
                             alignItems="center"
                         >
                             <Grid item xs={6}>
-                                <TextField id="standard-basic" variant="outlined" label="Username" name="username" onChange={this.props.updateModelCreator}/>
+                                <TextField id="standard-basic" variant="outlined" label="Username" name="username" value={this.state.username} onChange={(e) => this.setState({ username: e.target.value })}/>
                             </Grid>
                             <Grid item xs={6}>
-                                <TextField id="standard-basic" variant="outlined" label="Display Name" name="display_name" onChange={this.props.updateModelCreator}/>
+                                <TextField id="standard-basic" variant="outlined" label="Display Name" name="display_name" value={this.state.display_name} onChange={(e) => this.setState({ display_name: e.target.value })}/>
                             </Grid>
                             <Grid item xs={6}>
-                                <TextField id="standard-basic" variant="outlined" label="Password" name="password" type="password" onChange={this.props.updateModelCreator}/>
+                                <TextField id="standard-basic" variant="outlined" label="Password" name="password" type="password" value={this.state.password} onChange={(e) => this.setState({ password: e.target.value })}/>
                             </Grid>
                             <Grid item xs={6}>
-                                <TextField id="standard-basic" variant="outlined" label="Email" name="email" type="email" onChange={this.props.updateModelCreator}/>
+                                <TextField id="standard-basic" variant="outlined" label="Email" name="email" type="email" value={this.state.email} onChange={(e) => this.setState({ email: e.target.value })}/>
                             </Grid>
                             <Grid item xs={6}>
                                 <FormControl
                                     style={{"minWidth": "200px"}}
+                                    value={this.state.pivilege}
                                     gutterbottom="true"
                                 >
                                     <InputLabel id="privilege-select">Privilege</InputLabel>
                                     <Select
                                         name='privilege'
                                         id="privilege-select"
-                                        onChange={this.props.updateModelCreator}>
+                                        onChange={(e) => this.setState({ privilege: e.target.value })}>
                                         <MenuItem value="admin">Administrator</MenuItem>
                                         <MenuItem value="user">User</MenuItem>
                                     </Select>
@@ -73,7 +90,7 @@ export default class CreateModal extends React.Component {
                             >
                                 <Button
                                     variant="contained"
-                                    onClick={this.props.createModel}
+                                    onClick={this.createModel}
                                     style={{
                                         "width": "100%",
                                         "marginTop": "20px",

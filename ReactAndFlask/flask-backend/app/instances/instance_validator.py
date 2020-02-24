@@ -22,6 +22,16 @@ class InstanceValidator:
         ):
             return f"Rack {instance.rack_label} does not exist. Instances must be created on preexisting racks"
 
+        asset_pattern = re.compile("[0-9]{6}")
+        if asset_pattern.fullmatch(instance.asset_number) is None:
+            return "Asset numbers must be 6 digits long and only contain numbers."
+
+        if (
+            self.instance_table.get_instance_by_asset_number(instance.asset_number)
+            is not None
+        ):
+            return f"Asset numbers must be unique. An asset with asset number {instance.asset_number} already exists."
+
         if instance.hostname != "" and instance.hostname is not None:
             duplicate_hostname = self.instance_table.get_instance_by_hostname(
                 instance.hostname
@@ -89,8 +99,16 @@ class InstanceValidator:
         ):
             return "The requested rack does not exist. Instances must be created on preexisting racks"
 
-        print("INSTANCE HOSTNAME")
-        print(instance.hostname)
+        if instance.asset_number != original_asset_number:
+            asset_pattern = re.compile("[0-9]{6}")
+            if asset_pattern.fullmatch(instance.asset_number) is None:
+                return "Asset numbers must be 6 digits long and only contain numbers."
+
+            if (
+                self.instance_table.get_instance_by_asset_number(instance.asset_number)
+                is not None
+            ):
+                return f"Asset numbers must be unique. An asset with asset number {instance.asset_number} already exists."
 
         if instance.hostname != "" and instance.hostname is not None:
             duplicate_hostname = self.instance_table.get_instance_by_hostname(

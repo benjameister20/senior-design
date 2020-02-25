@@ -36,7 +36,7 @@ export default class StatisticsView extends React.Component {
         this.state = {
             loadingDatacenters: true,
             datacenterList: [],
-            selectedDatacenter: '',
+            selectedDatacenter: 'All Datacenters',
             tableValues: {
                 "totalUsage":[],
                 "spaceUsage": [],
@@ -153,6 +153,7 @@ export default class StatisticsView extends React.Component {
                         <Select
                             name='datacenter_name'
                             id="datacenter-select"
+                            value={this.state.selectedDatacenter}
                             onChange={(e) => this.setState({ selectedDatacenter: e.target.value })}
                             style={{ width: "100%" }}
                         >

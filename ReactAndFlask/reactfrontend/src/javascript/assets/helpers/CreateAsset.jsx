@@ -281,6 +281,7 @@ class CreateAsset extends React.Component {
                     response => {
                     console.log(response);
                     if (response.data.message === AssetConstants.SUCCESS_TOKEN) {
+                        this.props.showStatus(true, "success", "Successfully created asset");
                         this.closeModal();
                     } else {
                         this.setState({ statusOpen: true, statusMessage: response.data.message, statusSeverity:AssetConstants.ERROR_TOKEN });
@@ -451,6 +452,8 @@ class CreateAsset extends React.Component {
     }
 
     closeModal = () => {
+        this.getLists();
+        this.props.getAssetList();
         this.setState({
             loadingAssetNumber:true,
             loadingModels:true,
@@ -485,7 +488,7 @@ class CreateAsset extends React.Component {
             availableConnections:false,
             portOptions:[],
             canSubmit:false,
-        }, () => {this.getLists(); this.props.getAssetList(); this.props.close(); });
+        }, () => { this.props.close(); });
     }
 
     statusClose = () => {
@@ -793,7 +796,6 @@ class CreateAsset extends React.Component {
                         <Button
                             variant="contained"
                             color="primary"
-                            type="submit"
                             onClick={this.closeModal}
                         >
                             Cancel
@@ -802,7 +804,7 @@ class CreateAsset extends React.Component {
                 </Grid></div></form>}
                 {this.state.statusOpen ?
                 <Alert
-                        severity={this.statusSeverity}
+                        severity={this.state.statusSeverity}
                         action={
                             <IconButton
                                 aria-label="close"
@@ -816,7 +818,7 @@ class CreateAsset extends React.Component {
                             </IconButton>
                             }
                     >
-                        {this.statusMessage}
+                        {this.state.statusMessage}
                     </Alert>:null}
         </span>
         );

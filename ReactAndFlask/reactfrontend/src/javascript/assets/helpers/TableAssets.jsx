@@ -26,6 +26,7 @@ import { Privilege } from "../../enums/privilegeTypes.ts";
 import AddAsset from "./AddAsset";
 import ExportAsset from "./ExportAsset";
 import * as Constants from '../../Constants';
+import StatusDisplay from "../../helpers/StatusDisplay";
 
 
 const useStyles = theme => ({
@@ -119,6 +120,10 @@ class TableAsset extends React.Component {
 
 	  order:"asc",
 	  orderBy:"datacenter",
+
+	  showStatus:false,
+	  statusSeverity:"",
+	  statusMessage:"",
     };
   }
 
@@ -223,7 +228,15 @@ class TableAsset extends React.Component {
         axios.post(
             getURL(Constants.ASSETS_MAIN_PATH, AssetCommand.search),emptySearch).then(
             response => { this.setState({ allAssets: response.data.instances }); });
-    }
+	}
+
+	showStatusBar = (status, severity, message) => {
+		this.setState({ showStatus:status, statusSeverity:severity, statusMessage:message });
+	}
+
+	closeShowStatus = () => {
+		this.setState({ showStatus:false, statusSeverity:"", statusMessage:"" });
+	}
 
 	render() {
 	const { classes } = this.props;
@@ -232,7 +245,7 @@ class TableAsset extends React.Component {
 		<React.Fragment>
 			<Grid container spacing={3}>
 				<Grid item xs={12} sm={6} md={4} lg={3}>
-					{(this.props.privilege === Privilege.ADMIN) ? <AddAsset getAssetList={this.getAssetList} /> : null}
+					{(this.props.privilege === Privilege.ADMIN) ? <AddAsset showStatus={this.showStatusBar} getAssetList={this.getAssetList} /> : null}
 				</Grid>
 				<Grid item xs={12} sm={6} md={4} lg={6}>
 					<FilterAsset
@@ -314,6 +327,12 @@ class TableAsset extends React.Component {
 			search={this.search}
 			disabled={this.props.privilege===Privilege.USER /* && username !== row.owner*/}
 			asset={this.state.detailAsset}
+		/>
+		<StatusDisplay
+			open={this.state.showStatus}
+			severity={this.state.statusSeverity}
+			closeStatus={this.closeShowStatus}
+			message={this.state.statusMessage}
 		/>
 		</React.Fragment>
 	);

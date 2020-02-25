@@ -71,20 +71,27 @@ class FilterAsset extends React.Component {
 
     search = () => {
          var items = [];
+         console.log(this.props.allAssets);
 
-         this.props.allAssets.map(asset => {
-            if (
-                (asset.datacenter_name.includes(this.state.datacenter) || asset.datacenter_abbreviation.includes(this.state.datacenter))
-                && asset.model.includes(this.state.model)
-                && asset.hostname.includes(this.state.hostname)
-                && asset.rack >= this.state.startingLetter + "" + this.state.startingNum
-                && asset.rack <= this.state.endingLetter + "" + this.state.endingNum
-            ) {
-                items.push(asset);
-            }
-         });
+         try {
 
-         this.props.updateItems(items);
+
+            this.props.allAssets.map(asset => {
+                if (
+                    (asset.datacenter_name.includes(this.state.datacenter) || asset.abbreviation.includes(this.state.datacenter))
+                    && asset.model.includes(this.state.model)
+                    && asset.hostname.includes(this.state.hostname)
+                    && asset.rack >= this.state.startingLetter + "" + this.state.startingNum
+                    && asset.rack <= this.state.endingLetter + "" + this.state.endingNum
+                ) {
+                    items.push(asset);
+                }
+            });
+            this.props.updateItems(items);
+        } catch {
+            this.props.updateItems([]);
+        }
+
     }
 
     render() {

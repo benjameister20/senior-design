@@ -100,7 +100,7 @@ class DetailAsset extends React.Component {
                         />}
                     </ExpansionPanelDetails>
                 </ExpansionPanel>
-                <ExpansionPanel>
+                {/*<ExpansionPanel>
                     <ExpansionPanelSummary
                         expandIcon={<ExpandMoreIcon />}
                         aria-controls="panel1a-content"
@@ -110,7 +110,7 @@ class DetailAsset extends React.Component {
                     </ExpansionPanelSummary>
                     <ExpansionPanelDetails>
                     </ExpansionPanelDetails>
-                </ExpansionPanel>
+                </ExpansionPanel>*/}
                 <Grid container spacing={3}>
                     <Grid item xs={2}>
                         <Button
@@ -123,7 +123,7 @@ class DetailAsset extends React.Component {
                     <Grid item xs={2}>
                         <Button
                             variant="contained"
-                            color="primary"
+                            color="secondary"
                         >
                             Delete asset
                         </Button>
@@ -131,7 +131,6 @@ class DetailAsset extends React.Component {
                     <Grid item xs={8}>
                         <Button
                             variant="contained"
-                            color="primary"
                         >
                             Close without saving
                         </Button>

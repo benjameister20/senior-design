@@ -94,10 +94,15 @@ def _make_instance_from_csv(csv_row: Dict[str, Any]) -> Instance:
         if csv_row[key] == "None":
             csv_row[key] = ""
 
-    power_connections = [
-        csv_row[Constants.CSV_POWER_PORT_1],
-        csv_row[Constants.CSV_POWER_PORT_2],
-    ]
+    power_connections = []
+    if csv_row[Constants.CSV_POWER_PORT_1] != "":
+        power_connections.append(csv_row[Constants.CSV_POWER_PORT_1])
+
+    if csv_row[Constants.CSV_POWER_PORT_2] != "":
+        power_connections.append(csv_row[Constants.CSV_POWER_PORT_2])
+
+    print("POWER CONNECTIONS")
+    print(power_connections)
     datacenter_id = DCTABLE.get_datacenter_id_by_name(
         csv_row[Constants.CSV_DC_NAME_KEY]
     )
@@ -371,6 +376,9 @@ def import_models_csv():
 @import_export.route("/instances/import", methods=["POST"])
 def import_instances_csv():
     """ Bulk import instances from a csv file """
+    print(json.dumps(request.json, indent=4))
+    print("IMPORTING INSTANCES")
+
     try:
         csv_input = _get_csv()
         added, updated, ignored = _parse_instance_csv(csv_input=csv_input)

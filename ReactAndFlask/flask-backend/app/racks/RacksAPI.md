@@ -103,3 +103,24 @@ def delete_racks():
 }
 ```
 -----------------------------
+```language=python
+def next_pdu_port():
+```
+- REST Type: 'post'
+- Authentication Required: yes
+- Roled required: admin
+- Arguments:
+```language=json
+{
+	"rack": "RACK_LABEL (i.e. A1)",
+	"datacenter_name":"DATACENTER_NAME"
+}
+```
+- Returns:
+```language=json
+{
+  "message": "success" || ERROR,
+  "next_pair": "NEXT_PORT" || "No paris of PDU ports available."
+}
+```
+-----------------------------

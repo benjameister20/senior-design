@@ -1,14 +1,13 @@
 import React from 'react';
 
-import Grid from '@material-ui/core/Grid';
+import {
+    Grid,
+    Typography,
+ } from '@material-ui/core/';
 
 import { Privilege } from '../../enums/privilegeTypes.ts'
-import ImpExpAsset from '../helpers/ImpExpAsset';
-import CreateAsset from '../helpers/CreateAsset';
-import StatusDisplay from '../../helpers/StatusDisplay';
 import TableAsset from '../helpers/TableAssets';
 import ErrorBoundary from '../../errors/ErrorBoundry';
-import "../stylesheets/AssetStyles.css";
 
 export default class AssetsView extends React.Component {
     constructor(props) {
@@ -21,29 +20,27 @@ export default class AssetsView extends React.Component {
         };
     }
 
-    componentDidUpdate() {
-        console.log("updated");
-    }
-
     render() {
         return (
             <div>
                 <ErrorBoundary>
-                    <StatusDisplay
-                        open={this.state.showStatus}
-                        severity={this.state.statusSeverity}
-                        closeStatus={this.closeShowStatus}
-                        message={this.state.statusMessage}
-                    />
-                    <Grid container spacing={3}>
-                        <Grid item xs={3}>
-                            {(this.props.privilege === Privilege.ADMIN) ? <CreateAsset />:null}
-                        </Grid>
-                        <Grid item xs={6}>
-                            {(this.props.privilege === Privilege.ADMIN) ? <ImpExpAsset downloadTable={this.downloadTable} />:null}
+                    <Grid
+                        container
+                        spacing={5}
+                        direction="row"
+                        justify="flex-start"
+                        alignItems="center"
+                        style={{margin: "0px", maxWidth: "95vw"}}
+                    >
+                        <Grid item xs={12}>
+                            <Typography variant="h4">
+                                Assets
+                            </Typography>
                         </Grid>
                         <Grid item xs={12}>
-                            <TableAsset />
+                            <TableAsset
+                                privilege={this.props.privilege}
+                            />
                         </Grid>
                     </Grid>
                 </ErrorBoundary>

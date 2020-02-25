@@ -65,30 +65,30 @@ class Model:
     @classmethod
     def headers(cls) -> List[str]:
         return [
-            "vendor",
-            "model_number",
-            "height",
-            "display_color",
-            "ethernet_ports",
-            "power_ports",
-            "cpu",
-            "memory",
-            "storage",
-            "comment",
+            Constants.VENDOR_KEY,
+            Constants.MODEL_NUMBER_KEY,
+            Constants.HEIGHT_KEY,
+            Constants.DISPLAY_COLOR_KEY,
+            Constants.ETHERNET_PORT_KEY,
+            Constants.POWER_PORT_KEY,
+            Constants.CPU_KEY,
+            Constants.MEMORY_KEY,
+            Constants.STORAGE_KEY,
+            Constants.COMMENT_KEY,
         ]
 
     def make_json(self) -> JSON:
         return {
-            "vendor": self.vendor,
-            "model_number": self.model_number,
-            "height": self.height,
-            "display_color": self.display_color,
-            "ethernet_ports": self.ethernet_ports,
-            "power_ports": self.power_ports,
-            "cpu": self.cpu,
-            "memory": self.memory,
-            "storage": self.storage,
-            "comment": self.comment,
+            Constants.VENDOR_KEY: self.vendor,
+            Constants.MODEL_NUMBER_KEY: self.model_number,
+            Constants.HEIGHT_KEY: self.height,
+            Constants.DISPLAY_COLOR_KEY: self.display_color,
+            Constants.ETHERNET_PORT_KEY: self.ethernet_ports,
+            Constants.POWER_PORT_KEY: self.power_ports,
+            Constants.CPU_KEY: self.cpu,
+            Constants.MEMORY_KEY: self.memory,
+            Constants.STORAGE_KEY: self.storage,
+            Constants.COMMENT_KEY: self.comment,
         }
 
     @classmethod
@@ -98,20 +98,22 @@ class Model:
                 csv_row[key] = ""
 
         return Model(
-            vendor=csv_row["vendor"],
-            model_number=csv_row["model_number"],
-            height=csv_row["height"],
-            display_color=csv_row["display_color"],
-            ethernet_ports=csv_row["ethernet_ports"]
-            if csv_row["ethernet_ports"] != ""
+            vendor=csv_row[Constants.VENDOR_KEY],
+            model_number=csv_row[Constants.MODEL_NUMBER_KEY],
+            height=csv_row[Constants.HEIGHT_KEY],
+            display_color=csv_row[Constants.DISPLAY_COLOR_KEY],
+            ethernet_ports=csv_row[Constants.ETHERNET_PORT_KEY]
+            if csv_row[Constants.ETHERNET_PORT_KEY] != ""
             else None,
-            power_ports=csv_row["power_ports"]
-            if csv_row["power_ports"] != ""
+            power_ports=csv_row[Constants.POWER_PORT_KEY]
+            if csv_row[Constants.POWER_PORT_KEY] != ""
             else None,
-            cpu=csv_row["cpu"],
-            memory=csv_row["memory"] if csv_row["memory"] != "" else None,
-            storage=csv_row["storage"],
-            comment=csv_row["comment"],
+            cpu=csv_row[Constants.CPU_KEY],
+            memory=csv_row[Constants.MEMORY_KEY]
+            if csv_row[Constants.MEMORY_KEY] != ""
+            else None,
+            storage=csv_row[Constants.STORAGE_KEY],
+            comment=csv_row[Constants.COMMENT_KEY],
         )
 
     @classmethod

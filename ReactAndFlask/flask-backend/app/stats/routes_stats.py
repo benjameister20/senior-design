@@ -1,3 +1,5 @@
+import json
+
 from app.constants import Constants
 from app.decorators.auth import requires_auth
 from app.stats.stats_manager import StatsManager
@@ -21,6 +23,8 @@ STATS_MANAGER = StatsManager()
 @requires_auth(request)
 def generate_report():
     """ Route for generating usage report """
+    print("GENERATING REPORT")
+    print(json.dumps(request.json, indent=4))
 
     global INSTANCE_MANAGER
     returnJSON = createJSON()

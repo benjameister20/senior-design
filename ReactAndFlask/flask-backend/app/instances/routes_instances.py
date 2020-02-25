@@ -1,3 +1,4 @@
+import json
 from typing import List
 
 from app.decorators.auth import requires_auth, requires_role
@@ -30,11 +31,11 @@ def search():
     global instancesArr
     returnJSON = createJSON()
 
-    print("THIS ONE RIGHT HERE THIS ONE RIGHT HERE THIS ONE RIGHT HERE")
     print(request.json)
-    filter = request.json["filter"]
-    print("FILTER")
-    print(filter)
+    filter = request.json.get("filter")
+    if filter is None:
+        return addMessageToJSON(returnJSON, "Please include a filter")
+
     try:
         limit = int(request.json["limit"])
     except:
@@ -44,6 +45,10 @@ def search():
         print(request.json)
         datacenter_name = request.json["datacenter_name"]
         instance_list = INSTANCE_MANAGER.get_instances(filter, datacenter_name, limit)
+        # print(f"INSTANCE LIST: {instance_list}, {len(instance_list)}")
+        # if len(instance_list) == 0:
+        #     print("CAUGHT THE PROBLEM")
+        #     return addMessageToJSON(returnJSON, "No instances to show")
         returnJSON = addInstancesTOJSON(
             addMessageToJSON(returnJSON, "success"),
             list(
@@ -129,7 +134,7 @@ def edit():
 @requires_auth(request)
 def detail_view():
     """ Route for table view of instances """
-
+    print(json.dumps(request.json, indent=4))
     global INSTANCE_MANAGER
     global instancesArr
     returnJSON = createJSON()
@@ -137,6 +142,8 @@ def detail_view():
     try:
         instance_data = request.get_json()
         instance = INSTANCE_MANAGER.detail_view(instance_data)
+        if instance is None:
+            return addMessageToJSON(returnJSON, "Cannot view instance of type None")
         return addInstancesTOJSON(
             addMessageToJSON(returnJSON, "success"),
             [
@@ -175,6 +182,21 @@ def get_next_asset_number():
 
     returnJSON["asset_number"] = 583965
     return addMessageToJSON(returnJSON, "success")
+
+
+@instances.route("/instances/networkNeighborhood", methods=["POST"])
+@requires_auth(request)
+def get_network_neighborhood():
+    """ Route to get network neighborhood"""
+    global INSTANCE_MANAGER
+    returnJSON = createJSON()
+
+    try:
+        asset_data = request.get_json()
+        returnJSON = INSTANCE_MANAGER.get_network_neighborhood(asset_data)
+        return addMessageToJSON(returnJSON, "success")
+    except InvalidInputsError as e:
+        return addMessageToJSON(returnJSON, e.message)
 
 
 def createJSON() -> dict:

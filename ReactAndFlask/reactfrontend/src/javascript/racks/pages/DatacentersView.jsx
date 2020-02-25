@@ -4,6 +4,10 @@ import axios from 'axios';
 
 import { withStyles } from '@material-ui/core/styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import {
+    Grid,
+    Typography
+} from "@material-ui/core/";
 
 import getURL from "../../helpers/functions/GetURL";
 import * as Constants from "../../Constants";
@@ -149,16 +153,34 @@ class DatacenterView extends React.Component {
         return (
             <React.Fragment>
                 <ErrorBoundary>
-                    {this.props.privilege === Privilege.ADMIN ? <CreateDatacenter search={this.getDatacenters} /> : null }
-                    {this.state.loadingDCList ?
-                    <div className={classes.progress}><CircularProgress /></div> :
-                    <ShowDatacenters
-                        classes={classes}
-                        datacentersList={this.state.datacentersList}
-                        privilege={this.props.privilege}
-                        openConfirmationBox={this.openConfirmationBox}
-                        editDatacenter={this.openEditDatacenter}
-                    />}
+                    <Grid
+                        container
+                        spacing={5}
+                        direction="row"
+                        justify="flex-start"
+                        alignItems="center"
+                        style={{margin: "0px", maxWidth: "95vw"}}
+                    >
+                        <Grid item xs={12}>
+                            <Typography variant="h4">
+                                Datacenters
+                            </Typography>
+                        </Grid>
+                        <Grid item xs={12}>
+                            {this.props.privilege === Privilege.ADMIN ? <CreateDatacenter search={this.getDatacenters} /> : null }
+                        </Grid>
+                        <Grid item xs={12}>
+                            {this.state.loadingDCList ?
+                            <div className={classes.progress}><CircularProgress /></div> :
+                            <ShowDatacenters
+                                classes={classes}
+                                datacentersList={this.state.datacentersList}
+                                privilege={this.props.privilege}
+                                openConfirmationBox={this.openConfirmationBox}
+                                editDatacenter={this.openEditDatacenter}
+                            />}
+                        </Grid>
+                    </Grid>
                     <EditDatacenter
                         show={this.state.showEditDC}
                         close={this.closeEditDatacenter}

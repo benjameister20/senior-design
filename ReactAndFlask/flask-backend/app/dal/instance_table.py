@@ -153,6 +153,8 @@ class InstanceTable:
 
             add, update, ignore = False, False, False
             if result is not None:
+                print(result.make_instance().asset_number)
+                print(instance.asset_number)
                 if result.make_instance() == instance:
                     ignore = True
                 else:

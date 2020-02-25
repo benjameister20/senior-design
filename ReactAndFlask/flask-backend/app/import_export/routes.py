@@ -249,15 +249,29 @@ def _parse_instance_csv(csv_input) -> Tuple[int, int, int]:
             print(str(e))
             raise InvalidFormatError(message="Columns are missing.")
 
-        validation: str = instance_validator.create_instance_validation(
-            instance=instance
+        # validation: str = instance_validator.edit_instance_validation(
+        #     instance=instance,
+        #     original_asset_number=instance.asset_number
+        # )
+        # print(validation)
+        dc_id = DCTABLE.get_datacenter_id_by_name(values[Constants.CSV_DC_NAME_KEY])
+        if dc_id is None:
+            raise DatacenterDoesNotExistError(values[Constants.CSV_DC_NAME_KEY])
+
+        existing_instance = instance_table.get_instance_by_rack_location(
+            values[Constants.RACK_KEY], values[Constants.RACK_POSITION_KEY], dc_id
         )
-        if (
-            validation != "success"
-            and validation
-            != f"An instance with hostname {instance.hostname} exists at location {instance.rack_label} U{instance.rack_position}"
-        ):
-            raise InvalidFormatError(message=validation)
+
+        if existing_instance is None:
+            validation: str = instance_validator.create_instance_validation(
+                instance=instance
+            )
+            if (
+                validation != "success"
+                and validation
+                != f"An instance with hostname {instance.hostname} exists at location {instance.rack_label} U{instance.rack_position}"
+            ):
+                raise InvalidFormatError(message=validation)
 
         instances.append(instance)
 

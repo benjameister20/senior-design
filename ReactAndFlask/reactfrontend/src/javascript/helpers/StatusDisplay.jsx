@@ -18,7 +18,7 @@ export default class StatusDisplay extends React.Component {
     render() {
         return (
             <div>
-                <Snackbar open={this.props.open} autoHideDuration={12000} onClose={this.props.closeStatus}>
+                <Snackbar open={this.props.open} autoHideDuration={8000} onClose={this.props.closeStatus}>
                     <MuiAlert elevation={6} variant="filled"
                         severity={this.props.severity}
                     >

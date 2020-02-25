@@ -14,6 +14,7 @@ import { Privilege } from '../../enums/privilegeTypes.ts';
 import EditDatacenter from "../helpers/EditDatacenter";
 import ConfirmDeteleDC from "../helpers/ConfirmDeleteDC";
 import ShowDatacenters from "../helpers/functions/ShowDatacenters";
+import StatusDisplay from '../../helpers/StatusDisplay';
 
 const useStyles = theme => ({
     root: {
@@ -57,6 +58,9 @@ class DatacenterView extends React.Component {
             showEditDC:false,
             editDCName:"",
             editDCAbbr:"",
+            showStatus:false,
+            statusMessage:"",
+            statusSeverity:"",
         };
     }
 
@@ -65,9 +69,21 @@ class DatacenterView extends React.Component {
     }
 
     getDatacenters = () => {
+        this.setState({ loadingDCList:true });
         axios.get(getURL(Constants.DATACENTERS_MAIN_PATH, DatacenterCommand.GET_ALL_DATACENTERS)).then(
             response => {
-                this.setState({ datacentersList: response.data.datacenters, loadingDCList:false });
+                console.log(response);
+                if (response.data.message === "success") {
+                    this.setState({ datacentersList: response.data.datacenters, loadingDCList:false });
+                } else {
+                    this.setState({
+                        loadingDCList:false,
+                        showStatus:true,
+                        statusMessage:response.data.message,
+                        statusSeverity:"error",
+                     });
+                }
+
             }
         );
     }
@@ -82,8 +98,20 @@ class DatacenterView extends React.Component {
                 console.log("Deleteting");
                 console.log(response);
                 if (response.data.message === "success") {
-                    this.setState({ showConfirmationBox: false });
+                    this.setState({
+                        showConfirmationBox: false,
+                        showStatus:true,
+                        statusMessage:"Successfully deleted datacenter",
+                        statusSeverity:"success",
+                     });
                     this.getDatacenters();
+                } else {
+                    this.setState({
+                        showConfirmationBox: false,
+                        showStatus:true,
+                        statusMessage:response.data.message,
+                        statusSeverity:"error",
+                     });
                 }
 
             }
@@ -108,6 +136,10 @@ class DatacenterView extends React.Component {
             editDCName:"",
             editDCAbbr:"",
          });
+    }
+
+    closeShowStatus = () => {
+        this.setState({ showStatus:false });
     }
 
 
@@ -139,6 +171,12 @@ class DatacenterView extends React.Component {
                         closeConfirmationBox={this.closeConfirmationBox}
                         deleteDatacenter={this.deleteDatacenter}
                         close={this.closeEditDatacneter}
+                    />
+                    <StatusDisplay
+                        open={this.state.showStatus}
+                        severity={this.state.statusSeverity}
+                        closeStatus={this.closeShowStatus}
+                        message={this.state.statusMessage}
                     />
                 </ErrorBoundary>
             </React.Fragment>

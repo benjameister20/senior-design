@@ -52,6 +52,10 @@ class DetailAsset extends React.Component {
         };
     }
 
+    closeDetailView = () => {
+        this.props.search();
+    }
+
     render() {
         const { classes } = this.props;
 

@@ -71,11 +71,7 @@ class FilterAsset extends React.Component {
 
     search = () => {
          var items = [];
-         console.log(this.props.allAssets);
-
          try {
-
-
             this.props.allAssets.map(asset => {
                 if (
                     (asset.datacenter_name.includes(this.state.datacenter) || asset.abbreviation.includes(this.state.datacenter))

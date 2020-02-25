@@ -141,28 +141,6 @@ class TableAsset extends React.Component {
 			});
 	}
 
-	editAsset = () => {
-		let body = this.state.detailedValues.getAssetAsJSON();
-		body[AssetInput.RACK_ORIGINAL] = this.state.originalRack;
-		body[AssetInput.RACK_U_ORIGINAL] = this.state.originalrack_position;
-		axios.post(
-			getURL(AssetConstants.ASSETS_MAIN_PATH, AssetCommand.edit),body
-			).then(response => {
-				if (response.data.message === AssetConstants.SUCCESS_TOKEN) {
-					this.setState({
-						showStatus: true,
-						statusMessage: "Successfully edited asset",
-						statusSeverity:AssetConstants.SUCCESS_TOKEN,
-						detailedValues : null,
-						showDetailedView:false,
-					});
-				} else {
-					this.setState({ detailStatusOpen: true, detailStatusMessage: response.data.message, detailStatusSeverity:AssetConstants.ERROR_TOKEN })
-				}
-			});
-	}
-
-
 	deleteAsset = () => {
 		var body = {};
 		body[AssetInput.RACK] = this.state.originalRack;
@@ -211,7 +189,6 @@ class TableAsset extends React.Component {
 
 	updateItems = (assets) => {
 		var items = [];
-
 		assets.map(asset => {
 			items.push(createData(asset.model, asset.hostname, asset.datacenter_name, asset.rack+" U"+asset.rack_position, asset.owner, asset.asset_number));
 		});
@@ -323,6 +300,7 @@ class TableAsset extends React.Component {
 			search={this.search}
 			disabled={this.props.privilege===Privilege.USER /* && username !== row.owner*/}
 			asset={this.state.detailAsset}
+			search={this.getAssetList}
 		/>:null}
 		<StatusDisplay
 			open={this.state.showStatus}

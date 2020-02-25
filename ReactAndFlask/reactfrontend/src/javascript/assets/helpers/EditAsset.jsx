@@ -187,7 +187,6 @@ class EditAsset extends React.Component {
         this.getModelList();
         this.getOwnerList();
         this.getDatacenterList();
-        this.getNextAssetNum();
         this.getAssetList();
     }
 
@@ -232,12 +231,6 @@ class EditAsset extends React.Component {
             });
     }
 
-    getNextAssetNum = () => {
-        axios.get(
-            getURL(Constants.ASSETS_MAIN_PATH, AssetCommand.GET_NEXT_ASSET_NUM)).then(
-            response => this.setState({ loadingAssetNumber: false, asset_number: response.data.asset_number }));
-    }
-
     getAssetList = () => {
         axios.post(
             getURL(Constants.ASSETS_MAIN_PATH, searchPath),emptySearch).then(
@@ -253,22 +246,6 @@ class EditAsset extends React.Component {
 
                 this.setState({ loadingHostnames: false, assetNumList: hostnames, assetNumToModelList: hostToModel }, this.availableNetworkConnections());
             });
-    }
-
-    validJSON = (json) => {
-        var valid = (json.model !== ""
-        && json.owner !== ""
-        && json.datacenter_name !== ""
-        && json.rack !== ""
-        && json.rack_position !== -1
-        && json.asset_number >= 100000 && json.asset_number <= 999999)
-
-        // Object.entries(json.network_connections).map(([port, vals]) => {
-        //     var validConnection = (vals.connection_hostname !== undefined && vals.connection_port === undefined) || (vals.connection_hostname === undefined && vals.connection_port !== undefined);
-        //     valid = valid && validConnection;
-        // });
-
-        return valid;
     }
 
     createAsset = (event) => {
@@ -291,6 +268,7 @@ class EditAsset extends React.Component {
     }
 
     updateModel = (event) => {
+        console.log(this.props.defaultValues);
         var model = event.target.value;
 
         if (model !== "") {
@@ -309,36 +287,36 @@ class EditAsset extends React.Component {
         }
 
 
-        this.setState({ model: model, network_connections:networkConns }, () => { this.validateForm() });
+        this.setState({ model: model, network_connections:networkConns }, () => {  });
     }
 
     updateHostname = (event) => {
-        this.setState({ hostname: event.target.value }, () => { this.validateForm() });
+        this.setState({ hostname: event.target.value }, () => {  });
     }
 
     updateRack = (event) => {
         var rackVal = stringToRack(event.target.value);
-        this.setState({ rack: rackVal }, () => { this.validateForm() });
+        this.setState({ rack: rackVal }, () => {  });
     }
 
     updateRackU = (event) => {
-        this.setState({ rackU: event.target.value }, () => { this.validateForm() });
+        this.setState({ rackU: event.target.value }, () => {  });
     }
 
     updateOwner = (event) => {
-        this.setState({ owner: event.target.value }, () => { this.validateForm() });
+        this.setState({ owner: event.target.value }, () => {  });
     }
 
     updateComment = (event) => {
-        this.setState({ comment: event.target.value }, () => { this.validateForm() });
+        this.setState({ comment: event.target.value }, () => {  });
     }
 
     updateDatacenter = (event) => {
-        this.setState({ datacenter_name: event.target.value }, () => { this.validateForm() });
+        this.setState({ datacenter_name: event.target.value }, () => {  });
     }
 
     updateTags = (event) => {
-        this.setState({ tags: event.target.value }, () => { this.validateForm() });
+        this.setState({ tags: event.target.value }, () => {  });
     }
 
     changeNetworkMacAddress = (event, port) => {
@@ -347,7 +325,7 @@ class EditAsset extends React.Component {
             let network_connections = Object.assign({}, prevState.network_connections);
             network_connections[port].mac_address = val;
             return { network_connections };
-        }, () => { this.validateForm() });
+        }, () => {  });
     }
 
     changeNetworkHostname = (value, port) => {
@@ -356,7 +334,7 @@ class EditAsset extends React.Component {
             let network_connections = Object.assign({}, prevState.network_connections);
             network_connections[port].connection_hostname = val;
             return { network_connections };
-        }, () => { this.getPortOptions(val); this.validateForm() });
+        }, () => { this.getPortOptions(val);  });
     }
 
     changeNetworkPort = (value, port) => {
@@ -367,7 +345,7 @@ class EditAsset extends React.Component {
             network_connections[port] = (network_connections[port] === null) ? {} : network_connections[port];
             network_connections[port].connection_port = val;
             return { network_connections };
-        }, () => {  this.validateForm() });
+        }, () => {   });
     }
 
     updatePowerPort = (event, port) => {
@@ -377,7 +355,7 @@ class EditAsset extends React.Component {
             let power_connections = Object.assign({}, prevState.power_connections);
             power_connections[port] = val;
             return { power_connections };
-        }, () => { this.validateForm() });
+        }, () => {  });
     }
 
     changePowerPortState = (event, portNum) => {
@@ -387,11 +365,11 @@ class EditAsset extends React.Component {
             let leftRight = Object.assign({}, prevState.leftRight);
             leftRight[portNum] = val;
             return { leftRight };
-        }, () => { this.validateForm() });
+        }, () => {  });
     }
 
     updateAssetNumber = (event) => {
-        this.setState({ asset_number: event.target.value }, () => { this.validateForm() });
+        this.setState({ asset_number: event.target.value }, () => {  });
     }
 
     getPowerConnections = () => {
@@ -420,17 +398,18 @@ class EditAsset extends React.Component {
 
     createJSON = () => {
         return {
-            "model":this.state.model,
-            "hostname":this.state.hostname,
-            "rack":this.state.rack,
-            "rack_position":this.state.rackU,
-            "owner":this.state.owner.split("/")[0],
-            "comment":this.state.comment,
-            "datacenter_name":this.state.datacenter_name,
-            "tags":this.state.tags,
-            "network_connections":(this.state.network_connections===null) ? {}:this.state.network_connections,
-            "power_connections":this.getPowerConnections(),
-            'asset_number':this.state.asset_number,
+            "asset_numberOriginal":this.props.asset_number,
+            "model":this.state.model||this.props.defaultValues.model,
+            "hostname":this.state.hostname||this.props.defaultValues.hostname,
+            "rack":this.state.rack||this.props.defaultValues.rack_position,
+            "rack_position":this.state.rackU||this.props.defaultValues.model,
+            "owner":this.state.owner.split("/")[0]||this.props.defaultValues.owner,
+            "comment":this.state.comment||this.props.defaultValues.comment,
+            "datacenter_name":this.state.datacenter_name||this.props.defaultValues.datacenter_name,
+            "tags":this.state.tags||this.props.defaultValues.tags,
+            "network_connections":((this.state.network_connections===null) ? {}:this.state.network_connections)||this.props.defaultValues.network_connections,
+            "power_connections":this.getPowerConnections()||this.props.defaultValues.power_connections,
+            'asset_number':this.state.asset_number||this.props.defaultValues.asset_number,
         }
     }
 
@@ -492,10 +471,6 @@ class EditAsset extends React.Component {
         this.setState({ statusOpen: false, statusMessage: "", statusSeverity:"" });
     }
 
-    validateForm = () => {
-        this.setState({ canSubmit:this.validJSON(this.createJSON()) });
-    }
-
     getPortOptions = (hostname) => {
         try {
             this.setState({ portOptions:this.state.networkList[this.state.assetNumToModelList[hostname]] });
@@ -510,8 +485,7 @@ class EditAsset extends React.Component {
         return (
         <span>
             {(
-            (this.state.loadingAssetNumber
-            || this.state.loadingDatacenters
+            (this.state.loadingDatacenters
             || this.state.loadingModels
             || this.state.loadingHostnames
             || this.state.loadingOwners)
@@ -526,7 +500,7 @@ class EditAsset extends React.Component {
                                 id="select-model"
                                 options={this.state.modelList}
                                 includeInputInList
-
+                                defaultValue={this.props.defaultValues.model}
                                 renderInput={params => (
                                 <TextField
                                     {...params}
@@ -548,6 +522,7 @@ class EditAsset extends React.Component {
                                 id="select-owner"
                                 options={this.state.ownerList}
                                 includeInputInList
+                                defaultValue={this.props.defaultValues.owner}
                                 renderInput={params => (
                                 <TextField
                                     {...params}
@@ -558,6 +533,7 @@ class EditAsset extends React.Component {
                                     variant="outlined"
                                     fullWidth
                                     required
+                                    disabled={this.props.disabled}
                                 />
                                 )}
                             />
@@ -569,7 +545,7 @@ class EditAsset extends React.Component {
                                 id="input-datacenter"
                                 options={this.state.datacenterList}
                                 includeInputInList
-
+                                defaultValue={this.props.defaultValues.datacenter_name}
                                 renderInput={params => (
                                 <TextField
                                     {...params}
@@ -580,6 +556,8 @@ class EditAsset extends React.Component {
                                     variant="outlined"
                                     fullWidth
                                     required
+                                    disabled={this.props.disabled}
+
                                 />
                                 )}
                             />
@@ -593,9 +571,11 @@ class EditAsset extends React.Component {
                                 label={this.state.inputs.rack.label}
                                 name={this.state.inputs.rack.name}
                                 onChange={this.updateRack}
-                                value={this.state.rack}
+                                value={this.state.rack||this.props.defaultValues.rack}
                                 required
                                 fullWidth
+                                disabled={this.props.disabled}
+                                defaultValue={this.props.defaultValues.rack}
                             />
                         </Tooltip>
                     </Grid>
@@ -611,6 +591,8 @@ class EditAsset extends React.Component {
                                 onChange={this.updateRackU}
                                 required
                                 fullWidth
+                                disabled={this.props.disabled}
+                                defaultValue={this.props.defaultValues.rack_position}
                             />
                         </Tooltip>
                     </Grid>
@@ -624,9 +606,11 @@ class EditAsset extends React.Component {
                                 label={this.state.inputs.assetNum.label}
                                 name={this.state.inputs.assetNum.name}
                                 onChange={this.updateAssetNumber}
-                                value={this.state.asset_number}
+                                value={this.state.asset_number||this.props.defaultValues.asset_number}
                                 required
                                 fullWidth
+                                disabled={this.props.disabled}
+                                defaultValue={this.props.defaultValues.asset_number}
                             />
                         </Tooltip>
                     </Grid>
@@ -639,6 +623,8 @@ class EditAsset extends React.Component {
                                 name={this.state.inputs.hostname.name}
                                 onChange={this.updateHostname}
                                 fullWidth
+                                disabled={this.props.disabled}
+                                defaultValue={this.props.defaultValues.hostname}
                             />
                         </Tooltip>
                     </Grid>
@@ -775,20 +761,10 @@ class EditAsset extends React.Component {
                                 onChange={this.updateComment}
                                 multiline={true}
                                 fullWidth
+                                defaultValue={this.props.defaultValues.comment}
                             />
                     </Grid>
                     <Grid item xs={6} />
-                    <Grid item xs={1}>
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            type="submit"
-                            onClick={(event) => {this.createAsset(event)}}
-                            disabled={!this.state.canSubmit}
-                        >
-                            Save Edits
-                        </Button>
-                    </Grid>
                 </Grid></div></form>}
                 {this.state.statusOpen ?
                 <Alert

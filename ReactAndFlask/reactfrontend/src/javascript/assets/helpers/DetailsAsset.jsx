@@ -4,7 +4,6 @@ import axios from 'axios';
 
 import {
     Button,
-    Grid,
     ExpansionPanel,
     ExpansionPanelSummary,
     ExpansionPanelDetails,
@@ -13,6 +12,7 @@ import {
     Toolbar,
     Slide,
     IconButton,
+    Grid
 } from "@material-ui/core/"
 import { withStyles } from '@material-ui/core/styles';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
@@ -34,6 +34,9 @@ const useStyles = theme => ({
         marginLeft: theme.spacing(2),
         flex: 1,
       },
+      button: {
+          marginLeft:theme.spacing(3),
+      }
 });
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -63,6 +66,22 @@ class DetailAsset extends React.Component {
                         <Typography variant="h6" className={classes.title}>
                             Asset Details
                         </Typography>
+                        <Button
+                            className={classes.button}
+                            variant="contained"
+                            style={{ background: "green", color: "white" }}
+                            onClick={() => {}}
+                        >
+                            Save edits
+                        </Button>
+                        <Button
+                            className={classes.button}
+                            variant="contained"
+                            color="secondary"
+                            onClick={() => {}}
+                        >
+                            Delete asset
+                        </Button>
                     </Toolbar>
                 </AppBar>
 
@@ -83,6 +102,7 @@ class DetailAsset extends React.Component {
                         />
                     </ExpansionPanelDetails>
                 </ExpansionPanel>
+                {this.props.hostname !== undefined && this.props.hostname !== "" ?
                 <ExpansionPanel>
                     <ExpansionPanelSummary
                         expandIcon={<ExpandMoreIcon />}
@@ -92,14 +112,13 @@ class DetailAsset extends React.Component {
                         <Typography>Asset Network Management</Typography>
                     </ExpansionPanelSummary>
                     <ExpansionPanelDetails>
-                        {this.props.hostname === "" || !this.state.networkNodes ?
-                        <Typography>This asset is not currently connected to any other assets</Typography> :
-                        <NetworkGraph
-                            vals={this.state.networkNodes}
-                            host={this.props.hostname}
-                        />}
+                                <NetworkGraph
+                                    vals={this.state.networkNodes}
+                                    host={this.props.asset.hostname}
+                                    assetNum={this.props.asset.asset_number}
+                                />
                     </ExpansionPanelDetails>
-                </ExpansionPanel>
+                </ExpansionPanel>:null}
                 {/*<ExpansionPanel>
                     <ExpansionPanelSummary
                         expandIcon={<ExpandMoreIcon />}
@@ -111,31 +130,6 @@ class DetailAsset extends React.Component {
                     <ExpansionPanelDetails>
                     </ExpansionPanelDetails>
                 </ExpansionPanel>*/}
-                <Grid container spacing={3}>
-                    <Grid item xs={2}>
-                        <Button
-                            variant="contained"
-                            color="primary"
-                        >
-                            Save edits
-                        </Button>
-                    </Grid>
-                    <Grid item xs={2}>
-                        <Button
-                            variant="contained"
-                            color="secondary"
-                        >
-                            Delete asset
-                        </Button>
-                    </Grid>
-                    <Grid item xs={8}>
-                        <Button
-                            variant="contained"
-                        >
-                            Close without saving
-                        </Button>
-                    </Grid>
-                </Grid>
             </Dialog>
         </span>
         );

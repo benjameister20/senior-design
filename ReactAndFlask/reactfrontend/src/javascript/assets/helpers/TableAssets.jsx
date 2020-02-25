@@ -102,28 +102,28 @@ class TableAsset extends React.Component {
 
     this.state = {
 		allAssets:[],
-	  tableItems:[],
+		tableItems:[],
 
-	  detailStatusOpen:false,
-	  detailStatusSeverity:'',
-	  detailStatusMessage:'',
+		detailStatusOpen:false,
+		detailStatusSeverity:'',
+		detailStatusMessage:'',
 
-	  deleteAssetRack:'',
-	  deleteAssetrack_position:'',
+		deleteAssetRack:'',
+		deleteAssetrack_position:'',
 
-	  showDetailedView: false,
-	  detailViewLoading:false,
-	  detailAsset:-1,
-	  detailHostname:"",
-	  originalRack:'',
-	  originalrack_position:'',
+		showDetailedView: false,
+		detailViewLoading:false,
+		detailAsset:-1,
+		detailHostname:"",
+		originalRack:'',
+		originalrack_position:'',
 
-	  order:"asc",
-	  orderBy:"datacenter",
+		order:"asc",
+		orderBy:"datacenter",
 
-	  showStatus:false,
-	  statusSeverity:"",
-	  statusMessage:"",
+		showStatus:false,
+		statusSeverity:"",
+		statusMessage:"",
     };
   }
 
@@ -131,6 +131,7 @@ class TableAsset extends React.Component {
 		axios.post(
             getURL(Constants.ASSETS_MAIN_PATH, AssetCommand.search),emptySearch).then(
             response => {
+				console.log(response);
 				var items = [];
 
 				response.data.instances.map(asset => {
@@ -185,18 +186,6 @@ class TableAsset extends React.Component {
 			});
 	}
 
-	getAssetDetails = (rack, rack_position) => {
-		this.setState({ detailViewLoading: true });
-
-		var body = {};
-		body[AssetInput.RACK] = rack;
-		body[AssetInput.RACK_U] = rack_position;
-
-		axios.post(
-			getURL(AssetConstants.ASSETS_MAIN_PATH, AssetCommand.detailView), body
-			).then(response => this.setState({ detailedValues: response.data['assets'][0], detailViewLoading:false}));
-	}
-
 	closeDetailedView = () => {
 		this.setState({ showDetailedView: false })
 	}
@@ -211,7 +200,13 @@ class TableAsset extends React.Component {
 	}
 
 	openDetailedView = (event, asset) => {
-		this.setState({ detailAsset: asset, showDetailedView: true });
+		var dAsset = {};
+		this.state.allAssets.map(currAsset => {
+			if (currAsset.asset_number === asset.asset_number ) {
+				Object.assign(dAsset, currAsset);
+			}
+		})
+		this.setState({ detailAsset: dAsset, showDetailedView: true });
 	}
 
 	updateItems = (assets) => {

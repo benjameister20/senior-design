@@ -65,6 +65,15 @@ class InstanceDoesNotExistError(Exception):
         self.message = message
 
 
+class DatacenterDoesNotExistError(Exception):
+    """
+    Raised when referenced model does not exist
+    """
+
+    def __init__(self, name: str):
+        self.message: str = f"Datacenter {name} does not exist."
+
+
 def _get_csv():
     # Grab file from request
     f = request.files["file"]
@@ -77,8 +86,11 @@ def _get_csv():
 
 
 def _make_network_connections(model: Model):
-    network_connections = {}
+    network_connections: Dict[str, Any] = {}
     ethernet_ports = model.ethernet_ports
+    if ethernet_ports is None:
+        return network_connections
+
     for port in ethernet_ports:
         network_connections[port] = {
             Constants.MAC_ADDRESS_KEY: "",
@@ -101,15 +113,27 @@ def _make_instance_from_csv(csv_row: Dict[str, Any]) -> Instance:
     if csv_row[Constants.CSV_POWER_PORT_2] != "":
         power_connections.append(csv_row[Constants.CSV_POWER_PORT_2])
 
-    print("POWER CONNECTIONS")
+    print("POWER CONNECTIS")
     print(power_connections)
     datacenter_id = DCTABLE.get_datacenter_id_by_name(
         csv_row[Constants.CSV_DC_NAME_KEY]
     )
+    if datacenter_id is None:
+        raise DatacenterDoesNotExistError(csv_row[Constants.CSV_DC_NAME_KEY])
+
     model_id = MODELTABLE.get_model_id_by_vendor_number(
         csv_row[Constants.VENDOR_KEY], csv_row[Constants.MODEL_NUMBER_KEY]
     )
+    if model_id is None:
+        raise ModelDoesNotExistError(
+            csv_row[Constants.VENDOR_KEY], csv_row[Constants.MODEL_NUMBER_KEY]
+        )
+
     model = MODELTABLE.get_model(model_id)
+    if model is None:
+        raise ModelDoesNotExistError(
+            csv_row[Constants.VENDOR_KEY], csv_row[Constants.MODEL_NUMBER_KEY]
+        )
     network_connections = _make_network_connections(model)
 
     # asset_number = 567890

@@ -96,8 +96,19 @@ class RacksView extends React.Component {
                 "datacenter_name": this.props.datacenter,
             }
             ).then(response => {
+                console.log(response);
                 if (response.data.message === 'success') {
-                    this.setState({ showStatus: true, statusMessage: "Success", statusSeverity:"success", showConfirmationBox:false });
+                    var message = "";
+                    if (command === RackCommand.CREATE_RACKS) {
+                        message = "Successfully created racks";
+                    } else if (command === RackCommand.DELETE_RACKS) {
+                        message = "Successfully deleted racks";
+                    } else if (command === RackCommand.GET_RACK_DETAILS) {
+                        message = "Sucessfully obtained rack details"
+                    } else {
+                        message = "Successfully completed operation";
+                    }
+                    this.setState({ showStatus: true, statusMessage: message, statusSeverity:"success", showConfirmationBox:false });
                     if (command === RackCommand.GET_RACK_DETAILS) {
                         const win = window.open(response.data.link, '_blank');
                         if (win != null) {

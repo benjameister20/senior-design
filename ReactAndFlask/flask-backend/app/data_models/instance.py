@@ -1,7 +1,51 @@
 from typing import Any, Dict, List, Optional
 
 from app.constants import Constants
+from app.dal.datacenter_table import DatacenterTable
+from app.dal.model_table import ModelTable
 from app.main.types import JSON
+
+DCTABLE = DatacenterTable()
+MODELTABLE = ModelTable()
+
+
+# def _make_network_connections(model: Model):
+#     network_connections: Dict[str, Any] = {}
+#     ethernet_ports = model.ethernet_ports
+#     if ethernet_ports is None:
+#         return network_connections
+
+#     for port in ethernet_ports:
+#         network_connections[port] = {
+#             Constants.MAC_ADDRESS_KEY: "",
+#             Constants.CONNECTION_HOSTNAME: "",
+#             Constants.CONNECTION_PORT: "",
+#         }
+
+#     return network_connections
+
+
+# class ModelDoesNotExistError(Exception):
+#     """
+#     Raised when referenced model does not exist
+#     """
+
+#     def __init__(self, vendor: str, model_number: str):
+#         self.message: str = f"Model {vendor} {model_number} does not exist."
+
+
+# class InstanceDoesNotExistError(Exception):
+#     def __init__(self, message):
+#         self.message = message
+
+
+# class DatacenterDoesNotExistError(Exception):
+#     """
+#     Raised when referenced model does not exist
+#     """
+
+#     def __init__(self, name: str):
+#         self.message: str = f"Datacenter {name} does not exist."
 
 
 class Instance:
@@ -44,6 +88,17 @@ class Instance:
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, Instance):
             return NotImplemented
+
+        # print(str(self.model_id) == str(other.model_id))
+        # print(self.hostname == other.hostname)
+        # print(self.rack_label == other.rack_label)
+        # print(str(self.rack_position) == str(other.rack_position))
+        # print(self.owner == other.owner)
+        # print(self.comment == other.comment)
+        # print(self.asset_number == other.asset_number)
+        # print("ASSET NUMS")
+        # print(type(self.asset_number))
+        # print(type(other.asset_number))
         return (
             str(self.model_id) == str(other.model_id)
             and self.hostname == other.hostname
@@ -51,12 +106,15 @@ class Instance:
             and str(self.rack_position) == str(other.rack_position)
             and self.owner == other.owner
             and self.comment == other.comment
+            and int(self.asset_number) == int(other.asset_number)
         )
 
     @classmethod
     def headers(cls) -> List[str]:
         return [
+            Constants.ASSET_NUMBER_KEY,
             Constants.HOSTNAME_KEY,
+            Constants.DC_NAME_KEY,
             Constants.RACK_KEY,
             Constants.RACK_POSITION_KEY,
             Constants.VENDOR_KEY,
@@ -95,24 +153,41 @@ class Instance:
             Constants.ASSET_NUMBER_KEY: self.asset_number,
         }
 
-    @classmethod
-    def from_csv(cls, csv_row: Dict[str, Any]) -> "Instance":
-        for key in csv_row.keys():
-            if csv_row[key] == "None":
-                csv_row[key] = ""
+    # @classmethod
+    # def from_csv(cls, csv_row: Dict[str, Any]) -> "Instance":
+    #     for key in csv_row.keys():
+    #         if csv_row[key] == "None":
+    #             csv_row[key] = ""
 
-        return Instance(
-            model_id=csv_row[Constants.MODEL_ID_KEY],
-            hostname=csv_row[Constants.HOSTNAME_KEY],
-            rack_label=csv_row[Constants.RACK_KEY],
-            rack_position=csv_row[Constants.RACK_POSITION_KEY],
-            owner=csv_row[Constants.OWNER_KEY],
-            comment=csv_row[Constants.COMMENT_KEY],
-            datacenter_id=csv_row[Constants.DC_ID_KEY],
-            network_connections=csv_row[Constants.NETWORK_CONNECTIONS_KEY],
-            power_connections=csv_row[Constants.POWER_CONNECTIONS_KEY],
-            asset_number=csv_row[Constants.ASSET_NUMBER_KEY],
-        )
+    #     power_connections = [
+    #         csv_row[Constants.CSV_POWER_PORT_1],
+    #         csv_row[Constants.CSV_POWER_PORT_2],
+    #     ]
+    #     datacenter_id = DCTABLE.get_datacenter_id_by_name(
+    #         csv_row[Constants.CSV_DC_NAME_KEY]
+    #     )
+    #     if datacenter_id is None:
+    #         raise DatacenterDoesNotExistError()
+    #     model_id = MODELTABLE.get_model_id_by_vendor_number(
+    #         csv_row[Constants.VENDOR_KEY], csv_row[Constants.MODEL_NUMBER_KEY]
+    #     )
+    #     model: Model = MODELTABLE.get_model(model_id)
+    #     network_connections = _make_network_connections(model)
+
+    #     # if csv_row[Constants.ASSET_NUMBER_KEY] == "":
+
+    #     return Instance(
+    #         model_id=model_id,
+    #         hostname=csv_row[Constants.HOSTNAME_KEY],
+    #         rack_label=csv_row[Constants.RACK_KEY],
+    #         rack_position=csv_row[Constants.RACK_POSITION_KEY],
+    #         owner=csv_row[Constants.OWNER_KEY],
+    #         comment=csv_row[Constants.COMMENT_KEY],
+    #         datacenter_id=datacenter_id,
+    #         network_connections=network_connections,
+    #         power_connections=power_connections,
+    #         asset_number=csv_row[Constants.ASSET_NUMBER_KEY],
+    #     )
 
     def _format_csv_entry(self, entry: str) -> str:
         if '"' not in entry and "\n" not in entry:
@@ -132,6 +207,10 @@ class Instance:
         json_data: JSON = self.make_json()
         json_data[Constants.VENDOR_KEY] = vendor
         json_data[Constants.MODEL_NUMBER_KEY] = model_number
+        json_data[Constants.DC_NAME_KEY] = DCTABLE.get_datacenter_name_by_id(
+            self.datacenter_id
+        )
+        # json_data = make_json_with_model_and_datacenter
 
         values: List[str] = list(
             map(

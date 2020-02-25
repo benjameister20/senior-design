@@ -5,6 +5,7 @@ from app.dal.model_table import ModelTable
 from app.dal.rack_table import RackTable
 from app.data_models.instance import Instance
 from app.exceptions.InvalidInputsException import InvalidInputsError
+from app.instances.asset_num_generator import AssetNumGenerator
 from app.instances.instance_validator import InstanceValidator
 
 
@@ -15,6 +16,7 @@ class InstanceManager:
         self.dc_table = DatacenterTable()
         self.rack_table = RackTable()
         self.validate = InstanceValidator()
+        self.asset_num_generator = AssetNumGenerator()
 
     def create_instance(self, instance_data):
         try:
@@ -60,10 +62,12 @@ class InstanceManager:
                     )
                     raise InvalidInputsError(connect_result)
             except:
-                raise InvalidInputsError("Unable to create asset")
+                raise InvalidInputsError("Unable to create instance")
         except InvalidInputsError as e:
+            print(e.message)
             raise InvalidInputsError(e.message)
-        except:
+        except Exception as e:
+            print(str(e))
             raise InvalidInputsError(
                 "An error occurred when attempting to create the asset."
             )
@@ -155,7 +159,6 @@ class InstanceManager:
 
     def get_instances(self, filter, dc_name, limit: int):
         model_name = filter.get(Constants.MODEL_KEY)
-
         try:
             if model_name is not None and model_name != "":
                 print("MODEL_NAME")
@@ -177,7 +180,8 @@ class InstanceManager:
             raise InvalidInputsError(
                 "An error occurred while trying to filter by datacenter name. Please input a different model name"
             )
-
+        # print("DCID")
+        # print(dc_id)
         hostname = filter.get(Constants.HOSTNAME_KEY)
         rack_label = filter.get(Constants.RACK_KEY)
         rack_position = filter.get(Constants.RACK_POSITION_KEY)

@@ -139,7 +139,7 @@ class InstanceValidator:
             if duplicate_hostname is not None:
                 is_self = duplicate_hostname.asset_number == original_asset_number
                 if not is_self:
-                    return f"An instance with hostname {duplicate_hostname.hostname} exists at location {duplicate_hostname.rack_label} U{duplicate_hostname.rack_u}"
+                    return f"An instance with hostname {duplicate_hostname.hostname} exists at location {duplicate_hostname.rack_label} U{duplicate_hostname.rack_position}"
 
             if len(instance.hostname) > 64:
                 return "Hostnames must be 64 characters or less"

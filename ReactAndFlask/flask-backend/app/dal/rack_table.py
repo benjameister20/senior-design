@@ -2,6 +2,7 @@ from typing import List, Optional
 
 from app.dal.database import DBWriteException, db
 from app.data_models.rack import Rack
+from app.main.types import JSON
 from sqlalchemy.dialects import postgresql as pg
 from sqlalchemy.exc import IntegrityError
 
@@ -29,6 +30,14 @@ class RackEntry(db.Model):
             pdu_left=self.pdu_left,
             pdu_right=self.pdu_right,
         )
+
+    def make_json(self) -> JSON:
+        return {
+            "label": self.label,
+            "datacenter_id": self.datacenter_id,
+            "pdu_left": self.pdu_left,
+            "pdu_right": self.pdu_right,
+        }
 
 
 class RackTable:
@@ -78,3 +87,15 @@ class RackTable:
         all_racks: List[RackEntry] = RackEntry.query.all()
 
         return [entry.make_rack() for entry in all_racks]
+
+    def edit_rack(self, rack):
+        """ Updates a rack in the database """
+        try:
+            new_rack = RackEntry(rack=rack)
+
+            old_entry = RackEntry.query.filter_by(
+                label=rack.label, datacenter_id=rack.datacenter_id
+            ).update(new_rack.make_json())
+            db.session.commit()
+        except:
+            raise Exception(f"Failed to udpate rack {rack.label}")

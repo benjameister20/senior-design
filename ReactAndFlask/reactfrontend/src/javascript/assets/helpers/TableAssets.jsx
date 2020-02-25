@@ -26,6 +26,7 @@ import { Privilege } from "../../enums/privilegeTypes.ts";
 import AddAsset from "./AddAsset";
 import ExportAsset from "./ExportAsset";
 import * as Constants from '../../Constants';
+import StatusDisplay from "../../helpers/StatusDisplay";
 
 
 const useStyles = theme => ({
@@ -101,24 +102,28 @@ class TableAsset extends React.Component {
 
     this.state = {
 		allAssets:[],
-	  tableItems:[],
+		tableItems:[],
 
-	  detailStatusOpen:false,
-	  detailStatusSeverity:'',
-	  detailStatusMessage:'',
+		detailStatusOpen:false,
+		detailStatusSeverity:'',
+		detailStatusMessage:'',
 
-	  deleteAssetRack:'',
-	  deleteAssetrack_position:'',
+		deleteAssetRack:'',
+		deleteAssetrack_position:'',
 
-	  showDetailedView: false,
-	  detailViewLoading:false,
-	  detailAsset:-1,
-	  detailHostname:"",
-	  originalRack:'',
-	  originalrack_position:'',
+		showDetailedView: false,
+		detailViewLoading:false,
+		detailAsset:-1,
+		detailHostname:"",
+		originalRack:'',
+		originalrack_position:'',
 
-	  order:"asc",
-	  orderBy:"datacenter",
+		order:"asc",
+		orderBy:"datacenter",
+
+		showStatus:false,
+		statusSeverity:"",
+		statusMessage:"",
     };
   }
 
@@ -126,6 +131,7 @@ class TableAsset extends React.Component {
 		axios.post(
             getURL(Constants.ASSETS_MAIN_PATH, AssetCommand.search),emptySearch).then(
             response => {
+				console.log(response);
 				var items = [];
 
 				response.data.instances.map(asset => {
@@ -134,28 +140,6 @@ class TableAsset extends React.Component {
 				this.setState({ allAssets: response.data.instances, tableItems:items });
 			});
 	}
-
-	editAsset = () => {
-		let body = this.state.detailedValues.getAssetAsJSON();
-		body[AssetInput.RACK_ORIGINAL] = this.state.originalRack;
-		body[AssetInput.RACK_U_ORIGINAL] = this.state.originalrack_position;
-		axios.post(
-			getURL(AssetConstants.ASSETS_MAIN_PATH, AssetCommand.edit),body
-			).then(response => {
-				if (response.data.message === AssetConstants.SUCCESS_TOKEN) {
-					this.setState({
-						showStatus: true,
-						statusMessage: "Successfully edited asset",
-						statusSeverity:AssetConstants.SUCCESS_TOKEN,
-						detailedValues : null,
-						showDetailedView:false,
-					});
-				} else {
-					this.setState({ detailStatusOpen: true, detailStatusMessage: response.data.message, detailStatusSeverity:AssetConstants.ERROR_TOKEN })
-				}
-			});
-	}
-
 
 	deleteAsset = () => {
 		var body = {};
@@ -180,18 +164,6 @@ class TableAsset extends React.Component {
 			});
 	}
 
-	getAssetDetails = (rack, rack_position) => {
-		this.setState({ detailViewLoading: true });
-
-		var body = {};
-		body[AssetInput.RACK] = rack;
-		body[AssetInput.RACK_U] = rack_position;
-
-		axios.post(
-			getURL(AssetConstants.ASSETS_MAIN_PATH, AssetCommand.detailView), body
-			).then(response => this.setState({ detailedValues: response.data['assets'][0], detailViewLoading:false}));
-	}
-
 	closeDetailedView = () => {
 		this.setState({ showDetailedView: false })
 	}
@@ -206,12 +178,17 @@ class TableAsset extends React.Component {
 	}
 
 	openDetailedView = (event, asset) => {
-		this.setState({ detailAsset: asset, showDetailedView: true });
+		var dAsset = {};
+		this.state.allAssets.map(currAsset => {
+			if (currAsset.asset_number === asset.asset_number ) {
+				Object.assign(dAsset, currAsset);
+			}
+		})
+		this.setState({ detailAsset: dAsset, showDetailedView: true });
 	}
 
 	updateItems = (assets) => {
 		var items = [];
-
 		assets.map(asset => {
 			items.push(createData(asset.model, asset.hostname, asset.datacenter_name, asset.rack+" U"+asset.rack_position, asset.owner, asset.asset_number));
 		});
@@ -223,7 +200,15 @@ class TableAsset extends React.Component {
         axios.post(
             getURL(Constants.ASSETS_MAIN_PATH, AssetCommand.search),emptySearch).then(
             response => { this.setState({ allAssets: response.data.instances }); });
-    }
+	}
+
+	showStatusBar = (status, severity, message) => {
+		this.setState({ showStatus:status, statusSeverity:severity, statusMessage:message });
+	}
+
+	closeShowStatus = () => {
+		this.setState({ showStatus:false, statusSeverity:"", statusMessage:"" });
+	}
 
 	render() {
 	const { classes } = this.props;
@@ -232,7 +217,7 @@ class TableAsset extends React.Component {
 		<React.Fragment>
 			<Grid container spacing={3}>
 				<Grid item xs={12} sm={6} md={4} lg={3}>
-					{(this.props.privilege === Privilege.ADMIN) ? <AddAsset getAssetList={this.getAssetList} /> : null}
+					{(this.props.privilege === Privilege.ADMIN) ? <AddAsset showStatus={this.showStatusBar} getAssetList={this.getAssetList} /> : null}
 				</Grid>
 				<Grid item xs={12} sm={6} md={4} lg={6}>
 					<FilterAsset
@@ -308,12 +293,20 @@ class TableAsset extends React.Component {
 					</TableContainer>
 				</Grid>
 			</Grid>
+			{this.state.showDetailedView ?
 		<DetailAsset
 			open={this.state.showDetailedView}
 			close={this.closeDetailedView}
 			search={this.search}
 			disabled={this.props.privilege===Privilege.USER /* && username !== row.owner*/}
 			asset={this.state.detailAsset}
+			search={this.getAssetList}
+		/>:null}
+		<StatusDisplay
+			open={this.state.showStatus}
+			severity={this.state.statusSeverity}
+			closeStatus={this.closeShowStatus}
+			message={this.state.statusMessage}
 		/>
 		</React.Fragment>
 	);

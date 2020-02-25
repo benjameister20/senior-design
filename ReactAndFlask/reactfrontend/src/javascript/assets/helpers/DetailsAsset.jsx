@@ -102,7 +102,7 @@ class DetailAsset extends React.Component {
                         />
                     </ExpansionPanelDetails>
                 </ExpansionPanel>
-                {this.props.hostname !== undefined && this.props.hostname !== "" ?
+                {this.props.asset.hostname !== undefined && this.props.asset.hostname !== "" ?
                 <ExpansionPanel>
                     <ExpansionPanelSummary
                         expandIcon={<ExpandMoreIcon />}

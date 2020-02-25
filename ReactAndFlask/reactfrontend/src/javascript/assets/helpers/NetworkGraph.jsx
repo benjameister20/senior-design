@@ -51,36 +51,48 @@ function getGraph(primaryHosts, host) {
     try {
         console.log("nodes and edges");
         Object.entries(primaryHosts).map(([primaryHost, secondaryHosts]) => {
-            if (hostnameMapping[primaryHost] !== undefined) {
-                edges.push({ from: hostID, to:hostnameMapping[primaryHost] });
-            } else {
-                nodes.push({
-                    id:primaryHostID,
-                    label:"" + primaryHost,
-                    color:"#F0FFFF"
-                });
-                edges.push({ from: hostID, to: primaryHostID });
-                hostnameMapping[primaryHost] = primaryHostID;
-            }
-            console.log("nodes and edges");
-            var secondaryHostID = primaryHostID + 1;
-            secondaryHosts.map(secondaryHost => {
-                if (hostnameMapping[secondaryHost] !== undefined) {
-                    edges.push({ from: primaryHostID, to: hostnameMapping[secondaryHost]});
+            if (primaryHost !== "message" && primaryHost !=="") {
+                if (hostnameMapping[primaryHost] !== undefined) {
+                    edges.push({ from: hostID, to:hostnameMapping[primaryHost] });
+                    edges.push({ from: hostnameMapping[primaryHost], to:hostID });
                 } else {
                     nodes.push({
-                        id:secondaryHostID,
-                        label:"" + secondaryHost,
-                        color:"#7FFFD4"
+                        id:primaryHostID,
+                        label:"" + primaryHost,
+                        color:"#F0FFFF"
                     });
-                    edges.push({ from: primaryHostID, to: secondaryHostID });
-                    hostnameMapping[secondaryHost] = secondaryHostID;
-                    secondaryHostID++;
+                    edges.push({ from: hostID, to: primaryHostID });
+                    edges.push({ from: primaryHostID, to:hostID });
+                    hostnameMapping[primaryHost] = primaryHostID;
+                }
+                console.log("nodes and edges");
+                var secondaryHostID = primaryHostID + 1;
+                try {
+                    secondaryHosts.map(secondaryHost => {
+                        if (secondaryHost !== "") {
+                            if (hostnameMapping[secondaryHost] !== undefined) {
+                                edges.push({ from: primaryHostID, to: hostnameMapping[secondaryHost] });
+                                edges.push({ to: primaryHostID, from: hostnameMapping[secondaryHost] });
+                            } else {
+                                nodes.push({
+                                    id:secondaryHostID,
+                                    label:"" + secondaryHost,
+                                    color:"#7FFFD4"
+                                });
+                                edges.push({ from: primaryHostID, to: secondaryHostID });
+                                edges.push({ to: primaryHostID, from: secondaryHostID });
+                                hostnameMapping[secondaryHost] = secondaryHostID;
+                                secondaryHostID++;
+                            }
+                        }
+                    });
+                } catch {
+
                 }
 
-            });
-            console.log("nodes and edges");
-            primaryHostID = secondaryHostID + 1;
+                console.log("nodes and edges");
+                primaryHostID = secondaryHostID + 1;
+            }
         });
 
         console.log("nodes and edges");
@@ -113,6 +125,7 @@ class NetworkGraph extends React.Component {
             getURL(Constants.ASSETS_MAIN_PATH, AssetCommand.GET_NETWORK_NEIGHBORHOOD), {
                 "asset_number":this.props.assetNum,
             }).then(response => {
+                console.log(response);
                 this.setState({ graph:getGraph(response.data, this.props.host) });
         });
     }

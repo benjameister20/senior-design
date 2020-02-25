@@ -1,3 +1,6 @@
+import json
+import os
+
 from app.constants import Constants
 from app.dal.datacenter_table import DatacenterTable
 from app.dal.instance_table import InstanceTable
@@ -13,6 +16,48 @@ class InstanceManager:
         self.model_table = ModelTable()
         self.dc_table = DatacenterTable()
         self.validate = InstanceValidator()
+        self.asset_num_file = "/asset_num.json"
+        self.dirname = os.path.dirname(__file__)
+        self.current_asset_num = 10001
+
+        self.__setup_asset_num_file()
+
+    def __setup_asset_num_file(self):
+        asset_num_file_template = {"start_num": 10001, "current_num": 10001}
+
+        if not os.path.exists(self.dirname + self.asset_num_file):
+            try:
+                with open(self.dirname + self.asset_num_file, "w+") as outfile:
+                    json.dump(asset_num_file_template, outfile, indent=4)
+            except IOError as e:
+                print(str(e))
+                raise InvalidInputsError("Could not create asset number data file")
+
+    def __get_asset_num_data(self):
+        asset_num_data = {}
+        try:
+            with open(self.dirname + self.asset_num_file, "r") as infile:
+                asset_num_data = json.load(infile)
+        except IOError as e:
+            print(str(e))
+            raise InvalidInputsError("Failed to load current asset number")
+
+        return asset_num_data
+
+    def __update_current_asset_num_file(self, current_asset_num):
+        asset_num_data = dict(self.__get_asset_num_data)
+        asset_num_data["current_num"] = current_asset_num
+        try:
+            with open(self.dirname + self.asset_num_file, "r") as outfile:
+                json.dump(asset_num_data, outfile, indent=4)
+        except IOError as e:
+            print(str(e))
+            raise InvalidInputsError("Failed to update asset number data file")
+
+        return None
+
+    def __update_current_asset_num(self, asset_num_data):
+        self.current_asset_num = asset_num_data.get("current_num")
 
     def create_instance(self, instance_data):
         try:

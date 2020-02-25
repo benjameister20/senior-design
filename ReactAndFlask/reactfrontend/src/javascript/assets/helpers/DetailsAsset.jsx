@@ -66,22 +66,6 @@ class DetailAsset extends React.Component {
                         <Typography variant="h6" className={classes.title}>
                             Asset Details
                         </Typography>
-                        <Button
-                            className={classes.button}
-                            variant="contained"
-                            style={{ background: "green", color: "white" }}
-                            onClick={() => {}}
-                        >
-                            Save edits
-                        </Button>
-                        <Button
-                            className={classes.button}
-                            variant="contained"
-                            color="secondary"
-                            onClick={() => {}}
-                        >
-                            Delete asset
-                        </Button>
                     </Toolbar>
                 </AppBar>
 
@@ -97,7 +81,7 @@ class DetailAsset extends React.Component {
                         <EditAsset
                             defaultValues={this.props.asset}
                             disabled={this.props.disabled}
-                            close={this.closeCreate}
+                            close={this.props.close}
 						    getAssetList={this.props.getAssetList}
                         />
                     </ExpansionPanelDetails>

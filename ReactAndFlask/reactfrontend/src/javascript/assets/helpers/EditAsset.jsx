@@ -146,7 +146,7 @@ class EditAsset extends React.Component {
             tags:[],
             network_connections:null,
             power_connections:null,
-            asset_number:100000,
+            asset_number:-1,
 
             selectedConnection:null,
 
@@ -162,6 +162,7 @@ class EditAsset extends React.Component {
             portOptions:[],
 
             canSubmit:false,
+            updated:false,
 
             inputs: {
                 "model":createInputs(AssetInput.MODEL, "Model", false, "A reference to an existing model"),
@@ -179,8 +180,74 @@ class EditAsset extends React.Component {
         };
     }
 
+    componentWillMount() {
+        console.log("comp did update");
+        if ((this.props.defaultValues.model !== this.state.model
+            || this.props.defaultValues.hostname !== this.state.hostname
+            || this.props.defaultValues.rack !== this.state.rack
+            || this.props.defaultValues.rack_position !== this.state.rackU
+            || this.props.defaultValues.owner !== this.state.owner
+            || this.props.defaultValues.comment !== this.state.comment
+            || this.props.defaultValues.datacenter_name !== this.state.datacenter_name
+            || this.props.defaultValues.tags !== this.state.tags
+            || this.props.defaultValues.network_connections !== this.state.network_connections
+            || this.props.defaultValues.power_connections !== this.state.power_connections
+            || this.props.defaultValues.asset_number !== this.state.asset_number)
+            && !this.state.updated
+            ) {
+            this.setState({
+                model:this.props.defaultValues.model,
+                hostname:this.props.defaultValues.hostname,
+                rack:this.props.defaultValues.rack,
+                rackU:this.props.defaultValues.rack_position,
+                owner:this.props.defaultValues.owner,
+                comment:this.props.defaultValues.comment,
+                datacenter_name:this.props.defaultValues.datacenter_name,
+                tags:this.props.defaultValues.tags,
+                network_connections:this.props.defaultValues.network_connections,
+                power_connections:this.getPowerPortFromProps(this.props.defaultValues.power_connections),
+                asset_number:this.props.defaultValues.asset_number,
+
+                leftRight:this.getPowerFromProps(this.props.defaultValues.power_connections),
+             });
+        } else {
+            //this.setState({ updated: true, });
+        }
+
+    }
+
     componentDidMount() {
         this.getLists();
+    }
+
+    getPowerFromProps = (pwrCons) => {
+        var pwr = [];
+
+        pwrCons.map(pwrCon => {
+            if (pwrCon.includes("L")) {
+                pwr.push("left");
+            } else if (pwrCon.includes("R")) {
+                pwr.push("right");
+            } else {
+                pwr.push("off");
+            }
+        })
+
+        return pwr;
+    }
+
+    getPowerPortFromProps = (pwrCons) => {
+        var pwrPorts = [];
+
+        try {
+            pwrCons.map(pwrCon => {
+                pwrPorts.push(parseInt(pwrCon.substring(1)));
+            });
+        } catch {
+
+        }
+
+        return pwrPorts;
     }
 
     getLists = () => {
@@ -248,27 +315,24 @@ class EditAsset extends React.Component {
             });
     }
 
-    createAsset = (event) => {
+    editAsset = (event) => {
         event.preventDefault();
         var json = this.createJSON();
-        if (this.validJSON(json)) {
-            axios.post(
-                getURL(AssetConstants.ASSETS_MAIN_PATH, AssetCommand.create),
-                json).then(
-                    response => {
-                    console.log(response);
-                    if (response.data.message === AssetConstants.SUCCESS_TOKEN) {
-                        this.closeModal();
-                    } else {
-                        this.setState({ statusOpen: true, statusMessage: response.data.message, statusSeverity:AssetConstants.ERROR_TOKEN });
-                    }
-                });
-        }
+        console.log(json);
+        axios.post(
+            getURL(AssetConstants.ASSETS_MAIN_PATH, AssetCommand.edit),
+            json).then(
+                response => {
+                if (response.data.message === AssetConstants.SUCCESS_TOKEN) {
+                    this.setState({ statusOpen: true, statusMessage: "Successfully saved edits", statusSeverity:AssetConstants.SUCCESS_TOKEN });
+                } else {
+                    this.setState({ statusOpen: true, statusMessage: response.data.message, statusSeverity:AssetConstants.ERROR_TOKEN });
+                }
+            });
 
     }
 
     updateModel = (event) => {
-        console.log(this.props.defaultValues);
         var model = event.target.value;
 
         if (model !== "") {
@@ -291,7 +355,7 @@ class EditAsset extends React.Component {
     }
 
     updateHostname = (event) => {
-        this.setState({ hostname: event.target.value }, () => {  });
+        this.setState({ hostname: event.target.value });
     }
 
     updateRack = (event) => {
@@ -398,18 +462,18 @@ class EditAsset extends React.Component {
 
     createJSON = () => {
         return {
-            "asset_numberOriginal":this.props.asset_number,
-            "model":this.state.model||this.props.defaultValues.model,
-            "hostname":this.state.hostname||this.props.defaultValues.hostname,
-            "rack":this.state.rack||this.props.defaultValues.rack_position,
-            "rack_position":this.state.rackU||this.props.defaultValues.model,
-            "owner":this.state.owner.split("/")[0]||this.props.defaultValues.owner,
-            "comment":this.state.comment||this.props.defaultValues.comment,
-            "datacenter_name":this.state.datacenter_name||this.props.defaultValues.datacenter_name,
-            "tags":this.state.tags||this.props.defaultValues.tags,
-            "network_connections":((this.state.network_connections===null) ? {}:this.state.network_connections)||this.props.defaultValues.network_connections,
-            "power_connections":this.getPowerConnections()||this.props.defaultValues.power_connections,
-            'asset_number':this.state.asset_number||this.props.defaultValues.asset_number,
+            "asset_numberOriginal":this.props.defaultValues.asset_number,
+            "model":this.state.model,
+            "hostname":this.state.hostname,
+            "rack":this.state.rack,
+            "rack_position":this.state.rackU,
+            "owner":this.state.owner.split("/")[0],
+            "comment":this.state.comment,
+            "datacenter_name":this.state.datacenter_name,
+            "tags":this.state.tags,
+            "network_connections":((this.state.network_connections===null) ? {}:this.state.network_connections),
+            "power_connections":this.getPowerConnections(),
+            'asset_number':this.state.asset_number,
         }
     }
 
@@ -479,6 +543,47 @@ class EditAsset extends React.Component {
         }
     }
 
+    getModel = () => {
+        return this.state.model;
+    }
+
+    displayNetworks =  () => {
+        var model = this.getModel();
+        return (this.state.networkList && this.state.networkList[model]);
+    }
+
+    getNetworkConnections = () => {
+        return this.state.network_connections;
+    }
+
+    getMacValue = (port) => {
+        var netCons = this.getNetworkConnections();
+        if (netCons === null) {
+            return "";
+        }
+        return netCons[port] ? netCons[port].mac_address : ""
+    }
+
+    getConnectingHostname = (port) => {
+        var netCons = this.getNetworkConnections();
+        if (netCons === null) {
+            return "";
+        }
+        return netCons[port] ? netCons[port].connection_hostname : ""
+    }
+
+    getConnectionPort = (port) => {
+        var netCons = this.getNetworkConnections();
+        if (netCons === null) {
+            return "";
+        }
+        return netCons[port] ? netCons[port].connection_port : ""
+    }
+
+    connectionsDisabled = () => {
+        return this.state.hostname==="";
+    }
+
     render() {
         const { classes } = this.props;
 
@@ -491,7 +596,9 @@ class EditAsset extends React.Component {
             || this.state.loadingOwners)
             //&& false
             ) ? <div className={classes.progress}><CircularProgress /></div> :
-                <form>
+                <form
+                    onSubmit={(event) => { this.editAsset(event) }}
+                >
                 <div className={classes.dialogDiv}>
                 <Grid container spacing={3}>
                     <Grid item xs={3}>
@@ -500,7 +607,7 @@ class EditAsset extends React.Component {
                                 id="select-model"
                                 options={this.state.modelList}
                                 includeInputInList
-                                defaultValue={this.props.defaultValues.model}
+                                value={this.state.model}
                                 renderInput={params => (
                                 <TextField
                                     {...params}
@@ -522,7 +629,7 @@ class EditAsset extends React.Component {
                                 id="select-owner"
                                 options={this.state.ownerList}
                                 includeInputInList
-                                defaultValue={this.props.defaultValues.owner}
+                                value={this.state.owner}
                                 renderInput={params => (
                                 <TextField
                                     {...params}
@@ -545,7 +652,7 @@ class EditAsset extends React.Component {
                                 id="input-datacenter"
                                 options={this.state.datacenterList}
                                 includeInputInList
-                                defaultValue={this.props.defaultValues.datacenter_name}
+                                value={this.state.datacenter_name}
                                 renderInput={params => (
                                 <TextField
                                     {...params}
@@ -571,7 +678,7 @@ class EditAsset extends React.Component {
                                 label={this.state.inputs.rack.label}
                                 name={this.state.inputs.rack.name}
                                 onChange={this.updateRack}
-                                value={this.state.rack||this.props.defaultValues.rack}
+                                value={this.state.rack}
                                 required
                                 fullWidth
                                 disabled={this.props.disabled}
@@ -592,7 +699,7 @@ class EditAsset extends React.Component {
                                 required
                                 fullWidth
                                 disabled={this.props.disabled}
-                                defaultValue={this.props.defaultValues.rack_position}
+                                value={this.state.rackU}
                             />
                         </Tooltip>
                     </Grid>
@@ -606,11 +713,10 @@ class EditAsset extends React.Component {
                                 label={this.state.inputs.assetNum.label}
                                 name={this.state.inputs.assetNum.name}
                                 onChange={this.updateAssetNumber}
-                                value={this.state.asset_number||this.props.defaultValues.asset_number}
+                                value={this.state.asset_number}
                                 required
                                 fullWidth
                                 disabled={this.props.disabled}
-                                defaultValue={this.props.defaultValues.asset_number}
                             />
                         </Tooltip>
                     </Grid>
@@ -624,14 +730,14 @@ class EditAsset extends React.Component {
                                 onChange={this.updateHostname}
                                 fullWidth
                                 disabled={this.props.disabled}
-                                defaultValue={this.props.defaultValues.hostname}
+                                value={this.state.hostname}
                             />
                         </Tooltip>
                     </Grid>
 
-                    {!(this.state.networkList && this.state.networkList[this.state.model]) ? null :
+                    {this.displayNetworks() ?
                     <Grid item xs={12}>
-                        {this.state.networkList[this.state.model].map(networkPort => (
+                        {this.state.networkList[this.getModel()].map(networkPort => (
                         <Grid container spacing={3}>
                             <Grid item xs={2}>
                                 <Typography>{networkPort + ": "}</Typography>
@@ -645,19 +751,21 @@ class EditAsset extends React.Component {
                                         name={this.state.inputs.macAddress.name}
                                         onChange={(event) => {this.changeNetworkMacAddress(event, networkPort)}}
                                         fullWidth
-                                        disabled={this.state.hostname===""}
-                                        value={ (this.state.network_connections !== null && this.state.network_connections[networkPort]!==undefined) ? this.state.network_connections[networkPort].mac_address : "" }
+                                        disabled={this.state.hostname==="" || this.props.defaultValues.hostname}
+                                        value={this.getMacValue(networkPort)}
                                     />
                                 </Tooltip>
                             </Grid>
                             <Grid item xs={3}>
                                 <Tooltip placement="top" open={this.state.inputs.networkConnections.Tooltip} title={this.state.inputs.networkConnections.description}>
                                     <Autocomplete
-                                        id="input-network-ports"
+                                        id="input-network-ports-hostname"
                                         options={this.state.assetNumList}
                                         includeInputInList
                                         onChange={(event, value) => {this.changeNetworkHostname(value, networkPort)}}
-                                        required={this.state.network_connections[networkPort].connection_port!==""}
+                                        required={this.getNetworkConnections()[networkPort].connection_port!==""}
+                                        value={this.getConnectingHostname(networkPort)}
+                                        disabled={this.connectionsDisabled()}
                                         renderInput={params => (
                                             <TextField
                                                 {...params}
@@ -665,7 +773,6 @@ class EditAsset extends React.Component {
                                                 name={"Connection Hostname"}
                                                 variant="outlined"
                                                 fullWidth
-                                                disabled={this.state.hostname===""}
                                             />
                                         )}
                                     />
@@ -674,10 +781,13 @@ class EditAsset extends React.Component {
                             <Grid item xs={3}>
                                 <Tooltip placement="top" open={this.state.inputs.networkConnections.Tooltip} title={this.state.inputs.networkConnections.description}>
                                     <Autocomplete
-                                        id="input-network-ports"
+                                        id="input-network-ports-connection-port"
                                         options={this.state.portOptions}
                                         includeInputInList
                                         onChange={(event, value) => {this.changeNetworkPort(value, networkPort)}}
+                                        required={this.getNetworkConnections()[networkPort].connection_hostname!==""}
+                                        value={this.getConnectionPort(networkPort)}
+                                        disabled={this.connectionsDisabled()}
                                         renderInput={params => (
                                             <TextField
                                                 {...params}
@@ -685,8 +795,6 @@ class EditAsset extends React.Component {
                                                 name={"Connection Port"}
                                                 variant="outlined"
                                                 fullWidth
-                                                required={this.state.network_connections[networkPort].connection_hostname!==""}
-                                                disabled={this.state.hostname===""}
                                             />
                                         )}
                                     />
@@ -694,7 +802,7 @@ class EditAsset extends React.Component {
                             </Grid>
                         </Grid>
                         ))}
-                    </Grid>}
+                    </Grid>:null}
 
                     {(
                         !(this.state.powerPortList
@@ -765,10 +873,28 @@ class EditAsset extends React.Component {
                             />
                     </Grid>
                     <Grid item xs={6} />
+                    <Grid item xs={1}>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            type="submit"
+                        >
+                            Save
+                        </Button>
+                    </Grid>
+                    <Grid item xs={9}>
+                        <Button
+                            variant="contained"
+                            color="secondary"
+                            onClick={this.closeModal}
+                        >
+                            Delete
+                        </Button>
+                    </Grid>
                 </Grid></div></form>}
                 {this.state.statusOpen ?
                 <Alert
-                        severity={this.statusSeverity}
+                        severity={this.state.statusSeverity}
                         action={
                             <IconButton
                                 aria-label="close"
@@ -782,7 +908,7 @@ class EditAsset extends React.Component {
                             </IconButton>
                             }
                     >
-                        {this.statusMessage}
+                        {this.state.statusMessage}
                     </Alert>:null}
         </span>
         );

@@ -316,13 +316,14 @@ class TableAsset extends React.Component {
 					</TableContainer>
 				</Grid>
 			</Grid>
+			{this.state.showDetailedView ?
 		<DetailAsset
 			open={this.state.showDetailedView}
 			close={this.closeDetailedView}
 			search={this.search}
 			disabled={this.props.privilege===Privilege.USER /* && username !== row.owner*/}
 			asset={this.state.detailAsset}
-		/>
+		/>:null}
 		<StatusDisplay
 			open={this.state.showStatus}
 			severity={this.state.statusSeverity}

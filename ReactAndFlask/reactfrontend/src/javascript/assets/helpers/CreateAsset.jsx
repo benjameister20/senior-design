@@ -520,7 +520,9 @@ class CreateAsset extends React.Component {
             || this.state.loadingOwners)
             //&& false
             ) ? <div className={classes.progress}><CircularProgress /></div> :
-                <form>
+                <form
+                    onSubmit={(event) => {this.createAsset(event)}}
+                >
                 <div className={classes.dialogDiv}>
                 <Grid container spacing={3}>
                     <Grid item xs={3}>
@@ -786,7 +788,6 @@ class CreateAsset extends React.Component {
                             variant="contained"
                             color="primary"
                             type="submit"
-                            onClick={(event) => {this.createAsset(event)}}
                             disabled={!this.state.canSubmit}
                         >
                             Create

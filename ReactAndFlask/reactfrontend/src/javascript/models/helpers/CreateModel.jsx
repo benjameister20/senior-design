@@ -97,7 +97,8 @@ class CreateModel extends React.Component {
         this.setState({ showImportModal: false });
     }
 
-    create = () => {
+    create = (event) => {
+        event.preventDefault();
         this.props.createModel(this.state.networkPorts);
         this.closeModal();
     }
@@ -198,6 +199,9 @@ class CreateModel extends React.Component {
                         open={this.state.showModal}
                     >
                         <div className={classes.grid}>
+                            <form
+                                onSubmit={(event) => this.create(event)}
+                            >
                         <Grid
                             container
                             spacing={1}
@@ -215,15 +219,15 @@ class CreateModel extends React.Component {
                                     includeInputInList
                                     freeSolo
                                     renderInput={params => (
-                                        <TextField {...params} label={inputs.vendor.label} name={inputs.vendor.name} onChange={this.props.updateModelCreator} onBlur={this.props.updateModelCreator} variant="outlined" fullWidth />
+                                        <TextField {...params} required={true} label={inputs.vendor.label} name={inputs.vendor.name} onChange={this.props.updateModelCreator} onBlur={this.props.updateModelCreator} variant="outlined" fullWidth />
                                     )}
                                 />
                             </Grid>
                             <Grid item xs={12} sm={6} md={4} lg={3}>
-                                <TextField id="standard-basic" variant="outlined" label={inputs.modelNumber.label} name={inputs.modelNumber.name} onChange={this.props.updateModelCreator}/>
+                                <TextField id="standard-basic" required={true} variant="outlined" label={inputs.modelNumber.label} name={inputs.modelNumber.name} onChange={this.props.updateModelCreator}/>
                             </Grid>
                             <Grid item xs={3}>
-                                <TextField type="number" id="standard-basic" variant="outlined" label={inputs.height.label} name={inputs.height.name} onChange={this.props.updateModelCreator} InputProps={{ inputProps: { min: 1, max: 42} }} style={{ width: "100%" }} />
+                                <TextField type="number" id="standard-basic" required={true} variant="outlined" label={inputs.height.label} name={inputs.height.name} onChange={this.props.updateModelCreator} InputProps={{ inputProps: { min: 1, max: 42} }} style={{ width: "100%" }} />
                             </Grid>
                             <Grid item xs={3}>
                                 <TextField type="number" id="standard-basic" variant="outlined" label={inputs.ethernetPorts.label} name={inputs.ethernetPorts.name} onChange={this.updateNetworkPorts} InputProps={{ inputProps: { min: 0} }} />
@@ -283,7 +287,7 @@ class CreateModel extends React.Component {
                                 <Button
                                     variant="contained"
                                     color="primary"
-                                    onClick={this.create}
+                                    type="submit"
                                     style={{width: "100%"}}
                                 >
                                     Create
@@ -300,6 +304,7 @@ class CreateModel extends React.Component {
                                 </Button>
                             </Grid>
                         </Grid>
+                        </form>
                 </div>
                 </Backdrop>
 

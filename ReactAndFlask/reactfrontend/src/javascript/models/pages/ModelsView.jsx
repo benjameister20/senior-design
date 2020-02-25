@@ -18,6 +18,8 @@ import { Typography } from '@material-ui/core';
 import * as ModelConstants from "../ModelConstants";
 import Grid from '@material-ui/core/Grid';
 
+import StatusDisplay from "../../helpers/StatusDisplay";
+
 const columns = [
     'Vendor',
     'Model Number',
@@ -115,15 +117,15 @@ export default class ModelsView extends React.Component {
             // csv data
             csvData:'',
 
-            statusOpen:false,
+            showStatus:false,
             statusSeverity:'',
             statusMessage:'',
-            detailStatusOpen:false,
+            detailshowStatus:false,
             detailStatusSeverity:'',
             detailStatusMessage:'',
-            createStatusOpen:false,
-            createStatusSeverity:'',
-            createStatusMessage:'',
+            createshowStatus:false,
+            statusSeverity:'',
+            statusMessage:'',
 
             vendorsList:[],
             madeVendorQuery:false,
@@ -157,6 +159,7 @@ export default class ModelsView extends React.Component {
             }
             ).then(
                 response => {
+                    console.log(response);
                     if (response.data.message === 'success') {
                         this.setState({
                             showStatus: true,
@@ -179,10 +182,10 @@ export default class ModelsView extends React.Component {
                         this.getVendorList();
                         this.searchModels();
                     } else {
-                        this.setState({ createStatusOpen: true, createStatusMessage: response.data.message, createStatusSeverity:"error" })
+                        this.setState({ createshowStatus: true, showStatus:true, statusMessage: response.data.message, statusSeverity:"error" })
                     }
                 }).catch(
-                    this.setState({ createStatusOpen: true, createStatusMessage: ModelConstants.GENERAL_MODEL_ERROR, createStatusSeverity:"error" })
+                    this.setState({ createshowStatus: true, statusMessage: ModelConstants.GENERAL_MODEL_ERROR, statusSeverity:"error" })
                 );
     }
 
@@ -206,6 +209,7 @@ export default class ModelsView extends React.Component {
             }
             ).then(
                 response => {
+                    console.log(response);
                     if (response.data.message === 'success') {
                         this.setState({
                             showStatus: true,
@@ -216,10 +220,10 @@ export default class ModelsView extends React.Component {
                         this.getVendorList();
                         this.searchModels();
                     } else {
-                        this.setState({ detailStatusOpen: true, detailStatusMessage: response.data.message, detailStatusSeverity:"error" })
+                        this.setState({ detailshowStatus: true, detailStatusMessage: response.data.message, detailStatusSeverity:"error" })
                     }
                 }).catch(
-                    this.setState({ detailStatusOpen: true, detailStatusMessage: ModelConstants.GENERAL_MODEL_ERROR, detailStatusSeverity:"error" })
+                    this.setState({ detailshowStatus: true, detailStatusMessage: ModelConstants.GENERAL_MODEL_ERROR, detailStatusSeverity:"error" })
                 );
     }
 
@@ -414,14 +418,14 @@ export default class ModelsView extends React.Component {
         if (reason === 'clickaway') {
             return;
         }
-        this.setState({ createStatusOpen: false })
+        this.setState({ createshowStatus: false })
     }
 
     detailStatusClose = (event, reason) => {
         if (reason === 'clickaway') {
             return;
         }
-        this.setState({ detailStatusOpen: false })
+        this.setState({ detailshowStatus: false })
     }
 
     render() {
@@ -444,10 +448,10 @@ export default class ModelsView extends React.Component {
                         {(this.props.privilege == Privilege.ADMIN) ?
                         (<div>
                             <CreateModel
-                                statusOpen={this.state.createStatusOpen}
-                                statusSeverity={this.state.createStatusSeverity}
+                                showStatus={this.state.createshowStatus}
+                                statusSeverity={this.state.statusSeverity}
                                 statusClose={this.createStatusClose}
-                                statusMessage={this.state.createStatusMessage}
+                                statusMessage={this.state.statusMessage}
                                 showCreateModal={this.state.showCreateModal}
                                 closeCreateModal={this.closeCreateModal}
                                 createModel={this.createModel}
@@ -500,6 +504,12 @@ export default class ModelsView extends React.Component {
                         />
                     </Grid>
                 </Grid>
+                <StatusDisplay
+                    open={this.state.showStatus}
+                    severity={this.state.statusSeverity}
+                    closeStatus={this.closeShowStatus}
+                    message={this.state.statusMessage}
+                />
             </div>
         );
     }

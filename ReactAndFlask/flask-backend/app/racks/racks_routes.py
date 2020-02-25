@@ -58,6 +58,7 @@ def create_racks():
     returnJSON = createJSON()
     data: JSON = request.get_json()
     # print(json.dumps(request.json, indent=4))
+    print(request.get_json())
 
     try:
         start_letter: str = data[Constants.START_LETTER_KEY]

@@ -52,6 +52,8 @@ class RacksView extends React.Component {
             items: [],
             firstRack: 'A1',
             secondRack: 'A1',
+            firstNumber:1,
+            endingNumber:1,
 
             showStatus: false,
             statusMessage: '',
@@ -87,10 +89,10 @@ class RacksView extends React.Component {
         axios.post(
             getURL(racksMainPath, command),
             {
-                'start_letter':this.state.startingRackLetter,
-                'stop_letter':this.state.endingRackLetter,
-                'start_number':this.state.startingRackNumber,
-                'stop_number':this.state.endingRackNumber,
+                'start_letter':this.state.firstRack,
+                'stop_letter':this.state.secondRack,
+                'start_number':this.state.firstNumber,
+                'stop_number':this.state.endingNumber,
                 "datacenter_name": this.props.datacenter,
             }
             ).then(response => {
@@ -128,6 +130,14 @@ class RacksView extends React.Component {
         this.setState({ secondRack: event.target.value })
     }
 
+    changeStartingNum = (event) => {
+        this.setState({ firstNumber: event.target.value })
+    }
+
+    changeEndingNum = (event) => {
+        this.setState({ endingNumber: event.target.value })
+    }
+
     closeShowStatus = () => {
         this.setState({ showStatus: false })
     }
@@ -147,7 +157,7 @@ class RacksView extends React.Component {
                 <Grid container>
                     <Grid item xs={1}>
                         <FormControl>
-                                <Select id="starting-letter-selector" value={this.state.startingRackLetter} onChange={this.changeStartingLetter}>
+                                <Select id="starting-letter-selector" value={this.state.firstRack} onChange={this.changeStartingRack}>
                                     {Constants.RackX.map(val => (<MenuItem value={val}>{val}</MenuItem>))}
                                 </Select>
                                 <FormHelperText>Starting Letter</FormHelperText>
@@ -155,7 +165,7 @@ class RacksView extends React.Component {
                     </Grid>
                     <Grid item xs={1}>
                         <FormControl>
-                                <Select id="ending-letter-selector" value={this.state.endingRackLetter} onChange={this.changeEndingLetter}>
+                                <Select id="ending-letter-selector" value={this.state.secondRack} onChange={this.changeEndingRack}>
                                     {Constants.RackX.map(val => (<MenuItem value={val}>{val}</MenuItem>))}
                                 </Select>
                                 <FormHelperText>Ending Letter</FormHelperText>
@@ -166,7 +176,7 @@ class RacksView extends React.Component {
                                 <TextField
                                     id="starting-num-selector"
                                     type="number"
-                                    value={this.state.startingRackNumber}
+                                    value={this.state.firstNumber}
                                     onChange={this.changeStartingNum}
                                     InputProps={{ inputProps: { min: 1} }}
                                 />
@@ -178,7 +188,7 @@ class RacksView extends React.Component {
                                 <TextField
                                     id="ending-num-selector"
                                     type="number"
-                                    value={this.state.endingRackNumber}
+                                    value={this.state.endingNumber}
                                     onChange={this.changeEndingNum}
                                     InputProps={{ inputProps: { min: 1} }}
                                 />

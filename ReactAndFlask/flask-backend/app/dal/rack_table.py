@@ -65,15 +65,13 @@ class RackTable:
             print(f"Failed to add rack {rack_entry.label}")
             raise DBWriteException
 
-    def delete_rack(self, rack: Rack) -> None:
+    def delete_rack(self, label: str, datacenter_id: int) -> None:
         """ Removes a rack from the database """
         try:
-            RackEntry.query.filter_by(
-                label=rack.label, datacenter_id=rack.datacenter_id
-            ).delete()
+            RackEntry.query.filter_by(label=label, datacenter_id=datacenter_id).delete()
             db.session.commit()
         except:
-            print(f"Failed to delete rack {rack.label}")
+            print(f"Failed to delete rack {label}")
 
     def get_all_racks(self) -> List[Rack]:
         """ Get a list of all racks """

@@ -61,6 +61,10 @@ class InstanceManager:
         if asset_number == "":
             raise InvalidInputsError("Must provide an asset number")
 
+        delete_connection_result = self.delete_connections(asset_number)
+        if delete_connection_result != Constants.API_SUCCESS:
+            raise InvalidInputsError(delete_connection_result)
+
         try:
             self.table.delete_instance_by_asset_number(asset_number)
         except:
@@ -93,17 +97,36 @@ class InstanceManager:
             new_instance = self.make_instance(instance_data)
             if type(new_instance) is InvalidInputsError:
                 return new_instance
+
+            delete_connection_result = self.delete_connections(original_asset_number)
+            if delete_connection_result != Constants.API_SUCCESS:
+                raise InvalidInputsError("Failed to update network connections.")
+
             edit_validation_result = self.validate.edit_instance_validation(
                 new_instance, original_asset_number
             )
             if edit_validation_result != Constants.API_SUCCESS:
-                return InvalidInputsError(edit_validation_result)
+                original_instance = self.table.get_instance_by_asset_number(
+                    original_asset_number
+                )
+                self.make_corresponding_connections(
+                    original_instance.network_connections, original_instance.hostname
+                )
+                raise InvalidInputsError(edit_validation_result)
         except InvalidInputsError as e:
-            return e.message
-        if edit_validation_result == Constants.API_SUCCESS:
-            self.table.edit_instance(new_instance, original_asset_number)
-        else:
-            return InvalidInputsError(edit_validation_result)
+            raise InvalidInputsError(e.message)
+
+        edit_connection_result = self.make_corresponding_connections(
+            new_instance.network_connections, new_instance.hostname
+        )
+        if edit_connection_result != Constants.API_SUCCESS:
+            original_instance = self.table.get_instance_by_asset_number(
+                original_asset_number
+            )
+            self.make_corresponding_connections(
+                original_instance.network_connections, original_instance.hostname
+            )
+            raise InvalidInputsError(edit_connection_result)
 
         self.table.edit_instance(new_instance, original_asset_number)
 
@@ -154,9 +177,6 @@ class InstanceManager:
     def get_possible_models_with_filters(self, prefix_json):
         try:
             return_list = []
-            # prefix = prefix_json.get("input")
-            # if prefix is None:
-            #     prefix = ""
 
             model_list = self.model_table.get_all_models()
             for model in model_list:
@@ -296,7 +316,7 @@ class InstanceManager:
             other_instance = self.table.get_instance_by_hostname(connection_hostname)
             print("COMPLETE")
             if other_instance is None:
-                return f"An error occurred when attempting to add the network connection. Could not find asset iwht hostname {connection_hostname}."
+                return f"An error occurred when attempting to add the network connection. Could not find asset with hostname {connection_hostname}."
 
             other_instance.network_connections[connection_port][
                 "connection_hostname"
@@ -311,10 +331,40 @@ class InstanceManager:
                 self.table.edit_instance(other_instance, other_instance.asset_number)
                 print("EDITED SUCCESS")
             except:
-                print("BUMMER")
                 return f"Could not add new network connections to asset with hostname {other_instance.hostname}."
 
         return Constants.API_SUCCESS
+
+    def delete_connections(self, asset_number):
+        asset = self.table.get_instance_by_asset_number(asset_number)
+        if asset is None:
+            return "Failed to find the asset to delete"
+
+        for port in asset.network_connections:
+            connection_hostname = asset.network_connections[port]["connection_hostname"]
+            connection_port = asset.network_connections[port]["connection_port"]
+
+            if connection_hostname == "" and connection_port == "":
+                continue
+
+            other_instance = self.table.get_instance_by_hostname(connection_hostname)
+            if other_instance is None:
+                return f"An error occurred when attempting to delete the network connection. Could not find asset with hostname {connection_hostname}."
+
+            other_instance.network_connections[connection_port][
+                "connection_hostname"
+            ] = ""
+            other_instance.network_connections[connection_port]["connection_port"] = ""
+            print(other_instance.network_connections)
+
+            try:
+                print("EDITIG")
+                self.table.edit_instance(other_instance, other_instance.asset_number)
+                print("EDITED SUCCESS")
+            except:
+                return f"Could not add new network connections to asset with hostname {other_instance.hostname}."
+
+            return Constants.API_SUCCESS
 
     def get_network_neighborhood(self, asset_data):
         asset_number = self.check_null(asset_data[Constants.ASSET_NUMBER_KEY])

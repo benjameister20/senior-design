@@ -133,6 +133,8 @@ class InstanceValidator:
             return Constants.API_SUCCESS
 
         for current_instance in instance_list:
+            if current_instance.asset_number == original_asset_number:
+                continue
             model = self.model_table.get_model(instance.model_id)
             current_instance_top = current_instance.rack_position + model.height - 1
             if (
@@ -171,6 +173,9 @@ class InstanceValidator:
                 connection_port == "" or connection_port is None
             ):
                 continue
+
+            if not (connection_hostname != "" and connection_port != ""):
+                result += "Connections require both a hostname and connection port."
 
             other_instance = self.instance_table.get_instance_by_hostname(
                 connection_hostname

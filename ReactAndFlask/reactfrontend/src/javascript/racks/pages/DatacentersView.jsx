@@ -3,7 +3,7 @@ import React from 'react';
 import axios from 'axios';
 
 import { withStyles } from '@material-ui/core/styles';
-import CircularProgress from '@material-ui/core/CircularProgress';
+import { Grid, CircularProgress, Typography } from '@material-ui/core/';
 
 import getURL from "../../helpers/functions/GetURL";
 import * as Constants from "../../Constants";
@@ -117,29 +117,50 @@ class DatacenterView extends React.Component {
         return (
             <React.Fragment>
                 <ErrorBoundary>
-                    {this.props.privilege === Privilege.ADMIN ? <CreateDatacenter search={this.getDatacenters} /> : null }
-                    {this.state.loadingDCList ?
-                    <div className={classes.progress}><CircularProgress /></div> :
-                    <ShowDatacenters
-                        classes={classes}
-                        datacentersList={this.state.datacentersList}
-                        privilege={this.props.privilege}
-                        openConfirmationBox={this.openConfirmationBox}
-                        editDatacenter={this.openEditDatacenter}
-                    />}
-                    <EditDatacenter
-                        show={this.state.showEditDC}
-                        close={this.closeEditDatacenter}
-                        dcName={this.state.editDCName}
-                        dcAbbrev={this.state.editDCAbbr}
-                        search={this.getDatacenters}
-                    />
-                    <ConfirmDeteleDC
-                        showConfirmationBox={this.state.showConfirmationBox}
-                        closeConfirmationBox={this.closeConfirmationBox}
-                        deleteDatacenter={this.deleteDatacenter}
-                        close={this.closeEditDatacneter}
-                    />
+                    <Grid
+                        container
+                        spacing={5}
+                        direction="row"
+                        justify="center"
+                        alignItems="center"
+                        style={{margin: "0px", maxWidth: "95vw"}}
+                    >
+                        <Grid item xs={12}>
+                            <Typography variant="h4">
+                                Datacenters
+                            </Typography>
+                        </Grid>
+                        {this.props.privilege === Privilege.ADMIN ? <Grid item xs={12}><CreateDatacenter search={this.getDatacenters} /></Grid> : null }
+                        {this.state.loadingDCList ?
+                        <div className={classes.progress}><CircularProgress /></div> :
+
+                        <Grid item xs={12}>
+                        <ShowDatacenters
+                            classes={classes}
+                            datacentersList={this.state.datacentersList}
+                            privilege={this.props.privilege}
+                            openConfirmationBox={this.openConfirmationBox}
+                            editDatacenter={this.openEditDatacenter}
+                        /></Grid>}
+                        <Grid item xs={6}>
+                        <EditDatacenter
+                            show={this.state.showEditDC}
+                            close={this.closeEditDatacenter}
+                            dcName={this.state.editDCName}
+                            dcAbbrev={this.state.editDCAbbr}
+                            search={this.getDatacenters}
+                        />
+                        </Grid>
+                        <Grid item xs={6}>
+                        <ConfirmDeteleDC
+                            showConfirmationBox={this.state.showConfirmationBox}
+                            closeConfirmationBox={this.closeConfirmationBox}
+                            deleteDatacenter={this.deleteDatacenter}
+                            close={this.closeEditDatacneter}
+                        />
+                        </Grid>
+
+                    </Grid>
                 </ErrorBoundary>
             </React.Fragment>
         );

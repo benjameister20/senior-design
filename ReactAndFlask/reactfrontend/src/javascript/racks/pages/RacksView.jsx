@@ -208,7 +208,7 @@ class RacksView extends React.Component {
                         {(this.props.privilege === Privilege.ADMIN) ?
                         <Button
                             variant="contained"
-                            color="primary"
+                            color="secondary"
                             onClick={() => this.setState({ showConfirmationBox: true, })}
                         >
                             Delete Racks

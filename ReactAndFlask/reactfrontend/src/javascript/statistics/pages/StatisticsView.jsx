@@ -77,7 +77,7 @@ export default class StatisticsView extends React.Component {
 
     generateReport() {
         axios.post(getURL(statsMainPath, StatsCommand.GENERATE_REPORT), {
-            'datacenter_name': this.state.selectedDatacenter,
+            'datacenter_name': this.state.selectedDatacenter === "All Datacenters" ? "" : this.state.selectedDatacenter,
         }).then(response => {
                 try {
                     var data = response.data;
@@ -156,7 +156,7 @@ export default class StatisticsView extends React.Component {
                             onChange={(e) => this.setState({ selectedDatacenter: e.target.value })}
                             style={{ width: "100%" }}
                         >
-                            <MenuItem value="">All Datacenters</MenuItem>
+                            <MenuItem value="All Datacenters">All Datacenters</MenuItem>
                             {this.state.datacenterList.map(value => {
                                 return (<MenuItem value={value}>{value["name"]}</MenuItem>);
                             })}

@@ -18,12 +18,12 @@ class InstanceManager:
         self.validate = InstanceValidator()
         self.asset_num_file = "/asset_num.json"
         self.dirname = os.path.dirname(__file__)
-        self.current_asset_num = 10001
+        self.next_asset_num = 100001
 
         self.__setup_asset_num_file()
 
     def __setup_asset_num_file(self):
-        asset_num_file_template = {"start_num": 10001, "current_num": 10001}
+        asset_num_file_template = {"start_num": 100001, "next_num": 100001}
 
         if not os.path.exists(self.dirname + self.asset_num_file):
             try:
@@ -44,20 +44,37 @@ class InstanceManager:
 
         return asset_num_data
 
-    def __update_current_asset_num_file(self, current_asset_num):
-        asset_num_data = dict(self.__get_asset_num_data)
-        asset_num_data["current_num"] = current_asset_num
+    def __get_next_asset_num(self):
+        data = self.__get_asset_num_data()
+
+        return data.get("next_num")
+
+    def __update_next_asset_num(self, next_asset_num):
+        self.next_asset_num = next_asset_num
+        asset_num_data = self.__get_asset_num_data()
+        asset_num_data["next_num"] = next_asset_num
         try:
-            with open(self.dirname + self.asset_num_file, "r") as outfile:
+            with open(self.dirname + self.asset_num_file, "w") as outfile:
                 json.dump(asset_num_data, outfile, indent=4)
         except IOError as e:
             print(str(e))
             raise InvalidInputsError("Failed to update asset number data file")
 
-        return None
+    def __find_valid_asset_num(self, offset):
+        next_asset_num = self.__get_next_asset_num() + offset
+        asset = self.table.get_instance_by_asset_number(next_asset_num)
+        while asset is not None:
+            next_asset_num += 1
+            asset = self.table.get_instance_by_asset_number(next_asset_num)
 
-    def __update_current_asset_num(self, asset_num_data):
-        self.current_asset_num = asset_num_data.get("current_num")
+        return next_asset_num
+
+    def get_next_asset_number(self):
+        asset_num = self.__find_valid_asset_num(0)
+        next_asset_num = self.__find_valid_asset_num(1)
+        self.__update_next_asset_num(next_asset_num)
+
+        return asset_num
 
     def create_instance(self, instance_data):
         try:
@@ -95,7 +112,11 @@ class InstanceManager:
                     return connect_result
             except:
                 raise InvalidInputsError("Unable to create instance")
-        except:
+        except InvalidInputsError as e:
+            print(e.message)
+            raise InvalidInputsError(e.message)
+        except Exception as e:
+            print(str(e))
             raise InvalidInputsError(
                 "An error occurred when attempting to create the instance."
             )
@@ -177,7 +198,6 @@ class InstanceManager:
 
     def get_instances(self, filter, dc_name, limit: int):
         model_name = filter.get(Constants.MODEL_KEY)
-
         try:
             if model_name is not None and model_name != "":
                 print("MODEL_NAME")
@@ -199,7 +219,8 @@ class InstanceManager:
             raise InvalidInputsError(
                 "An error occurred while trying to filter by datacenter name. Please input a different model name"
             )
-
+        # print("DCID")
+        # print(dc_id)
         hostname = filter.get(Constants.HOSTNAME_KEY)
         rack_label = filter.get(Constants.RACK_KEY)
         rack_position = filter.get(Constants.RACK_POSITION_KEY)

@@ -32,6 +32,7 @@ def search():
     returnJSON = createJSON()
 
     print(request.json)
+    print("")
     filter = request.json.get("filter")
     if filter is None:
         return addMessageToJSON(returnJSON, "Please include a filter")
@@ -44,11 +45,16 @@ def search():
     try:
         print(request.json)
         datacenter_name = request.json["datacenter_name"]
+        # if datacenter_name == "":
+        #     print("IT WAS BLANK\n")
+        #     datacenter_name = None
         instance_list = INSTANCE_MANAGER.get_instances(filter, datacenter_name, limit)
         # print(f"INSTANCE LIST: {instance_list}, {len(instance_list)}")
         # if len(instance_list) == 0:
         #     print("CAUGHT THE PROBLEM")
         #     return addMessageToJSON(returnJSON, "No instances to show")
+        # print("INSTANCE LIST")
+        # print(instance_list)
         returnJSON = addInstancesTOJSON(
             addMessageToJSON(returnJSON, "success"),
             list(
@@ -64,6 +70,7 @@ def search():
         print(returnJSON)
         return returnJSON
     except InvalidInputsError as e:
+        print(e.message)
         return addMessageToJSON(returnJSON, e.message)
 
 
@@ -73,21 +80,24 @@ def search():
 @log(request, LOGGER.INSTANCES, LOGGER.ACTIONS.INSTANCES.CREATE)
 def create():
     """ Route for creating instances """
-    print("REQUEST")
-    print(request.get_json())
+    # print("REQUEST")
+    # print(request.get_json())
     global INSTANCE_MANAGER
     returnJSON = createJSON()
 
     try:
         instance_data = request.get_json()
         error = INSTANCE_MANAGER.create_instance(instance_data)
+        print("ERROR")
         print(type(error))
         if error is not None:
             print(error)
             print("YEEHAW")
             return addMessageToJSON(returnJSON, error)
+        print("MADE IT HERE")
         return addMessageToJSON(returnJSON, "success")
     except InvalidInputsError as e:
+        print(e.message)
         return addMessageToJSON(returnJSON, e.message)
 
 
@@ -179,8 +189,15 @@ def get_next_asset_number():
     """ Route to get next valid asset number"""
     global INSTANCE_MANAGER
     returnJSON = createJSON()
+    next_asset_number = 589382
 
-    returnJSON["asset_number"] = 583965
+    try:
+        next_asset_number = INSTANCE_MANAGER.get_next_asset_number()
+    except Exception as e:
+        print(str(e))
+        return addMessageToJSON(returnJSON, "Failed to get next asset number")
+
+    returnJSON["asset_number"] = next_asset_number
     return addMessageToJSON(returnJSON, "success")
 
 

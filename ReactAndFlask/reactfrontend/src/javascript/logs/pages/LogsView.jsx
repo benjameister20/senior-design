@@ -3,6 +3,10 @@ import React from "react"
 import axios from 'axios';
 
 import { withStyles } from '@material-ui/core/styles';
+import {
+    Grid,
+    Typography
+} from "@material-ui/core/";
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -16,6 +20,7 @@ import { TextField } from '@material-ui/core';
 import { LogCommand } from "../enums/LogCommands.ts";
 import getURL from "../../helpers/functions/GetURL";
 import * as Constants from "../../Constants";
+import ErrorBoundary from "../../errors/ErrorBoundry";
 
 const useStyles = {
     table: {
@@ -55,8 +60,8 @@ class LogsView extends React.Component  {
 
     getLogs = () => {
         axios.get(getURL(Constants.LOGS_MAIN_PATH, LogCommand.GET_LOGS)).then(response => {
-            this.parseLog(response.data.log)
-            console.log(response);
+            this.parseLog(response.data.log);
+            this.filter();
         });
     }
 
@@ -77,49 +82,49 @@ class LogsView extends React.Component  {
     }
 
     filter = () => {
-        this.filterByUser();
-    }
-
-    filterByUser = () => {
         var user = this.state.filterUser;
-        var filteredItems = [];
-
-        this.state.logItems.map((log) => {
-            var entry = this.state.allLogs[log.index];
-            try {
-                if (entry.message.match(/\[.+\]/)[0].includes(user)) {
-                    filteredItems.push(log);
-                }
-            } catch {
-
-            }
-
-        });
-
-        let items = (user==="") ? this.state.logItems : filteredItems;
-        this.setState({ filteredLogs:items }, () => { this.filterByAsset() });
-    }
-
-    filterByAsset = () => {
         var asset = this.state.filterAsset;
         var filteredItems = [];
 
-        this.state.filteredLogs.map((log) => {
-            var entry = this.state.allLogs[log.index];
-            //console.log(entry);
+        this.state.allLogs.map(entry => {
+            console.log(entry);
+            var hasAsset = false;
+            var hasUser = false;
+
             try {
-                var assetNum = "" + entry.request.asset_number
-                if (assetNum.includes(asset)) {
-                    filteredItems.push(log);
+                if (entry.message.match(/\[.+\]/)[0].includes(user)) {
+                    hasUser = true;
                 }
             } catch {
-
+                hasUser = false;
             }
 
+
+            try {
+                if (asset !== "") {
+                    var assetNum = "" + entry.request.asset_number
+                    if (assetNum.includes(asset)) {
+                        hasAsset = true;
+                    }
+                } else {
+                    hasAsset = true;
+                }
+            } catch {
+                hasAsset = false;
+            }
+
+            if (hasAsset && hasUser) {
+                filteredItems.push(entry);
+            }
         });
 
-        let items = (asset==="") ? this.state.filteredLogs.reverse() : filteredItems;
-        this.setState({ filteredLogs:items });
+        filteredItems.sort(function(a, b) {
+            if (a.timestamp > b.timestamp) return -1;
+            if (a.timestamp < b.timestamp) return 1;
+            return 0;
+        })
+
+        this.setState({ filteredLogs:filteredItems });
     }
 
     updateFilterUser = (event) => {
@@ -135,47 +140,71 @@ class LogsView extends React.Component  {
 
         return (
             <React.Fragment>
-                <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={this.getLogs}
-                >
-                    Refresh Logs
-                </Button>
-                <TextField
-                    className={classes.searchbar}
-                    name={"filter-users"}
-                    placeholder="Search users"
-                    fullWidth
-                    onChange={this.updateFilterUser}
-                />
-                <TextField
-                    className={classes.searchbar}
-                    name={"filter-assets"}
-                    placeholder="Search assets"
-                    fullWidth
-                    onChange={this.updateFilterAsset}
-                />
-                <TableContainer component={Paper}>
-                    <Table className={classes.table} aria-label="simple table">
-                        <TableHead>
-                        <TableRow>
-                            <TableCell align="left">Timestamp</TableCell>
-                            <TableCell align="left">type</TableCell>
-                            <TableCell align="left">Message</TableCell>
-                        </TableRow>
-                        </TableHead>
-                        <TableBody>
-                        {this.state.filteredLogs.reverse().map(logItem => (
-                            <TableRow key={logItem.timestamp}>
-                                <TableCell aligh="left">{logItem.timestamp}</TableCell>
-                                <TableCell align="left">{logItem.type}</TableCell>
-                                <TableCell align="left">{logItem.message}</TableCell>
-                            </TableRow>
-                        ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
+                <ErrorBoundary>
+                    <Grid
+                        container
+                        spacing={5}
+                        direction="row"
+                        justify="flex-start"
+                        alignItems="center"
+                        style={{margin: "0px", maxWidth: "95vw"}}
+                    >
+                        <Grid item xs={12}>
+                            <Typography variant="h4">
+                                Logs
+                            </Typography>
+                        </Grid>
+                        <Grid item xs={12}>
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                onClick={this.getLogs}
+                            >
+                                Refresh Logs
+                            </Button>
+                        </Grid>
+                        <Grid item xs={6}>
+                            <TextField
+                                className={classes.searchbar}
+                                name={"filter-users"}
+                                placeholder="Search users"
+                                fullWidth
+                                onChange={this.updateFilterUser}
+                            />
+                        </Grid>
+                        <Grid item xs={6}>
+                            <TextField
+                                className={classes.searchbar}
+                                name={"filter-assets"}
+                                placeholder="Search assets"
+                                fullWidth
+                                onChange={this.updateFilterAsset}
+                            />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <TableContainer component={Paper}>
+                                <Table className={classes.table} aria-label="simple table">
+                                    <TableHead>
+                                    <TableRow>
+                                        <TableCell align="left"><span id={"timestamp"} style={{fontWeight: "bold"}}>Timestamp</span></TableCell>
+                                        <TableCell align="left"><span id={"type"} style={{fontWeight: "bold"}}>type</span></TableCell>
+                                        <TableCell align="left"><span id={"message"} style={{fontWeight: "bold"}}>Message</span></TableCell>
+                                    </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                    {this.state.filteredLogs.map(logItem => (
+                                        <TableRow key={logItem.timestamp}>
+                                            <TableCell aligh="left">{logItem.timestamp}</TableCell>
+                                            <TableCell align="left">{logItem.type}</TableCell>
+                                            <TableCell align="left">{logItem.message}</TableCell>
+                                        </TableRow>
+                                    ))}
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+                        </Grid>
+                    </Grid>
+                </ErrorBoundary>
             </React.Fragment>
         );
     }

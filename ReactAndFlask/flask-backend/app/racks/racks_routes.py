@@ -166,8 +166,8 @@ def delete_racks():
 
 
 @racks.route("/nextPDU", methods=["POST"])
-# @requires_auth(request)
-# @requires_role(request, "admin")
+@requires_auth(request)
+@requires_role(request, "admin")
 def next_pdu_port():
     """ Returns first available PDU port for a given rack"""
     data: JSON = request.get_json()

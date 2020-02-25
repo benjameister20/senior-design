@@ -34,7 +34,7 @@ function makeTableData(index, timestamp, type, message) {
 const typeKey = "type";
 const timestampKey = "timestamp";
 const USER_KEY = "user";
-const ASSET_KEY = "asset";
+const ASSET_KEY = "assets";
 
 class LogsView extends React.Component  {
     constructor(props) {
@@ -54,7 +54,10 @@ class LogsView extends React.Component  {
     }
 
     getLogs = () => {
-        axios.get(getURL(Constants.LOGS_MAIN_PATH, LogCommand.GET_LOGS)).then(response => this.parseLog(response.data.log));
+        axios.get(getURL(Constants.LOGS_MAIN_PATH, LogCommand.GET_LOGS)).then(response => {
+            this.parseLog(response.data.log)
+            console.log(response);
+        });
     }
 
     parseLog = (logs) => {
@@ -83,11 +86,14 @@ class LogsView extends React.Component  {
 
         this.state.logItems.map((log) => {
             var entry = this.state.allLogs[log.index];
-            if (USER_KEY in entry) {
-                if (entry[USER_KEY].includes(user)) {
+            try {
+                if (entry.message.match(/\[.+\]/)[0].includes(user)) {
                     filteredItems.push(log);
                 }
+            } catch {
+
             }
+
         });
 
         let items = (user==="") ? this.state.logItems : filteredItems;
@@ -100,14 +106,19 @@ class LogsView extends React.Component  {
 
         this.state.filteredLogs.map((log) => {
             var entry = this.state.allLogs[log.index];
-            if (ASSET_KEY in entry) {
-                if (entry[ASSET_KEY].includes(asset)) {
+            //console.log(entry);
+            try {
+                var assetNum = "" + entry.request.asset_number
+                if (assetNum.includes(asset)) {
                     filteredItems.push(log);
                 }
+            } catch {
+
             }
+
         });
 
-        let items = (asset==="") ? this.state.filteredLogs : filteredItems;
+        let items = (asset==="") ? this.state.filteredLogs.reverse() : filteredItems;
         this.setState({ filteredLogs:items });
     }
 
@@ -155,7 +166,7 @@ class LogsView extends React.Component  {
                         </TableRow>
                         </TableHead>
                         <TableBody>
-                        {this.state.filteredLogs.map(logItem => (
+                        {this.state.filteredLogs.reverse().map(logItem => (
                             <TableRow key={logItem.timestamp}>
                                 <TableCell aligh="left">{logItem.timestamp}</TableCell>
                                 <TableCell align="left">{logItem.type}</TableCell>

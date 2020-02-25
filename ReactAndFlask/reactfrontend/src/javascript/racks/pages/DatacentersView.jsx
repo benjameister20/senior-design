@@ -159,7 +159,6 @@ class DatacenterView extends React.Component {
                             close={this.closeEditDatacneter}
                         />
                         </Grid>
-
                     </Grid>
                 </ErrorBoundary>
             </React.Fragment>

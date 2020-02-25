@@ -2,6 +2,7 @@ from app.constants import Constants
 from app.dal.datacenter_table import DatacenterTable
 from app.dal.instance_table import InstanceTable
 from app.dal.model_table import ModelTable
+from app.dal.rack_table import RackTable
 from app.data_models.instance import Instance
 from app.exceptions.InvalidInputsException import InvalidInputsError
 from app.instances.asset_num_generator import AssetNumGenerator
@@ -13,6 +14,7 @@ class InstanceManager:
         self.table = InstanceTable()
         self.model_table = ModelTable()
         self.dc_table = DatacenterTable()
+        self.rack_table = RackTable()
         self.validate = InstanceValidator()
         self.asset_num_generator = AssetNumGenerator()
 
@@ -26,11 +28,13 @@ class InstanceManager:
             except InvalidInputsError as e:
                 return e.message
             create_validation_result = Constants.API_SUCCESS
-            print(create_validation_result)
             try:
+                print("validating")
                 create_validation_result = self.validate.create_instance_validation(
                     new_instance
                 )
+                print("FINISHED VALIDATION")
+                print(create_validation_result)
                 if create_validation_result != Constants.API_SUCCESS:
                     raise InvalidInputsError(create_validation_result)
             except InvalidInputsError as e:
@@ -40,16 +44,23 @@ class InstanceManager:
                 print("Creating instance")
                 self.table.add_instance(new_instance)
 
-                print("Attempting to add other connections")
+                power_result = self.add_power_connections(new_instance)
+                if power_result != Constants.API_SUCCESS:
+                    self.table.delete_instance_by_asset_number(
+                        new_instance.asset_number
+                    )
+                    raise InvalidInputsError(
+                        "An error occurred when trying to add power connections."
+                    )
+
                 connect_result = self.make_corresponding_connections(
                     new_instance.network_connections, new_instance.hostname
                 )
-                print(connect_result)
                 if connect_result != Constants.API_SUCCESS:
                     self.table.delete_instance_by_asset_number(
                         new_instance.asset_number
                     )
-                    return connect_result
+                    raise InvalidInputsError(connect_result)
             except:
                 raise InvalidInputsError("Unable to create instance")
         except InvalidInputsError as e:
@@ -58,7 +69,7 @@ class InstanceManager:
         except Exception as e:
             print(str(e))
             raise InvalidInputsError(
-                "An error occurred when attempting to create the instance."
+                "An error occurred when attempting to create the asset."
             )
 
     def delete_instance(self, instance_data):
@@ -66,6 +77,12 @@ class InstanceManager:
 
         if asset_number == "":
             raise InvalidInputsError("Must provide an asset number")
+
+        delete_power_result = self.delete_power_connections(asset_number)
+        if delete_power_result != Constants.API_SUCCESS:
+            raise InvalidInputsError(
+                "An error occurred when trying to remove power connections."
+            )
 
         delete_connection_result = self.delete_connections(asset_number)
         if delete_connection_result != Constants.API_SUCCESS:
@@ -104,6 +121,8 @@ class InstanceManager:
             if type(new_instance) is InvalidInputsError:
                 return new_instance
 
+            self.delete_power_connections(original_asset_number)
+
             delete_connection_result = self.delete_connections(original_asset_number)
             if delete_connection_result != Constants.API_SUCCESS:
                 raise InvalidInputsError("Failed to update network connections.")
@@ -121,6 +140,8 @@ class InstanceManager:
                 raise InvalidInputsError(edit_validation_result)
         except InvalidInputsError as e:
             raise InvalidInputsError(e.message)
+
+        self.add_power_connections(new_instance)
 
         edit_connection_result = self.make_corresponding_connections(
             new_instance.network_connections, new_instance.hostname
@@ -370,7 +391,47 @@ class InstanceManager:
             except:
                 return f"Could not add new network connections to asset with hostname {other_instance.hostname}."
 
-            return Constants.API_SUCCESS
+        return Constants.API_SUCCESS
+
+    def add_power_connections(self, instance):
+        rack = self.rack_table.get_rack(instance.rack_label, instance.datacenter_id)
+        if rack is None:
+            return f"Could not find rack {instance.rack_label}"
+
+        for p_connection in instance.power_connections:
+            char1 = p_connection[0].upper()
+            num = int(p_connection[1:])
+            if char1 == "L":
+                rack.pdu_left[num - 1] = 1
+            elif char1 == "R":
+                rack.pdu_right[num - 1] = 1
+            else:
+                return "Invalid power connection. Please specify left or right PDU."
+
+        self.rack_table.edit_rack(rack)
+        return Constants.API_SUCCESS
+
+    def delete_power_connections(self, asset_number):
+        instance = self.table.get_instance_by_asset_number(asset_number)
+        if instance is None:
+            return "Asset could not be found."
+
+        rack = self.rack_table.get_rack(instance.rack_label, instance.datacenter_id)
+        if rack is None:
+            return f"Could not find rack {instance.rack_label}"
+
+        for p_connection in instance.power_connections:
+            char1 = p_connection[0].upper()
+            num = int(p_connection[1:])
+            if char1 == "L":
+                rack.pdu_left[num - 1] = 0
+            elif char1 == "R":
+                rack.pdu_right[num - 1] = 0
+            else:
+                return "Invalid power connection. Please specify left or right PDU."
+
+        self.rack_table.edit_rack(rack)
+        return Constants.API_SUCCESS
 
     def get_network_neighborhood(self, asset_data):
         asset_number = self.check_null(asset_data[Constants.ASSET_NUMBER_KEY])

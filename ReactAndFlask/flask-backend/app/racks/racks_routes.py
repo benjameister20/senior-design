@@ -166,6 +166,32 @@ def delete_racks():
         )
 
 
+@racks.route("/nextPDU", methods=["POST"])
+@requires_auth(request)
+@requires_role(request, "admin")
+def next_pdu_port():
+    """ Returns first available PDU port for a given rack"""
+    data: JSON = request.get_json()
+    returnJSON = createJSON()
+
+    rack_label = data.get(Constants.RACK_KEY)
+    dc_name = data.get(Constants.DC_NAME_KEY)
+    dc_id = get_datacenter_id_by_name(dc_name)
+
+    rack_table: RackTable = RackTable()
+    rack = rack_table.get_rack(rack_label, dc_id)
+    if rack is None:
+        return addMessageToJSON(returnJSON, "Failed to find rack")
+
+    for i in range(0, 24):
+        if rack.pdu_left[i] == 0 and rack.pdu_right[i] == 0:
+            returnJSON["next_pair"] = str(i + 1)
+            return addMessageToJSON(returnJSON, Constants.API_SUCCESS)
+
+    returnJSON["next_pair"] = "No paris of PDU ports available."
+    return addMessageToJSON(returnJSON, Constants.API_SUCCESS)
+
+
 def get_datacenter_id_by_name(name):
     datacenter_id = DatacenterTable().get_datacenter_id_by_name(name)
     if datacenter_id is None:

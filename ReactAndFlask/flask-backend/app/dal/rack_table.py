@@ -2,6 +2,8 @@ from typing import List, Optional
 
 from app.dal.database import DBWriteException, db
 from app.data_models.rack import Rack
+from app.main.types import JSON
+from sqlalchemy.dialects import postgresql as pg
 from sqlalchemy.exc import IntegrityError
 
 
@@ -11,14 +13,31 @@ class RackEntry(db.Model):
     identifier = db.Column(db.Integer, primary_key=True, unique=True)
     label = db.Column(db.String(80))
     datacenter_id = db.Column(db.Integer)
+    pdu_left = db.Column(pg.ARRAY(db.Integer))
+    pdu_right = db.Column(pg.ARRAY(db.Integer))
 
     def __init__(self, rack: Rack):
         self.label = rack.label
         self.datacenter_id = rack.datacenter_id
+        self.pdu_left = rack.pdu_left
+        self.pdu_right = rack.pdu_right
 
     def make_rack(self) -> Rack:
         """ Convert the database entry to a rack """
-        return Rack(label=self.label, datacenter_id=self.datacenter_id)
+        return Rack(
+            label=self.label,
+            datacenter_id=self.datacenter_id,
+            pdu_left=self.pdu_left,
+            pdu_right=self.pdu_right,
+        )
+
+    def make_json(self) -> JSON:
+        return {
+            "label": self.label,
+            "datacenter_id": self.datacenter_id,
+            "pdu_left": self.pdu_left,
+            "pdu_right": self.pdu_right,
+        }
 
 
 class RackTable:
@@ -55,18 +74,28 @@ class RackTable:
             print(f"Failed to add rack {rack_entry.label}")
             raise DBWriteException
 
-    def delete_rack(self, rack: Rack) -> None:
+    def delete_rack(self, label: str, datacenter_id: int) -> None:
         """ Removes a rack from the database """
         try:
-            RackEntry.query.filter_by(
-                label=rack.label, datacenter_id=rack.datacenter_id
-            ).delete()
+            RackEntry.query.filter_by(label=label, datacenter_id=datacenter_id).delete()
             db.session.commit()
         except:
-            print(f"Failed to delete rack {rack.label}")
+            print(f"Failed to delete rack {label}")
 
     def get_all_racks(self) -> List[Rack]:
         """ Get a list of all racks """
         all_racks: List[RackEntry] = RackEntry.query.all()
 
         return [entry.make_rack() for entry in all_racks]
+
+    def edit_rack(self, rack):
+        """ Updates a rack in the database """
+        try:
+            new_rack = RackEntry(rack=rack)
+
+            old_entry = RackEntry.query.filter_by(
+                label=rack.label, datacenter_id=rack.datacenter_id
+            ).update(new_rack.make_json())
+            db.session.commit()
+        except:
+            raise Exception(f"Failed to udpate rack {rack.label}")

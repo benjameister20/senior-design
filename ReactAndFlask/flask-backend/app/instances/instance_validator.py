@@ -16,12 +16,31 @@ class InstanceValidator:
         self.rack_height = 42
 
     def create_instance_validation(self, instance):
-        print(f"{instance.rack_label} {instance.datacenter_id}")
-        if (
-            self.rack_table.get_rack(instance.rack_label, instance.datacenter_id)
-            is None
-        ):
+        rack = self.rack_table.get_rack(instance.rack_label, instance.datacenter_id)
+        if rack is None:
             return f"Rack {instance.rack_label} does not exist. Instances must be created on preexisting racks"
+
+        for p_connection in instance.power_connections:
+            char1 = p_connection[0].upper()
+            num = int(p_connection[1:])
+            if char1 == "L":
+                pdu_arr = rack.pdu_left
+            elif char1 == "R":
+                pdu_arr = rack.pdu_right
+            else:
+                return "Invalid power connection. Please specify left or right PDU."
+
+            if pdu_arr[num - 1] == 1:
+                return f"There is already an asset connected at PDU {char1}{num}. Please pick an empty PDU port."
+
+        asset_pattern = re.compile("[0-9]{6}")
+        if asset_pattern.fullmatch(str(instance.asset_number)) is None:
+            return "Asset numbers must be 6 digits long and only contain numbers."
+        if (
+            self.instance_table.get_instance_by_asset_number(instance.asset_number)
+            is not None
+        ):
+            return f"Asset numbers must be unique. An asset with asset number {instance.asset_number} already exists."
 
         if instance.hostname != "" and instance.hostname is not None:
             duplicate_hostname = self.instance_table.get_instance_by_hostname(
@@ -42,8 +61,10 @@ class InstanceValidator:
         if model_template is None:
             return "The model does not exist."
 
+        print("passed model validation")
+
         pattern = re.compile("[0-9]+")
-        if pattern.fullmatch(instance.rack_position) is None:
+        if pattern.fullmatch(str(instance.rack_position)) is None:
             return "The value for Rack U must be a positive integer."
 
         if instance.owner != "" and self.user_table.get_user(instance.owner) is None:
@@ -58,22 +79,20 @@ class InstanceValidator:
         instance_list = self.instance_table.get_instances_by_rack(
             instance.rack_label, instance.datacenter_id
         )
-        if instance_list is None:
-            return Constants.API_SUCCESS
-
-        for current_instance in instance_list:
-            model = self.model_table.get_model(instance.model_id)
-            current_instance_top = current_instance.rack_position + model.height - 1
-            if (
-                current_instance.rack_position >= instance_bottom
-                and current_instance.rack_position <= instance_top
-            ):
-                return self.return_conflict(current_instance)
-            elif (
-                current_instance_top >= instance_bottom
-                and current_instance_top <= instance_top
-            ):
-                return self.return_conflict(current_instance)
+        if instance_list is not None:
+            for current_instance in instance_list:
+                model = self.model_table.get_model(instance.model_id)
+                current_instance_top = current_instance.rack_position + model.height - 1
+                if (
+                    current_instance.rack_position >= instance_bottom
+                    and current_instance.rack_position <= instance_top
+                ):
+                    return self.return_conflict(current_instance)
+                elif (
+                    current_instance_top >= instance_bottom
+                    and current_instance_top <= instance_top
+                ):
+                    return self.return_conflict(current_instance)
 
         connection_validation_result = self.validate_connections(
             instance.network_connections, instance.hostname
@@ -84,14 +103,33 @@ class InstanceValidator:
         return Constants.API_SUCCESS
 
     def edit_instance_validation(self, instance, original_asset_number):
-        if (
-            self.rack_table.get_rack(instance.rack_label, instance.datacenter_id)
-            is None
-        ):
+        rack = self.rack_table.get_rack(instance.rack_label, instance.datacenter_id)
+        if rack is None:
             return "The requested rack does not exist. Instances must be created on preexisting racks"
 
-        print("INSTANCE HOSTNAME")
-        print(instance.hostname)
+        for p_connection in instance.power_connections:
+            char1 = p_connection[0].upper()
+            num = int(p_connection[1:])
+            if char1 == "L":
+                pdu_arr = rack.pdu_left
+            elif char1 == "R":
+                pdu_arr = rack.pdu_right
+            else:
+                return "Invalid power connection. Please specify left or right PDU."
+
+            if pdu_arr[num - 1] == 1:
+                return f"There is already an asset connected at PDU {char1}{num}. Please pick an empty PDU port."
+
+        if instance.asset_number != original_asset_number:
+            asset_pattern = re.compile("[0-9]{6}")
+            if asset_pattern.fullmatch(str(instance.asset_number)) is None:
+                return "Asset numbers must be 6 digits long and only contain numbers."
+
+            if (
+                self.instance_table.get_instance_by_asset_number(instance.asset_number)
+                is not None
+            ):
+                return f"Asset numbers must be unique. An asset with asset number {instance.asset_number} already exists."
 
         if instance.hostname != "" and instance.hostname is not None:
             duplicate_hostname = self.instance_table.get_instance_by_hostname(
@@ -158,6 +196,7 @@ class InstanceValidator:
         return Constants.API_SUCCESS
 
     def validate_connections(self, network_connections, hostname):
+        print("validating connections")
         result = ""
         for my_port in network_connections:
             mac_adress = network_connections[my_port][Constants.MAC_ADDRESS_KEY]
@@ -212,6 +251,7 @@ class InstanceValidator:
                 ):
                     result += f"The port {connection_port} on asset with hostname {connection_hostname} is already connected to another asset. \n"
 
+        print("finished connection validation")
         if result == "":
             return Constants.API_SUCCESS
         else:

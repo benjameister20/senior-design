@@ -121,6 +121,8 @@ def next_pdu_port():
 {
   "message": "success" || ERROR,
   "next_pair": "NEXT_PORT" || "No paris of PDU ports available."
+  "free_left": [FREE LEFT PORTS],
+  "free_right": [FREE RIGHT PORTS]
 }
 ```
 -----------------------------

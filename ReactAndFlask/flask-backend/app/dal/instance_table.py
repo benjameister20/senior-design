@@ -106,7 +106,7 @@ class InstanceTable:
         if instance_entry is None:
             return None
 
-        return instance_entry
+        return instance_entry.make_instance()
 
     def get_instance_by_asset_number(self, asset_number):
         """ Get the instance for the given hostname """

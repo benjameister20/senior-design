@@ -1,7 +1,26 @@
 from typing import Any, Dict, List, Optional
 
 from app.constants import Constants
+from app.dal.datacenter_table import DatacenterTable
+from app.dal.model_table import ModelTable
+from app.data_models.model import Model
 from app.main.types import JSON
+
+DCTABLE = DatacenterTable()
+MODELTABLE = ModelTable()
+
+
+def _make_network_connections(model: Model):
+    network_connections = {}
+    ethernet_ports = model.ethernet_ports
+    for port in ethernet_ports:
+        network_connections[port] = {
+            Constants.MAC_ADDRESS_KEY: "",
+            Constants.CONNECTION_HOSTNAME: "",
+            Constants.CONNECTION_PORT: "",
+        }
+
+    return network_connections
 
 
 class Instance:
@@ -101,16 +120,31 @@ class Instance:
             if csv_row[key] == "None":
                 csv_row[key] = ""
 
+        power_connections = [
+            csv_row[Constants.CSV_POWER_PORT_1],
+            csv_row[Constants.CSV_POWER_PORT_2],
+        ]
+        datacenter_id = DCTABLE.get_datacenter_id_by_name(
+            csv_row[Constants.CSV_DC_NAME_KEY]
+        )
+        model_id = MODELTABLE.get_model_id_by_vendor_number(
+            csv_row[Constants.VENDOR_KEY], csv_row[Constants.MODEL_NUMBER_KEY]
+        )
+        model: Model = MODELTABLE.get_model(model_id)
+        network_connections = _make_network_connections(model)
+
+        # if csv_row[Constants.ASSET_NUMBER_KEY] == "":
+
         return Instance(
-            model_id=csv_row[Constants.MODEL_ID_KEY],
+            model_id=model_id,
             hostname=csv_row[Constants.HOSTNAME_KEY],
             rack_label=csv_row[Constants.RACK_KEY],
             rack_position=csv_row[Constants.RACK_POSITION_KEY],
             owner=csv_row[Constants.OWNER_KEY],
             comment=csv_row[Constants.COMMENT_KEY],
-            datacenter_id=csv_row[Constants.DC_ID_KEY],
-            network_connections=csv_row[Constants.NETWORK_CONNECTIONS_KEY],
-            power_connections=csv_row[Constants.POWER_CONNECTIONS_KEY],
+            datacenter_id=datacenter_id,
+            network_connections=network_connections,
+            power_connections=power_connections,
             asset_number=csv_row[Constants.ASSET_NUMBER_KEY],
         )
 

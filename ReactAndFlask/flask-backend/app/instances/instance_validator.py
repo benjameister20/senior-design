@@ -16,6 +16,7 @@ class InstanceValidator:
         self.rack_height = 42
 
     def create_instance_validation(self, instance):
+        print(f"{instance.rack_label} {instance.datacenter_id}")
         if (
             self.rack_table.get_rack(instance.rack_label, instance.datacenter_id)
             is None

@@ -4,6 +4,7 @@ from typing import List
 from app.decorators.auth import requires_auth, requires_role
 from app.decorators.logs import log
 from app.exceptions.InvalidInputsException import InvalidInputsError
+from app.instances.asset_num_generator import AssetNumGenerator
 from app.instances.instance_manager import InstanceManager
 from app.logging.logger import Logger
 from flask import Blueprint, request
@@ -14,6 +15,7 @@ instances = Blueprint(
 
 INSTANCE_MANAGER = InstanceManager()
 LOGGER = Logger()
+ASSETNUMGEN = AssetNumGenerator()
 
 
 @instances.route("/instances/test", methods=["GET"])
@@ -31,7 +33,7 @@ def search():
     global instancesArr
     returnJSON = createJSON()
 
-    print(request.json)
+    print(json.dumps(request.json, indent=4))
     print("")
     filter = request.json.get("filter")
     if filter is None:
@@ -67,7 +69,7 @@ def search():
                 )
             ),
         )
-        print(returnJSON)
+        print(json.dumps(returnJSON, indent=4))
         return returnJSON
     except InvalidInputsError as e:
         print(e.message)
@@ -192,10 +194,13 @@ def get_next_asset_number():
     next_asset_number = 589382
 
     try:
-        next_asset_number = INSTANCE_MANAGER.get_next_asset_number()
+        next_asset_number = ASSETNUMGEN.get_next_asset_number()
     except Exception as e:
         print(str(e))
         return addMessageToJSON(returnJSON, "Failed to get next asset number")
+
+    print("NEXT ASSET NUMBER")
+    print(next_asset_number)
 
     returnJSON["asset_number"] = next_asset_number
     return addMessageToJSON(returnJSON, "success")

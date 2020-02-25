@@ -49,6 +49,7 @@ class Model:
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, Model):
             return NotImplemented
+
         return (
             self.vendor == other.vendor
             and self.model_number == other.model_number
@@ -97,14 +98,31 @@ class Model:
             if csv_row[key] == "None":
                 csv_row[key] = ""
 
+        # FIX ETHERNET PORT IMPORT
+        csv_row[Constants.CSV_ETHERNET_PORT_KEY]
+        port_names = [
+            csv_row.get(Constants.CSV_NETWORK_PORT_1),
+            csv_row.get(Constants.CSV_NETWORK_PORT_2),
+            csv_row.get(Constants.CSV_NETWORK_PORT_3),
+            csv_row.get(Constants.CSV_NETWORK_PORT_4),
+        ]
+
+        network_ports = []
+        count = 1
+        for port in port_names:
+            if port is not None and port != "":
+                network_ports.append(port)
+            else:
+                network_ports.append(str(count))
+
+            count += 1
+
         return Model(
             vendor=csv_row[Constants.VENDOR_KEY],
             model_number=csv_row[Constants.MODEL_NUMBER_KEY],
             height=csv_row[Constants.HEIGHT_KEY],
             display_color=csv_row[Constants.DISPLAY_COLOR_KEY],
-            ethernet_ports=csv_row[Constants.ETHERNET_PORT_KEY]
-            if csv_row[Constants.ETHERNET_PORT_KEY] != ""
-            else None,
+            ethernet_ports=network_ports,
             power_ports=csv_row[Constants.POWER_PORT_KEY]
             if csv_row[Constants.POWER_PORT_KEY] != ""
             else None,
@@ -197,4 +215,4 @@ class Model:
         return ",".join(clean_values)
 
     def __repr__(self) -> str:
-        return "Model {self.vendor} {self.model_number}"
+        return f"Model {self.vendor} {self.model_number}"

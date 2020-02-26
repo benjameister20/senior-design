@@ -61,12 +61,14 @@ class UsersTable extends React.Component {
     this.props.showDetailedView(index);
   }
 
-  beginEditing = () => {
+  beginEditing = (event, row) => {
     this.setState({ canEdit: true });
+    this.props.editUser(row["Username"], row["Display Name"], row["Email"], row["Privilege"]);
   }
 
   endEditing = () => {
     this.setState({ canEdit: false });
+    this.props.save();
   }
 
   showDeleteModal = (row) => {
@@ -80,6 +82,10 @@ class UsersTable extends React.Component {
   delete = () => {
     this.props.delete(this.state.username);
     this.closeDeleteModal();
+  }
+
+  changePrivilege = (event, row) => {
+    this.props.editUser(row["Username"], row["Display Name"], row["Email"], event.target.value);
   }
 
   render() {
@@ -99,7 +105,7 @@ class UsersTable extends React.Component {
               <TableRow id={index}>
                   { this.props.privilege === Privilege.ADMIN ? <TableCell scope="row" align="center">
                     {row["Username"] !== "admin" ? <div><Button>
-                        { this.state.canEdit ? <SaveIcon onClick={this.endEditing} /> : <EditIcon onClick={this.beginEditing} /> }
+                        { this.state.canEdit ? <SaveIcon onClick={this.endEditing} /> : <EditIcon onClick={(e) => {this.beginEditing(e, row)}} /> }
                       </Button>
                       <Button>
                         <DeleteIcon onClick={() => this.showDeleteModal(row)} />
@@ -111,6 +117,7 @@ class UsersTable extends React.Component {
                         <Select
                             id="privilege-select"
                             defaultValue={row[key]}
+                            onChange={(e) => { this.changePrivilege(e, row) }}
                         >
                             <MenuItem value="admin">Administrator</MenuItem>
                             <MenuItem value="user">User</MenuItem>

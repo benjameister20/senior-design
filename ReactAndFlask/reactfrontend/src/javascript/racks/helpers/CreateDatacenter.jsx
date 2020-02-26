@@ -124,7 +124,7 @@ class CreateDatacenter extends React.Component {
                 style={{ width: "100%" }}
             >
                 {this.props.datacenterList.map(value => {
-                    return (<MenuItem value={value}>{value["name"]}</MenuItem>);
+                    return (<MenuItem value={value["name"]}>{value["name"]}</MenuItem>);
                 })}
             </Select>
                 </Grid>

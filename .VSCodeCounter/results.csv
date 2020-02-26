@@ -1,0 +1,175 @@
+filename, language, Properties, Makefile, JSON, YAML, pip requirements, Markdown, Ini, HTML, Python, Shell Script, TypeScript, JavaScript React, CSS, JavaScript, comment, blank, total
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\.isort.cfg, Properties, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 7
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\.pre-commit-config.yaml, YAML, 0, 0, 0, 60, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 67
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\Makefile, Makefile, 0, 72, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 15, 87
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\README.md, Markdown, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\flask-backend\Database.md, Markdown, 0, 0, 0, 0, 0, 43, 0, 0, 0, 0, 0, 0, 0, 0, 0, 31, 74
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\flask-backend\README.md, Markdown, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 4
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\flask-backend\app\__init__.py, Python, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\flask-backend\app\constants.py, Python, 0, 0, 0, 0, 0, 0, 0, 0, 49, 0, 0, 0, 0, 0, 5, 11, 65
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\flask-backend\app\dal\__init__.py, Python, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\flask-backend\app\dal\database.py, Python, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 1, 5, 11
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\flask-backend\app\dal\datacenter_table.py, Python, 0, 0, 0, 0, 0, 0, 0, 0, 64, 0, 0, 0, 0, 0, 4, 22, 90
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\flask-backend\app\dal\exceptions\ChangeModelDBException.py, Python, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 1, 4
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\flask-backend\app\dal\instance_table.py, Python, 0, 0, 0, 0, 0, 0, 0, 0, 218, 0, 0, 0, 0, 0, 17, 41, 276
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\flask-backend\app\dal\model_table.py, Python, 0, 0, 0, 0, 0, 0, 0, 0, 167, 0, 0, 0, 0, 0, 8, 32, 207
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\flask-backend\app\dal\rack_table.py, Python, 0, 0, 0, 0, 0, 0, 0, 0, 51, 0, 0, 0, 0, 0, 5, 17, 73
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\flask-backend\app\dal\routes.py, Python, 0, 0, 0, 0, 0, 0, 0, 0, 130, 0, 0, 0, 0, 0, 8, 39, 177
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\flask-backend\app\dal\user_table.py, Python, 0, 0, 0, 0, 0, 0, 0, 0, 104, 0, 0, 0, 0, 0, 8, 20, 132
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\flask-backend\app\data_models\__init__.py, Python, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\flask-backend\app\data_models\datacenter.py, Python, 0, 0, 0, 0, 0, 0, 0, 0, 11, 0, 0, 0, 0, 0, 8, 5, 24
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\flask-backend\app\data_models\instance.py, Python, 0, 0, 0, 0, 0, 0, 0, 0, 118, 0, 0, 0, 0, 0, 12, 18, 148
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\flask-backend\app\data_models\model.py, Python, 0, 0, 0, 0, 0, 0, 0, 0, 159, 0, 0, 0, 0, 0, 16, 26, 201
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\flask-backend\app\data_models\rack.py, Python, 0, 0, 0, 0, 0, 0, 0, 0, 13, 0, 0, 0, 0, 0, 6, 6, 25
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\flask-backend\app\data_models\user.py, Python, 0, 0, 0, 0, 0, 0, 0, 0, 27, 0, 0, 0, 0, 0, 10, 8, 45
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\flask-backend\app\datacenters\DatacenterAPI.md, Markdown, 0, 0, 0, 0, 0, 99, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 104
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\flask-backend\app\datacenters\__init__.py, Python, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\flask-backend\app\datacenters\datacenter_manager.py, Python, 0, 0, 0, 0, 0, 0, 0, 0, 98, 0, 0, 0, 0, 0, 0, 18, 116
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\flask-backend\app\datacenters\datacenter_validator.py, Python, 0, 0, 0, 0, 0, 0, 0, 0, 49, 0, 0, 0, 0, 0, 0, 20, 69
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\flask-backend\app\datacenters\routes_datacenters.py, Python, 0, 0, 0, 0, 0, 0, 0, 0, 88, 0, 0, 0, 0, 0, 5, 25, 118
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\flask-backend\app\decorators\auth.py, Python, 0, 0, 0, 0, 0, 0, 0, 0, 40, 0, 0, 0, 0, 0, 1, 13, 54
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\flask-backend\app\decorators\logs.py, Python, 0, 0, 0, 0, 0, 0, 0, 0, 32, 0, 0, 0, 0, 0, 1, 8, 41
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\flask-backend\app\exceptions\InvalidInputsException.py, Python, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 1, 4
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\flask-backend\app\exceptions\UserExceptions.py, Python, 0, 0, 0, 0, 0, 0, 0, 0, 33, 0, 0, 0, 0, 0, 0, 21, 54
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\flask-backend\app\import_export\__init__.py, Python, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\flask-backend\app\import_export\routes.py, Python, 0, 0, 0, 0, 0, 0, 0, 0, 184, 0, 0, 0, 0, 0, 30, 60, 274
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\flask-backend\app\instances\InstancesAPI.md, Markdown, 0, 0, 0, 0, 0, 253, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 255
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\flask-backend\app\instances\__init__.py, Python, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\flask-backend\app\instances\instance_manager.py, Python, 0, 0, 0, 0, 0, 0, 0, 0, 303, 0, 0, 0, 0, 0, 5, 44, 352
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\flask-backend\app\instances\instance_validator.py, Python, 0, 0, 0, 0, 0, 0, 0, 0, 178, 0, 0, 0, 0, 0, 0, 40, 218
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\flask-backend\app\instances\routes_instances.py, Python, 0, 0, 0, 0, 0, 0, 0, 0, 154, 0, 0, 0, 0, 0, 20, 40, 214
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\flask-backend\app\logging\__init__.py, Python, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\flask-backend\app\logging\logger.py, Python, 0, 0, 0, 0, 0, 0, 0, 0, 172, 0, 0, 0, 0, 0, 27, 62, 261
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\flask-backend\app\logging\routes_logging.py, Python, 0, 0, 0, 0, 0, 0, 0, 0, 21, 0, 0, 0, 0, 0, 3, 13, 37
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\flask-backend\app\main\__init__.py, Python, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\flask-backend\app\main\types.py, Python, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 2, 6
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\flask-backend\app\models\ModelsAPI.md, Markdown, 0, 0, 0, 0, 0, 218, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 220
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\flask-backend\app\models\__init__.py, Python, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\flask-backend\app\models\model_manager.py, Python, 0, 0, 0, 0, 0, 0, 0, 0, 122, 0, 0, 0, 0, 0, 9, 20, 151
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\flask-backend\app\models\model_validator.py, Python, 0, 0, 0, 0, 0, 0, 0, 0, 63, 0, 0, 0, 0, 0, 0, 15, 78
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\flask-backend\app\models\routes_models.py, Python, 0, 0, 0, 0, 0, 0, 0, 0, 118, 0, 0, 0, 0, 0, 6, 38, 162
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\flask-backend\app\racks\RacksAPI.md, Markdown, 0, 0, 0, 0, 0, 102, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 106
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\flask-backend\app\racks\__init__.py, Python, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\flask-backend\app\racks\diagram_manager.py, Python, 0, 0, 0, 0, 0, 0, 0, 0, 63, 0, 0, 0, 0, 0, 4, 13, 80
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\flask-backend\app\racks\rack_manager.py, Python, 0, 0, 0, 0, 0, 0, 0, 0, 133, 0, 0, 0, 0, 0, 10, 33, 176
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\flask-backend\app\racks\racks_routes.py, Python, 0, 0, 0, 0, 0, 0, 0, 0, 150, 0, 0, 0, 0, 0, 4, 32, 186
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\flask-backend\app\stats\RacksAPI.md, Markdown, 0, 0, 0, 0, 0, 99, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 103
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\flask-backend\app\stats\StatsAPI.md, Markdown, 0, 0, 0, 0, 0, 53, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 57
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\flask-backend\app\stats\__init__.py, Python, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\flask-backend\app\stats\routes_stats.py, Python, 0, 0, 0, 0, 0, 0, 0, 0, 40, 0, 0, 0, 0, 0, 2, 18, 60
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\flask-backend\app\stats\stats_manager.py, Python, 0, 0, 0, 0, 0, 0, 0, 0, 93, 0, 0, 0, 0, 0, 0, 25, 118
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\flask-backend\app\users\UsersAPI.md, Markdown, 0, 0, 0, 0, 0, 191, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 196
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\flask-backend\app\users\__init__.py, Python, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\flask-backend\app\users\authentication.py, Python, 0, 0, 0, 0, 0, 0, 0, 0, 78, 0, 0, 0, 0, 0, 47, 20, 145
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\flask-backend\app\users\routes_users.py, Python, 0, 0, 0, 0, 0, 0, 0, 0, 98, 0, 0, 0, 0, 0, 35, 40, 173
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\flask-backend\app\users\token_blacklist.json, JSON, 0, 0, 57, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 58
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\flask-backend\app\users\users_manager.py, Python, 0, 0, 0, 0, 0, 0, 0, 0, 209, 0, 0, 0, 0, 0, 42, 69, 320
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\flask-backend\app\users\validator.py, Python, 0, 0, 0, 0, 0, 0, 0, 0, 104, 0, 0, 0, 0, 0, 50, 44, 198
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\flask-backend\application.py, Python, 0, 0, 0, 0, 0, 0, 0, 0, 67, 0, 0, 0, 0, 0, 15, 24, 106
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\flask-backend\models\modely.py, Python, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\flask-backend\scripts\create_db.py, Python, 0, 0, 0, 0, 0, 0, 0, 0, 28, 0, 0, 0, 0, 0, 3, 9, 40
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\flask-backend\scripts\create_db_local.py, Python, 0, 0, 0, 0, 0, 0, 0, 0, 32, 0, 0, 0, 0, 0, 3, 10, 45
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\flask-backend\scripts\model_setup.py, Python, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\flask-backend\scripts\setup_db.sh, Shell Script, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 2, 4
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\flask-backend\scripts\setup_db_local.sh, Shell Script, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 1, 2, 6
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\flask-backend\scripts\user_setup.py, Python, 0, 0, 0, 0, 0, 0, 0, 0, 81, 0, 0, 0, 0, 0, 5, 32, 118
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\flask-backend\settings.py, Python, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 5, 9
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\flask-backend\static\css\main.81c0b8e9.chunk.css, CSS, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 3
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\flask-backend\static\js\2.3d077fd3.chunk.js, JavaScript, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 1, 4
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\flask-backend\static\js\main.638f4138.chunk.js, JavaScript, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 3
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\flask-backend\static\js\runtime-main.b7b6d3d5.js, JavaScript, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 3
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\flask-backend\templates\index.html, HTML, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 2
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\reactfrontend\README.md, Markdown, 0, 0, 0, 0, 0, 37, 0, 0, 0, 0, 0, 0, 0, 0, 0, 32, 69
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\reactfrontend\package.json, JSON, 0, 0, 101, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 102
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\reactfrontend\public\index.html, HTML, 0, 0, 0, 0, 0, 0, 0, 20, 0, 0, 0, 0, 0, 0, 23, 4, 47
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\reactfrontend\public\manifest.json, JSON, 0, 0, 25, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 26
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\reactfrontend\src\index.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 2, 7
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\reactfrontend\src\javascript\Constants.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 36, 0, 0, 3, 11, 50
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\reactfrontend\src\javascript\JSONKeys.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 3, 2, 9
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\reactfrontend\src\javascript\Login.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 228, 0, 0, 1, 16, 245
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\reactfrontend\src\javascript\PageSelector.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 88, 0, 0, 2, 21, 111
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\reactfrontend\src\javascript\ShibLogin.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 77, 0, 0, 0, 7, 84
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\reactfrontend\src\javascript\Tabs.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 168, 0, 0, 0, 17, 185
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\reactfrontend\src\javascript\assets\AssetConstants.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 6, 11
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\reactfrontend\src\javascript\assets\enums\AssetCommands.ts, TypeScript, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 15, 0, 0, 0, 0, 1, 16
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\reactfrontend\src\javascript\assets\enums\AssetInputs.ts, TypeScript, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 16, 0, 0, 0, 0, 1, 17
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\reactfrontend\src\javascript\assets\helpers\AddAsset.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 127, 0, 0, 0, 15, 142
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\reactfrontend\src\javascript\assets\helpers\CreateAsset.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 739, 0, 0, 10, 79, 828
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\reactfrontend\src\javascript\assets\helpers\DetailsAsset.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 134, 0, 0, 0, 14, 148
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\reactfrontend\src\javascript\assets\helpers\EditAsset.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 739, 0, 0, 10, 79, 828
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\reactfrontend\src\javascript\assets\helpers\ExportAsset.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 72, 0, 0, 0, 10, 82
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\reactfrontend\src\javascript\assets\helpers\FilterAsset.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 167, 0, 0, 0, 22, 189
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\reactfrontend\src\javascript\assets\helpers\ImpExpAsset.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 148, 0, 0, 0, 19, 167
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\reactfrontend\src\javascript\assets\helpers\ImportAsset.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 119, 0, 0, 37, 14, 170
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\reactfrontend\src\javascript\assets\helpers\NetworkGraph.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 83, 0, 0, 20, 21, 124
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\reactfrontend\src\javascript\assets\helpers\TableAssets.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 286, 0, 0, 1, 37, 324
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\reactfrontend\src\javascript\assets\helpers\functions\StringToMacAddress.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 38, 0, 0, 10, 12, 60
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\reactfrontend\src\javascript\assets\helpers\functions\StringToRack.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 13, 10, 26
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\reactfrontend\src\javascript\assets\helpers\functions\createAssetJSON.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 15, 0, 0, 0, 1, 16
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\reactfrontend\src\javascript\assets\pages\AssetsView.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 45, 0, 0, 0, 6, 51
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\reactfrontend\src\javascript\assets\stylesheets\AssetStyles.css, CSS, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 2, 7
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\reactfrontend\src\javascript\enums\privilegeTypes.ts, TypeScript, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 1, 5
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\reactfrontend\src\javascript\errors\ErrorBoundry.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 18, 0, 0, 4, 6, 28
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\reactfrontend\src\javascript\helpers\ConfirmationBox.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 42, 0, 0, 0, 7, 49
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\reactfrontend\src\javascript\helpers\DisplayRack.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 31, 0, 0, 0, 6, 37
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\reactfrontend\src\javascript\helpers\Logout.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 1, 2, 6
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\reactfrontend\src\javascript\helpers\StatusDisplay.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 35, 0, 0, 0, 7, 42
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\reactfrontend\src\javascript\helpers\TableView.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 42, 0, 0, 0, 6, 48
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\reactfrontend\src\javascript\helpers\UploadModal.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 42, 0, 0, 0, 4, 46
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\reactfrontend\src\javascript\helpers\functions\DescendingComparator.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 0, 0, 0, 1, 10
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\reactfrontend\src\javascript\helpers\functions\GetComparator.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 0, 0, 0, 2, 8
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\reactfrontend\src\javascript\helpers\functions\GetShibParams.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 3, 6
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\reactfrontend\src\javascript\helpers\functions\GetURL.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 2, 6
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\reactfrontend\src\javascript\helpers\functions\JSONtoArr.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 20, 0, 0, 0, 5, 25
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\reactfrontend\src\javascript\helpers\functions\StableSort.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 0, 0, 0, 1, 10
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\reactfrontend\src\javascript\logs\enums\LogCommands.ts, TypeScript, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 1, 5
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\reactfrontend\src\javascript\logs\pages\LogsView.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 149, 0, 0, 0, 25, 174
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\reactfrontend\src\javascript\models\ModelConstants.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 4, 5
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\reactfrontend\src\javascript\models\enums\ModelCommands.ts, TypeScript, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 11, 0, 0, 0, 0, 1, 12
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\reactfrontend\src\javascript\models\enums\ModelInputs.ts, TypeScript, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 12, 0, 0, 0, 0, 1, 13
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\reactfrontend\src\javascript\models\helpers\ButtonsModel.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 33, 0, 0, 0, 5, 38
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\reactfrontend\src\javascript\models\helpers\CreateModel.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 375, 0, 0, 0, 29, 404
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\reactfrontend\src\javascript\models\helpers\DetailModel.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 279, 0, 0, 0, 23, 302
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\reactfrontend\src\javascript\models\helpers\ExportModel.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 67, 0, 0, 0, 4, 71
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\reactfrontend\src\javascript\models\helpers\FilterModel.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 119, 0, 0, 0, 8, 127
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\reactfrontend\src\javascript\models\helpers\ModelsTable.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 482, 0, 0, 0, 44, 526
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\reactfrontend\src\javascript\models\pages\ModelsView.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 444, 0, 0, 7, 56, 507
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\reactfrontend\src\javascript\models\stylesheets\ModelStyles.css, CSS, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\reactfrontend\src\javascript\racks\RacksConstants.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 3, 4
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\reactfrontend\src\javascript\racks\enums\DatacenterCommands.ts, TypeScript, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 1, 7
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\reactfrontend\src\javascript\racks\enums\RackCommands.ts, TypeScript, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 1, 7
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\reactfrontend\src\javascript\racks\helpers\ConfirmDeleteDC.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 104, 0, 0, 0, 11, 115
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\reactfrontend\src\javascript\racks\helpers\CreateDatacenter.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 161, 0, 0, 0, 19, 180
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\reactfrontend\src\javascript\racks\helpers\EditDatacenter.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 157, 0, 0, 0, 17, 174
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\reactfrontend\src\javascript\racks\helpers\functions\ShowDatacenters.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 61, 0, 0, 0, 4, 65
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\reactfrontend\src\javascript\racks\pages\DatacenterManagerView.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 29, 0, 0, 0, 12, 41
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\reactfrontend\src\javascript\racks\pages\DatacentersView.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 130, 0, 0, 0, 21, 151
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\reactfrontend\src\javascript\racks\pages\RacksView.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 244, 0, 0, 0, 27, 271
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\reactfrontend\src\javascript\racks\stylesheets\RackStyles.css, CSS, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 33, 0, 0, 6, 39
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\reactfrontend\src\javascript\serviceWorker.js, JavaScript, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 94, 31, 13, 138
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\reactfrontend\src\javascript\statistics\enums\StatsCommands.ts, TypeScript, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 1, 5
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\reactfrontend\src\javascript\statistics\pages\StatisticsView.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 170, 0, 0, 0, 13, 183
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\reactfrontend\src\javascript\users\UserConstants.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 3, 4
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\reactfrontend\src\javascript\users\enums\UserCommands.ts, TypeScript, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8, 0, 0, 0, 0, 1, 9
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\reactfrontend\src\javascript\users\enums\UserInputs.ts, TypeScript, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 0, 0, 0, 0, 1, 8
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\reactfrontend\src\javascript\users\helpers\ButtonsUser.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 33, 0, 0, 0, 5, 38
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\reactfrontend\src\javascript\users\helpers\CreateUser.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 89, 0, 0, 0, 4, 93
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\reactfrontend\src\javascript\users\helpers\DetailUser.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 104, 0, 0, 0, 9, 113
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\reactfrontend\src\javascript\users\helpers\FilterUser.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 108, 0, 0, 0, 6, 114
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\reactfrontend\src\javascript\users\helpers\UsersTable.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 75, 0, 0, 0, 8, 83
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\reactfrontend\src\javascript\users\pages\UsersView.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 347, 0, 0, 8, 51, 406
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\reactfrontend\src\react-app-env.d.ts, TypeScript, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 2
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\reactfrontend\src\stylesheets\App.css, CSS, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 33, 0, 0, 6, 39
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\reactfrontend\src\stylesheets\Models.css, CSS, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\reactfrontend\src\stylesheets\TabStyles.css, CSS, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 49, 0, 1, 13, 63
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\reactfrontend\src\stylesheets\index.css, CSS, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 12, 0, 0, 2, 14
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\reactfrontend\src\tests\App.test.js, JavaScript, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8, 0, 2, 10
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\reactfrontend\src\tests\TestValues.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 81, 0, 0, 0, 3, 84
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\reactfrontend\src\tests\setupTests.js, JavaScript, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 4, 1, 6
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\ReactAndFlask\reactfrontend\tsconfig.json, JSON, 0, 0, 25, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 26
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\package.json, JSON, 0, 0, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 9
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\requirements.in, pip requirements, 0, 0, 0, 0, 58, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 59
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\requirements.txt, pip requirements, 0, 0, 0, 0, 59, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8, 2, 69
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\templates\index.html, HTML, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 2
+c:\Users\Richard Greyson\workspaces\seniorDesign\senior-design\uwsgi.ini, Ini, 0, 0, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 0, 1, 8
+Total, -, 6, 72, 216, 60, 117, 1098, 7, 22, 3961, 4, 93, 7434, 133, 106, 640, 2163, 16132

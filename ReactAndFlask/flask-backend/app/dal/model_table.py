@@ -4,6 +4,7 @@ from app.dal.database import DBWriteException, db
 from app.data_models.model import Model
 from app.main.types import JSON
 from sqlalchemy import and_
+from sqlalchemy.dialects import postgresql as pg
 
 
 class ModelEntry(db.Model):
@@ -14,7 +15,7 @@ class ModelEntry(db.Model):
     model_number = db.Column(db.String(80))
     height = db.Column(db.Integer)
     display_color = db.Column(db.String(80), nullable=True)
-    ethernet_ports = db.Column(db.Integer, nullable=True)
+    ethernet_ports = db.Column(pg.ARRAY(db.String(80)), nullable=True)
     power_ports = db.Column(db.Integer, nullable=True)
     cpu = db.Column(db.String(80), nullable=True)
     memory = db.Column(db.Integer, nullable=True)
@@ -100,7 +101,7 @@ class ModelTable:
             db.session.commit()
         except:
             raise DBWriteException(
-                message="Failed to add model {model.vendor} {model.model_number}"
+                message=f"Failed to add model {model.vendor} {model.model_number}"
             )
 
     def edit_model(self, model_id: str, model: Model) -> None:
@@ -114,7 +115,7 @@ class ModelTable:
             db.session.commit()
         except:
             raise DBWriteException(
-                message="Failed to udpate model {model.vendor} {model.model_number}"
+                message=f"Failed to udpate model {model.vendor} {model.model_number}"
             )
 
     def add_or_update(self, model: Model) -> Tuple[int, int, int]:
@@ -128,6 +129,8 @@ class ModelTable:
 
             add, update, ignore = False, False, False
             if result is not None:
+                # print(str(result.make_model().ethernet_ports))
+                # print(str(model.ethernet_ports))
                 if result.make_model() == model:
                     ignore = True
                 else:
@@ -140,11 +143,12 @@ class ModelTable:
                 add = True
 
             db.session.commit()
+            # print(f"add {add} ignore {ignore} update {update}")
 
             return int(add), int(update), int(ignore)
         except:
             raise DBWriteException(
-                message="Failed to udpate model {model.vendor} {model.model_number}"
+                message=f"Failed to udpate model {model.vendor} {model.model_number}"
             )
 
     @DeprecationWarning
@@ -157,7 +161,7 @@ class ModelTable:
             db.session.commit()
         except:
             raise DBWriteException(
-                message="Failed to add model {model.vendor} {model.model_number}"
+                message=f"Failed to add model {model.vendor} {model.model_number}"
             )
 
     def delete_model_str(self, vendor: str, model_num: str) -> None:
@@ -166,9 +170,7 @@ class ModelTable:
             ModelEntry.query.filter_by(vendor=vendor, model_number=model_num).delete()
             db.session.commit()
         except:
-            raise DBWriteException(
-                message="Failed to add model {vendor} {model_number}"
-            )
+            raise DBWriteException(message=f"Failed to add model {vendor} {model_num}")
 
     def get_all_models(self) -> List[Model]:
         """ Get a list of all models """

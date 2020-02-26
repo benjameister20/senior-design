@@ -17,7 +17,7 @@ install:
 		pip install -r requirements.txt &&\
 		pre-commit install &&\
 		pre-commit autoupdate &&\
-		cd ReactAndFlask/react-frontend && yarn install
+		cd ReactAndFlask/reactfrontend && yarn install
 
 .PHONY: dependencies
 dependencies:
@@ -28,9 +28,12 @@ dependencies:
 fix:
 	pre-commit run --all-files
 
-.PHONY: runall
-runall:
-	cd ReactAndFlask/react-frontend && yarn build
+.PHONY: run-all
+run-all:
+	cd ReactAndFlask/reactfrontend && yarn build
+	rm -rf ReactAndFlask/flask-backend/static/* && rm -rf ReactAndFlask/flask-backend/templates/index.html
+	cp -r ReactAndFlask/reactfrontend/build/static/* ReactAndFlask/flask-backend/static/
+	cp ReactAndFlask/reactfrontend/build/index.html ReactAndFlask/flask-backend/templates/index.html
 	python ./ReactAndFlask/flask-backend/application.py
 
 .PHONY: run-back
@@ -39,7 +42,7 @@ run-back:
 
 .PHONY: run-front
 run-front:
-	cd ReactAndFlask/react-frontend && npm build && npm start
+	cd ReactAndFlask/reactfrontend && yarn start
 
 .PHONY: run-local
 run-local:
@@ -72,3 +75,12 @@ clean:
 .PHONY: clean-diagrams
 clean-diagrams:
 	find ReactAndFlask/flask-backend/static -type f -name '*.pdf' -delete
+
+.PHONY: deploy-heroku
+deploy-heroku:
+	cd ~/ReactAndFlask/reactfrontend && yarn install
+	cd ~/ReactAndFlask/reactfrontend && yarn build
+	mkdir ~/ReactAndFlask/flask-backend/static/
+	mkdir ~/ReactAndFlask/flask-backend/templates/
+	cp -r ~/ReactAndFlask/reactfrontend/build/static/* ~/ReactAndFlask/flask-backend/static/
+	cp ~/ReactAndFlask/reactfrontend/build/index.html ~/ReactAndFlask/flask-backend/templates/index.html

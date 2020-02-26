@@ -1,5 +1,7 @@
+import json
 from typing import Any, Dict, List, Optional
 
+from app.constants import Constants
 from app.exceptions.InvalidInputsException import InvalidInputsError
 from app.main.types import JSON
 
@@ -27,7 +29,7 @@ class Model:
         model_number: str,
         height: int,
         display_color: Optional[str] = None,
-        ethernet_ports: Optional[int] = None,
+        ethernet_ports: Optional[List[str]] = None,
         power_ports: Optional[int] = None,
         cpu: Optional[str] = None,
         memory: Optional[int] = None,
@@ -38,7 +40,7 @@ class Model:
         self.model_number: str = model_number
         self.height: int = height
         self.display_color: Optional[str] = display_color
-        self.ethernet_ports: Optional[int] = ethernet_ports
+        self.ethernet_ports: Optional[List[str]] = ethernet_ports
         self.power_ports: Optional[int] = power_ports
         self.cpu: Optional[str] = cpu
         self.memory: Optional[int] = memory
@@ -48,6 +50,7 @@ class Model:
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, Model):
             return NotImplemented
+
         return (
             self.vendor == other.vendor
             and self.model_number == other.model_number
@@ -64,30 +67,34 @@ class Model:
     @classmethod
     def headers(cls) -> List[str]:
         return [
-            "vendor",
-            "model_number",
-            "height",
-            "display_color",
-            "ethernet_ports",
-            "power_ports",
-            "cpu",
-            "memory",
-            "storage",
-            "comment",
+            Constants.VENDOR_KEY,
+            Constants.MODEL_NUMBER_KEY,
+            Constants.HEIGHT_KEY,
+            Constants.DISPLAY_COLOR_KEY,
+            Constants.CSV_ETHERNET_PORT_KEY,
+            Constants.POWER_PORT_KEY,
+            Constants.CPU_KEY,
+            Constants.MEMORY_KEY,
+            Constants.STORAGE_KEY,
+            Constants.COMMENT_KEY,
+            Constants.CSV_NETWORK_PORT_1,
+            Constants.CSV_NETWORK_PORT_2,
+            Constants.CSV_NETWORK_PORT_3,
+            Constants.CSV_NETWORK_PORT_4,
         ]
 
     def make_json(self) -> JSON:
         return {
-            "vendor": self.vendor,
-            "model_number": self.model_number,
-            "height": self.height,
-            "display_color": self.display_color,
-            "ethernet_ports": self.ethernet_ports,
-            "power_ports": self.power_ports,
-            "cpu": self.cpu,
-            "memory": self.memory,
-            "storage": self.storage,
-            "comment": self.comment,
+            Constants.VENDOR_KEY: self.vendor,
+            Constants.MODEL_NUMBER_KEY: self.model_number,
+            Constants.HEIGHT_KEY: self.height,
+            Constants.DISPLAY_COLOR_KEY: self.display_color,
+            Constants.ETHERNET_PORT_KEY: self.ethernet_ports,
+            Constants.POWER_PORT_KEY: self.power_ports,
+            Constants.CPU_KEY: self.cpu,
+            Constants.MEMORY_KEY: self.memory,
+            Constants.STORAGE_KEY: self.storage,
+            Constants.COMMENT_KEY: self.comment,
         }
 
     @classmethod
@@ -96,28 +103,55 @@ class Model:
             if csv_row[key] == "None":
                 csv_row[key] = ""
 
+        # FIX ETHERNET PORT IMPORT
+        if csv_row[Constants.CSV_ETHERNET_PORT_KEY] == "":
+            network_port_num = 0
+        else:
+            network_port_num = int(csv_row[Constants.CSV_ETHERNET_PORT_KEY])
+        port_names = [
+            csv_row.get(Constants.CSV_NETWORK_PORT_1),
+            csv_row.get(Constants.CSV_NETWORK_PORT_2),
+            csv_row.get(Constants.CSV_NETWORK_PORT_3),
+            csv_row.get(Constants.CSV_NETWORK_PORT_4),
+        ]
+
+        network_ports = []
+        count = 1
+        for port in port_names:
+            if count <= network_port_num:
+                if port is not None and port != "":
+                    network_ports.append(port)
+                else:
+                    network_ports.append(str(count))
+
+                count += 1
+
+        while len(network_ports) < network_port_num:
+            network_ports.append(str(count))
+            count += 1
+
         return Model(
-            vendor=csv_row["vendor"],
-            model_number=csv_row["model_number"],
-            height=csv_row["height"],
-            display_color=csv_row["display_color"],
-            ethernet_ports=csv_row["ethernet_ports"]
-            if csv_row["ethernet_ports"] != ""
+            vendor=csv_row[Constants.VENDOR_KEY],
+            model_number=csv_row[Constants.MODEL_NUMBER_KEY],
+            height=csv_row[Constants.HEIGHT_KEY],
+            display_color=csv_row[Constants.DISPLAY_COLOR_KEY],
+            ethernet_ports=network_ports,
+            power_ports=csv_row[Constants.POWER_PORT_KEY]
+            if csv_row[Constants.POWER_PORT_KEY] != ""
             else None,
-            power_ports=csv_row["power_ports"]
-            if csv_row["power_ports"] != ""
+            cpu=csv_row[Constants.CPU_KEY],
+            memory=csv_row[Constants.MEMORY_KEY]
+            if csv_row[Constants.MEMORY_KEY] != ""
             else None,
-            cpu=csv_row["cpu"],
-            memory=csv_row["memory"] if csv_row["memory"] != "" else None,
-            storage=csv_row["storage"],
-            comment=csv_row["comment"],
+            storage=csv_row[Constants.STORAGE_KEY],
+            comment=csv_row[Constants.COMMENT_KEY],
         )
 
     @classmethod
     def from_json(cls, json: JSON) -> "Model":
-        vendor: str = json["vendor"]
-        model_number: str = json["model_number"]
-        height: int = int(json["height"])
+        vendor: str = json[Constants.VENDOR_KEY]
+        model_number: str = json[Constants.MODEL_NUMBER_KEY]
+        height: int = int(json[Constants.HEIGHT_KEY])
 
         if vendor == "":
             raise InvalidInputsError("Must provide a vendor")
@@ -126,31 +160,32 @@ class Model:
         if height == "":
             raise InvalidInputsError("Must provide a height")
 
-        display_color: Optional[str] = json.get("display_color", None)
+        display_color: Optional[str] = json.get(Constants.DISPLAY_COLOR_KEY, None)
         display_color = None if display_color == "" else display_color
 
-        ethernet_str: Optional[str] = json.get("ethernet_ports", None)
-        ethernet_ports: Optional[
-            int
-        ] = None if ethernet_str == "" or ethernet_str is None else int(ethernet_str)
+        ethernet_str: Optional[List[str]] = json.get(Constants.ETHERNET_PORT_KEY, None)
+        ethernet_ports = []
+        if ethernet_str is not None:
+            for name in ethernet_str:
+                ethernet_ports.append(name)
 
-        power_str: Optional[str] = json.get("power_ports", None)
+        power_str: Optional[str] = json.get(Constants.POWER_PORT_KEY, None)
         power_ports: Optional[
             int
         ] = None if power_str == "" or power_str is None else int(power_str)
 
-        cpu: Optional[str] = json.get("cpu", None)
+        cpu: Optional[str] = json.get(Constants.CPU_KEY, None)
         cpu = None if cpu == "" else cpu
 
-        memory_str: Optional[str] = json.get("memory", None)
+        memory_str: Optional[str] = json.get(Constants.MEMORY_KEY, None)
         memory: Optional[int] = None if memory_str == "" or memory_str is None else int(
             memory_str
         )
 
-        storage: Optional[str] = json.get("storage", None)
+        storage: Optional[str] = json.get(Constants.STORAGE_KEY, None)
         storage = None if storage == "" else storage
 
-        comment: Optional[str] = json.get("comment", None)
+        comment: Optional[str] = json.get(Constants.COMMENT_KEY, None)
         comment = None if comment == "" else comment
 
         return Model(
@@ -182,6 +217,33 @@ class Model:
     def to_csv(self) -> str:
         """ Get the model as a csv row """
         json_data: JSON = self.make_json()
+        print(json.dumps(json_data, indent=3))
+
+        # JANK CITY FIX WHEN TIME
+        key_array = []
+        key_array.append(Constants.CSV_NETWORK_PORT_1)
+        key_array.append(Constants.CSV_NETWORK_PORT_2)
+        key_array.append(Constants.CSV_NETWORK_PORT_3)
+        key_array.append(Constants.CSV_NETWORK_PORT_4)
+
+        net_ports = json_data.get(Constants.ETHERNET_PORT_KEY)
+        if net_ports is not None:
+            json_data[Constants.CSV_ETHERNET_PORT_KEY] = len(net_ports)
+        else:
+            json_data[Constants.CSV_ETHERNET_PORT_KEY] = ""
+
+        net_port_num = len(net_ports)
+        count = 0
+        for i in range(0, net_port_num):
+            if count >= 4:
+                break
+            json_data[key_array[i]] = net_ports[i]
+            count += 1
+
+        while count < 4:
+            json_data[key_array[count]] = ""
+            count += 1
+
         values: List[str] = list(
             map(
                 lambda x: self._format_csv_entry(entry=str(json_data[x])),
@@ -193,4 +255,4 @@ class Model:
         return ",".join(clean_values)
 
     def __repr__(self) -> str:
-        return "Model {self.vendor} {self.model_number}"
+        return f"Model {self.vendor} {self.model_number}"

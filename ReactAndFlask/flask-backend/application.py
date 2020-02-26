@@ -3,8 +3,10 @@ from http import HTTPStatus
 from app.dal.database import db
 from app.dal.routes import database
 from app.data_models.user import User
+from app.datacenters.routes_datacenters import datacenters
 from app.import_export.routes import import_export
 from app.instances.routes_instances import instances
+from app.logging.routes_logging import logs
 from app.models.routes_models import models
 from app.racks.racks_routes import racks
 from app.stats.routes_stats import stats
@@ -12,6 +14,7 @@ from app.users.authentication import AuthManager
 from app.users.routes_users import users
 from flask import Flask, jsonify, render_template
 from flask_heroku import Heroku
+from settings import TEST_DB_URL
 
 application = Flask(__name__)
 heroku = Heroku(app=application)
@@ -20,6 +23,7 @@ AUTH_MANAGER = AuthManager()
 
 class FlaskApp(Flask):
     def make_response(self, rv):
+        print(rv)
         if isinstance(rv, dict):
             rv = jsonify(rv)
         elif (
@@ -32,6 +36,7 @@ class FlaskApp(Flask):
         elif isinstance(rv, HTTPStatus):
             rv = jsonify({"status": rv}), rv
 
+        # print(rv)
         return super().make_response(rv)
 
 
@@ -62,12 +67,14 @@ def _register_routes() -> None:
     application.register_blueprint(database)
     application.register_blueprint(stats)
     application.register_blueprint(import_export)
+    application.register_blueprint(logs)
+    application.register_blueprint(datacenters)
 
 
 def init() -> None:
     application.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     if application.debug:
-        application.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://localhost/test"
+        application.config["SQLALCHEMY_DATABASE_URI"] = TEST_DB_URL
 
     db.init_app(app=application)
 

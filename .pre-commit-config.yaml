@@ -1,6 +1,6 @@
 repos:
 -   repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v2.4.0
+    rev: v2.5.0
     hooks:
     -   id: check-ast
     -   id: check-builtin-literals
@@ -34,7 +34,7 @@ repos:
     -   id: isort
 
 -   repo: https://github.com/asottile/pyupgrade
-    rev: v1.26.2
+    rev: v2.1.0
     hooks:
     -   id: pyupgrade
 

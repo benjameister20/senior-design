@@ -1,6 +1,7 @@
 import tempfile
 from typing import Dict, List, Tuple
 
+from app.constants import Constants
 from app.main.types import JSON
 from fpdf import FPDF
 
@@ -42,12 +43,16 @@ class DiagramManager:
                     servers: Dict[int, bool] = {}
 
                     for instance in instances:
-                        position: int = int(instance.get("rack_position", "0"))
-                        height: int = int(instance.get("height", "0"))
+                        position: int = int(
+                            instance.get(Constants.RACK_POSITION_KEY, "0")
+                        )
+                        height: int = int(instance.get(Constants.HEIGHT_KEY, "0"))
 
                         positions[position + height - 1] = (
                             height,
-                            instance["model"] + " " + instance["hostname"],
+                            instance[Constants.MODEL_KEY]
+                            + " "
+                            + instance[Constants.HOSTNAME_KEY],
                         )
                         for t in range(position, position + height):
                             servers[t] = True

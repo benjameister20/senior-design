@@ -1,8 +1,12 @@
+import json
 from typing import List
 
 from app.decorators.auth import requires_auth, requires_role
+from app.decorators.logs import log
 from app.exceptions.InvalidInputsException import InvalidInputsError
+from app.instances.asset_num_generator import AssetNumGenerator
 from app.instances.instance_manager import InstanceManager
+from app.logging.logger import Logger
 from flask import Blueprint, request
 
 instances = Blueprint(
@@ -10,6 +14,8 @@ instances = Blueprint(
 )
 
 INSTANCE_MANAGER = InstanceManager()
+LOGGER = Logger()
+ASSETNUMGEN = AssetNumGenerator()
 
 
 @instances.route("/instances/test", methods=["GET"])
@@ -18,32 +24,89 @@ def test():
     return "test"
 
 
+@instances.route("/instances/search/", methods=["POST"])
+@requires_auth(request)
+def search():
+    """ Route for searching instances """
+
+    global INSTANCE_MANAGER
+    global instancesArr
+    returnJSON = createJSON()
+
+    print(json.dumps(request.json, indent=4))
+    print("")
+    filter = request.json.get("filter")
+    if filter is None:
+        return addMessageToJSON(returnJSON, "Please include a filter")
+
+    try:
+        limit = int(request.json["limit"])
+    except:
+        limit = 1000
+
+    try:
+        print(request.json)
+        datacenter_name = request.json["datacenter_name"]
+        # if datacenter_name == "":
+        #     print("IT WAS BLANK\n")
+        #     datacenter_name = None
+        instance_list = INSTANCE_MANAGER.get_instances(filter, datacenter_name, limit)
+        # print(f"INSTANCE LIST: {instance_list}, {len(instance_list)}")
+        # if len(instance_list) == 0:
+        #     print("CAUGHT THE PROBLEM")
+        #     return addMessageToJSON(returnJSON, "No instances to show")
+        # print("INSTANCE LIST")
+        # print(instance_list)
+        returnJSON = addInstancesTOJSON(
+            addMessageToJSON(returnJSON, "success"),
+            list(
+                map(
+                    lambda x: x.make_json_with_model_and_datacenter(
+                        INSTANCE_MANAGER.get_model_from_id(x.model_id),
+                        INSTANCE_MANAGER.get_dc_from_id(x.datacenter_id),
+                    ),
+                    instance_list,
+                )
+            ),
+        )
+        print(json.dumps(returnJSON, indent=4))
+        return returnJSON
+    except InvalidInputsError as e:
+        print(e.message)
+        return addMessageToJSON(returnJSON, e.message)
+
+
 @instances.route("/instances/create", methods=["POST"])
 @requires_auth(request)
 @requires_role(request, "admin")
+@log(request, LOGGER.INSTANCES, LOGGER.ACTIONS.INSTANCES.CREATE)
 def create():
     """ Route for creating instances """
-    print("REQUEST")
-    print(request.get_json())
+    # print("REQUEST")
+    # print(request.get_json())
     global INSTANCE_MANAGER
     returnJSON = createJSON()
 
     try:
         instance_data = request.get_json()
         error = INSTANCE_MANAGER.create_instance(instance_data)
+        print("ERROR")
         print(type(error))
         if error is not None:
-            print(error.message)
+            print(error)
             print("YEEHAW")
-            return addMessageToJSON(returnJSON, error.message)
+            return addMessageToJSON(returnJSON, error)
+        print("MADE IT HERE")
         return addMessageToJSON(returnJSON, "success")
     except InvalidInputsError as e:
+        print(e.message)
         return addMessageToJSON(returnJSON, e.message)
 
 
 @instances.route("/instances/delete", methods=["POST"])
 @requires_auth(request)
 @requires_role(request, "admin")
+@log(request, LOGGER.INSTANCES, LOGGER.ACTIONS.INSTANCES.DELETE)
 def delete():
     """ Route for deleting instances """
 
@@ -58,44 +121,10 @@ def delete():
         return addMessageToJSON(returnJSON, e.message)
 
 
-@instances.route("/instances/search/", methods=["POST"])
-@requires_auth(request)
-def search():
-    """ Route for searching instances """
-    global INSTANCE_MANAGER
-    global instancesArr
-    returnJSON = createJSON()
-
-    filter = request.json["filter"]
-
-    try:
-        limit = int(request.json["limit"])
-    except:
-        limit = 1000
-
-    try:
-        instance_list = INSTANCE_MANAGER.get_instances(filter, limit)
-        returnJSON = addInstancesTOJSON(
-            addMessageToJSON(returnJSON, "success"),
-            list(
-                map(
-                    lambda x: x.make_json_with_model(
-                        INSTANCE_MANAGER.get_model_from_id(x.model_id)
-                    ),
-                    instance_list,
-                )
-            ),
-        )
-        print("RETURN JSON")
-        print(returnJSON)
-        return returnJSON
-    except InvalidInputsError as e:
-        return addMessageToJSON(returnJSON, e.message)
-
-
 @instances.route("/instances/edit", methods=["POST"])
 @requires_auth(request)
 @requires_role(request, "admin")
+@log(request, LOGGER.INSTANCES, LOGGER.ACTIONS.INSTANCES.EDIT)
 def edit():
     """ Route for editing instances """
     global INSTANCE_MANAGER
@@ -117,7 +146,7 @@ def edit():
 @requires_auth(request)
 def detail_view():
     """ Route for table view of instances """
-
+    print(json.dumps(request.json, indent=4))
     global INSTANCE_MANAGER
     global instancesArr
     returnJSON = createJSON()
@@ -125,11 +154,14 @@ def detail_view():
     try:
         instance_data = request.get_json()
         instance = INSTANCE_MANAGER.detail_view(instance_data)
+        if instance is None:
+            return addMessageToJSON(returnJSON, "Cannot view instance of type None")
         return addInstancesTOJSON(
             addMessageToJSON(returnJSON, "success"),
             [
-                instance.make_json_with_model(
-                    INSTANCE_MANAGER.get_model_from_id(instance.model_id)
+                instance.make_json_with_model_and_datacenter(
+                    INSTANCE_MANAGER.get_model_from_id(instance.model_id),
+                    INSTANCE_MANAGER.get_dc_from_id(instance.datacenter_id),
                 )
             ],
         )
@@ -148,6 +180,43 @@ def assisted_model_input():
         model_list = INSTANCE_MANAGER.get_possible_models_with_filters(prefix_json)
         returnJSON["results"] = model_list
         return returnJSON
+    except InvalidInputsError as e:
+        return addMessageToJSON(returnJSON, e.message)
+
+
+@instances.route("/instances/nextAssetNumber", methods=["GET"])
+@requires_auth(request)
+@requires_role(request, "admin")
+def get_next_asset_number():
+    """ Route to get next valid asset number"""
+    global INSTANCE_MANAGER
+    returnJSON = createJSON()
+    next_asset_number = 589382
+
+    try:
+        next_asset_number = ASSETNUMGEN.get_next_asset_number()
+    except Exception as e:
+        print(str(e))
+        return addMessageToJSON(returnJSON, "Failed to get next asset number")
+
+    print("NEXT ASSET NUMBER")
+    print(next_asset_number)
+
+    returnJSON["asset_number"] = next_asset_number
+    return addMessageToJSON(returnJSON, "success")
+
+
+@instances.route("/instances/networkNeighborhood", methods=["POST"])
+@requires_auth(request)
+def get_network_neighborhood():
+    """ Route to get network neighborhood"""
+    global INSTANCE_MANAGER
+    returnJSON = createJSON()
+
+    try:
+        asset_data = request.get_json()
+        returnJSON = INSTANCE_MANAGER.get_network_neighborhood(asset_data)
+        return addMessageToJSON(returnJSON, "success")
     except InvalidInputsError as e:
         return addMessageToJSON(returnJSON, e.message)
 

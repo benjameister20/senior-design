@@ -1,3 +1,4 @@
+from app.constants import Constants
 from app.main.types import JSON
 
 
@@ -24,12 +25,20 @@ class User:
 
     def make_json(self) -> JSON:
         return {
-            "username": self.username,
-            "display_name": self.display_name,
-            "email": self.email,
-            "password": self.password.decode("utf-8"),
-            "privilege": self.privilege,
+            Constants.USERNAME_KEY: self.username,
+            Constants.DISPLAY_NAME_KEY: self.display_name,
+            Constants.EMAIL_KEY: self.email,
+            Constants.PASSWORD_KEY: self.password.decode("utf-8"),
+            Constants.PRIVILEGE_KEY: self.privilege,
         }
 
     def __repr__(self) -> str:
         return f"Username: {self.username}\nPassword: {self.password}\nDisplay Name: {self.display_name}\nEmail: {self.email}\nPrivilege: {self.privilege}"
+
+    def __eq__(self, user):
+        is_username = self.username == user.username
+        is_email = self.email == user.email
+        is_display_name = self.display_name == user.display_name
+        is_privilege = self.privilege == user.privilege
+
+        return is_username and is_email and is_display_name and is_privilege

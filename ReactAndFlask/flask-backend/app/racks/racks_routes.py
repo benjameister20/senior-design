@@ -183,12 +183,24 @@ def next_pdu_port():
     if rack is None:
         return addMessageToJSON(returnJSON, "Failed to find rack")
 
+    pair_found = False
+    free_left = []
+    free_right = []
     for i in range(0, 24):
-        if rack.pdu_left[i] == 0 and rack.pdu_right[i] == 0:
+        if rack.pdu_left[i] == 0:
+            free_left.append(i + 1)
+        if rack.pdu_right[i] == 0:
+            free_right.append(i + 1)
+        if rack.pdu_left[i] == 0 and rack.pdu_right[i] == 0 and pair_found == False:
+            pair_found = True
             returnJSON["next_pair"] = str(i + 1)
-            return addMessageToJSON(returnJSON, Constants.API_SUCCESS)
 
-    returnJSON["next_pair"] = "No paris of PDU ports available."
+    if pair_found == False:
+        returnJSON["next_pair"] = "No paris of PDU ports available."
+
+    returnJSON["free_left"] = free_left
+    returnJSON["free_right"] = free_right
+
     return addMessageToJSON(returnJSON, Constants.API_SUCCESS)
 
 

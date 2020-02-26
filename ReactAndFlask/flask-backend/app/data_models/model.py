@@ -1,3 +1,4 @@
+import json
 from typing import Any, Dict, List, Optional
 
 from app.constants import Constants
@@ -70,12 +71,16 @@ class Model:
             Constants.MODEL_NUMBER_KEY,
             Constants.HEIGHT_KEY,
             Constants.DISPLAY_COLOR_KEY,
-            Constants.ETHERNET_PORT_KEY,
+            Constants.CSV_ETHERNET_PORT_KEY,
             Constants.POWER_PORT_KEY,
             Constants.CPU_KEY,
             Constants.MEMORY_KEY,
             Constants.STORAGE_KEY,
             Constants.COMMENT_KEY,
+            Constants.CSV_NETWORK_PORT_1,
+            Constants.CSV_NETWORK_PORT_2,
+            Constants.CSV_NETWORK_PORT_3,
+            Constants.CSV_NETWORK_PORT_4,
         ]
 
     def make_json(self) -> JSON:
@@ -204,6 +209,20 @@ class Model:
     def to_csv(self) -> str:
         """ Get the model as a csv row """
         json_data: JSON = self.make_json()
+        print(json.dumps(json_data, indent=3))
+        net_ports = json_data.get(Constants.ETHERNET_PORT_KEY)
+        if net_ports is not None:
+            json_data[Constants.CSV_ETHERNET_PORT_KEY] = len(net_ports)
+            json_data[Constants.CSV_NETWORK_PORT_1] = net_ports[0]
+            json_data[Constants.CSV_NETWORK_PORT_2] = net_ports[1]
+            json_data[Constants.CSV_NETWORK_PORT_3] = net_ports[2]
+            json_data[Constants.CSV_NETWORK_PORT_4] = net_ports[3]
+        else:
+            json_data[Constants.CSV_ETHERNET_PORT_KEY] = 4
+            json_data[Constants.CSV_NETWORK_PORT_1] = 1
+            json_data[Constants.CSV_NETWORK_PORT_2] = 2
+            json_data[Constants.CSV_NETWORK_PORT_3] = 3
+            json_data[Constants.CSV_NETWORK_PORT_4] = 4
         values: List[str] = list(
             map(
                 lambda x: self._format_csv_entry(entry=str(json_data[x])),

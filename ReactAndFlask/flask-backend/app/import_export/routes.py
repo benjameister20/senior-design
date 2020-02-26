@@ -65,6 +65,15 @@ class InstanceDoesNotExistError(Exception):
         self.message = message
 
 
+class DatacenterDoesNotExistError(Exception):
+    """
+    Raised when referenced model does not exist
+    """
+
+    def __init__(self, name: str):
+        self.message: str = f"Datacenter {name} does not exist."
+
+
 def _get_csv():
     # Grab file from request
     f = request.files["file"]
@@ -77,8 +86,11 @@ def _get_csv():
 
 
 def _make_network_connections(model: Model):
-    network_connections = {}
+    network_connections: Dict[str, Any] = {}
     ethernet_ports = model.ethernet_ports
+    if ethernet_ports is None:
+        return network_connections
+
     for port in ethernet_ports:
         network_connections[port] = {
             Constants.MAC_ADDRESS_KEY: "",
@@ -94,17 +106,34 @@ def _make_instance_from_csv(csv_row: Dict[str, Any]) -> Instance:
         if csv_row[key] == "None":
             csv_row[key] = ""
 
-    power_connections = [
-        csv_row[Constants.CSV_POWER_PORT_1],
-        csv_row[Constants.CSV_POWER_PORT_2],
-    ]
+    power_connections = []
+    if csv_row[Constants.CSV_POWER_PORT_1] != "":
+        power_connections.append(csv_row[Constants.CSV_POWER_PORT_1])
+
+    if csv_row[Constants.CSV_POWER_PORT_2] != "":
+        power_connections.append(csv_row[Constants.CSV_POWER_PORT_2])
+
+    print("POWER CONNECTIS")
+    print(power_connections)
     datacenter_id = DCTABLE.get_datacenter_id_by_name(
         csv_row[Constants.CSV_DC_NAME_KEY]
     )
+    if datacenter_id is None:
+        raise DatacenterDoesNotExistError(csv_row[Constants.CSV_DC_NAME_KEY])
+
     model_id = MODELTABLE.get_model_id_by_vendor_number(
         csv_row[Constants.VENDOR_KEY], csv_row[Constants.MODEL_NUMBER_KEY]
     )
+    if model_id is None:
+        raise ModelDoesNotExistError(
+            csv_row[Constants.VENDOR_KEY], csv_row[Constants.MODEL_NUMBER_KEY]
+        )
+
     model = MODELTABLE.get_model(model_id)
+    if model is None:
+        raise ModelDoesNotExistError(
+            csv_row[Constants.VENDOR_KEY], csv_row[Constants.MODEL_NUMBER_KEY]
+        )
     network_connections = _make_network_connections(model)
 
     # asset_number = 567890
@@ -220,15 +249,29 @@ def _parse_instance_csv(csv_input) -> Tuple[int, int, int]:
             print(str(e))
             raise InvalidFormatError(message="Columns are missing.")
 
-        validation: str = instance_validator.create_instance_validation(
-            instance=instance
+        # validation: str = instance_validator.edit_instance_validation(
+        #     instance=instance,
+        #     original_asset_number=instance.asset_number
+        # )
+        # print(validation)
+        dc_id = DCTABLE.get_datacenter_id_by_name(values[Constants.CSV_DC_NAME_KEY])
+        if dc_id is None:
+            raise DatacenterDoesNotExistError(values[Constants.CSV_DC_NAME_KEY])
+
+        existing_instance = instance_table.get_instance_by_rack_location(
+            values[Constants.RACK_KEY], values[Constants.RACK_POSITION_KEY], dc_id
         )
-        if (
-            validation != "success"
-            and validation
-            != f"An instance with hostname {instance.hostname} exists at location {instance.rack_label} U{instance.rack_position}"
-        ):
-            raise InvalidFormatError(message=validation)
+
+        if existing_instance is None:
+            validation: str = instance_validator.create_instance_validation(
+                instance=instance
+            )
+            if (
+                validation != "success"
+                and validation
+                != f"An instance with hostname {instance.hostname} exists at location {instance.rack_label} U{instance.rack_position}"
+            ):
+                raise InvalidFormatError(message=validation)
 
         instances.append(instance)
 
@@ -371,6 +414,9 @@ def import_models_csv():
 @import_export.route("/instances/import", methods=["POST"])
 def import_instances_csv():
     """ Bulk import instances from a csv file """
+    print(json.dumps(request.json, indent=4))
+    print("IMPORTING INSTANCES")
+
     try:
         csv_input = _get_csv()
         added, updated, ignored = _parse_instance_csv(csv_input=csv_input)

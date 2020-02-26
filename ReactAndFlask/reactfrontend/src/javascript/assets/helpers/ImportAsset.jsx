@@ -91,7 +91,7 @@ class ImportAsset extends React.Component {
                             alignItems="center"
                         >
                             <Grid item xs={9}>
-                                <Typography variant="h5">Import Models</Typography>
+                                <Typography variant="h5">Import Assets</Typography>
                             </Grid>
                             <Grid item xs={3}>
                                 <Button

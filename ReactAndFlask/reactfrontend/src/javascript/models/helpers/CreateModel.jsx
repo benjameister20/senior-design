@@ -112,8 +112,9 @@ class CreateModel extends React.Component {
         this.props.sendUploadedFile(data);
     }
 
-    chooseFile = (file) => {
-        this.setState({ importedFile: file })
+    chooseFile = (event) => {
+        console.log(event);
+        this.setState({ importedFile: event.target.files[0] })
     }
 
     updateNetworkPorts = (event) => {
@@ -350,7 +351,7 @@ class CreateModel extends React.Component {
 									type='file'
                                     accept=".csv"
                                     name="models_upload"
-									onChange={this.chooseFile}
+									onChange={(event) => this.chooseFile(event)}
 								/>
 							</Grid>
 							<Grid container item direciton="row" justify="center" alignItems="center" xs={12}>

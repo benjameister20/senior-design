@@ -318,7 +318,7 @@ export default class ModelsView extends React.Component {
         console.log("sending");
         console.log(data);
         axios.post(
-            getURL("/models", ModelCommand.UPLOAD_FILE), data
+            getURL("models/", ModelCommand.UPLOAD_FILE), data
             ).then(response => {
                 console.log("import response");
                 console.log(response);

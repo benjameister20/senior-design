@@ -188,7 +188,6 @@ export default class UsersView extends React.Component {
             );
     }
 
-
     deleteUser = (username) => {
         console.log(username);
         axios.post(
@@ -197,8 +196,8 @@ export default class UsersView extends React.Component {
                 'username': username,
             }
             ).then(response => {
-                console.log(response.data.message);
-                if (response.data.message === 'Success') {
+                console.log(response.data.message.includes("Successfully"));
+                if (response.data.message.includes("Success") || response.data.message.includes("Successfully")) {
                     this.setState({
                         statusOpen: true,
                         statusMessage: "Successfully deleted user",

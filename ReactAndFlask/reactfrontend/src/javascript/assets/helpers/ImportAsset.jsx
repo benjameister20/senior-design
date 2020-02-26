@@ -19,6 +19,7 @@ import { AssetCommand } from "../enums/AssetCommands.ts";
 import * as AssetConstants from "../AssetConstants";
 import StatusDisplay from "../../helpers/StatusDisplay"
 
+
 const useStyles = theme => ({
 	grid: {
 		backgroundColor: theme.palette.background.paper,
@@ -88,7 +89,6 @@ class ImportAsset extends React.Component {
                 onClose={this.closeImport}
                 closeAfterTransition
             >
-
                     <Backdrop
                         open={this.props.open}
                     >

@@ -163,6 +163,10 @@ class CreateAsset extends React.Component {
 
             canSubmit:false,
 
+            next_pair:-1,
+            free_left:-1,
+            free_right:-1,
+
             inputs: {
                 "model":createInputs(AssetInput.MODEL, "Model", false, "A reference to an existing model"),
                 "hostname":createInputs(AssetInput.HOSTNAME, "Hostname", false, "A short string compliant with RFC 1034’s definition of 'label'"),
@@ -320,6 +324,32 @@ class CreateAsset extends React.Component {
     updateRack = (event) => {
         var rackVal = stringToRack(event.target.value);
         this.setState({ rack: rackVal }, () => { this.validateForm() });
+        if (rackVal.length === 2 && this.state.datacenter_name !== "") {
+            axios.post(getURL(Constants.RACKS_MAIN_PATH, "nextPDU/"), {
+                "rack":rackVal,
+                "datacenter_name":this.state.datacenter_name,
+            }).then(response => {
+                console.log(this.state.power_connections);
+                try {
+                    var firstFree = response.data.free_left;
+                    var pwrLst = [];
+                    console.log("updating power ports");
+                    this.state.power_connections.map((powerPort, index) => {
+                        if (index%2===0 && index<this.state.power_connections.length-1) {
+                            console.log(index);
+                            pwrLst[index] = firstFree[index];
+                            pwrLst[index+1] = firstFree[index+1];
+                        } else {
+                            console.log("passing");
+                        }
+
+                    });
+                } catch (exception) {
+                    console.log(exception);
+                }
+            });
+        }
+
     }
 
     updateRackU = (event) => {

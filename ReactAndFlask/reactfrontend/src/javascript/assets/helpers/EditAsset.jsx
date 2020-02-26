@@ -22,6 +22,8 @@ import Slide from '@material-ui/core/Slide';
 import Dialog from '@material-ui/core/Dialog';
 import Alert from '@material-ui/lab/Alert';
 import Collapse from '@material-ui/core/Collapse';
+import Modal from '@material-ui/core/Modal';
+import Backdrop from '@material-ui/core/Backdrop';
 
 import StatusDisplay from '../../helpers/StatusDisplay';
 import { AssetInput } from '../enums/AssetInputs.ts';
@@ -78,12 +80,7 @@ const useStyles = theme => ({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        maxWidth: "80%",
-        margin:"0 auto",
-        minWidth:"70%",
-        maxHeight:"600px",
-        overflow:"scroll",
-      },
+    },
       paper: {
         backgroundColor: theme.palette.background.paper,
         border: '2px solid #000',
@@ -163,6 +160,7 @@ class EditAsset extends React.Component {
 
             canSubmit:false,
             updated:false,
+            showConfirmationBox:false,
 
             inputs: {
                 "model":createInputs(AssetInput.MODEL, "Model", false, "A reference to an existing model"),
@@ -584,6 +582,28 @@ class EditAsset extends React.Component {
         return this.state.hostname==="";
     }
 
+    deleteAsset = () => {
+        this.setState({ showConfirmationBox:false })
+        axios.post(getURL(Constants.ASSETS_MAIN_PATH, AssetCommand.delete),
+         { "asset_number":this.props.defaultValues.asset_number }).then(
+            response => {
+                if (response.data.message === "success") {
+                    this.props.close();
+                } else {
+                    this.setState({ statusOpen: true, statusMessage: response.data.message, statusSeverity:AssetConstants.ERROR_TOKEN });
+                }
+            }
+        )
+    }
+
+    openConfirmationBox = () => {
+        this.setState({ showConfirmationBox: true });
+    }
+
+    closeConfirmationBox = () => {
+        this.setState({ showConfirmationBox: false })
+    }
+
     render() {
         const { classes } = this.props;
 
@@ -886,7 +906,7 @@ class EditAsset extends React.Component {
                         <Button
                             variant="contained"
                             color="secondary"
-                            onClick={this.closeModal}
+                            onClick={() => this.openConfirmationBox()}
                         >
                             Delete
                         </Button>
@@ -910,6 +930,45 @@ class EditAsset extends React.Component {
                     >
                         {this.state.statusMessage}
                     </Alert>:null}
+
+                    <Modal
+                        aria-labelledby="transition-modal-title"
+                        aria-describedby="transition-modal-description"
+                        className={classes.modal}
+                        open={this.state.showConfirmationBox}
+                        onClose={this.closeConfirmationBox}
+                        closeAfterTransition
+                        BackdropComponent={Backdrop}
+                        BackdropProps={{
+                        timeout: 500,
+                        }}
+                    >
+                            <div className={classes.paper}>
+                                <Grid container spacing={5}>
+                                    <Grid item xs={12}>
+                                        Are you sure you wish to delete?
+                                    </Grid>
+                                    <Grid item xs={2}>
+                                        <Button
+                                            variant="contained"
+                                            color="primary"
+                                            onClick={() => this.deleteAsset()}
+                                        >
+                                            Yes
+                                        </Button>
+                                    </Grid>
+                                    <Grid item xs={1}>
+                                        <Button
+                                            variant="contained"
+                                            color="primary"
+                                            onClick={() => this.closeConfirmationBox()}
+                                        >
+                                            No
+                                        </Button>
+                                    </Grid>
+                                </Grid>
+                            </div>
+                    </Modal>
         </span>
         );
     }

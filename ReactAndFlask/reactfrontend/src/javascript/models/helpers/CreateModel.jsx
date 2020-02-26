@@ -116,7 +116,7 @@ class CreateModel extends React.Component {
 
     sendUploadedFile = (data) => {
         axios.post(
-            getURL(Constants.MODELS_MAIN_PATH, "export/"), data
+            getURL(Constants.MODELS_MAIN_PATH, "import/"), data
             ).then(response => {
                 console.log("import response");
                 console.log(response);

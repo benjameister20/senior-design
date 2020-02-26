@@ -93,6 +93,7 @@ class DatacenterView extends React.Component {
     }
 
     deleteDatacenter = () => {
+        console.log(this.state.currentDatacenter);
         axios.post(getURL(Constants.DATACENTERS_MAIN_PATH, DatacenterCommand.DELETE),
         {
             "datacenter_name":this.state.currentDatacenter

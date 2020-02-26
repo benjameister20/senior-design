@@ -131,7 +131,7 @@ export default class UsersView extends React.Component {
             }
             ).then(response => {
                 console.log(response.data.message);
-                if (response.data.message === 'success') {
+                if (response.data.message === 'Successfully created user') {
                     completion(true);
                     this.setState({
                         statusOpen: true,

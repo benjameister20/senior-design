@@ -1,0 +1,8 @@
+1.
+    a. Description: Logging in with default admin account
+    b. Inputs:
+        Username: admin
+        Password: P8ssw0rd1!@
+    c. Expected Results: Takes admin to models page
+    d. Actual Results:
+2.

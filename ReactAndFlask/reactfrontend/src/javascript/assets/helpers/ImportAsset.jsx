@@ -101,45 +101,6 @@ class ImportAsset extends React.Component {
                                     Close
                                 </Button>
                             </Grid>
-                            {/*<Grid item xs={12}>
-                                <Dropzone onDrop={acceptedFiles => { this.setFile(acceptedFiles); } }>
-                                    {({getRootProps, getInputProps}) => (
-                                        <section>
-                                        <div {...getRootProps()}>
-                                        <input {...getInputProps()} />
-
-                                            <Paper
-                                                elevation={3}
-                                                style={{
-                                                    height: "100px"
-                                                }}
-                                            >
-                                                <Grid
-                                                    container
-                                                    spacing={2}
-                                                    direction="row"
-                                                    justify="center"
-                                                    alignItems="center"
-                                                    style={{"padding": "30px"}}
-                                                >
-                                                    <Grid item xs={12}>
-                                                        <Typography align="center" variant="h6">Drag and drop file here!</Typography>
-                                                    </Grid>
-                                                </Grid>
-
-                                            </Paper>
-                                        </div>
-                                        </section>
-                                    )}
-                                </Dropzone>
-                            </Grid>
-                            <Grid container item direciton="row" justify="center" alignItems="center" xs={12}>
-                                <hr style={{width: "20vw"}} />
-                                <Typography color="textSecondary">
-                                    Or
-                                </Typography>
-                                <hr style={{width: "20vw"}} />
-                            </Grid>*/}
                             <Grid container item direction="row" justify="center" alignItems="center" xs={12}>
 								<input
 									type='file'
@@ -158,7 +119,7 @@ class ImportAsset extends React.Component {
                                 </Button>
                             </Grid>
                         </Grid>
-                </div>
+                    </div>
                 </Backdrop>
                 </Fade>
             </Modal>

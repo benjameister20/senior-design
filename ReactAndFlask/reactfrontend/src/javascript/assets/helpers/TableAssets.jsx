@@ -199,7 +199,7 @@ class TableAsset extends React.Component {
 	getAssetList = () => {
         axios.post(
             getURL(Constants.ASSETS_MAIN_PATH, AssetCommand.search),emptySearch).then(
-            response => { this.setState({ allAssets: response.data.instances }); });
+            response => { console.log("got list"); console.log(response); this.setState({ allAssets: response.data.instances }); });
 	}
 
 	showStatusBar = (status, severity, message) => {
@@ -227,7 +227,7 @@ class TableAsset extends React.Component {
 					/>
 				</Grid>
 				<Grid item xs={12} sm={6} md={4} lg={3}>
-					{(this.props.privilege === Privilege.ADMIN) ? <ExportAsset downloadTable={this.downloadTable} />:null}
+					{(this.props.privilege === Privilege.ADMIN) ? <ExportAsset items={this.state.tableItems} />:null}
 				</Grid>
 				<Grid item xs={12}>
 					<TableContainer component={Paper}>

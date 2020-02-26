@@ -22,7 +22,6 @@ class FilterAsset extends React.Component {
         super(props);
 
         this.state = {
-            allAssets:[],
             datacenter:"",
             model:"",
             hostname:"",

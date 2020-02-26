@@ -27,8 +27,13 @@ export default class ExportAsset extends React.Component {
 
 	downloadTable = () => {
         axios.post(
-            getURL(AssetConstants.ASSETS_MAIN_PATH, AssetCommand.EXPORT_FILE), { 'filter':this.props.filters }
+            getURL(AssetConstants.ASSETS_MAIN_PATH, AssetCommand.EXPORT_FILE),
+            {
+                'filter':{},
+                "datacenter_name":"",
+            }
             ).then(response => {
+                console.log(response);
                 this.setState({ csvData: response.data.csvData });
                 this.csvLink.link.click();
             });
@@ -62,7 +67,7 @@ export default class ExportAsset extends React.Component {
                                 width: "100%"
                             }}
                         >
-                            Export
+                            Export All Data
                         </Button>
                     </Grid>
                 </Grid>

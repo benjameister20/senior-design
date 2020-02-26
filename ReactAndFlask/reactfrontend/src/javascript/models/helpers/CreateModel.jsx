@@ -1,5 +1,7 @@
 import React from 'react';
 
+import axios from "axios";
+
 import TextField from "@material-ui/core/TextField";
 import Button from '@material-ui/core/Button';
 import Autocomplete from '@material-ui/lab/Autocomplete';
@@ -18,6 +20,9 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListSubheader from '@material-ui/core/ListSubheader';
+
+import getURL from "../../helpers/functions/GetURL";
+import * as Constants from "../../Constants";
 
 function createInputs(name, label) {
     return {label, name};
@@ -109,8 +114,24 @@ class CreateModel extends React.Component {
         this.sendUploadedFile(data);
     }
 
-    chooseFile = (event) => {
-        this.setState({ importedFile: event.target.files[0] })
+    sendUploadedFile = (data) => {
+        axios.post(
+            getURL(Constants.MODELS_MAIN_PATH, "export/"), data
+            ).then(response => {
+                console.log("import response");
+                console.log(response);
+                if (response.data.message === "success") {
+					this.setState({ showStatus: true, statusMessage: response.data.summary, statusSeverity:"success", showImport: false,})
+					this.props.close();
+                } else {
+                    this.setState({ showStatus: true, statusMessage: response.data.message, statusSeverity:"error" })
+                }
+            });
+            this.setState({ showImportModal: false })
+	}
+
+    chooseFile = (file) => {
+        this.setState({ importedFile: file })
     }
 
     updateNetworkPorts = (event) => {
@@ -324,7 +345,6 @@ class CreateModel extends React.Component {
                         open={this.state.showImportModal}
                     >
                         <div className={classes.grid}>
-                            {this.state.importedFile === null ?
                         <Grid
                             container
                             spacing={1}
@@ -343,60 +363,25 @@ class CreateModel extends React.Component {
                                     Close
                                 </Button>
                             </Grid>
-                            <Grid item xs={12}>
-                                <Dropzone onDrop={acceptedFiles => {
-                                        this.setState({ importedFile: acceptedFiles[0] });
-                                    }}
-                                    accept=".csv"
-                                >
-                                    {({getRootProps, getInputProps}) => (
-                                        <section>
-                                        <div {...getRootProps()}>
-                                        <input {...getInputProps()} />
-
-                                            <Paper
-                                                elevation={3}
-                                                style={{
-                                                    height: "100px"
-                                                }}
-                                            >
-                                                <Grid
-                                                    container
-                                                    spacing={2}
-                                                    direction="row"
-                                                    justify="center"
-                                                    alignItems="center"
-                                                    style={{"padding": "30px"}}
-                                                >
-                                                    <Grid item xs={12}>
-                                                        <Typography align="center" variant="h6">Drag and drop file here!</Typography>
-                                                    </Grid>
-                                                </Grid>
-
-                                            </Paper>
-                                        </div>
-                                        </section>
-                                    )}
-                                </Dropzone>
-                            </Grid>
-                            <Grid container item direciton="row" justify="center" alignItems="center" xs={12}>
-                                <hr style={{width: "20vw"}} />
-                                <Typography color="textSecondary">
-                                    Or
-                                </Typography>
-                                <hr style={{width: "20vw"}} />
-                            </Grid>
                             <Grid container item direction="row" justify="center" alignItems="center" xs={12}>
+								<input
+									type='file'
+									accept=".csv"
+									onChange={this.chooseFile}
+								/>
+							</Grid>
+							<Grid container item direciton="row" justify="center" alignItems="center" xs={12}>
                                 <Button
                                     variant="contained"
                                     color="primary"
-                                    style={{width: "40%"}}
+									style={{width: "40%"}}
+									onClick={() => {this.uploadFile()}}
                                 >
-                                    Choose File
+                                    Upload File
                                 </Button>
                             </Grid>
-                        </Grid> : null }
-                </div>
+                        </Grid>
+                    </div>
                 </Backdrop>
                 </Fade>
             </Modal>

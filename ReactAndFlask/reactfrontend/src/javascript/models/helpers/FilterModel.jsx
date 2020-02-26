@@ -97,14 +97,21 @@ export default class FilterModel extends React.Component {
                     <Grid item xs={12} sm={6} md={4} lg={3}>
                         <TextField id="max_power_ports" type="number" variant="outlined" label="Max Power Ports" name="max_power_ports" onChange={this.updateSearchText.bind(this)} style={{width: "100%"}} InputProps={{ inputProps: { min: 0} }}/>
                     </Grid>
+
                     <Grid item xs={12} sm={6} md={4} lg={3}>
                         <TextField id="cpu" variant="outlined" label="CPU" name="cpu" onChange={this.updateSearchText.bind(this)} style={{width: "100%"}}/>
                     </Grid>
                     <Grid item xs={12} sm={6} md={4} lg={3}>
-                        <TextField id="memory" type="number" variant="outlined" label="Memory" name="memory" onChange={this.updateSearchText.bind(this)} style={{width: "100%"}} InputProps={{ inputProps: { min: 0} }}/>
+                        <TextField id="min_memory" type="number" variant="outlined" label="Min Memory" name="min_memory" onChange={this.updateSearchText.bind(this)} style={{width: "100%"}} InputProps={{ inputProps: { min: 0} }}/>
+                    </Grid>
+                    <Grid item xs={12} sm={6} md={4} lg={3}>
+                        <TextField id="max_memory" type="number" variant="outlined" label="Max Memory" name="max_memory" onChange={this.updateSearchText.bind(this)} style={{width: "100%"}} InputProps={{ inputProps: { min: 0} }}/>
                     </Grid>
                     <Grid item xs={12} sm={6} md={4} lg={3}>
                         <TextField id="storage" variant="outlined" label="Storage" name="storage" onChange={this.updateSearchText.bind(this)} style={{width: "100%"}}/>
+                    </Grid>
+                    <Grid item xs={12} sm={6} md={4} lg={3}>
+                        <TextField id="comment" variant="outlined" label="Comment" name="comment" onChange={this.updateSearchText.bind(this)} style={{width: "100%"}}/>
                     </Grid>
                     <Grid item xs={12}>
                         <Button

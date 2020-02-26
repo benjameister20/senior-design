@@ -125,7 +125,17 @@ export default class ModelsView extends React.Component {
             searchText:"",
             searchVendor:'',
             searchModelNum:'',
-            searchHeight:'',
+            searchMinHeight:'',
+            searchMaxHeight:'',
+            searchMinNetworkPorts: '',
+            searchMaxNetworkPorts: '',
+            searchMinPower: '',
+            searchMaxPower: '',
+            searchCPU: '',
+            searchMinMem: '',
+            searchMaxMem: '',
+            searchStore: '',
+            searchComment: '',
 
             // csv data
             csvData:'',
@@ -287,13 +297,30 @@ export default class ModelsView extends React.Component {
     }
 
     searchModels = () => {
+        const filter = {
+            "vendor": this.state.searchVendor,
+            "model_number": this.state.searchModelNum,
+            "min_height": this.state.searchMinHeight,
+            "max_height": this.state.searchMaxHeight,
+            "min_ethernet_ports": this.state.searchMinNetworkPorts,
+            "max_ethernet_ports": this.state.searchMaxNetworkPorts,
+            "min_power_ports": this.state.searchMinPower,
+            "max_power_ports": this.state.searchMaxPower,
+            'cpu': this.state.searchCPU,
+            'min_memory': this.state.searchMinMem,
+            'max_memory': this.state.searchMaxMem,
+            'storage': this.state.searchStore,
+            'comment': this.state.searchComment,
+        };
+        console.log(filter);
+
         axios.post(
             getURL(modelsMainPath, ModelCommand.search),
             {
                 'filter': {
-                    'vendor': this.state.searchVendor,
-                    'model_number': this.state.searchModelNum,
-                    'height': this.state.searchHeight,
+                    'vendor': "",
+                    'model_number': "",
+                    'height': ""
                 }
             }
             ).then(response => {
@@ -308,7 +335,32 @@ export default class ModelsView extends React.Component {
                             row[key] = model[key];
                         }
                     });
-                    rows.push(row);
+
+
+                    if (
+                        (filter["vendor"] == undefined || filter["vendor"] === "" || row["Vendor"] === undefined || row["Vendor"].includes(filter["vendor"])) &&
+                        (filter["model_number"] === undefined || filter["model_number"] === "" || row["Model Number"].includes(filter["model_number"])) &&
+                        (filter["min_height"] === undefined || filter["min_height"] === "" ||  row["Height"] >= parseInt(filter["min_height"])) &&
+                        (filter["max_height"] === undefined || filter["max_height"] === "" ||  row["Height"] <= parseInt(filter["max_height"])) &&
+
+                        (filter["min_ethernet_ports"] === undefined || filter["min_ethernet_ports"] === "" ||  row["Network Ports"].length >= parseInt(filter["min_ethernet_ports"])) &&
+                        (filter["max_ethernet_ports"] === undefined || filter["max_ethernet_ports"] === "" ||  row["Network Ports"].length <= parseInt(filter["max_ethernet_ports"])) &&
+
+
+                        (filter["min_power_ports"] === undefined || filter["min_power_ports"] === "" ||  row["Power Ports"] >= parseInt(filter["min_power_ports"])) &&
+                        (filter["max_power_ports"] === undefined || filter["max_power_ports"] === "" ||  row["Power Ports"] <= parseInt(filter["max_power_ports"])) &&
+
+
+                        (filter["cpu"] === undefined || filter["cpu"] === "" || row["CPU"] === null || row["CPU"].includes(filter["cpu"])) &&
+                        (filter["min_memory"] === undefined || filter["min_memory"] === "" ||  row["Memory"] >= parseInt(filter["min_memory"])) &&
+                        (filter["max_memory"] === undefined || filter["max_memory"] === "" ||  row["Memory"] <= parseInt(filter["max_memory"])) &&
+
+                        (filter["storage"] === undefined || filter["storage"] === "" || row["Storage"] === null || row["Storage"].includes(filter["storage"])) &&
+                        (filter["comment"] === undefined || filter["comment"] === "" || row["Comment"] === null || row["Comment"].includes(filter["comment"]))
+                    ) {
+                        rows.push(row);
+                    }
+
                 });
 
                 this.setState({ rows: rows, items: models })
@@ -361,7 +413,21 @@ export default class ModelsView extends React.Component {
     }
 
     search = (filters) => {
-        this.setState({ searchVendor: filters['vendor'], searchModelNum: filters['model_number'], searchHeight: filters['height']}, this.searchModels);
+        this.setState({
+            searchVendor: filters['vendor'],
+            searchModelNum: filters['model_number'],
+            searchMinHeight: filters['min_height'],
+            searchMaxHeight: filters['max_height'],
+            searchMinNetworkPorts: filters["min_ethernet_ports"],
+            searchMaxNetworkPorts: filters["max_ethernet_ports"],
+            searchMinPower: filters["min_power_ports"],
+            searchMaxPower: filters["max_power_ports"],
+            searchCPU: filters["cpu"],
+            searchMinMem: filters["min_memory"],
+            searchMaxMem: filters["max_memory"],
+            searchStore: filters["storage"],
+            searchComment: filters["comment"],
+        }, this.searchModels);
     }
 
     searchAll = () => {

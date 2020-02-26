@@ -138,7 +138,7 @@ export default function ShowDatacenters(props) {
                             <TextField id="standard-basic" variant="outlined" label="End Rack" name="rack2" onChange={updateEnd}/>
                         </Grid></Grid> }
                         {props.disabled ? null :
-                        <Grid item xs={4}>
+                        <Grid item xs={6}>
                             <Button
                                 variant="contained"
                                 style={{ width: "100%", backgroundColor: "green", color: "white" }}
@@ -147,7 +147,7 @@ export default function ShowDatacenters(props) {
                                 Create
                             </Button>
                         </Grid>}
-                        <Grid item xs={4}>
+                        {/* <Grid item xs={4}>
                             <Button
                                 variant="contained"
                                 color="primary"
@@ -156,9 +156,9 @@ export default function ShowDatacenters(props) {
                             >
                                 View
                             </Button>
-                        </Grid>
+                        </Grid> */}
                         {props.disabled ? null :
-                        <Grid item xs={4}>
+                        <Grid item xs={6}>
                             <Button
                                 variant="contained"
                                 color="secondary"

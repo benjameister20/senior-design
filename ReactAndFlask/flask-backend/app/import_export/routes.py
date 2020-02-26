@@ -118,9 +118,12 @@ def _make_instance_from_csv(csv_row: Dict[str, Any]) -> Instance:
 
     print("Datacenter name")
     print(csv_row[Constants.CSV_DC_NAME_KEY])
+    print("START")
     datacenter_id = DCTABLE.get_datacenter_id_by_abbreviation(
         csv_row[Constants.CSV_DC_NAME_KEY]
     )
+    print("FINISHED")
+    print(datacenter_id)
     if datacenter_id is None:
         raise DatacenterDoesNotExistError(csv_row[Constants.CSV_DC_NAME_KEY])
 

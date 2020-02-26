@@ -114,13 +114,15 @@ class Instance:
         return [
             Constants.ASSET_NUMBER_KEY,
             Constants.HOSTNAME_KEY,
-            Constants.DC_NAME_KEY,
+            Constants.CSV_DC_NAME_KEY,
             Constants.RACK_KEY,
             Constants.RACK_POSITION_KEY,
             Constants.VENDOR_KEY,
             Constants.MODEL_NUMBER_KEY,
             Constants.OWNER_KEY,
             Constants.COMMENT_KEY,
+            "power_port_connection_1",
+            "power_port_connection_2",
         ]
 
     def make_json(self) -> JSON:
@@ -207,10 +209,23 @@ class Instance:
         json_data: JSON = self.make_json()
         json_data[Constants.VENDOR_KEY] = vendor
         json_data[Constants.MODEL_NUMBER_KEY] = model_number
-        json_data[Constants.DC_NAME_KEY] = DCTABLE.get_datacenter_name_by_id(
+        json_data[Constants.CSV_DC_NAME_KEY] = DCTABLE.get_datacenter(
             self.datacenter_id
-        )
-        # json_data = make_json_with_model_and_datacenter
+        ).abbreviation
+
+        if self.power_connections is None:
+            json_data["power_port_connection_1"] = ""
+            json_data["power_port_connection_2"] = ""
+        else:
+            if len(self.power_connections) >= 2:
+                json_data["power_port_connection_1"] = self.power_connections[0]
+                json_data["power_port_connection_2"] = self.power_connections[1]
+            elif len(self.power_connections) == 1:
+                json_data["power_port_connection_1"] = self.power_connections[0]
+                json_data["power_port_connection_2"] = ""
+            else:
+                json_data["power_port_connection_1"] = ""
+                json_data["power_port_connection_2"] = ""
 
         values: List[str] = list(
             map(

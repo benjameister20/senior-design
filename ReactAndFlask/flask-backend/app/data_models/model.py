@@ -104,7 +104,10 @@ class Model:
                 csv_row[key] = ""
 
         # FIX ETHERNET PORT IMPORT
-        csv_row[Constants.CSV_ETHERNET_PORT_KEY]
+        if csv_row[Constants.CSV_ETHERNET_PORT_KEY] == "":
+            network_port_num = 0
+        else:
+            network_port_num = int(csv_row[Constants.CSV_ETHERNET_PORT_KEY])
         port_names = [
             csv_row.get(Constants.CSV_NETWORK_PORT_1),
             csv_row.get(Constants.CSV_NETWORK_PORT_2),
@@ -115,11 +118,16 @@ class Model:
         network_ports = []
         count = 1
         for port in port_names:
-            if port is not None and port != "":
-                network_ports.append(port)
-            else:
-                network_ports.append(str(count))
+            if count <= network_port_num:
+                if port is not None and port != "":
+                    network_ports.append(port)
+                else:
+                    network_ports.append(str(count))
 
+                count += 1
+
+        while len(network_ports) < network_port_num:
+            network_ports.append(str(count))
             count += 1
 
         return Model(
@@ -210,19 +218,32 @@ class Model:
         """ Get the model as a csv row """
         json_data: JSON = self.make_json()
         print(json.dumps(json_data, indent=3))
+
+        # JANK CITY FIX WHEN TIME
+        key_array = []
+        key_array.append(Constants.CSV_NETWORK_PORT_1)
+        key_array.append(Constants.CSV_NETWORK_PORT_2)
+        key_array.append(Constants.CSV_NETWORK_PORT_3)
+        key_array.append(Constants.CSV_NETWORK_PORT_4)
+
         net_ports = json_data.get(Constants.ETHERNET_PORT_KEY)
         if net_ports is not None:
             json_data[Constants.CSV_ETHERNET_PORT_KEY] = len(net_ports)
-            json_data[Constants.CSV_NETWORK_PORT_1] = net_ports[0]
-            json_data[Constants.CSV_NETWORK_PORT_2] = net_ports[1]
-            json_data[Constants.CSV_NETWORK_PORT_3] = net_ports[2]
-            json_data[Constants.CSV_NETWORK_PORT_4] = net_ports[3]
         else:
-            json_data[Constants.CSV_ETHERNET_PORT_KEY] = 4
-            json_data[Constants.CSV_NETWORK_PORT_1] = 1
-            json_data[Constants.CSV_NETWORK_PORT_2] = 2
-            json_data[Constants.CSV_NETWORK_PORT_3] = 3
-            json_data[Constants.CSV_NETWORK_PORT_4] = 4
+            json_data[Constants.CSV_ETHERNET_PORT_KEY] = ""
+
+        net_port_num = len(net_ports)
+        count = 0
+        for i in range(0, net_port_num):
+            if count >= 4:
+                break
+            json_data[key_array[i]] = net_ports[i]
+            count += 1
+
+        while count < 4:
+            json_data[key_array[count]] = ""
+            count += 1
+
         values: List[str] = list(
             map(
                 lambda x: self._format_csv_entry(entry=str(json_data[x])),

@@ -115,7 +115,10 @@ def _make_instance_from_csv(csv_row: Dict[str, Any]) -> Instance:
 
     print("POWER CONNECTIS")
     print(power_connections)
-    datacenter_id = DCTABLE.get_datacenter_id_by_name(
+
+    print("Datacenter name")
+    print(csv_row[Constants.CSV_DC_NAME_KEY])
+    datacenter_id = DCTABLE.get_datacenter_id_by_abbreviation(
         csv_row[Constants.CSV_DC_NAME_KEY]
     )
     if datacenter_id is None:
@@ -254,7 +257,9 @@ def _parse_instance_csv(csv_input) -> Tuple[int, int, int]:
         #     original_asset_number=instance.asset_number
         # )
         # print(validation)
-        dc_id = DCTABLE.get_datacenter_id_by_name(values[Constants.CSV_DC_NAME_KEY])
+        dc_id = DCTABLE.get_datacenter_id_by_abbreviation(
+            values[Constants.CSV_DC_NAME_KEY]
+        )
         if dc_id is None:
             raise DatacenterDoesNotExistError(values[Constants.CSV_DC_NAME_KEY])
 

@@ -60,7 +60,8 @@ class DatacenterValidator:
     def delete_dc_validation(self, dc_name):
         dc_id = self.dc_table.get_datacenter_id_by_name(dc_name)
 
-        if self.rack_table.get_rack_by_datacenter(dc_id) is not None:
+        dc_racks = self.rack_table.get_rack_by_datacenter(dc_id)
+        if dc_racks is not None and dc_racks != []:
             return (
                 "All racks in the datacenter must be removed before it can be deleted."
             )

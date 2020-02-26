@@ -131,7 +131,7 @@ export default class UsersView extends React.Component {
             }
             ).then(response => {
                 console.log(response.data.message);
-                if (response.data.message === 'success') {
+                if (response.data.message === 'Successfully created user') {
                     completion(true);
                     this.setState({
                         statusOpen: true,
@@ -165,7 +165,7 @@ export default class UsersView extends React.Component {
                 'privilege':this.state.detailedValues[UserInput.Privilege],
             }
             ).then(response => {
-                if (response.data.message === 'success') {
+                if (response.data.message.includes("Success") || response.data.message.includes("Successfully")) {
                     this.setState({
                         detailStatusOpen: true,
                         detailStatusMessage: "Successfully edited user",
@@ -188,7 +188,6 @@ export default class UsersView extends React.Component {
             );
     }
 
-
     deleteUser = (username) => {
         console.log(username);
         axios.post(
@@ -197,8 +196,8 @@ export default class UsersView extends React.Component {
                 'username': username,
             }
             ).then(response => {
-                console.log(response.data.message);
-                if (response.data.message === 'Success') {
+                console.log(response.data.message.includes("Successfully"));
+                if (response.data.message.includes("Success") || response.data.message.includes("Successfully")) {
                     this.setState({
                         statusOpen: true,
                         statusMessage: "Successfully deleted user",
@@ -232,6 +231,7 @@ export default class UsersView extends React.Component {
     }
 
     searchUsers = () => {
+        console.log("searching");
         axios.post(
             getURL(usersMainPath, UserCommand.search),
             {
@@ -323,6 +323,17 @@ export default class UsersView extends React.Component {
         this.forceUpdate()
     }
 
+    updateEditUser = (username, display, email, privilege) => {
+        const newDetails = this.state.detailedValues;
+        newDetails["username"] = username;
+        newDetails["display_name"] = display;
+        newDetails["email"] = email;
+        newDetails["privilege"] = privilege;
+
+        this.setState({ detailedValues: newDetails, originalUsername: username });
+        this.forceUpdate()
+    }
+
     closeShowStatus = () => {
         this.setState({ statusOpen: false })
     }
@@ -387,6 +398,8 @@ export default class UsersView extends React.Component {
                             showDetailedView={this.showDetailedView}
                             filters={this.props.privilege == Privilege.ADMIN ? adminColumns : columns}
                             delete={this.deleteUser}
+                            save={this.editUser}
+                            editUser={this.updateEditUser}
                         />
                     </Grid>
                     <Grid item xs={12}>

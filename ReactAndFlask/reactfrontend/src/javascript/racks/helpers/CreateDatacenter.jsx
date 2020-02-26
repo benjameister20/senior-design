@@ -128,7 +128,7 @@ class CreateDatacenter extends React.Component {
                 })}
             </Select>
                 </Grid>
-
+                {this.props.disabled ? null :
                 <Grid item xs={3}>
                 <Button
                 variant="contained"
@@ -137,7 +137,7 @@ class CreateDatacenter extends React.Component {
             >
                 Create New Datacenter
             </Button>
-                </Grid>
+                </Grid>}
 
 
             <Modal

@@ -50,8 +50,6 @@ const useStyles = theme => ({
         alignItems: 'center',
         justifyContent: 'center',
         width: "100%",
-        margin:"0 auto",
-        overflow: "scroll"
       },
       grid: {
           backgroundColor: theme.palette.background.paper,
@@ -111,24 +109,8 @@ class CreateModel extends React.Component {
     uploadFile = () => {
         const data = new FormData();
         data.append('file', this.state.importedFile);
-        this.sendUploadedFile(data);
+        this.props.sendUploadedFile(data);
     }
-
-    sendUploadedFile = (data) => {
-        axios.post(
-            getURL(Constants.MODELS_MAIN_PATH, "import/"), data
-            ).then(response => {
-                console.log("import response");
-                console.log(response);
-                if (response.data.message === "success") {
-					this.setState({ showStatus: true, statusMessage: response.data.summary, statusSeverity:"success", showImport: false,})
-					this.props.close();
-                } else {
-                    this.setState({ showStatus: true, statusMessage: response.data.message, statusSeverity:"error" })
-                }
-            });
-            this.setState({ showImportModal: false })
-	}
 
     chooseFile = (file) => {
         this.setState({ importedFile: file })
@@ -366,7 +348,8 @@ class CreateModel extends React.Component {
                             <Grid container item direction="row" justify="center" alignItems="center" xs={12}>
 								<input
 									type='file'
-									accept=".csv"
+                                    accept=".csv"
+                                    name="models_upload"
 									onChange={this.chooseFile}
 								/>
 							</Grid>

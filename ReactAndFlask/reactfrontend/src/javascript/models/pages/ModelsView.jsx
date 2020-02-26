@@ -315,9 +315,13 @@ export default class ModelsView extends React.Component {
     }
 
     sendUploadedFile = (data) => {
+        console.log("sending");
+        console.log(data);
         axios.post(
-            getURL(modelsMainPath, ModelCommand.UPLOAD_FILE), data
+            getURL("/models", ModelCommand.UPLOAD_FILE), data
             ).then(response => {
+                console.log("import response");
+                console.log(response);
                 if (response.data.message === 'success') {
                     this.setState({ showStatus: true, statusMessage: response.data.summary, statusSeverity:'success', showImportModal: false,})
                     this.searchModels();
@@ -459,6 +463,7 @@ export default class ModelsView extends React.Component {
                                 options={this.state.vendorsList}
                                 useAutocomplete={true}
                                 updateModelColor={this.updateModelColor}
+                                sendUploadedFile={this.sendUploadedFile}
                             />
                         </div>) : null}
                     </Grid>

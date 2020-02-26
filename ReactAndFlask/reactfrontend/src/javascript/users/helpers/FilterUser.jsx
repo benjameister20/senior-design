@@ -18,10 +18,12 @@ export default class Filters extends React.Component {
 
         this.state = {
             filters:{},
+            privilege: "",
         };
     }
 
     updateSearchText(event) {
+        console.log(event.target.id);
         if (this.state.filters.hasOwnProperty(event.target.id)) {
             this.state.filters[event.target.id] = event.target.value;
             this.forceUpdate();
@@ -32,7 +34,14 @@ export default class Filters extends React.Component {
     }
 
     search() {
+        console.log(this.state.filters);
         this.props.search(this.state.filters);
+    }
+
+    updateSelect = (event) => {
+        this.state.filters["privilege"] = event.target.value;
+        this.forceUpdate();
+        this.setState({ privilege: event.target.value });
     }
 
     render() {
@@ -63,15 +72,15 @@ export default class Filters extends React.Component {
                                 />
                             </Grid>
                             <Grid item xs={6}>
-                                <TextField id="standard-basic" variant="outlined" label="Display Name" name="display_name" onChange={this.props.updateModelCreator}/>
+                                <TextField id="display_name" variant="outlined" label="Display Name" name="display_name" onChange={this.updateSearchText.bind(this)}/>
                             </Grid>
                             <Grid item xs={12}>
                                 <TextField
-                                    id="standard-basic"
+                                    id="email"
                                     variant="outlined"
                                     label="Email"
                                     name="email"
-                                    onChange={this.props.updateModelCreator}
+                                    onChange={this.updateSearchText.bind(this)}
                                     style={{"width": "100%"}}
                                 />
                             </Grid>
@@ -81,8 +90,9 @@ export default class Filters extends React.Component {
                                 >
                                     <InputLabel id="privilege-select">Privilege</InputLabel>
                                     <Select
-                                        id="privilege-select"
-                                        onChange={this.props.updateModelCreator}>
+                                        id="privilege"
+                                        onChange={this.updateSelect}>
+                                        <MenuItem value="">Any</MenuItem>
                                         <MenuItem value="admin">Administrator</MenuItem>
                                         <MenuItem value="user">User</MenuItem>
                                     </Select>

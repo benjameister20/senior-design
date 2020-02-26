@@ -89,7 +89,7 @@ export default function ShowDatacenters(props) {
                                 variant="contained"
                                 color="secondary"
                                 style={{ width: "100%" }}
-                                onClick={(event) => {props.openConfirmationBox(event, props.selectedDatacenter.name)} }
+                                onClick={(event) => {props.openConfirmationBox(event, props.selectedDatacenter)} }
                             >
                                 Delete
                             </Button>

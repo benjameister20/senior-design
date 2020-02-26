@@ -265,7 +265,7 @@ class ModelsTable extends React.Component {
                         align="center"
                       >
                         {row[key] === null ? "" : row[key].length}
-                        {row[key] == null ? null : <ViewListIcon style={{"margin": "5px"}} onClick={(e) => {this.clickInfo(e, row[key])}} />}
+                        {row[key] == null ? null : <Button style={{"margin": "5px"}}><ViewListIcon onClick={(e) => {this.clickInfo(e, row[key])}} /></Button>}
                       </TableCell>
                     )
                   }

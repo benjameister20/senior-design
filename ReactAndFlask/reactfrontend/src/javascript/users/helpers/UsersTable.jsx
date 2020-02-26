@@ -13,13 +13,47 @@ import { Privilege } from '../../enums/privilegeTypes';
 import SaveIcon from '@material-ui/icons/Save';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
+import Grid from '@material-ui/core/Grid';
+import Typography from '@material-ui/core/Typography';
+import Modal from '@material-ui/core/Modal';
+import Backdrop from '@material-ui/core/Backdrop';
+import Fade from '@material-ui/core/Fade';
+import { withStyles } from '@material-ui/core/styles';
 
-export default class UsersTable extends React.Component {
+const useStyles = theme => ({
+  root: {
+    flexGrow: 1,
+  },
+  modal: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      width: "100%",
+      margin:"0 auto",
+      overflow: "scroll"
+    },
+    grid: {
+        backgroundColor: theme.palette.background.paper,
+        boxShadow: theme.shadows[5],
+        padding: theme.spacing(2, 4, 3),
+        width: "50%"
+    },
+    progress: {
+      display: 'flex',
+      '& > * + *': {
+        marginLeft: theme.spacing(2),
+      },
+    },
+});
+
+class UsersTable extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-        canEdit: false
+        canEdit: false,
+        showDeleteModal: false,
+        username: '',
     };
   }
 
@@ -35,7 +69,22 @@ export default class UsersTable extends React.Component {
     this.setState({ canEdit: false });
   }
 
+  showDeleteModal = (row) => {
+    this.setState({ showDeleteModal: true, username: row["Username"] });
+  }
+
+  closeDeleteModal = () => {
+    this.setState({ showDeleteModal: false, username: "" });
+  }
+
+  delete = () => {
+    this.props.delete(this.state.username);
+    this.closeDeleteModal();
+  }
+
   render() {
+    const { classes } = this.props;
+
     return (
       <div>
         <TableContainer component={Paper}>
@@ -49,16 +98,16 @@ export default class UsersTable extends React.Component {
               {this.props.vals.map((row, index)=> (
               <TableRow id={index}>
                   { this.props.privilege === Privilege.ADMIN ? <TableCell scope="row" align="center">
-                      <Button>
+                    {row["Username"] !== "admin" ? <div><Button>
                         { this.state.canEdit ? <SaveIcon onClick={this.endEditing} /> : <EditIcon onClick={this.beginEditing} /> }
                       </Button>
                       <Button>
-                        <DeleteIcon />
-                      </Button>
+                        <DeleteIcon onClick={() => this.showDeleteModal(row)} />
+                      </Button></div> : null}
                   </TableCell> : null }
                 {this.props.keys.map(key => {
                     if (key === "Privilege") {
-                    return (this.state.canEdit ? <TableCell scope="row" align="center">
+                    return (this.state.canEdit && row["Username"] !== "admin" ? <TableCell scope="row" align="center">
                         <Select
                             id="privilege-select"
                             defaultValue={row[key]}
@@ -76,7 +125,66 @@ export default class UsersTable extends React.Component {
             </TableBody>
           </Table>
         </TableContainer>
+
+        <Modal
+                aria-labelledby="transition-modal-title"
+                aria-describedby="transition-modal-description"
+                className={classes.modal}
+                open={this.state.showDeleteModal}
+                onClose={this.closeDeleteModal}
+                closeAfterTransition
+            >
+                <Fade in={this.state.showDeleteModal}>
+                    <Backdrop
+                        open={this.state.showDeleteModal}
+                    >
+                        <div className={classes.grid}>
+                        <Grid
+                            container
+                            spacing={1}
+                            direction="row"
+                            justify="flex-start"
+                            alignItems="center"
+                        >
+                            <Grid item xs={12}>
+                                <Typography variant="h5">Are you sure?</Typography>
+                            </Grid>
+                            <Grid item xs={12} sm={12} md={6} lg={6}>
+                                <Typography variant="body1">
+                                    Doing this will remove the model permanently.
+                                </Typography>
+                            </Grid>
+
+                            <Grid item xs={3}>
+                                <Button
+                                    variant="contained"
+                                    color="secondary"
+                                    onClick={this.delete}
+                                    style={{width: "100%"}}
+                                >
+                                    Yes
+                                </Button>
+                            </Grid>
+                            <Grid item xs={3}>
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    onClick={this.closeDeleteModal}
+                                    style={{width: "100%"}}
+                                >
+                                    No
+                                </Button>
+                            </Grid>
+                        </Grid>
+                </div>
+                </Backdrop>
+
+                </Fade>
+            </Modal>
+
       </div>
     );
   }
 }
+
+export default withStyles(useStyles)(UsersTable);

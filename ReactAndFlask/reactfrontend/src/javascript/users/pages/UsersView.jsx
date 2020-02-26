@@ -119,20 +119,22 @@ export default class UsersView extends React.Component {
         this.searchUsers();
     }
 
-    createUser = () => {
+    createUser = (username, password, display_name, email, privilege, completion) => {
         axios.post(
             getURL(usersMainPath, UserCommand.create),
             {
-                'username':this.state.createdUser[UserInput.Username],
-                'password':this.state.createdUser[UserInput.Password],
-                'display_name':this.state.createdUser[UserInput.display_name],
-                'email':this.state.createdUser[UserInput.Email],
-                'privilege':this.state.createdUser[UserInput.Privilege],
+                'username': username,
+                'password': password,
+                'display_name': display_name,
+                'email': email,
+                'privilege': privilege,
             }
             ).then(response => {
+                console.log(response.data.message);
                 if (response.data.message === 'success') {
+                    completion(true);
                     this.setState({
-                        statusOPen: true,
+                        statusOpen: true,
                         statusMessage: "Successfully created user",
                         statusSeverity:"success",
                         createdUser : {
@@ -146,11 +148,10 @@ export default class UsersView extends React.Component {
                     });
                     this.searchUsers();
                 } else {
+                    completion(false);
                     this.setState({ statusOpen: true, statusMessage: response.data.message, statusSeverity:"error" })
                 }
-            }).catch(
-                this.setState({ statusOpen: true, statusMessage: UserConstants.GENERAL_USER_ERROR, statusSeverity:"error" })
-            );
+            });
     }
 
     editUser = () => {
@@ -188,20 +189,22 @@ export default class UsersView extends React.Component {
     }
 
 
-    deleteUser = () => {
+    deleteUser = (username) => {
+        console.log(username);
         axios.post(
             getURL(usersMainPath, UserCommand.delete),
             {
-                'username':this.state.originalUsername,
+                'username': username,
             }
             ).then(response => {
-                if (response.data.message === 'success') {
+                console.log(response.data.message);
+                if (response.data.message === 'Success') {
                     this.setState({
                         statusOpen: true,
                         statusMessage: "Successfully deleted user",
-                        statusSeverity:"success",
-                        deleteUsername:'',
-                        showDetailedView:false,
+                        statusSeverity: "success",
+                        deleteUsername: '',
+                        showDetailedView: false,
                     });
                     this.searchUsers();
                 } else {
@@ -321,7 +324,7 @@ export default class UsersView extends React.Component {
     }
 
     closeShowStatus = () => {
-        this.setState({ showStatus: false })
+        this.setState({ statusOpen: false })
     }
 
     createStatusClose = () => {
@@ -336,7 +339,7 @@ export default class UsersView extends React.Component {
         return (
             <div>
                 <StatusDisplay
-                    open={this.state.showStatus}
+                    open={this.state.statusOpen}
                     severity={this.state.statusSeverity}
                     closeStatus={this.closeShowStatus}
                     message={this.state.statusMessage}
@@ -383,6 +386,7 @@ export default class UsersView extends React.Component {
                             privilege={this.props.privilege}
                             showDetailedView={this.showDetailedView}
                             filters={this.props.privilege == Privilege.ADMIN ? adminColumns : columns}
+                            delete={this.deleteUser}
                         />
                     </Grid>
                     <Grid item xs={12}>

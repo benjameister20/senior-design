@@ -197,7 +197,7 @@ class ModelsTable extends React.Component {
     }
 
     this.setState({ networkPorts: ports, numPorts: numPorts });
-    this.props.updateModelEdited(event);
+    this.updateModelEdited(event);
   }
 
     updatePort = (port, event) => {

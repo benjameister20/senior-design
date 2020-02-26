@@ -248,9 +248,7 @@ export default class ModelsView extends React.Component {
                     } else {
                         this.setState({ showStatus: true, statusMessage: response.data.message, statusSeverity:"error" })
                     }
-                }).catch(
-                    this.setState({ showStatus: true, statusMessage: ModelConstants.GENERAL_MODEL_ERROR, statusSeverity:"error" })
-                );
+                });
     }
 
     detailViewModel = (vendor, modelNum) => {

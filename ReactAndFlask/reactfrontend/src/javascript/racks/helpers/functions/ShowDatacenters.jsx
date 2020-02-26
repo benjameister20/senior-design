@@ -72,7 +72,7 @@ export default function ShowDatacenters(props) {
                                 variant="contained"
                                 color="primary"
                                 style={{ width: "100%" }}
-                                onClick={(event) => {props.editDatacenter(event, props.selectedDatacenter.name, props.selectedDatacenter.abbreviation)} }
+                                onClick={(event) => {props.editDatacenter(event, props.dc.name, props.dc.abbreviation)} }
                             >
                                 Edit
                             </Button>

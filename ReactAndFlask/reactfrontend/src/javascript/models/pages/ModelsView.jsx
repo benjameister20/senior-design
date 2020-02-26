@@ -100,6 +100,19 @@ export default class ModelsView extends React.Component {
             createdStorage:'',
             createdComments:'',
 
+            detailedValues : {
+                'vendor':'',
+                'model_number':'',
+                'height':'',
+                'display_color':'',
+                'ethernet_ports':'',
+                'power_ports':'',
+                'cpu':'',
+                'memory':'',
+                'storage':'',
+                'comment':'',
+            },
+
             // vals for deleting a model
             deleteVendor:'',
             deleteModel:'',

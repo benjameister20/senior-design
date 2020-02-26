@@ -116,7 +116,9 @@ class ModelsTable extends React.Component {
   }
 
   updateColor = (color) => {
-    this.setState({ color: color });
+    var oldDetails = this.state.detailedValues;
+    oldDetails.display_color = color.hex;
+    this.setState({ color: color, detailedValues: oldDetails });
     this.props.updateModelColor(color.hex);
 }
 

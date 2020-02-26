@@ -161,7 +161,7 @@ class DatacenterView extends React.Component {
                 } else {
                     this.setState({ showStatus: true, statusMessage: response.data.message, statusSeverity:"error" })
                 }
-                this.getAllRacks(this.state.selectedDatacenter.name, false);
+                this.getAllRacks(this.state.selectedDatacenter, false);
             });
     }
 

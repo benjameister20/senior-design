@@ -119,7 +119,7 @@ class CreateDatacenter extends React.Component {
             <Select
                 name='datacenter_name'
                 id="datacenter-select"
-                value={this.props.selectedDatacenter}
+                value={this.props.dc}
                 onChange={this.props.selectDatacenter}
                 style={{ width: "100%" }}
             >

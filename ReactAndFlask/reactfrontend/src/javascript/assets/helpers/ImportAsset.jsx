@@ -17,6 +17,8 @@ import {
 import getURL from "../../helpers/functions/GetURL";
 import { AssetCommand } from "../enums/AssetCommands.ts";
 import * as AssetConstants from "../AssetConstants";
+import StatusDisplay from "../../helpers/StatusDisplay"
+
 
 const useStyles = theme => ({
 	grid: {
@@ -32,7 +34,11 @@ class ImportAsset extends React.Component {
 		super(props);
 
 		this.state = {
-			importedFile:null,
+            importedFile:null,
+
+            showStatus:false,
+            statusSeverity:"",
+            statusMessage:"",
 		};
 	}
 
@@ -65,11 +71,16 @@ class ImportAsset extends React.Component {
                     this.setState({ showStatus: true, statusMessage: response.data.message, statusSeverity:AssetConstants.ERROR_TOKEN })
                 }
             });
-	}
+    }
+
+    closeShowStatus = () => {
+        this.setState({ showStatus: false, statusMessage:"", statusSeverity:"" });
+    }
 
 	render() {
 		const { classes } = this.props;
 		return (
+            <div>
 			<Modal
                 aria-labelledby="transition-modal-title"
                 aria-describedby="transition-modal-description"
@@ -78,7 +89,6 @@ class ImportAsset extends React.Component {
                 onClose={this.closeImport}
                 closeAfterTransition
             >
-                <Fade in={this.props.open}>
                     <Backdrop
                         open={this.props.open}
                     >
@@ -121,8 +131,14 @@ class ImportAsset extends React.Component {
                         </Grid>
                     </div>
                 </Backdrop>
-                </Fade>
             </Modal>
+            <StatusDisplay
+            open={this.state.showStatus}
+            severity={this.state.statusSeverity}
+            closeStatus={this.closeShowStatus}
+            message={this.state.statusMessage}
+        />
+        </div>
 		);
 	}
 }

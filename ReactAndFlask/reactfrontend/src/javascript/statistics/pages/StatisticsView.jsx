@@ -77,7 +77,7 @@ export default class StatisticsView extends React.Component {
 
     generateReport() {
         axios.post(getURL(statsMainPath, StatsCommand.GENERATE_REPORT), {
-            'datacenter_name': this.state.selectedDatacenter === "All Datacenters" ? "" : this.state.selectedDatacenter,
+            'datacenter_name': this.state.selectedDatacenter.name === "All Datacenters" ? "" : this.state.selectedDatacenter.name,
         }).then(response => {
                 try {
                     var data = response.data;

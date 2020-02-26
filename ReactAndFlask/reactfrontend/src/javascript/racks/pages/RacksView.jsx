@@ -1,27 +1,74 @@
 import React from 'react';
 
-import axios from 'axios';
+import { fade, withStyles, SvgIcon, Collapse, Grid, Typography } from '@material-ui/core';
+import { TreeView, TreeItem } from '@material-ui/lab';
+import PropTypes from 'prop-types';
 
-import Select from '@material-ui/core/Select';
-import FormHelperText from '@material-ui/core/FormHelperText';
-import FormControl from '@material-ui/core/FormControl';
-import { MenuItem, Button, TextField } from '@material-ui/core';
-import Grid from '@material-ui/core/Grid';
-import { withStyles } from '@material-ui/core/styles';
-import Modal from '@material-ui/core/Modal';
-import Backdrop from '@material-ui/core/Backdrop';
-import Fade from '@material-ui/core/Fade';
-
-import { RackCommand } from "../enums/RackCommands.ts";
-import { Privilege } from '../../enums/privilegeTypes.ts';
 import "../stylesheets/RackStyles.css";
 
-import getURL from '../../helpers/functions/GetURL';
-import * as Constants from '../../Constants';
-import StatusDisplay from '../../helpers/StatusDisplay';
 import ErrorBoundray from '../../errors/ErrorBoundry';
+import { useSpring, animated } from 'react-spring/web.cjs';
 
-const racksMainPath = 'racks/';
+function MinusSquare(props) {
+    return (
+      <SvgIcon fontSize="inherit" {...props}>
+        {/* tslint:disable-next-line: max-line-length */}
+        <path d="M22.047 22.074v0 0-20.147 0h-20.12v0 20.147 0h20.12zM22.047 24h-20.12q-.803 0-1.365-.562t-.562-1.365v-20.147q0-.776.562-1.351t1.365-.575h20.147q.776 0 1.351.575t.575 1.351v20.147q0 .803-.575 1.365t-1.378.562v0zM17.873 11.023h-11.826q-.375 0-.669.281t-.294.682v0q0 .401.294 .682t.669.281h11.826q.375 0 .669-.281t.294-.682v0q0-.401-.294-.682t-.669-.281z" />
+      </SvgIcon>
+    );
+  }
+
+  function PlusSquare(props) {
+    return (
+      <SvgIcon fontSize="inherit" {...props}>
+        {/* tslint:disable-next-line: max-line-length */}
+        <path d="M22.047 22.074v0 0-20.147 0h-20.12v0 20.147 0h20.12zM22.047 24h-20.12q-.803 0-1.365-.562t-.562-1.365v-20.147q0-.776.562-1.351t1.365-.575h20.147q.776 0 1.351.575t.575 1.351v20.147q0 .803-.575 1.365t-1.378.562v0zM17.873 12.977h-4.923v4.896q0 .401-.281.682t-.682.281v0q-.375 0-.669-.281t-.294-.682v-4.896h-4.923q-.401 0-.682-.294t-.281-.669v0q0-.401.281-.682t.682-.281h4.923v-4.896q0-.401.294-.682t.669-.281v0q.401 0 .682.281t.281.682v4.896h4.923q.401 0 .682.281t.281.682v0q0 .375-.281.669t-.682.294z" />
+      </SvgIcon>
+    );
+  }
+
+  function CloseSquare(props) {
+    return (
+      <SvgIcon className="close" fontSize="inherit" {...props}>
+        {/* tslint:disable-next-line: max-line-length */}
+        <path d="M17.485 17.512q-.281.281-.682.281t-.696-.268l-4.12-4.147-4.12 4.147q-.294.268-.696.268t-.682-.281-.281-.682.294-.669l4.12-4.147-4.12-4.147q-.294-.268-.294-.669t.281-.682.682-.281.696 .268l4.12 4.147 4.12-4.147q.294-.268.696-.268t.682.281 .281.669-.294.682l-4.12 4.147 4.12 4.147q.294.268 .294.669t-.281.682zM22.047 22.074v0 0-20.147 0h-20.12v0 20.147 0h20.12zM22.047 24h-20.12q-.803 0-1.365-.562t-.562-1.365v-20.147q0-.776.562-1.351t1.365-.575h20.147q.776 0 1.351.575t.575 1.351v20.147q0 .803-.575 1.365t-1.378.562v0z" />
+      </SvgIcon>
+    );
+  }
+
+function TransitionComponent(props) {
+    const style = useSpring({
+      from: { opacity: 0, transform: 'translate3d(20px,0,0)' },
+      to: { opacity: props.in ? 1 : 0, transform: `translate3d(${props.in ? 0 : 20}px,0,0)` },
+    });
+
+    return (
+      <animated.div style={style}>
+        <Collapse {...props} />
+      </animated.div>
+    );
+  }
+
+  TransitionComponent.propTypes = {
+    /**
+     * Show the component; triggers the enter or exit states
+     */
+    in: PropTypes.bool,
+  };
+
+const StyledTreeItem = withStyles(theme => ({
+    iconContainer: {
+      '& .close': {
+        opacity: 0.3,
+      },
+    },
+    group: {
+      marginLeft: 12,
+      paddingLeft: 12,
+      borderLeft: `1px dashed ${fade(theme.palette.text.primary, 0.4)}`,
+    },
+  }))(props => <TreeItem {...props} TransitionComponent={TransitionComponent} />);
+
 
 const useStyles = theme => ({
     root: {
@@ -52,8 +99,6 @@ class RacksView extends React.Component {
             items: [],
             firstRack: 'A1',
             secondRack: 'A1',
-            firstNumber:1,
-            endingNumber:1,
 
             showStatus: false,
             statusMessage: '',
@@ -62,11 +107,8 @@ class RacksView extends React.Component {
             showConfirmationBox: false,
 
             racksList: [],
+            racks: {}
         };
-    }
-
-    componentDidMount() {
-        this.getAllRacks();
     }
 
     handleFormat = (event, newFormats) => {
@@ -75,75 +117,8 @@ class RacksView extends React.Component {
         }
     };
 
-    getAllRacks = () => {
-        axios.get(getURL(racksMainPath, RackCommand.GET_ALL_RACKS)).then(response => {
-                if (response.data.message === 'success') {
-                    this.setState({ showStatus: true, statusMessage: "Success", statusSeverity:"success", racksList:response.data.racks })
-                } else {
-                    this.setState({ showStatus: true, statusMessage: response.data.message, statusSeverity:"error" })
-                }
-            });
-    }
-
-    updateRacks(command) {
-        axios.post(
-            getURL(racksMainPath, command),
-            {
-                'start_letter':this.state.firstRack,
-                'stop_letter':this.state.secondRack,
-                'start_number':this.state.firstNumber,
-                'stop_number':this.state.endingNumber,
-                "datacenter_name": this.props.datacenter,
-            }
-            ).then(response => {
-                if (response.data.message === 'success') {
-                    this.setState({ showStatus: true, statusMessage: "Success", statusSeverity:"success", showConfirmationBox:false });
-                    if (command === RackCommand.GET_RACK_DETAILS) {
-                        const win = window.open(response.data.link, '_blank');
-                        if (win != null) {
-                            win.focus();
-                        }
-                    }
-                } else {
-                    this.setState({ showStatus: true, statusMessage: response.data.message, statusSeverity:"error" })
-                }
-            });
-    }
-
-    createRacks = () => {
-        this.updateRacks(RackCommand.CREATE_RACKS);
-    }
-
-    deleteRacks = () => {
-        this.updateRacks(RackCommand.DELETE_RACKS);
-    }
-
-    viewRacks = () => {
-        this.updateRacks(RackCommand.GET_RACK_DETAILS);
-    }
-
-    changeStartingRack = (event) => {
-        this.setState({ firstRack: event.target.value })
-    }
-
-    changeEndingRack = (event) => {
-        this.setState({ secondRack: event.target.value })
-    }
-
-    changeStartingNum = (event) => {
-        this.setState({ firstNumber: event.target.value })
-    }
-
-    changeEndingNum = (event) => {
-        this.setState({ endingNumber: event.target.value })
-    }
-
     closeShowStatus = () => {
         this.setState({ showStatus: false })
-    }
-
-    changeRackType = (type) => {
-        this.setState({ rackType: type})
     }
 
     closeConfirmationBox = () => {
@@ -154,124 +129,40 @@ class RacksView extends React.Component {
         const { classes } = this.props;
         return (
             <ErrorBoundray>
-                <Grid container>
-                    <Grid item xs={1}>
-                        <FormControl>
-                                <Select id="starting-letter-selector" value={this.state.firstRack} onChange={this.changeStartingRack}>
-                                    {Constants.RackX.map(val => (<MenuItem value={val}>{val}</MenuItem>))}
-                                </Select>
-                                <FormHelperText>Starting Letter</FormHelperText>
-                        </FormControl>
-                    </Grid>
-                    <Grid item xs={1}>
-                        <FormControl>
-                                <Select id="ending-letter-selector" value={this.state.secondRack} onChange={this.changeEndingRack}>
-                                    {Constants.RackX.map(val => (<MenuItem value={val}>{val}</MenuItem>))}
-                                </Select>
-                                <FormHelperText>Ending Letter</FormHelperText>
-                        </FormControl>
-                    </Grid>
-                    <Grid item xs={2}>
-                        <FormControl>
-                                <TextField
-                                    id="starting-num-selector"
-                                    type="number"
-                                    value={this.state.firstNumber}
-                                    onChange={this.changeStartingNum}
-                                    InputProps={{ inputProps: { min: 1} }}
-                                />
-                                <FormHelperText>Starting Number</FormHelperText>
-                        </FormControl>
-                    </Grid>
-                    <Grid item xs={8}>
-                        <FormControl>
-                                <TextField
-                                    id="ending-num-selector"
-                                    type="number"
-                                    value={this.state.endingNumber}
-                                    onChange={this.changeEndingNum}
-                                    InputProps={{ inputProps: { min: 1} }}
-                                />
-                                <FormHelperText>Ending Number</FormHelperText>
-                        </FormControl>
-                    </Grid>
-                    <Grid item xs={2}>
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            onClick={this.viewRacks}
-                        >
-                            View Racks
-                        </Button>
-                    </Grid>
-                    <Grid item xs={2}>
-                        {(this.props.privilege === Privilege.ADMIN) ?
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            onClick={this.createRacks}
-                        >
-                            Create Racks
-                        </Button> : null}
-                    </Grid>
-                    <Grid item xs={2}>
-                        {(this.props.privilege === Privilege.ADMIN) ?
-                        <Button
-                            variant="contained"
-                            color="secondary"
-                            onClick={() => this.setState({ showConfirmationBox: true, })}
-                        >
-                            Delete Racks
-                        </Button> : null}
-                    </Grid>
-                </Grid>
-                <Modal
-                    aria-labelledby="transition-modal-title"
-                    aria-describedby="transition-modal-description"
-                    className={classes.modal}
-                    open={this.state.showConfirmationBox}
-                    onClose={this.closeConfirmationBox}
-                    closeAfterTransition
-                    BackdropComponent={Backdrop}
-                    BackdropProps={{
-                    timeout: 500,
-                    }}
+                <Grid
+                    container
+                    spacing={5}
+                    direction="row"
+                    justify="center"
+                    alignItems="center"f
+                    style={{margin: "0px", maxWidth: "95vw"}}
                 >
-                    <Fade in={this.state.showConfirmationBox}>
-                        <div className={classes.paper}>
-                            <Grid container spacing={5}>
-                                <Grid item xs={12}>
-                                    Are you sure you wish to delete?
-                                </Grid>
-                                <Grid item xs={2}>
-                                    <Button
-                                        variant="contained"
-                                        color="primary"
-                                        onClick={this.deleteRacks}
-                                    >
-                                        Yes
-                                    </Button>
-                                </Grid>
-                                <Grid item xs={1}>
-                                    <Button
-                                        variant="contained"
-                                        color="primary"
-                                        onClick={() => this.setState({ showConfirmationBox: false, })}
-                                    >
-                                        No
-                                    </Button>
-                                </Grid>
-                            </Grid>
-                        </div>
-                    </Fade>
-                </Modal>
 
-                <StatusDisplay
-                    open={this.state.showStatus}
-                    severity={this.state.statusSeverity}
-                    closeStatus={this.closeShowStatus}
-                    message={this.state.statusMessage}
-                />
+                    <Grid item xs={12}>
+                        <Typography variant="h5">Racks</Typography>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <TreeView
+                            className={classes.root}
+                            defaultExpanded={['1']}
+                            defaultCollapseIcon={<MinusSquare />}
+                            defaultExpandIcon={<PlusSquare />}
+                            defaultEndIcon={<CloseSquare />}
+                        >
+                            {Object.keys(this.props.racks).sort().map(key => {
+                                return (<StyledTreeItem nodeId={key} label={key}>
+                                        {this.props.racks[key].map(value => {
+                                            return (<StyledTreeItem nodeId={value} label={value} />);
+                                        })}
+                                    </StyledTreeItem>);
+                            })}
+                        </TreeView>
+                    </Grid>
+
+
+
+                </Grid>
+
             </ErrorBoundray>
         );
     }

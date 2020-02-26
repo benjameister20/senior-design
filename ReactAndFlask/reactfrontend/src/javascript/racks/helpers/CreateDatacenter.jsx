@@ -3,7 +3,7 @@ import React from "react";
 import axios from "axios";
 
 import TextField from "@material-ui/core/TextField";
-import Button from '@material-ui/core/Button';
+import { Button, InputLabel, Select, MenuItem } from '@material-ui/core';
 import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
@@ -11,6 +11,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import Grid from '@material-ui/core/Grid';
 import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
+
 
 import * as Constants from "../../Constants";
 import { DatacenterCommand } from "../enums/DatacenterCommands";
@@ -102,13 +103,32 @@ class CreateDatacenter extends React.Component {
 
         return (
             <React.Fragment>
-            <Button
+                <Grid item xs={3}>
+                <InputLabel id="datacenter-select-label">Select Datacenter</InputLabel>
+            <Select
+                name='datacenter_name'
+                id="datacenter-select"
+                value={this.props.selectedDatacenter}
+                onChange={this.props.selectDatacenter}
+                style={{ width: "100%" }}
+            >
+                {this.props.datacenterList.map(value => {
+                    return (<MenuItem value={value}>{value["name"]}</MenuItem>);
+                })}
+            </Select>
+                </Grid>
+
+                <Grid item xs={3}>
+                <Button
                 variant="contained"
                 color="primary"
                 onClick={() => {this.showCreate()} }
             >
                 Create New Datacenter
             </Button>
+                </Grid>
+
+
             <Modal
                 aria-labelledby="transition-modal-title"
                 aria-describedby="transition-modal-description"

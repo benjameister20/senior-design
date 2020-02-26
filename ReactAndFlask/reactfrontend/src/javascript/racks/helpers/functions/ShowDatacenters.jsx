@@ -1,15 +1,13 @@
 import React from "react";
 
 import Button from '@material-ui/core/Button';
-import ExpansionPanel from '@material-ui/core/ExpansionPanel';
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import Typography from '@material-ui/core/Typography';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import { Grid, Paper, TextField } from '@material-ui/core';
+import { Grid, Paper, TextField, Modal, Backdrop, Fade } from '@material-ui/core';
 import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab';
 
-import RacksView from "../../pages/RacksView";
+import { RackCommand } from "../../enums/RackCommands.ts";
+
+
 
 export default function ShowDatacenters(props) {
     const [rackType, setRackType] = React.useState('single');
@@ -33,22 +31,24 @@ export default function ShowDatacenters(props) {
         setRack2(event.target.value);
       }
 
+    const createRacks = () => {
+        props.updateRacks(RackCommand.CREATE_RACKS, rack1, rack2);
+    }
+
+    const deleteRacks = () => {
+        props.updateRacks(RackCommand.DELETE_RACKS, rack1, rack2);
+    }
+
+    const viewRacks = () => {
+        props.updateRacks(RackCommand.GET_RACK_DETAILS, rack1, rack2);
+    }
+
     try {
         if (props.datacentersList.length == 0) {
             return <Typography>There are currently no datacenters being managed.</Typography>
         } else {
             return (<div>{
-                props.datacentersList.map(datacenter => (
-                    <ExpansionPanel>
-                        <ExpansionPanelSummary
-                            expandIcon={<ExpandMoreIcon />}
-                            aria-controls={datacenter.abbreviation}
-                            id={datacenter.abbreviation}
-                        >
-                            <Typography className={props.classes.heading}>{datacenter.name + "/" + datacenter.abbreviation}</Typography>
-                        </ExpansionPanelSummary>
-                        <ExpansionPanelDetails>
-                            <Grid container spacing={3}>
+                <Grid container spacing={3}>
                                 <Grid item xs={3}>
                                     <Paper elevation={3}>
                                     <Grid
@@ -69,7 +69,7 @@ export default function ShowDatacenters(props) {
                                                 variant="contained"
                                                 color="primary"
                                                 style={{ width: "100%" }}
-                                                onClick={(event) => {props.editDatacenter(event, datacenter.name, datacenter.abbreviation)} }
+                                                onClick={(event) => {props.editDatacenter(event, props.selectedDatacenter.name, props.selectedDatacenter.abbreviation)} }
                                             >
                                                 Edit
                                             </Button>
@@ -86,7 +86,7 @@ export default function ShowDatacenters(props) {
                                                 variant="contained"
                                                 color="secondary"
                                                 style={{ width: "100%" }}
-                                                onClick={(event) => {props.openConfirmationBox(event, datacenter.name)} }
+                                                onClick={(event) => {props.openConfirmationBox(event, props.selectedDatacenter.name)} }
                                             >
                                                 Delete
                                             </Button>
@@ -107,7 +107,7 @@ export default function ShowDatacenters(props) {
                                     >
                                         <Grid item xs={12}>
                                             <Typography variant="h6">
-                                                Create Racks
+                                                Racks
                                             </Typography>
                                         </Grid>
                                         <Grid container item direction="row" justify="center" xs={12}>
@@ -135,33 +135,42 @@ export default function ShowDatacenters(props) {
                                             <TextField id="standard-basic" variant="outlined" label="End Rack" name="rack2" onChange={updateEnd}/>
                                         </Grid></Grid> }
 
-                                        <Grid item xs={12}>
+                                        <Grid item xs={4}>
                                             <Button
                                                 variant="contained"
                                                 style={{ width: "100%", backgroundColor: "green", color: "white" }}
-                                                onClick={(event) => {props.openConfirmationBox(event, datacenter.name)} }
+                                                onClick={createRacks}
                                             >
                                                 Create
+                                            </Button>
+                                        </Grid>
+                                        <Grid item xs={4}>
+                                            <Button
+                                                variant="contained"
+                                                color="primary"
+                                                style={{ width: "100%" }}
+                                                onClick={viewRacks}
+                                            >
+                                                View
+                                            </Button>
+                                        </Grid>
+                                        <Grid item xs={4}>
+                                            <Button
+                                                variant="contained"
+                                                color="secondary"
+                                                style={{ width: "100%" }}
+                                                onClick={deleteRacks}
+                                            >
+                                                Delete
                                             </Button>
                                         </Grid>
                                     </Grid>
 
                                     </Paper>
                                 </Grid>
-
-
-                                <Grid item xs={12}>
-                                    <RacksView
-                                        privilege={props.privilege}
-                                        datacenter={datacenter.name}
-                                    />
-                                </Grid>
-
                             </Grid>
-                        </ExpansionPanelDetails>
-                    </ExpansionPanel>
-                ))
-            }</div>
+            }
+            </div>
             );
         }
     } catch (exception) {

@@ -30,16 +30,20 @@ racks = Blueprint(
 LOGGER = Logger()
 
 
-@racks.route("/all", methods=["GET"])
+@racks.route("/all", methods=["POST"])
 @requires_auth(request)
 def get_all_racks():
     """ Get all racks """
 
     returnJSON = createJSON()
+    data: JSON = request.get_json()
 
     try:
+        datacenter_name: str = data[Constants.DC_NAME_KEY]
+        datacenter_id = get_datacenter_id_by_name(datacenter_name)
+
         rack_table: RackTable = RackTable()
-        rack_list: List[Rack] = rack_table.get_all_racks()
+        rack_list: List[Rack] = rack_table.get_rack_by_datacenter(datacenter_id)
 
         returnJSON = addRacksTOJSON(
             addMessageToJSON(returnJSON, "success"),
@@ -47,6 +51,7 @@ def get_all_racks():
         )
         return returnJSON
     except:
+        raise
         return (addMessageToJSON(returnJSON, "Unable to retrieve rack data."),)
 
 

@@ -1,3 +1,4 @@
+import json
 from typing import List
 
 from app.constants import Constants
@@ -72,6 +73,7 @@ def search():
     global MODEL_MANAGER
     global modelsArr
     returnJSON = createJSON()
+    print(json.dumps(request.json, indent=4))
 
     filter = request.json[Constants.FILTER_KEY]
     print("filter")

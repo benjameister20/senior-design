@@ -14,9 +14,6 @@ def log(request, resource, action):
         @wraps(f)
         def wrapped(*args, **kwargs):
             token = request.headers.get(Constants.TOKEN_KEY)
-            print("LOG ACTION")
-            print(resource)
-            print(action)
             username = ""
             try:
                 if action not in [

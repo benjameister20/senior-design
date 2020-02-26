@@ -235,12 +235,14 @@ class ModelsTable extends React.Component {
               {this.props.vals.map((row, index) => (
               <TableRow id={index} hover={true}>
                   { this.props.privilege === Privilege.ADMIN ? <TableCell scope="row" align="center">
-                      <Button>
-                        <EditIcon onClick={() => this.showDetailedView(row)} />
-                      </Button>
-                      <Button>
-                        <DeleteIcon onClick={() => this.showDeleteModal(row)} />
-                      </Button>
+                      <Button
+                        startIcon={<EditIcon />}
+                        onClick={() => this.showDetailedView(row)}
+                        />
+                      <Button
+                        startIcon={<DeleteIcon />}
+                        onClick={() => this.showDeleteModal(row)}
+                        />
                   </TableCell> : null }
                 {this.props.keys.map(key => {
                   if (key === "Display Color") {
@@ -270,9 +272,10 @@ class ModelsTable extends React.Component {
 
                   if (key == "Comment") {
                     return (row["Comment"] !== null && row["Comment"].length > 0 ? <TableCell scope="row" align="center">
-                        <Button>
-                        <CommentIcon onClick={(e) => this.clickComment(e, row["Comment"])} />
-                        </Button>
+                        <Button
+                            startIcon={<CommentIcon />}
+                            onClick={(e) => this.clickComment(e, row["Comment"])}
+                        />
                     </TableCell> : <TableCell scope="row" align="center"></TableCell>);
                   }
 

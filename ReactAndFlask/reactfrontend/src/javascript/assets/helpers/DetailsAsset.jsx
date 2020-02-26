@@ -4,7 +4,6 @@ import axios from 'axios';
 
 import {
     Button,
-    Grid,
     ExpansionPanel,
     ExpansionPanelSummary,
     ExpansionPanelDetails,
@@ -13,6 +12,7 @@ import {
     Toolbar,
     Slide,
     IconButton,
+    Grid
 } from "@material-ui/core/"
 import { withStyles } from '@material-ui/core/styles';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
@@ -34,6 +34,9 @@ const useStyles = theme => ({
         marginLeft: theme.spacing(2),
         flex: 1,
       },
+      button: {
+          marginLeft:theme.spacing(3),
+      }
 });
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -47,6 +50,10 @@ class DetailAsset extends React.Component {
         this.state = {
             networkNodes:null,
         };
+    }
+
+    closeDetailView = () => {
+        this.props.search();
     }
 
     render() {
@@ -78,11 +85,12 @@ class DetailAsset extends React.Component {
                         <EditAsset
                             defaultValues={this.props.asset}
                             disabled={this.props.disabled}
-                            close={this.closeCreate}
+                            close={this.props.close}
 						    getAssetList={this.props.getAssetList}
                         />
                     </ExpansionPanelDetails>
                 </ExpansionPanel>
+                {this.props.asset.hostname !== undefined && this.props.asset.hostname !== "" ?
                 <ExpansionPanel>
                     <ExpansionPanelSummary
                         expandIcon={<ExpandMoreIcon />}
@@ -92,15 +100,14 @@ class DetailAsset extends React.Component {
                         <Typography>Asset Network Management</Typography>
                     </ExpansionPanelSummary>
                     <ExpansionPanelDetails>
-                        {this.props.hostname === "" || !this.state.networkNodes ?
-                        <Typography>This asset is not currently connected to any other assets</Typography> :
-                        <NetworkGraph
-                            vals={this.state.networkNodes}
-                            host={this.props.hostname}
-                        />}
+                                <NetworkGraph
+                                    vals={this.state.networkNodes}
+                                    host={this.props.asset.hostname}
+                                    assetNum={this.props.asset.asset_number}
+                                />
                     </ExpansionPanelDetails>
-                </ExpansionPanel>
-                <ExpansionPanel>
+                </ExpansionPanel>:null}
+                {/*<ExpansionPanel>
                     <ExpansionPanelSummary
                         expandIcon={<ExpandMoreIcon />}
                         aria-controls="panel1a-content"
@@ -110,33 +117,7 @@ class DetailAsset extends React.Component {
                     </ExpansionPanelSummary>
                     <ExpansionPanelDetails>
                     </ExpansionPanelDetails>
-                </ExpansionPanel>
-                <Grid container spacing={3}>
-                    <Grid item xs={2}>
-                        <Button
-                            variant="contained"
-                            color="primary"
-                        >
-                            Save edits
-                        </Button>
-                    </Grid>
-                    <Grid item xs={2}>
-                        <Button
-                            variant="contained"
-                            color="primary"
-                        >
-                            Delete asset
-                        </Button>
-                    </Grid>
-                    <Grid item xs={8}>
-                        <Button
-                            variant="contained"
-                            color="primary"
-                        >
-                            Close without saving
-                        </Button>
-                    </Grid>
-                </Grid>
+                </ExpansionPanel>*/}
             </Dialog>
         </span>
         );

@@ -11,6 +11,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import Grid from '@material-ui/core/Grid';
 import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
+import Alert from '@material-ui/lab/Alert';
 
 
 import * as Constants from "../../Constants";
@@ -40,9 +41,11 @@ class CreateDatacenter extends React.Component {
 
         this.state = {
             showCreate:false,
-
             datacenterName:"",
             datacenterAbbreviation:"",
+            showStatus:false,
+            statusSeverity:"",
+            statusMessage:"",
         };
     }
 
@@ -57,7 +60,8 @@ class CreateDatacenter extends React.Component {
         axios.post(
             getURL(Constants.DATACENTERS_MAIN_PATH, DatacenterCommand.CREATE), this.generateCreateJSON()).then(
             response => {
-                if (response.status === Constants.HTTPS_STATUS_OK) {
+                console.log(response);
+                if (response.data.message === "success") {
                     this.setState({
                         showCreate: false,
                         datacenterName:"",
@@ -65,6 +69,9 @@ class CreateDatacenter extends React.Component {
                     }, () => this.props.search());
                 } else {
                     this.setState({
+                        showStatus:true,
+                        statusSeverity:"error",
+                        statusMessage:response.data.message,
                     })
                 }
             });
@@ -96,6 +103,10 @@ class CreateDatacenter extends React.Component {
             datacenterName:"",
             datacenterAbbreviation:"",
          });
+    }
+
+    closeStatus = () => {
+        this.setState({ showStatus: false, statusSeverity:"", statusMessage:"", });
     }
 
     render() {
@@ -186,6 +197,9 @@ class CreateDatacenter extends React.Component {
                             >
                                 Create Datacenter
                             </Button>
+                            </Grid>
+                            <Grid item xs={12}>
+                                {this.state.showStatus ? <Alert severity="error" onClose={() => { this.closeStatus() }}>{this.state.statusMessage}</Alert> : null}
                             </Grid>
                         </Grid>
                     </div>

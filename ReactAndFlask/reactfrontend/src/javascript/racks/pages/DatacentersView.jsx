@@ -3,7 +3,6 @@ import React from 'react';
 import axios from 'axios';
 
 import { Grid, CircularProgress, Typography, withStyles } from '@material-ui/core/';
-
 import getURL from "../../helpers/functions/GetURL";
 import * as Constants from "../../Constants";
 import { DatacenterCommand } from "../enums/DatacenterCommands.ts";
@@ -73,6 +72,7 @@ class DatacenterView extends React.Component {
     }
 
     getDatacenters = () => {
+        this.setState({ loadingDCList:true });
         axios.get(getURL(Constants.DATACENTERS_MAIN_PATH, DatacenterCommand.GET_ALL_DATACENTERS)).then(
             response => {
                 this.setState({ datacentersList: response.data.datacenters, loadingDCList:false, selectedDatacenter: response.data.datacenters[0] });
@@ -91,8 +91,20 @@ class DatacenterView extends React.Component {
                 console.log("Deleteting");
                 console.log(response);
                 if (response.data.message === "success") {
-                    this.setState({ showConfirmationBox: false });
+                    this.setState({
+                        showConfirmationBox: false,
+                        showStatus:true,
+                        statusMessage:"Successfully deleted datacenter",
+                        statusSeverity:"success",
+                     });
                     this.getDatacenters();
+                } else {
+                    this.setState({
+                        showConfirmationBox: false,
+                        showStatus:true,
+                        statusMessage:response.data.message,
+                        statusSeverity:"error",
+                     });
                 }
 
             }
@@ -253,6 +265,12 @@ class DatacenterView extends React.Component {
                         />
                     </Grid>
                     </Grid>
+                    <StatusDisplay
+                        open={this.state.showStatus}
+                        severity={this.state.statusSeverity}
+                        closeStatus={this.closeShowStatus}
+                        message={this.state.statusMessage}
+                    />
                     <StatusDisplay
                         open={this.state.showStatus}
                         severity={this.state.statusSeverity}

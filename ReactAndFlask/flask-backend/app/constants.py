@@ -32,6 +32,13 @@ class Constants:
     MEMORY_KEY = "memory"
     STORAGE_KEY = "storage"
 
+    # Model CSV Keys
+    CSV_ETHERNET_PORT_KEY = "network_ports"
+    CSV_NETWORK_PORT_1 = "network_port_name_1"
+    CSV_NETWORK_PORT_2 = "network_port_name_2"
+    CSV_NETWORK_PORT_3 = "network_port_name_3"
+    CSV_NETWORK_PORT_4 = "network_port_name_4"
+
     VENDOR_ORIG_KEY = "vendorOriginal"
     MODEL_NUMBER_ORIG_KEY = "model_numberOriginal"
     HEIGHT_ORIG_KEY = "heightOriginal"
@@ -43,11 +50,16 @@ class Constants:
     RACK_POSITION_KEY = "rack_position"
     OWNER_KEY = "owner"
     MAC_ADDRESS_KEY = "mac_address"
+    CONNECTION_HOSTNAME = "connection_hostname"
+    CONNECTION_PORT = "connection_port"
     NETWORK_CONNECTIONS_KEY = "network_connections"
     POWER_CONNECTIONS_KEY = "power_connections"
     ASSET_NUMBER_KEY = "asset_number"
 
     ASSET_NUMBER_ORIG_KEY = "asset_numberOriginal"
+
+    CSV_POWER_PORT_1 = "power_port_connection_1"
+    CSV_POWER_PORT_2 = "power_port_connection_2"
 
     # Rack Keys
     START_LETTER_KEY = "start_letter"
@@ -62,3 +74,12 @@ class Constants:
     DC_ID_KEY = "datacenter_id"
 
     NAME_ORIG_KEY = "nameOriginal"
+
+    CSV_DC_NAME_KEY = "datacenter"
+
+    # Connection CSV KEYS
+    CSV_SRC_HOST = "src_hostname"
+    CSV_SRC_PORT = "src_port"
+    CSV_SRC_MAC = "src_mac"
+    CSV_DEST_HOST = "dest_hostname"
+    CSV_DEST_PORT = "dest_port"

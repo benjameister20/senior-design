@@ -1,6 +1,7 @@
 import re
 
 from app.constants import Constants
+from app.dal.datacenter_table import DatacenterTable
 from app.dal.instance_table import InstanceTable
 from app.dal.model_table import ModelTable
 from app.dal.rack_table import RackTable
@@ -13,12 +14,14 @@ class InstanceValidator:
         self.model_table = ModelTable()
         self.rack_table = RackTable()
         self.user_table = UserTable()
+        self.dc_table = DatacenterTable()
         self.rack_height = 42
 
     def create_instance_validation(self, instance):
         rack = self.rack_table.get_rack(instance.rack_label, instance.datacenter_id)
         if rack is None:
-            return f"Rack {instance.rack_label} does not exist. Instances must be created on preexisting racks"
+            dbTable = self.dc_table.get_datacenter_name_by_id(instance.datacenter_id)
+            return f"Rack {instance.rack_label} does not exist in datacenter {dbTable}. Instances must be created on preexisting racks"
 
         for p_connection in instance.power_connections:
             char1 = p_connection[0].upper()

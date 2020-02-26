@@ -436,6 +436,8 @@ def import_instances_csv():
         return {"message": f"{e.message}"}
     except DBWriteException:
         return {"message": "Error writing to database."}
+    except DatacenterDoesNotExistError as e:
+        return {"message": f"The datacenter {e.message} does not exist"}
 
     return {
         "message": "success",

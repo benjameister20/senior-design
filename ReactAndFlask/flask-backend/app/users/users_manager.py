@@ -273,7 +273,7 @@ class UserManager:
         username = request_data.get(Constants.USERNAME_KEY)
         email = request_data.get(Constants.EMAIL_KEY)
         display_name = request_data.get(Constants.DISPLAY_NAME_KEY)
-        privilege = "admin"
+        privilege = "user"
         password = Constants.NETID_PASSWORD.encode("utf-8")
 
         client_id = request_data.get("client_id")

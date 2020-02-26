@@ -296,7 +296,7 @@ def _parse_connection_csv(csv_input) -> Tuple[int, int, int]:
     instance_validator: InstanceValidator = InstanceValidator()
     InstanceManager()
 
-    # Extract header row
+    # Extract header row ----
     try:
         headers: List[str] = next(csv_input)
     except StopIteration:

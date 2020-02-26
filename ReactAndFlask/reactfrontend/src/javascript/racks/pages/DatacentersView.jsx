@@ -217,7 +217,7 @@ class DatacenterView extends React.Component {
                                 Datacenters
                             </Typography>
                         </Grid>
-                        {this.props.privilege === Privilege.ADMIN ? <CreateDatacenter search={this.getDatacenters} selectedDatacenter={this.state.selectedDatacenter} selectDatacenter={this.updateDatacenter} datacenterList={this.state.datacentersList} /> : null }
+                        {!this.props.disabled ? null: <CreateDatacenter disabled={this.props.disabled} search={this.getDatacenters} selectedDatacenter={this.state.selectedDatacenter} selectDatacenter={this.updateDatacenter} datacenterList={this.state.datacentersList} /> }
                         {this.state.loadingDCList ?
                         <div className={classes.progress}><CircularProgress /></div> :
 
@@ -230,7 +230,9 @@ class DatacenterView extends React.Component {
                             editDatacenter={this.openEditDatacenter}
                             selectedDatacenter={this.state.selectedDatacenter}
                             updateRacks={this.updateRacks}
-                        /></Grid>}
+                            disabled={this.props.disabled}
+                            />
+                        </Grid>}
                         <Grid item xs={6}>
                         <EditDatacenter
                             show={this.state.showEditDC}
@@ -260,18 +262,12 @@ class DatacenterView extends React.Component {
                     >
                     <Grid item xs={12}>
                         <RacksView
-                            privilege={this.props.privilege}
+                            disabled={this.props.disabled}
                             datacenter={this.state.selectedDatacenter.name}
                             racks={this.state.racks}
                         />
                     </Grid>
                     </Grid>
-                    <StatusDisplay
-                        open={this.state.showStatus}
-                        severity={this.state.statusSeverity}
-                        closeStatus={this.closeShowStatus}
-                        message={this.state.statusMessage}
-                    />
                     <StatusDisplay
                         open={this.state.showStatus}
                         severity={this.state.statusSeverity}

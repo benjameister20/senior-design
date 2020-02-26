@@ -8,6 +8,7 @@ import Paper from '@material-ui/core/Paper';
 
 import ErrorBoundary from "../../errors/ErrorBoundry";
 import DatacenterView from "./DatacentersView";
+import { Privilege } from '../../enums/privilegeTypes';
 
 const useStyles = theme => ({
 
@@ -27,7 +28,7 @@ class DatacenterManagerView extends React.Component {
         return (
             <React.Fragment>
                 <ErrorBoundary>
-                    <DatacenterView privilege={this.props.privilege} />
+                    <DatacenterView disabled={this.props.privilege!==Privilege.ADMIN} />
                 </ErrorBoundary>
             </React.Fragment>
         );

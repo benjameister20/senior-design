@@ -217,7 +217,7 @@ class DatacenterView extends React.Component {
                                 Datacenters
                             </Typography>
                         </Grid>
-                        {!this.props.disabled ? null: <CreateDatacenter disabled={this.props.disabled} search={this.getDatacenters} selectedDatacenter={this.state.selectedDatacenter} selectDatacenter={this.updateDatacenter} datacenterList={this.state.datacentersList} /> }
+                        <CreateDatacenter disabled={this.props.disabled} search={this.getDatacenters} selectedDatacenter={this.state.selectedDatacenter} selectDatacenter={this.updateDatacenter} datacenterList={this.state.datacentersList} />
                         {this.state.loadingDCList ?
                         <div className={classes.progress}><CircularProgress /></div> :
 

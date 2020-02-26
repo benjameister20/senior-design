@@ -63,6 +63,7 @@ class DatacenterView extends React.Component {
             editDCName:"",
             editDCAbbr:"",
             selectedDatacenter: "",
+            fullDatacenter: {},
             racks: {},
         };
     }
@@ -80,7 +81,7 @@ class DatacenterView extends React.Component {
                 console.log(datacenter);
                 var name = datacenter === undefined ? "" : datacenter.name;
                 console.log(name);
-                this.setState({ datacentersList: response.data.datacenters, loadingDCList:false, selectedDatacenter: name });
+                this.setState({ datacentersList: response.data.datacenters, loadingDCList:false, selectedDatacenter: name, fullDatacenter: datacenter });
                 this.getAllRacks(name, true);
             }
         );
@@ -200,7 +201,7 @@ class DatacenterView extends React.Component {
     }
 
     updateDatacenter = (event) => {
-        this.setState({ selectedDatacenter: event.target.value }, this.getAllRacks(event.target.value, true));
+        this.setState({ selectedDatacenter: event.target.value.name, fullDatacenter: event.target.value }, this.getAllRacks(event.target.value.name, true));
     }
 
     render() {
@@ -222,7 +223,7 @@ class DatacenterView extends React.Component {
                                 Datacenters
                             </Typography>
                         </Grid>
-                        <CreateDatacenter disabled={this.props.disabled} search={this.getDatacenters} selectedDatacenter={this.state.selectedDatacenter} selectDatacenter={this.updateDatacenter} datacenterList={this.state.datacentersList} />
+                        <CreateDatacenter disabled={this.props.disabled} search={this.getDatacenters} selectedDatacenter={this.state.selectedDatacenter} dc={this.state.fullDatacenter} selectDatacenter={this.updateDatacenter} datacenterList={this.state.datacentersList} />
                         {this.state.loadingDCList ?
                         <div className={classes.progress}><CircularProgress /></div> :
 
@@ -236,6 +237,7 @@ class DatacenterView extends React.Component {
                             selectedDatacenter={this.state.selectedDatacenter}
                             updateRacks={this.updateRacks}
                             disabled={this.props.disabled}
+                            dc={this.state.fullDatacenter}
                             />
                         </Grid>}
                         <Grid item xs={6}>

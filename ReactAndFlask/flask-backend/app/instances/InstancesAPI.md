@@ -258,7 +258,7 @@ def get_barcode_labels()
 - REST Type: 'post'
 - Authentication Required: yes
 - Roled required: none
--Endpoint: /instances/labelgen
+- Endpoint: /instances/labelgen
 - Arguments:
 ```language=json
 {

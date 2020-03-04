@@ -11,7 +11,9 @@ import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
+
 import '../../../stylesheets/Models.css';
+import PrivilegePicker from "./functions/PrivilegePicker";
 
 export default class CreateModal extends React.Component {
     constructor(props) {
@@ -23,7 +25,16 @@ export default class CreateModal extends React.Component {
             password: "",
             email: "",
             privilege: "",
+            privileges:[],
         };
+    }
+
+    componentDidMount() {
+        this.getPrivileges();
+    }
+
+    getPrivileges() {
+        axios.get();
     }
 
     resetCreate = (success) => {
@@ -70,14 +81,9 @@ export default class CreateModal extends React.Component {
                                     value={this.state.pivilege}
                                     gutterbottom="true"
                                 >
-                                    <InputLabel id="privilege-select">Privilege</InputLabel>
-                                    <Select
-                                        name='privilege'
-                                        id="privilege-select"
-                                        onChange={(e) => this.setState({ privilege: e.target.value })}>
-                                        <MenuItem value="admin">Administrator</MenuItem>
-                                        <MenuItem value="user">User</MenuItem>
-                                    </Select>
+                                    <PrivilegePicker
+                                        privileges={this.state.privileges}
+                                    />
                                 </FormControl>
                             </Grid>
                             <Grid

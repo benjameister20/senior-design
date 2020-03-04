@@ -5,6 +5,7 @@ from app.decorators.auth import requires_auth, requires_role
 from app.decorators.logs import log
 from app.exceptions.InvalidInputsException import InvalidInputsError
 from app.instances.asset_num_generator import AssetNumGenerator
+from app.instances.barcode_generator import BarcodeGenerator
 from app.instances.instance_manager import InstanceManager
 from app.logging.logger import Logger
 from flask import Blueprint, request
@@ -217,6 +218,20 @@ def get_network_neighborhood():
         asset_data = request.get_json()
         returnJSON = INSTANCE_MANAGER.get_network_neighborhood(asset_data)
         return addMessageToJSON(returnJSON, "success")
+    except InvalidInputsError as e:
+        return addMessageToJSON(returnJSON, e.message)
+
+
+@instances.route("/instances/labelgen", methods=["POST"])
+@requires_auth(request)
+def get_barcode_labels():
+    """ Route to get barcode labels for assets"""
+    returnJSON = createJSON()
+
+    try:
+        asset_data = request.get_json()
+        BarcodeGenerator().create_barcode_labels(asset_data)
+
     except InvalidInputsError as e:
         return addMessageToJSON(returnJSON, e.message)
 

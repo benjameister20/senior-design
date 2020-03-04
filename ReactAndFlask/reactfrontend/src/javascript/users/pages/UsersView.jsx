@@ -63,15 +63,6 @@ export default class UsersView extends React.Component {
             // table items
             items:[], //Constants.testUserArray,
 
-            // vals for creating a new user
-            createdUser : {
-                'username':'',
-                'password':'',
-                'display_name':'',
-                'email':'',
-                'privilege':'',
-            },
-
             statusOpen:false,
             statusSeverity:'',
             statusMessage:'',
@@ -119,7 +110,7 @@ export default class UsersView extends React.Component {
         this.searchUsers();
     }
 
-    createUser = (username, password, display_name, email, privilege, completion) => {
+    createUser = (username, password, display_name, email, privileges, completion) => {
         axios.post(
             getURL(usersMainPath, UserCommand.create),
             {
@@ -127,7 +118,7 @@ export default class UsersView extends React.Component {
                 'password': password,
                 'display_name': display_name,
                 'email': email,
-                'privilege': privilege,
+                'privileges': privileges,
             }
             ).then(response => {
                 console.log(response.data.message);
@@ -137,13 +128,6 @@ export default class UsersView extends React.Component {
                         statusOpen: true,
                         statusMessage: "Successfully created user",
                         statusSeverity:"success",
-                        createdUser : {
-                            'username':'',
-                            'password':'',
-                            'display_name':'',
-                            'email':'',
-                            'privilege':'',
-                        },
                         showCreateModal:false,
                     });
                     this.searchUsers();
@@ -307,13 +291,6 @@ export default class UsersView extends React.Component {
 
     closeDetailedView = () => {
         this.setState({ showDetailedView: false })
-    }
-
-    updateUserCreator = (event) => {
-        const newUser = this.state.createdUser;
-        newUser[event.target.name] = event.target.value;
-        this.setState({ createdUser: newUser });
-        this.forceUpdate();
     }
 
     updateUserEdited = (event) => {

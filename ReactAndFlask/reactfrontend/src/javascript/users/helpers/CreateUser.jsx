@@ -1,4 +1,7 @@
 import React from 'react';
+
+import axios from "axios";
+
 import TextField from "@material-ui/core/TextField";
 import Button from '@material-ui/core/Button';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
@@ -14,6 +17,9 @@ import FormControl from '@material-ui/core/FormControl';
 
 import '../../../stylesheets/Models.css';
 import PrivilegePicker from "./functions/PrivilegePicker";
+import { PrivilegeCommand } from "../enums/PrivilegeCommands.ts";
+import * as Contants from "../../Constants";
+import getURL from "../../helpers/functions/GetURL";
 
 export default class CreateModal extends React.Component {
     constructor(props) {
@@ -25,7 +31,10 @@ export default class CreateModal extends React.Component {
             password: "",
             email: "",
             privilege: "",
+
             privileges:[],
+            loadingPrivileges:true,
+            selectedPrivileges:[],
         };
     }
 
@@ -34,7 +43,14 @@ export default class CreateModal extends React.Component {
     }
 
     getPrivileges() {
-        axios.get();
+        axios.get(getURL(Contants.PERMISSIONS_MAIN_PATH, PrivilegeCommand.GET_PRIVILEGES)).then(
+            response => {
+                this.setState({
+                    privileges: response.data.privileges,
+                    loadingPrivileges:false,
+                 });
+            }
+        );
     }
 
     resetCreate = (success) => {
@@ -44,7 +60,25 @@ export default class CreateModal extends React.Component {
     }
 
     createModel = () => {
-        this.props.createModel(this.state.username, this.state.password, this.state.display_name, this.state.email, this.state.privilege, this.resetCreate);
+        this.props.createModel(this.state.username, this.state.password, this.state.display_name, this.state.email, this.state.selectedPrivileges, this.resetCreate);
+    }
+
+    updateSelectedPrivileges = (privilege, checked) => {
+        console.log("in props");
+        var selected = [];
+
+        this.state.selectedPrivileges.map(priv => {
+            if (priv !== privilege || (priv === privilege && checked)) {
+                selected.push(priv);
+            }
+        });
+        if (!this.state.selectedPrivileges.includes(privilege) && checked) {
+            selected.push(privilege);
+        }
+        console.log(selected);
+        console.log(privilege);
+        console.log(checked);
+        this.setState({ selectedPrivileges: selected });
     }
 
     render() {
@@ -83,6 +117,8 @@ export default class CreateModal extends React.Component {
                                 >
                                     <PrivilegePicker
                                         privileges={this.state.privileges}
+                                        loading={this.state.loadingPrivileges}
+                                        updatePrivilege={this.updateSelectedPrivileges}
                                     />
                                 </FormControl>
                             </Grid>

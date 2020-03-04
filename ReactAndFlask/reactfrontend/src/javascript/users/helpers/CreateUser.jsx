@@ -17,8 +17,7 @@ import FormControl from '@material-ui/core/FormControl';
 
 import '../../../stylesheets/Models.css';
 import PrivilegePicker from "./functions/PrivilegePicker";
-import { PrivilegeCommand } from "../enums/PrivilegeCommands.ts";
-import * as Contants from "../../Constants";
+
 import getURL from "../../helpers/functions/GetURL";
 
 export default class CreateModal extends React.Component {
@@ -31,26 +30,8 @@ export default class CreateModal extends React.Component {
             password: "",
             email: "",
             privilege: "",
-
-            privileges:[],
-            loadingPrivileges:true,
             selectedPrivileges:[],
         };
-    }
-
-    componentDidMount() {
-        this.getPrivileges();
-    }
-
-    getPrivileges() {
-        axios.get(getURL(Contants.PERMISSIONS_MAIN_PATH, PrivilegeCommand.GET_PRIVILEGES)).then(
-            response => {
-                this.setState({
-                    privileges: response.data.privileges,
-                    loadingPrivileges:false,
-                 });
-            }
-        );
     }
 
     resetCreate = (success) => {
@@ -64,7 +45,6 @@ export default class CreateModal extends React.Component {
     }
 
     updateSelectedPrivileges = (privilege, checked) => {
-        console.log("in props");
         var selected = [];
 
         this.state.selectedPrivileges.map(priv => {
@@ -75,9 +55,6 @@ export default class CreateModal extends React.Component {
         if (!this.state.selectedPrivileges.includes(privilege) && checked) {
             selected.push(privilege);
         }
-        console.log(selected);
-        console.log(privilege);
-        console.log(checked);
         this.setState({ selectedPrivileges: selected });
     }
 
@@ -116,8 +93,8 @@ export default class CreateModal extends React.Component {
                                     gutterbottom="true"
                                 >
                                     <PrivilegePicker
-                                        privileges={this.state.privileges}
-                                        loading={this.state.loadingPrivileges}
+                                        privileges={this.props.privileges}
+                                        loading={this.props.loading}
                                         updatePrivilege={this.updateSelectedPrivileges}
                                     />
                                 </FormControl>

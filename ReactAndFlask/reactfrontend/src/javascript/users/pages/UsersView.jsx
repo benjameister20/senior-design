@@ -17,6 +17,8 @@ import { Privilege } from '../../enums/privilegeTypes.ts'
 import { Typography } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
 import * as UserConstants from "../UserConstants";
+import { PrivilegeCommand } from "../enums/PrivilegeCommands.ts";
+import * as Contants from "../../Constants";
 
 const inputs = [
     'username',
@@ -99,6 +101,9 @@ export default class UsersView extends React.Component {
             originalUsername:'',
 
             initialized:false,
+
+            allPrivileges:[],
+            loadingPrivileges:true,
         };
 
         axios.defaults.headers.common['token'] = this.props.token;
@@ -108,6 +113,7 @@ export default class UsersView extends React.Component {
 
     componentDidMount() {
         this.searchUsers();
+        this.getPrivileges();
     }
 
     createUser = (username, password, display_name, email, privileges, completion) => {
@@ -138,7 +144,7 @@ export default class UsersView extends React.Component {
             });
     }
 
-    editUser = () => {
+    editUser = (privileges) => {
         axios.post(
             getURL(usersMainPath, UserCommand.edit),
             {
@@ -146,7 +152,7 @@ export default class UsersView extends React.Component {
                 'username':this.state.detailedValues[UserInput.Username],
                 'display_name':this.state.detailedValues[UserInput.display_name],
                 'email':this.state.detailedValues[UserInput.Email],
-                'privilege':this.state.detailedValues[UserInput.Privilege],
+                'privileges':privileges,
             }
             ).then(response => {
                 if (response.data.message.includes("Success") || response.data.message.includes("Successfully")) {
@@ -245,6 +251,29 @@ export default class UsersView extends React.Component {
             });
 
         this.setState({ initialized: true})
+    }
+
+    getPrivileges = () => {
+        axios.get(getURL(Contants.PERMISSIONS_MAIN_PATH, PrivilegeCommand.GET_PRIVILEGES)).then(
+            response => {
+                // this.setState({
+                //     allPrivileges: response.data.privileges,
+                //     loadingPrivileges:false,
+                //  });
+            }
+        );
+
+        this.setState({
+            allPrivileges: [
+                "admin",
+                "model",
+                "asset",
+                "audit",
+                "datacenter",
+                "all",
+            ],
+            loadingPrivileges:false,
+        })
     }
 
     search = (filters) => {
@@ -356,6 +385,8 @@ export default class UsersView extends React.Component {
                                 inputs={inputs}
                                 options={[]}
                                 useAutocomplete={false}
+                                loading={this.state.loadingPrivileges}
+                                privileges={this.state.allPrivileges}
                             />
                         </div>) : null}
                     </Grid>
@@ -377,6 +408,8 @@ export default class UsersView extends React.Component {
                             delete={this.deleteUser}
                             save={this.editUser}
                             editUser={this.updateEditUser}
+                            loading={this.state.loadingPrivileges}
+                            privileges={this.state.allPrivileges}
                         />
                     </Grid>
                     <Grid item xs={12}>

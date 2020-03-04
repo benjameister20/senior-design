@@ -20,6 +20,8 @@ import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
 import { withStyles } from '@material-ui/core/styles';
 
+import PrivilegePicker from "./functions/PrivilegePicker";
+
 const useStyles = theme => ({
   root: {
     flexGrow: 1,
@@ -53,7 +55,10 @@ class UsersTable extends React.Component {
     this.state = {
         canEdit: false,
         showDeleteModal: false,
-        username: '',
+		username: '',
+
+		privileges:[],
+		selectedPrivileges:[],
     };
   }
 
@@ -68,7 +73,7 @@ class UsersTable extends React.Component {
 
   endEditing = () => {
     this.setState({ canEdit: false });
-    this.props.save();
+    this.props.save(this.state.selectedPrivileges);
   }
 
   showDeleteModal = (row) => {
@@ -87,6 +92,20 @@ class UsersTable extends React.Component {
   changePrivilege = (event, row) => {
     this.props.editUser(row["Username"], row["Display Name"], row["Email"], event.target.value);
   }
+
+  updateSelectedPrivileges = (privilege, checked) => {
+	var selected = [];
+
+	this.state.selectedPrivileges.map(priv => {
+		if (priv !== privilege || (priv === privilege && checked)) {
+			selected.push(priv);
+		}
+	});
+	if (!this.state.selectedPrivileges.includes(privilege) && checked) {
+		selected.push(privilege);
+	}
+	this.setState({ selectedPrivileges: selected });
+}
 
   render() {
     const { classes } = this.props;
@@ -114,14 +133,11 @@ class UsersTable extends React.Component {
                 {this.props.keys.map(key => {
                     if (key === "Privilege") {
                     return (this.state.canEdit && row["Username"] !== "admin" ? <TableCell scope="row" align="center">
-                        <Select
-                            id="privilege-select"
-                            defaultValue={row[key]}
-                            onChange={(e) => { this.changePrivilege(e, row) }}
-                        >
-                            <MenuItem value="admin">Administrator</MenuItem>
-                            <MenuItem value="user">User</MenuItem>
-                        </Select>
+                        <PrivilegePicker
+							privileges={this.props.privileges}
+							loading={this.props.loading}
+							updatePrivilege={(event) => this.updateSelectedPrivileges(event)}
+						/>
                     </TableCell> : <TableCell scope="row" align="center">{row[key] === 'admin' ? 'Administrator' : 'User'}</TableCell>);
                     }
 
@@ -158,7 +174,7 @@ class UsersTable extends React.Component {
                             </Grid>
                             <Grid item xs={12} sm={12} md={6} lg={6}>
                                 <Typography variant="body1">
-                                    Doing this will remove the model permanently.
+                                    Doing this will remove the user permanently.
                                 </Typography>
                             </Grid>
 

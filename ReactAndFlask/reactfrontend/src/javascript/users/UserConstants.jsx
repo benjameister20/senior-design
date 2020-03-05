@@ -10,3 +10,6 @@ export const USER_CREATION_FAILURE_MESSAGE = "Failed to create user";
 
 export const USER_EDIT_SUCCESS_MESSAGE = "Successfully updated user";
 export const USER_EDIT_FAILURE_MESSAGE = "Failed to update user";
+
+export const USER_DELETE_SUCCESS_MESSAGE = "Successfully deleted user";
+export const USER_DELETE_FAILURE_MESSAGE = "Failed to delete user";

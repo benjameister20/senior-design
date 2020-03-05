@@ -14,6 +14,7 @@ import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
+import Card from '@material-ui/core/Card';
 
 import '../../../stylesheets/Models.css';
 import PrivilegePicker from "./functions/PrivilegePicker";
@@ -60,69 +61,57 @@ export default class CreateModal extends React.Component {
 
     render() {
         return (
-            <ExpansionPanel>
-                    <ExpansionPanelSummary
-                        expandIcon={<ExpandMoreIcon />}
+        <Card elevation={3} padding>
+            <Typography variant="h6">Create</Typography>
+            <Grid
+                container
+                spacing={1}
+                direction="row"
+                justify="flex-start"
+                alignItems="center"
+            >
+                <Grid item xs={6}>
+                    <TextField id="standard-basic" variant="outlined" label="Username" name="username" value={this.state.username} onChange={(e) => this.setState({ username: e.target.value })}/>
+                </Grid>
+                <Grid item xs={6}>
+                    <TextField id="standard-basic" variant="outlined" label="Display Name" name="display_name" value={this.state.display_name} onChange={(e) => this.setState({ display_name: e.target.value })}/>
+                </Grid>
+                <Grid item xs={6}>
+                    <TextField id="standard-basic" variant="outlined" label="Password" name="password" type="password" value={this.state.password} onChange={(e) => this.setState({ password: e.target.value })}/>
+                </Grid>
+                <Grid item xs={6}>
+                    <TextField id="standard-basic" variant="outlined" label="Email" name="email" type="email" value={this.state.email} onChange={(e) => this.setState({ email: e.target.value })}/>
+                </Grid>
+                <Grid item xs={12}>
+                    <PrivilegePicker
+                        dcPrivileges={this.props.privileges}
+                        loading={this.props.loading}
+                        updatePrivilege={this.updateSelectedPrivileges}
+                    />
+                </Grid>
+                <Grid
+                    container
+                    item
+                    direction="column"
+                    justify="center"
+                    alignItems="center"
+                    xs={12}
+                >
+                    <Button
+                        variant="contained"
+                        onClick={this.createModel}
+                        style={{
+                            "width": "100%",
+                            "marginTop": "20px",
+                            "backgroundColor": "green",
+                            "color": "white"
+                        }}
                     >
-                        <Typography>Create</Typography>
-                    </ExpansionPanelSummary>
-                    <ExpansionPanelDetails>
-                        <Grid
-                            container
-                            spacing={1}
-                            direction="row"
-                            justify="flex-start"
-                            alignItems="center"
-                        >
-                            <Grid item xs={6}>
-                                <TextField id="standard-basic" variant="outlined" label="Username" name="username" value={this.state.username} onChange={(e) => this.setState({ username: e.target.value })}/>
-                            </Grid>
-                            <Grid item xs={6}>
-                                <TextField id="standard-basic" variant="outlined" label="Display Name" name="display_name" value={this.state.display_name} onChange={(e) => this.setState({ display_name: e.target.value })}/>
-                            </Grid>
-                            <Grid item xs={6}>
-                                <TextField id="standard-basic" variant="outlined" label="Password" name="password" type="password" value={this.state.password} onChange={(e) => this.setState({ password: e.target.value })}/>
-                            </Grid>
-                            <Grid item xs={6}>
-                                <TextField id="standard-basic" variant="outlined" label="Email" name="email" type="email" value={this.state.email} onChange={(e) => this.setState({ email: e.target.value })}/>
-                            </Grid>
-                            <Grid item xs={6}>
-                                <FormControl
-                                    style={{"minWidth": "200px"}}
-                                    value={this.state.pivilege}
-                                    gutterbottom="true"
-                                >
-                                    <PrivilegePicker
-                                        privileges={this.props.privileges}
-                                        loading={this.props.loading}
-                                        updatePrivilege={this.updateSelectedPrivileges}
-                                    />
-                                </FormControl>
-                            </Grid>
-                            <Grid
-                                container
-                                item
-                                direction="column"
-                                justify="center"
-                                alignItems="center"
-                                xs={12}
-                            >
-                                <Button
-                                    variant="contained"
-                                    onClick={this.createModel}
-                                    style={{
-                                        "width": "100%",
-                                        "marginTop": "20px",
-                                        "backgroundColor": "green",
-                                        "color": "white"
-                                    }}
-                                >
-                                    Create
-                                </Button>
-                            </Grid>
-                        </Grid>
-                    </ExpansionPanelDetails>
-                </ExpansionPanel>
+                        Create
+                    </Button>
+                </Grid>
+            </Grid>
+        </Card>
         );
     }
 }

@@ -6,6 +6,8 @@ import ListSubheader from '@material-ui/core/ListSubheader';
 import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import Autocomplete from '@material-ui/lab/Autocomplete';
+import TextField from "@material-ui/core/TextField";
 import { Typography } from "@material-ui/core";
 
 export default function PrivilegePicker(props) {
@@ -18,10 +20,44 @@ export default function PrivilegePicker(props) {
 		props.updatePrivilege(name, event.target.checked);
 	  };
 
+	const generalPrivileges=[
+		"Model",
+		"Audit",
+		"Power",
+		"Admin",
+	]
+
 	return (
 		<span>
 			<Typography>Privileges</Typography>
-			<List
+			<Autocomplete
+				multiple
+				id="tags-standard"
+				options={generalPrivileges}
+				renderInput={params => (
+				<TextField
+					{...params}
+					variant="standard"
+					label="General Privileges"
+					fullWidth
+				/>
+				)}
+			/>
+			{props.loading ? <CircularProgress /> :
+			<Autocomplete
+				multiple
+				id="tags-standard"
+				options={props.dcPrivileges}
+				renderInput={params => (
+				<TextField
+					{...params}
+					variant="standard"
+					label="Datacenter Asset Privileges"
+					fullWidth
+				/>
+				)}
+			/>}
+			{/* <List
 				style={{
 					maxHeight: "100px",
 					overflow: "auto",
@@ -39,7 +75,7 @@ export default function PrivilegePicker(props) {
 					</ListItem>
 					);
 				})}
-			</List>
+			</List> */}
 		</span>
 	)
 

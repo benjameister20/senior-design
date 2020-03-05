@@ -18,7 +18,9 @@ import { Typography } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
 import * as UserConstants from "../UserConstants";
 import { PrivilegeCommand } from "../enums/PrivilegeCommands.ts";
-import * as Contants from "../../Constants";
+import * as Constants from "../../Constants";
+import makeCreateJSON from "../helpers/functions/MakeCreateJSON";
+import makeEditJSON from "../helpers/functions/MakeEditJSON";
 
 const inputs = [
     'username',
@@ -50,65 +52,28 @@ const columnLookup = {
     'privilege': 'Privilege'
 }
 
-const usersMainPath = 'users/';
-
 export default class UsersView extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
-
-            // modals
-            showCreateModal:false,
-            showImportModal:false,
-
-            // table items
-            items:[], //Constants.testUserArray,
-
+            items:[],
             statusOpen:false,
             statusSeverity:'',
             statusMessage:'',
-            detailStatusOpen:false,
-            detailStatusSeverity:'',
-            detailStatusMessage:'',
-            createStatusOpen:false,
-            createStatusSeverity:'',
-            createStatusMessage:'',
-
             searchUsernm:'',
             searchEml:'',
             searchDspNm:'',
             searchPriv:'',
-
-            // vals for deleting a user
             deleteUsername:'',
-
-            // vals for viewing a user
             viewUser:'',
-
-            // csv data
             csvData:[],
-
-            // detailed view
             showDetailedView: false,
             detailViewLoading:false,
-            detailedValues : {
-                'username':'',
-                'display_name':'',
-                'email':'',
-                'privilege':'',
-            },
             originalUsername:'',
-
-            initialized:false,
-
-            allPrivileges:[],
+            allDCPrivileges:[],
             loadingPrivileges:true,
         };
-
-        axios.defaults.headers.common['token'] = this.props.token;
-        axios.defaults.headers.common['privilege'] = this.props.privilege;
-
     }
 
     componentDidMount() {
@@ -118,70 +83,43 @@ export default class UsersView extends React.Component {
 
     createUser = (username, password, display_name, email, privileges, completion) => {
         axios.post(
-            getURL(usersMainPath, UserCommand.create),
-            {
-                'username': username,
-                'password': password,
-                'display_name': display_name,
-                'email': email,
-                'privileges': privileges,
-            }
+            getURL(Constants.USERS_MAIN_PATH, UserCommand.create),
+            makeCreateJSON(username, password, display_name, email, privileges)
             ).then(response => {
-                console.log(response.data.message);
-                if (response.data.message === 'Successfully created user') {
+                if (response.data.message === UserConstants.USER_SUCCESS_TOKEN) {
                     completion(true);
-                    this.setState({
-                        statusOpen: true,
-                        statusMessage: "Successfully created user",
-                        statusSeverity:"success",
-                        showCreateModal:false,
-                    });
+                    this.setDisplayStatus(true, UserConstants.USER_CREATION_SUCCESS_MESSAGE, UserConstants.USER_SUCCESS_TOKEN);
                     this.searchUsers();
                 } else {
                     completion(false);
-                    this.setState({ statusOpen: true, statusMessage: response.data.message, statusSeverity:"error" })
+                    this.setDisplayStatus(true, UserConstants.USER_CREATION_FAILURE_MESSAGE, UserConstants.USER_FAILURE_TOKEN)
                 }
             });
     }
 
     editUser = (privileges) => {
         axios.post(
-            getURL(usersMainPath, UserCommand.edit),
-            {
-                'username_original':this.state.originalUsername,
-                'username':this.state.detailedValues[UserInput.Username],
-                'display_name':this.state.detailedValues[UserInput.display_name],
-                'email':this.state.detailedValues[UserInput.Email],
-                'privileges':privileges,
-            }
+            getURL(Constants.USERS_MAIN_PATH, UserCommand.edit),
+            makeEditJSON(this.state.originalUsername,
+                this.state.detailedValues[UserInput.Username],
+                this.state.detailedValues[UserInput.display_name],
+                this.state.detailedValues[UserInput.Email],
+                privileges
+            )
             ).then(response => {
-                if (response.data.message.includes("Success") || response.data.message.includes("Successfully")) {
-                    this.setState({
-                        detailStatusOpen: true,
-                        detailStatusMessage: "Successfully edited user",
-                        detailStatusSeverity:"success",
-                        originalUsername:'',
-                        detailedValues : {
-                            'username':'',
-                            'display_name':'',
-                            'email':'',
-                            'privilege':'',
-                        },
-                        showDetailedView:false,
-                    });
+                if (response.data.message === "success") {
+                    this.setDisplayStatus(true, UserConstants.USER_EDIT_SUCCESS_MESSAGE, UserConstants.USER_SUCCESS_TOKEN);
                     this.searchUsers();
                 } else {
-                    this.setState({ detailStatusOpen: true, detailStatusMessage: response.data.message, detailStatusSeverity:"error" })
+                    this.setDisplayStatus(true, UserConstants.USER_EDIT_FAILURE_MESSAGE, UserConstants.USER_FAILURE_TOKEN);
                 }
-            }).catch(
-                this.setState({ detailStatusOpen: true, detailStatusMessage: UserConstants.GENERAL_USER_ERROR, detailStatusSeverity:"error" })
-            );
+            });
     }
 
     deleteUser = (username) => {
         console.log(username);
         axios.post(
-            getURL(usersMainPath, UserCommand.delete),
+            getURL(Constants.USERS_MAIN_PATH, UserCommand.delete),
             {
                 'username': username,
             }
@@ -206,7 +144,7 @@ export default class UsersView extends React.Component {
 
     detailViewUser = (username) => {
         axios.post(
-            getURL(usersMainPath, UserCommand.detailView),
+            getURL(Constants.USERS_MAIN_PATH, UserCommand.detailView),
             {
                 'username':username,
             }
@@ -223,7 +161,7 @@ export default class UsersView extends React.Component {
     searchUsers = () => {
         console.log("searching");
         axios.post(
-            getURL(usersMainPath, UserCommand.search),
+            getURL(Constants.USERS_MAIN_PATH, UserCommand.search),
             {
                 'filter':{
                     'username': this.state.searchUsernm,
@@ -254,26 +192,14 @@ export default class UsersView extends React.Component {
     }
 
     getPrivileges = () => {
-        axios.get(getURL(Contants.PERMISSIONS_MAIN_PATH, PrivilegeCommand.GET_PRIVILEGES)).then(
+        axios.get(getURL(Constants.PERMISSIONS_MAIN_PATH, PrivilegeCommand.GET_PRIVILEGES)).then(
             response => {
-                // this.setState({
-                //     allPrivileges: response.data.privileges,
-                //     loadingPrivileges:false,
-                //  });
+                this.setState({
+                    allDCPrivileges: response.data.privileges.Datacenters,
+                    loadingPrivileges:false,
+                 });
             }
         );
-
-        this.setState({
-            allPrivileges: [
-                "admin",
-                "model",
-                "asset",
-                "audit",
-                "datacenter",
-                "all",
-            ],
-            loadingPrivileges:false,
-        })
     }
 
     search = (filters) => {
@@ -283,6 +209,10 @@ export default class UsersView extends React.Component {
             searchDspNm: filters['display_name'],
             searchPriv:filters['privilege'],
         }, this.searchUsers);
+    }
+
+    setDisplayStatus = (open, message, severity) => {
+        this.setState({ statusOpen:open, statusMessage:message, statusSeverity:severity });
     }
 
     downloadTable = () => {
@@ -374,7 +304,7 @@ export default class UsersView extends React.Component {
                             Users
                         </Typography>
                     </Grid>
-                    <Grid item xs={12} sm={6} md={4} lg={3}>
+                    <Grid item xs={12} sm={6} md={4} lg={6}>
                         {(this.props.privilege === Privilege.ADMIN) ?
                         (<div>
                             <CreateUser
@@ -386,15 +316,17 @@ export default class UsersView extends React.Component {
                                 options={[]}
                                 useAutocomplete={false}
                                 loading={this.state.loadingPrivileges}
-                                privileges={this.state.allPrivileges}
+                                privileges={this.state.allDCPrivileges}
                             />
                         </div>) : null}
                     </Grid>
-                    <Grid item xs={12} sm={6} md={4} lg={3}>
+                    <Grid item xs={12} sm={6} md={4} lg={6}>
                         <FilterUser
                             updateSearchText={this.updateSearchText}
                             search={this.search}
                             filters={columns}
+                            loading={this.state.loadingPrivileges}
+                            privileges={this.state.allDCPrivileges}
                         />
                     </Grid>
                     <Grid item xs={12}>
@@ -410,19 +342,6 @@ export default class UsersView extends React.Component {
                             editUser={this.updateEditUser}
                             loading={this.state.loadingPrivileges}
                             privileges={this.state.allPrivileges}
-                        />
-                    </Grid>
-                    <Grid item xs={12}>
-                        <DetailUser
-                            showDetailedView={this.state.showDetailedView}
-                            closeDetailedView={this.closeDetailedView}
-                            inputs={columns}
-                            updateModelEdited={this.updateUserEdited}
-                            defaultValues={this.state.detailedValues}
-                            loading={this.state.detailViewLoading}
-                            edit={this.editUser}
-                            delete={this.deleteUser}
-                            disabled={this.props.privilege === Privilege.USER}
                         />
                     </Grid>
                 </Grid>

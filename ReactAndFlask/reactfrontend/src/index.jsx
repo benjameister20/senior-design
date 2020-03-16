@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './stylesheets/index.css';
-import PageSelector from './javascript/PageSelector';
+import App from "./App";
 
-ReactDOM.render(<PageSelector redirected={document.referrer}/>, document.getElementById('root'));
+ReactDOM.render(<App />, document.getElementById('root'));

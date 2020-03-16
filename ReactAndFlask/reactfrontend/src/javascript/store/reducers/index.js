@@ -2,6 +2,8 @@ import {
 	combineReducers
 } from "redux";
 
+import usersReducer from "./users/usersReducer";
+
 const rootReducer = combineReducers({
 	/**
 	 * add all reducers here in form
@@ -9,6 +11,7 @@ const rootReducer = combineReducers({
 	 * reducer2,
 	 * ...
 	 */
+	usersReducer,
 })
 
 export default rootReducer;

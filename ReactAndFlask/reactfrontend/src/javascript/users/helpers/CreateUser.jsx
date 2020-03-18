@@ -1,27 +1,29 @@
 import React from 'react';
+import { connect } from "react-redux"
+import PropTypes from "prop-types";
 
 import axios from "axios";
 
-import TextField from "@material-ui/core/TextField";
-import Button from '@material-ui/core/Button';
-import ExpansionPanel from '@material-ui/core/ExpansionPanel';
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
-import Typography from '@material-ui/core/Typography';
+import {
+    TextField,
+    Button,
+    ExpansionPanel,
+    ExpansionPanelSummary,
+    ExpansionPanelDetails,
+    Typography,
+    Grid,
+    Select,
+    MenuItem,
+    InputLabel,
+    FormControl,
+    Card,
+} from "@material-ui/core/";
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import Grid from '@material-ui/core/Grid';
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
-import InputLabel from '@material-ui/core/InputLabel';
-import FormControl from '@material-ui/core/FormControl';
-import Card from '@material-ui/core/Card';
 
-import '../../../stylesheets/Models.css';
 import PrivilegePicker from "./functions/PrivilegePicker";
+import { createUser } from "../../store/actions/users/userActions";
 
-import getURL from "../../helpers/functions/GetURL";
-
-export default class CreateModal extends React.Component {
+class CreateModal extends React.Component {
     constructor(props) {
         super(props);
 
@@ -42,7 +44,7 @@ export default class CreateModal extends React.Component {
     }
 
     createModel = () => {
-        this.props.createModel(this.state.username, this.state.password, this.state.display_name, this.state.email, this.state.selectedPrivileges, this.resetCreate);
+        this.props.createModel(this.state.username, this.state.password, this.state.display_name, this.state.email, this.state.selectedPrivileges);
     }
 
     updateSelectedPrivileges = (privilege, checked) => {
@@ -115,3 +117,10 @@ export default class CreateModal extends React.Component {
         );
     }
 }
+
+
+CreateModal.propTypes = {
+	createUser: PropTypes.func.isRequired,
+}
+
+export default connect(null, { createUser })(CreateModal);

@@ -5,8 +5,10 @@ import getURL from "../../../helpers/functions/GetURL";
 import makeCreateJSON from "../../../users/helpers/functions/MakeCreateJSON";
 import makeDeleteJSON from "../../../users/helpers/functions/MakeDeleteJSON";
 import makeEditJSON from "../../../users/helpers/functions/MakeEditJSON";
+import makeDetailViewJSON from "../../../users/helpers/functions/MakeDetailViewJSON";
 import * as Constants from "../../../Constants";
-import { PrivilegeCommand } from "../../../enums/privilegeTypes";
+import { PrivilegeCommand } from "../../../users/enums/PrivilegeCommands.ts";
+import { UserCommand } from "../../../users/enums/UserCommands.ts";
 
 export const getPrivileges = () => dispatch => {
 	axios.get(getURL(Constants.PERMISSIONS_MAIN_PATH, PrivilegeCommand.GET_PRIVILEGES)).then(
@@ -87,7 +89,7 @@ export const updateUserEdited = (event) => dispatch => {
 	});
 }
 
-export const closeShowStatus = () => {
+export const closeShowStatus = () => dispatch => {
 	dispatch({
 		type: UserActionTypes.CLOSE_SHOW_STATUS,
 		payload: false,

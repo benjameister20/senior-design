@@ -1,39 +1,14 @@
 import React from 'react';
 import { connect } from "react-redux"
 
-import FilterUser from '../helpers/FilterUser';
-import CreateUser from '../helpers/CreateUser';
-
-import UsersTable from '../helpers/UsersTable';
-import StatusDisplay from '../../helpers/StatusDisplay';
-
-import { Privilege } from '../../enums/privilegeTypes.ts'
-
 import { Typography } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
 
-const inputs = [
-    'username',
-    'email',
-    'display_name',
-    'privilege',
-    'password',
-]
-
-const columns = [
-    'Username',
-    'Email',
-    'Display Name',
-    'Privilege',
-]
-
-const adminColumns = [
-    'Actions',
-    'Username',
-    'Email',
-    'Display Name',
-    'Privilege'
-]
+import FilterUser from '../helpers/FilterUser';
+import CreateUser from '../helpers/CreateUser';
+import UsersTable from '../helpers/UsersTable';
+import StatusDisplay from '../../helpers/StatusDisplay';
+import { Privilege } from '../../enums/privilegeTypes.ts'
 
 class UsersView extends React.Component {
     constructor(props) {
@@ -46,7 +21,6 @@ class UsersView extends React.Component {
     render() {
         return (
             <div>
-                <StatusDisplay />
                 <Grid
                     container
                     spacing={5}
@@ -65,12 +39,13 @@ class UsersView extends React.Component {
                         </div>) : null}
                     </Grid>
                     <Grid item xs={12} sm={6} md={4} lg={6}>
-                        <FilterUser />
+                        {/*<FilterUser />
                     </Grid>
                     <Grid item xs={12}>
-                        <UsersTable />
+                        <UsersTable />*/}
                     </Grid>
                 </Grid>
+                <StatusDisplay />
             </div>
         );
     }

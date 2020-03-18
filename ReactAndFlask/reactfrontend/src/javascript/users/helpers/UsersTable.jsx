@@ -48,6 +48,29 @@ const useStyles = theme => ({
     },
 });
 
+const inputs = [
+  'username',
+  'email',
+  'display_name',
+  'privilege',
+  'password',
+]
+
+const columns = [
+  'Username',
+  'Email',
+  'Display Name',
+  'Privilege',
+]
+
+const adminColumns = [
+  'Actions',
+  'Username',
+  'Email',
+  'Display Name',
+  'Privilege'
+]
+
 class UsersTable extends React.Component {
   constructor(props) {
     super(props);

@@ -145,6 +145,7 @@ export default class Login extends React.Component {
             <div>
                 { (this.state.oauth) ? <ShibLogin /> :
                 <Grid
+                    id="login-grid"
                     container
                     spacing={5}
                     direction="column"
@@ -206,6 +207,7 @@ export default class Login extends React.Component {
                                     </Grid>
                                     <Grid item xs={12}>
                                         <Button
+                                            id="sign-in-button"
                                             onClick={this.submitCredentials}
                                             variant="contained"
                                             color="primary"

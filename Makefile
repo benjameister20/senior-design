@@ -62,7 +62,7 @@ users:
 
 .PHONY: test
 test:
-	python -m pytest
+	python -m pytest ReactAndFlask/flask-backend/app -p no:warnings --cov=ReactAndFlask/flask-backend/app --cov-report term-missing:skip-covered
 
 .PHONY: clean
 clean:

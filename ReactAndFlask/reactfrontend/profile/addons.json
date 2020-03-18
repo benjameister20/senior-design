@@ -1,0 +1,42 @@
+{
+  "schema": 6,
+  "addons": [
+    {
+      "id": "cors-everywhere@spenibus",
+      "icons": {
+        "32": "https://addons.cdn.mozilla.net/static/img/addon-icons/default-32.png",
+        "64": "https://addons.cdn.mozilla.net/static/img/addon-icons/default-64.png",
+        "128": "https://addons.cdn.mozilla.net/static/img/addon-icons/default-128.png"
+      },
+      "name": "CORS Everywhere",
+      "version": "18.11.13.2043",
+      "sourceURI": "https://addons.mozilla.org/firefox/downloads/file/1148493/cors_everywhere-18.11.13.2043-fx.xpi?src=",
+      "homepageURL": "http://spenibus.net",
+      "supportURL": "https://github.com/spenibus/cors-everywhere-firefox-addon/",
+      "description": "This is a firefox addon that allows the user to enable CORS everywhere by altering http responses.\n\nIssues must be reported here, with enough information to reproduce the problem:\nhttps://github.com/spenibus/cors-everywhere-firefox-addon/issues",
+      "fullDescription": "CORS Everywhere\n\nThis is a firefox addon that allows the user to enable CORS everywhere by altering http responses.\nFunctionality can be toggled with the included button and is disabled by default.\nThere is an option to enable the addon at startup, but this is not recommended.\n\nIntended for developers. Use at your own risk.\n\nThe full readme at GitHub",
+      "weeklyDownloads": 2411,
+      "type": "extension",
+      "creator": {
+        "name": "spenibus",
+        "url": "https://addons.mozilla.org/en-US/firefox/user/11574788/"
+      },
+      "developers": [],
+      "screenshots": [
+        {
+          "url": "https://addons.cdn.mozilla.net/user-media/previews/full/186/186142.png?modified=1543520510",
+          "width": 270,
+          "height": 90,
+          "thumbnailURL": "https://addons.cdn.mozilla.net/user-media/previews/thumbs/186/186142.png?modified=1543520510",
+          "thumbnailWidth": 270,
+          "thumbnailHeight": 90
+        }
+      ],
+      "contributionURL": "",
+      "averageRating": 4.1739,
+      "reviewCount": 44,
+      "reviewURL": "https://addons.mozilla.org/en-US/firefox/addon/cors-everywhere/reviews/",
+      "updateDate": 1542143107000
+    }
+  ]
+}

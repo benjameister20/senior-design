@@ -73,7 +73,7 @@ class TabViewer extends React.Component {
         const { classes } = this.props;
 
         return (
-        <div className={classes.root}>
+        <div id="homepage" className={classes.root}>
             <ErrorBoundry>
             <AppBar position="static">
                 <Toolbar>

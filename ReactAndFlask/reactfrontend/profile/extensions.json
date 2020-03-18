@@ -1,0 +1,2306 @@
+{
+  "schemaVersion": 31,
+  "addons": [
+    {
+      "id": "doh-rollout@mozilla.org",
+      "syncGUID": "{ff14e285-ba8a-7544-a41f-43adff596f10}",
+      "version": "1.3.0",
+      "type": "extension",
+      "loader": null,
+      "updateURL": null,
+      "optionsURL": null,
+      "optionsType": null,
+      "optionsBrowserStyle": true,
+      "aboutURL": null,
+      "defaultLocale": {
+        "name": "DoH Roll-Out",
+        "description": "Mozilla add-on that supports the roll-out of DoH",
+        "creator": null,
+        "developers": null,
+        "translators": null,
+        "contributors": null
+      },
+      "visible": true,
+      "active": true,
+      "userDisabled": false,
+      "appDisabled": false,
+      "embedderDisabled": false,
+      "installDate": 1579292567000,
+      "updateDate": 1584058702478,
+      "applyBackgroundUpdates": 1,
+      "path": "/Applications/Firefox.app/Contents/Resources/browser/features/doh-rollout@mozilla.org.xpi",
+      "skinnable": false,
+      "sourceURI": null,
+      "releaseNotesURI": null,
+      "softDisabled": false,
+      "foreignInstall": false,
+      "strictCompatibility": true,
+      "locales": [
+        {
+          "name": "DoH Roll-Out",
+          "description": "Mozilla add-on that supports the roll-out of DoH",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "en-US"
+          ]
+        },
+        {
+          "name": "D\u00e9ploiement de DoH",
+          "description": "Module compl\u00e9mentaire de Mozilla pour le d\u00e9ploiement de DoH",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "fr"
+          ]
+        },
+        {
+          "name": "Lancio DoH",
+          "description": "Componente aggiuntivo realizzato da Mozilla per il lancio di DoH",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "it"
+          ]
+        },
+        {
+          "name": "Lanzamiento de DoH",
+          "description": "Complemento de Mozilla para el lanzamiento de DoH",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "es-MX"
+          ]
+        },
+        {
+          "name": "DoH Roll-Out",
+          "description": "Mozilla-Add-On, das die Einf\u00fchrung von DoH unterst\u00fctzt",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "de"
+          ]
+        },
+        {
+          "name": "DoH \u964d\u4e16",
+          "description": "\u9644\u52a0\u7ec4\u4ef6\uff1aMozilla \u4e4b DoH \u964d\u4e16",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "zh-CN"
+          ]
+        },
+        {
+          "name": "\u0420\u0430\u0437\u0432\u0435\u0440\u0442\u044b\u0432\u0430\u043d\u0438\u0435 DoH",
+          "description": "\u0414\u043e\u043f\u043e\u043b\u043d\u0435\u043d\u0438\u0435 Mozilla, \u043f\u043e\u0434\u0434\u0435\u0440\u0436\u0438\u0432\u0430\u044e\u0449\u0435\u0435 \u0440\u0430\u0437\u0432\u0435\u0440\u0442\u044b\u0432\u0430\u043d\u0438\u0435 DoH",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "ru"
+          ]
+        },
+        {
+          "name": "Lanzamiento de DoH",
+          "description": "Complemento de Mozilla para el lanzamiento de DoH",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "es-ES"
+          ]
+        }
+      ],
+      "targetApplications": [
+        {
+          "id": "toolkit@mozilla.org",
+          "minVersion": "72.0a1",
+          "maxVersion": null
+        }
+      ],
+      "targetPlatforms": [],
+      "seen": true,
+      "dependencies": [],
+      "incognito": "spanning",
+      "userPermissions": {
+        "permissions": [
+          "captivePortal",
+          "dns",
+          "storage"
+        ],
+        "origins": []
+      },
+      "icons": {},
+      "iconURL": null,
+      "blocklistState": 0,
+      "blocklistURL": null,
+      "startupData": null,
+      "hidden": true,
+      "installTelemetryInfo": null,
+      "recommendationState": null,
+      "rootURI": "jar:file:///Applications/Firefox.app/Contents/Resources/browser/features/doh-rollout@mozilla.org.xpi!/",
+      "location": "app-system-defaults"
+    },
+    {
+      "id": "formautofill@mozilla.org",
+      "syncGUID": "{2bcf2c7a-c099-314c-b8b4-2d31c689fadc}",
+      "version": "1.0",
+      "type": "extension",
+      "loader": null,
+      "updateURL": null,
+      "optionsURL": null,
+      "optionsType": null,
+      "optionsBrowserStyle": true,
+      "aboutURL": null,
+      "defaultLocale": {
+        "name": "Form Autofill",
+        "creator": null,
+        "developers": null,
+        "translators": null,
+        "contributors": null
+      },
+      "visible": true,
+      "active": true,
+      "userDisabled": false,
+      "appDisabled": false,
+      "embedderDisabled": false,
+      "installDate": 1579292567000,
+      "updateDate": 1584058704614,
+      "applyBackgroundUpdates": 1,
+      "path": "/Applications/Firefox.app/Contents/Resources/browser/features/formautofill@mozilla.org.xpi",
+      "skinnable": false,
+      "sourceURI": null,
+      "releaseNotesURI": null,
+      "softDisabled": false,
+      "foreignInstall": false,
+      "strictCompatibility": true,
+      "locales": [],
+      "targetApplications": [
+        {
+          "id": "toolkit@mozilla.org",
+          "minVersion": null,
+          "maxVersion": null
+        }
+      ],
+      "targetPlatforms": [],
+      "seen": true,
+      "dependencies": [],
+      "incognito": "spanning",
+      "userPermissions": {
+        "permissions": [],
+        "origins": []
+      },
+      "icons": {},
+      "iconURL": null,
+      "blocklistState": 0,
+      "blocklistURL": null,
+      "startupData": null,
+      "hidden": true,
+      "installTelemetryInfo": null,
+      "recommendationState": null,
+      "rootURI": "jar:file:///Applications/Firefox.app/Contents/Resources/browser/features/formautofill@mozilla.org.xpi!/",
+      "location": "app-system-defaults"
+    },
+    {
+      "id": "screenshots@mozilla.org",
+      "syncGUID": "{d381e3df-fe0f-914c-a4d4-840bb6639ce1}",
+      "version": "39.0.0",
+      "type": "extension",
+      "loader": null,
+      "updateURL": null,
+      "optionsURL": null,
+      "optionsType": null,
+      "optionsBrowserStyle": true,
+      "aboutURL": null,
+      "defaultLocale": {
+        "name": "Firefox Screenshots",
+        "description": "Take clips and screenshots from the Web and save them temporarily or permanently.",
+        "creator": "Mozilla <screenshots-feedback@mozilla.com>",
+        "homepageURL": "https://github.com/mozilla-services/screenshots",
+        "developers": null,
+        "translators": null,
+        "contributors": null
+      },
+      "visible": true,
+      "active": true,
+      "userDisabled": false,
+      "appDisabled": false,
+      "embedderDisabled": false,
+      "installDate": 1579292567000,
+      "updateDate": 1584058704612,
+      "applyBackgroundUpdates": 1,
+      "path": "/Applications/Firefox.app/Contents/Resources/browser/features/screenshots@mozilla.org.xpi",
+      "skinnable": false,
+      "sourceURI": null,
+      "releaseNotesURI": null,
+      "softDisabled": false,
+      "foreignInstall": false,
+      "strictCompatibility": true,
+      "locales": [],
+      "targetApplications": [
+        {
+          "id": "toolkit@mozilla.org",
+          "minVersion": "57.0a1",
+          "maxVersion": null
+        }
+      ],
+      "targetPlatforms": [],
+      "seen": true,
+      "dependencies": [],
+      "incognito": "spanning",
+      "userPermissions": {
+        "permissions": [
+          "activeTab",
+          "downloads",
+          "tabs",
+          "storage",
+          "notifications",
+          "clipboardWrite",
+          "contextMenus"
+        ],
+        "origins": [
+          "<all_urls>",
+          "https://screenshots.firefox.com/",
+          "https://screenshots.firefox.com/*"
+        ]
+      },
+      "icons": {
+        "32": "icons/icon-v2.svg"
+      },
+      "iconURL": null,
+      "blocklistState": 0,
+      "blocklistURL": null,
+      "startupData": null,
+      "hidden": true,
+      "installTelemetryInfo": null,
+      "recommendationState": null,
+      "rootURI": "jar:file:///Applications/Firefox.app/Contents/Resources/browser/features/screenshots@mozilla.org.xpi!/",
+      "location": "app-system-defaults"
+    },
+    {
+      "id": "webcompat-reporter@mozilla.org",
+      "syncGUID": "{7bc73abc-3e4b-014c-963b-fa86c1dcb81a}",
+      "version": "1.1.0",
+      "type": "extension",
+      "loader": null,
+      "updateURL": null,
+      "optionsURL": null,
+      "optionsType": null,
+      "optionsBrowserStyle": true,
+      "aboutURL": null,
+      "defaultLocale": {
+        "name": "WebCompat Reporter",
+        "description": "Report site compatibility issues on webcompat.com",
+        "creator": "Thomas Wisniewski <twisniewski@mozilla.com>",
+        "homepageURL": "https://github.com/mozilla/webcompat-reporter",
+        "developers": null,
+        "translators": null,
+        "contributors": null
+      },
+      "visible": true,
+      "active": false,
+      "userDisabled": true,
+      "appDisabled": false,
+      "embedderDisabled": false,
+      "installDate": 1579292567000,
+      "updateDate": 1584058704608,
+      "applyBackgroundUpdates": 1,
+      "path": "/Applications/Firefox.app/Contents/Resources/browser/features/webcompat-reporter@mozilla.org.xpi",
+      "skinnable": false,
+      "sourceURI": null,
+      "releaseNotesURI": null,
+      "softDisabled": false,
+      "foreignInstall": false,
+      "strictCompatibility": true,
+      "locales": [],
+      "targetApplications": [
+        {
+          "id": "toolkit@mozilla.org",
+          "minVersion": null,
+          "maxVersion": null
+        }
+      ],
+      "targetPlatforms": [],
+      "seen": true,
+      "dependencies": [],
+      "incognito": "spanning",
+      "userPermissions": {
+        "permissions": [
+          "tabs"
+        ],
+        "origins": [
+          "<all_urls>"
+        ]
+      },
+      "icons": {
+        "16": "icons/lightbulb.svg",
+        "32": "icons/lightbulb.svg",
+        "48": "icons/lightbulb.svg",
+        "96": "icons/lightbulb.svg",
+        "128": "icons/lightbulb.svg"
+      },
+      "iconURL": null,
+      "blocklistState": 0,
+      "blocklistURL": null,
+      "startupData": null,
+      "hidden": true,
+      "installTelemetryInfo": null,
+      "recommendationState": null,
+      "rootURI": "jar:file:///Applications/Firefox.app/Contents/Resources/browser/features/webcompat-reporter@mozilla.org.xpi!/",
+      "location": "app-system-defaults"
+    },
+    {
+      "id": "webcompat@mozilla.org",
+      "syncGUID": "{261dda8f-85e4-5746-afce-995324994114}",
+      "version": "7.0.0",
+      "type": "extension",
+      "loader": null,
+      "updateURL": null,
+      "optionsURL": null,
+      "optionsType": null,
+      "optionsBrowserStyle": true,
+      "aboutURL": null,
+      "defaultLocale": {
+        "name": "Web Compat",
+        "description": "Urgent post-release fixes for web compatibility.",
+        "creator": null,
+        "developers": null,
+        "translators": null,
+        "contributors": null
+      },
+      "visible": true,
+      "active": true,
+      "userDisabled": false,
+      "appDisabled": false,
+      "embedderDisabled": false,
+      "installDate": 1579292567000,
+      "updateDate": 1584058704608,
+      "applyBackgroundUpdates": 1,
+      "path": "/Applications/Firefox.app/Contents/Resources/browser/features/webcompat@mozilla.org.xpi",
+      "skinnable": false,
+      "sourceURI": null,
+      "releaseNotesURI": null,
+      "softDisabled": false,
+      "foreignInstall": false,
+      "strictCompatibility": true,
+      "locales": [],
+      "targetApplications": [
+        {
+          "id": "toolkit@mozilla.org",
+          "minVersion": "59.0b5",
+          "maxVersion": null
+        }
+      ],
+      "targetPlatforms": [],
+      "seen": true,
+      "dependencies": [],
+      "incognito": "spanning",
+      "userPermissions": {
+        "permissions": [
+          "webRequest",
+          "webRequestBlocking"
+        ],
+        "origins": [
+          "<all_urls>"
+        ]
+      },
+      "icons": {},
+      "iconURL": null,
+      "blocklistState": 0,
+      "blocklistURL": null,
+      "startupData": null,
+      "hidden": true,
+      "installTelemetryInfo": null,
+      "recommendationState": null,
+      "rootURI": "jar:file:///Applications/Firefox.app/Contents/Resources/browser/features/webcompat@mozilla.org.xpi!/",
+      "location": "app-system-defaults"
+    },
+    {
+      "id": "default-theme@mozilla.org",
+      "syncGUID": "{286c2ab4-d9d2-bb44-9219-9c0517b2e89d}",
+      "version": "1.0",
+      "type": "theme",
+      "loader": null,
+      "updateURL": null,
+      "optionsURL": null,
+      "optionsType": null,
+      "optionsBrowserStyle": true,
+      "aboutURL": null,
+      "defaultLocale": {
+        "name": "Default",
+        "description": "A theme with the operating system color scheme.",
+        "creator": "Mozilla",
+        "developers": null,
+        "translators": null,
+        "contributors": null
+      },
+      "visible": true,
+      "active": true,
+      "userDisabled": false,
+      "appDisabled": false,
+      "embedderDisabled": false,
+      "installDate": 1581664521507,
+      "applyBackgroundUpdates": 1,
+      "path": null,
+      "skinnable": false,
+      "sourceURI": null,
+      "releaseNotesURI": null,
+      "softDisabled": false,
+      "foreignInstall": false,
+      "strictCompatibility": true,
+      "locales": [],
+      "targetApplications": [
+        {
+          "id": "toolkit@mozilla.org",
+          "minVersion": null,
+          "maxVersion": null
+        }
+      ],
+      "targetPlatforms": [],
+      "seen": true,
+      "dependencies": [],
+      "userPermissions": null,
+      "icons": {
+        "32": "icon.svg"
+      },
+      "iconURL": null,
+      "blocklistState": 0,
+      "blocklistURL": null,
+      "startupData": null,
+      "hidden": false,
+      "installTelemetryInfo": null,
+      "recommendationState": null,
+      "rootURI": "resource://gre/modules/themes/default/",
+      "location": "app-builtin"
+    },
+    {
+      "id": "firefox-compact-light@mozilla.org",
+      "syncGUID": "{227edaee-fd6a-7941-80a2-846116c806bf}",
+      "version": "1.0",
+      "type": "theme",
+      "loader": null,
+      "updateURL": null,
+      "optionsURL": null,
+      "optionsType": null,
+      "optionsBrowserStyle": true,
+      "aboutURL": null,
+      "defaultLocale": {
+        "name": "Light",
+        "description": "A theme with a light color scheme.",
+        "creator": "Mozilla",
+        "developers": null,
+        "translators": null,
+        "contributors": null
+      },
+      "visible": true,
+      "active": false,
+      "userDisabled": true,
+      "appDisabled": false,
+      "embedderDisabled": false,
+      "installDate": 1581664521653,
+      "applyBackgroundUpdates": 1,
+      "path": null,
+      "skinnable": false,
+      "sourceURI": null,
+      "releaseNotesURI": null,
+      "softDisabled": false,
+      "foreignInstall": false,
+      "strictCompatibility": true,
+      "locales": [],
+      "targetApplications": [
+        {
+          "id": "toolkit@mozilla.org",
+          "minVersion": null,
+          "maxVersion": null
+        }
+      ],
+      "targetPlatforms": [],
+      "seen": true,
+      "dependencies": [],
+      "userPermissions": null,
+      "icons": {
+        "32": "icon.svg"
+      },
+      "iconURL": null,
+      "blocklistState": 0,
+      "blocklistURL": null,
+      "startupData": null,
+      "hidden": false,
+      "installTelemetryInfo": null,
+      "recommendationState": null,
+      "rootURI": "resource:///modules/themes/light/",
+      "location": "app-builtin"
+    },
+    {
+      "id": "firefox-compact-dark@mozilla.org",
+      "syncGUID": "{81c9503b-1169-394e-9e69-18c76873cbdb}",
+      "version": "1.0",
+      "type": "theme",
+      "loader": null,
+      "updateURL": null,
+      "optionsURL": null,
+      "optionsType": null,
+      "optionsBrowserStyle": true,
+      "aboutURL": null,
+      "defaultLocale": {
+        "name": "Dark",
+        "description": "A theme with a dark color scheme.",
+        "creator": "Mozilla",
+        "developers": null,
+        "translators": null,
+        "contributors": null
+      },
+      "visible": true,
+      "active": false,
+      "userDisabled": true,
+      "appDisabled": false,
+      "embedderDisabled": false,
+      "installDate": 1581664521654,
+      "applyBackgroundUpdates": 1,
+      "path": null,
+      "skinnable": false,
+      "sourceURI": null,
+      "releaseNotesURI": null,
+      "softDisabled": false,
+      "foreignInstall": false,
+      "strictCompatibility": true,
+      "locales": [],
+      "targetApplications": [
+        {
+          "id": "toolkit@mozilla.org",
+          "minVersion": null,
+          "maxVersion": null
+        }
+      ],
+      "targetPlatforms": [],
+      "seen": true,
+      "dependencies": [],
+      "userPermissions": null,
+      "icons": {
+        "32": "icon.svg"
+      },
+      "iconURL": null,
+      "blocklistState": 0,
+      "blocklistURL": null,
+      "startupData": null,
+      "hidden": false,
+      "installTelemetryInfo": null,
+      "recommendationState": null,
+      "rootURI": "resource:///modules/themes/dark/",
+      "location": "app-builtin"
+    },
+    {
+      "id": "google@search.mozilla.org",
+      "syncGUID": "{a3886c5b-a2ec-9845-ac23-cc6ea67bf700}",
+      "version": "1.0",
+      "type": "extension",
+      "loader": null,
+      "updateURL": null,
+      "optionsURL": null,
+      "optionsType": null,
+      "optionsBrowserStyle": true,
+      "aboutURL": null,
+      "defaultLocale": {
+        "name": "Google",
+        "description": "Google Search",
+        "creator": null,
+        "developers": null,
+        "translators": null,
+        "contributors": null
+      },
+      "visible": true,
+      "active": true,
+      "userDisabled": false,
+      "appDisabled": false,
+      "embedderDisabled": false,
+      "installDate": 1581664522800,
+      "applyBackgroundUpdates": 1,
+      "path": null,
+      "skinnable": false,
+      "sourceURI": null,
+      "releaseNotesURI": null,
+      "softDisabled": false,
+      "foreignInstall": false,
+      "strictCompatibility": true,
+      "locales": [
+        {
+          "name": "Google",
+          "description": "Google Search",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "en"
+          ]
+        },
+        {
+          "name": "Google",
+          "description": "Google Search",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "b-1-d"
+          ]
+        },
+        {
+          "name": "Google",
+          "description": "Google Search",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "b-1-e"
+          ]
+        },
+        {
+          "name": "Google",
+          "description": "Google Search",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "b-d"
+          ]
+        },
+        {
+          "name": "Google",
+          "description": "Google Search",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "b-e"
+          ]
+        }
+      ],
+      "targetApplications": [
+        {
+          "id": "toolkit@mozilla.org",
+          "minVersion": null,
+          "maxVersion": null
+        }
+      ],
+      "targetPlatforms": [],
+      "seen": true,
+      "dependencies": [],
+      "incognito": "spanning",
+      "userPermissions": {
+        "permissions": [],
+        "origins": []
+      },
+      "icons": {
+        "16": "favicon.ico"
+      },
+      "iconURL": null,
+      "blocklistState": 0,
+      "blocklistURL": null,
+      "startupData": null,
+      "hidden": true,
+      "installTelemetryInfo": null,
+      "recommendationState": null,
+      "rootURI": "resource://search-extensions/google/",
+      "location": "app-builtin"
+    },
+    {
+      "id": "amazondotcom@search.mozilla.org",
+      "syncGUID": "{9788b21d-86a9-0244-ae8d-2d31c239f6e9}",
+      "version": "1.1",
+      "type": "extension",
+      "loader": null,
+      "updateURL": null,
+      "optionsURL": null,
+      "optionsType": null,
+      "optionsBrowserStyle": true,
+      "aboutURL": null,
+      "defaultLocale": {
+        "name": "Amazon.com",
+        "description": "Amazon.com Search",
+        "creator": null,
+        "developers": null,
+        "translators": null,
+        "contributors": null
+      },
+      "visible": true,
+      "active": true,
+      "userDisabled": false,
+      "appDisabled": false,
+      "embedderDisabled": false,
+      "installDate": 1581664522841,
+      "applyBackgroundUpdates": 1,
+      "path": null,
+      "skinnable": false,
+      "sourceURI": null,
+      "releaseNotesURI": null,
+      "softDisabled": false,
+      "foreignInstall": false,
+      "strictCompatibility": true,
+      "locales": [
+        {
+          "name": "Amazon.com",
+          "description": "Amazon.com Search",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "en"
+          ]
+        }
+      ],
+      "targetApplications": [
+        {
+          "id": "toolkit@mozilla.org",
+          "minVersion": null,
+          "maxVersion": null
+        }
+      ],
+      "targetPlatforms": [],
+      "seen": true,
+      "dependencies": [],
+      "incognito": "spanning",
+      "userPermissions": {
+        "permissions": [],
+        "origins": []
+      },
+      "icons": {
+        "16": "favicon.ico"
+      },
+      "iconURL": null,
+      "blocklistState": 0,
+      "blocklistURL": null,
+      "startupData": null,
+      "hidden": true,
+      "installTelemetryInfo": null,
+      "recommendationState": null,
+      "rootURI": "resource://search-extensions/amazondotcom/",
+      "location": "app-builtin"
+    },
+    {
+      "id": "bing@search.mozilla.org",
+      "syncGUID": "{09d1a8bf-0343-5b4f-ad29-3adb0b0cedf0}",
+      "version": "1.1",
+      "type": "extension",
+      "loader": null,
+      "updateURL": null,
+      "optionsURL": null,
+      "optionsType": null,
+      "optionsBrowserStyle": true,
+      "aboutURL": null,
+      "defaultLocale": {
+        "name": "Bing",
+        "description": "Bing. Search by Microsoft.",
+        "creator": null,
+        "developers": null,
+        "translators": null,
+        "contributors": null
+      },
+      "visible": true,
+      "active": true,
+      "userDisabled": false,
+      "appDisabled": false,
+      "embedderDisabled": false,
+      "installDate": 1581664522861,
+      "applyBackgroundUpdates": 1,
+      "path": null,
+      "skinnable": false,
+      "sourceURI": null,
+      "releaseNotesURI": null,
+      "softDisabled": false,
+      "foreignInstall": false,
+      "strictCompatibility": true,
+      "locales": [],
+      "targetApplications": [
+        {
+          "id": "toolkit@mozilla.org",
+          "minVersion": null,
+          "maxVersion": null
+        }
+      ],
+      "targetPlatforms": [],
+      "seen": true,
+      "dependencies": [],
+      "incognito": "spanning",
+      "userPermissions": {
+        "permissions": [],
+        "origins": []
+      },
+      "icons": {
+        "16": "favicon.ico"
+      },
+      "iconURL": null,
+      "blocklistState": 0,
+      "blocklistURL": null,
+      "startupData": null,
+      "hidden": true,
+      "installTelemetryInfo": null,
+      "recommendationState": null,
+      "rootURI": "resource://search-extensions/bing/",
+      "location": "app-builtin"
+    },
+    {
+      "id": "ddg@search.mozilla.org",
+      "syncGUID": "{457eca5a-13c5-8544-afdc-9f28173c72b9}",
+      "version": "1.0",
+      "type": "extension",
+      "loader": null,
+      "updateURL": null,
+      "optionsURL": null,
+      "optionsType": null,
+      "optionsBrowserStyle": true,
+      "aboutURL": null,
+      "defaultLocale": {
+        "name": "DuckDuckGo",
+        "description": "Search DuckDuckGo",
+        "creator": null,
+        "developers": null,
+        "translators": null,
+        "contributors": null
+      },
+      "visible": true,
+      "active": true,
+      "userDisabled": false,
+      "appDisabled": false,
+      "embedderDisabled": false,
+      "installDate": 1581664522877,
+      "applyBackgroundUpdates": 1,
+      "path": null,
+      "skinnable": false,
+      "sourceURI": null,
+      "releaseNotesURI": null,
+      "softDisabled": false,
+      "foreignInstall": false,
+      "strictCompatibility": true,
+      "locales": [],
+      "targetApplications": [
+        {
+          "id": "toolkit@mozilla.org",
+          "minVersion": null,
+          "maxVersion": null
+        }
+      ],
+      "targetPlatforms": [],
+      "seen": true,
+      "dependencies": [],
+      "incognito": "spanning",
+      "userPermissions": {
+        "permissions": [],
+        "origins": []
+      },
+      "icons": {
+        "16": "favicon.ico"
+      },
+      "iconURL": null,
+      "blocklistState": 0,
+      "blocklistURL": null,
+      "startupData": null,
+      "hidden": true,
+      "installTelemetryInfo": null,
+      "recommendationState": null,
+      "rootURI": "resource://search-extensions/ddg/",
+      "location": "app-builtin"
+    },
+    {
+      "id": "ebay@search.mozilla.org",
+      "syncGUID": "{bd01162a-91c9-df4a-a1de-771e0ce9f9c7}",
+      "version": "1.0",
+      "type": "extension",
+      "loader": null,
+      "updateURL": null,
+      "optionsURL": null,
+      "optionsType": null,
+      "optionsBrowserStyle": true,
+      "aboutURL": null,
+      "defaultLocale": {
+        "name": "eBay",
+        "description": "eBay - Online auctions",
+        "creator": null,
+        "developers": null,
+        "translators": null,
+        "contributors": null
+      },
+      "visible": true,
+      "active": true,
+      "userDisabled": false,
+      "appDisabled": false,
+      "embedderDisabled": false,
+      "installDate": 1581664522891,
+      "applyBackgroundUpdates": 1,
+      "path": null,
+      "skinnable": false,
+      "sourceURI": null,
+      "releaseNotesURI": null,
+      "softDisabled": false,
+      "foreignInstall": false,
+      "strictCompatibility": true,
+      "locales": [
+        {
+          "name": "eBay",
+          "description": "eBay - Online auctions",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "en"
+          ]
+        },
+        {
+          "name": "eBay",
+          "description": "eBay - Online auctions",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "ie"
+          ]
+        },
+        {
+          "name": "eBay",
+          "description": "eBay - Online auctions",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "uk"
+          ]
+        },
+        {
+          "name": "eBay",
+          "description": "eBay - Online auctions",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "it"
+          ]
+        },
+        {
+          "name": "eBay",
+          "description": "eBay - Online auctions",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "de"
+          ]
+        },
+        {
+          "name": "eBay",
+          "description": "eBay - Online auctions",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "ca"
+          ]
+        },
+        {
+          "name": "eBay",
+          "description": "eBay - Online auctions",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "ch"
+          ]
+        },
+        {
+          "name": "eBay",
+          "description": "eBay - Online auctions",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "at"
+          ]
+        },
+        {
+          "name": "eBay",
+          "description": "eBay - Online auctions",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "au"
+          ]
+        },
+        {
+          "name": "eBay",
+          "description": "eBay - Online auctions",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "be"
+          ]
+        },
+        {
+          "name": "eBay",
+          "description": "eBay - Online auctions",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "es"
+          ]
+        },
+        {
+          "name": "eBay",
+          "description": "eBay - Online auctions",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "nl"
+          ]
+        },
+        {
+          "name": "eBay",
+          "description": "eBay - Online auctions",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "fr"
+          ]
+        }
+      ],
+      "targetApplications": [
+        {
+          "id": "toolkit@mozilla.org",
+          "minVersion": null,
+          "maxVersion": null
+        }
+      ],
+      "targetPlatforms": [],
+      "seen": true,
+      "dependencies": [],
+      "incognito": "spanning",
+      "userPermissions": {
+        "permissions": [],
+        "origins": []
+      },
+      "icons": {
+        "16": "favicon.ico"
+      },
+      "iconURL": null,
+      "blocklistState": 0,
+      "blocklistURL": null,
+      "startupData": null,
+      "hidden": true,
+      "installTelemetryInfo": null,
+      "recommendationState": null,
+      "rootURI": "resource://search-extensions/ebay/",
+      "location": "app-builtin"
+    },
+    {
+      "id": "twitter@search.mozilla.org",
+      "syncGUID": "{84eb064f-f8c3-a249-82e8-a9d6a41c3824}",
+      "version": "1.0",
+      "type": "extension",
+      "loader": null,
+      "updateURL": null,
+      "optionsURL": null,
+      "optionsType": null,
+      "optionsBrowserStyle": true,
+      "aboutURL": null,
+      "defaultLocale": {
+        "name": "Twitter",
+        "description": "Realtime Twitter Search",
+        "creator": null,
+        "developers": null,
+        "translators": null,
+        "contributors": null
+      },
+      "visible": true,
+      "active": true,
+      "userDisabled": false,
+      "appDisabled": false,
+      "embedderDisabled": false,
+      "installDate": 1581664522918,
+      "applyBackgroundUpdates": 1,
+      "path": null,
+      "skinnable": false,
+      "sourceURI": null,
+      "releaseNotesURI": null,
+      "softDisabled": false,
+      "foreignInstall": false,
+      "strictCompatibility": true,
+      "locales": [
+        {
+          "name": "Twitter",
+          "description": "Realtime Twitter Search",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "en"
+          ]
+        },
+        {
+          "name": "Twitter",
+          "description": "\u30ea\u30a2\u30eb\u30bf\u30a4\u30e0 Twitter \u691c\u7d22",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "ja"
+          ]
+        }
+      ],
+      "targetApplications": [
+        {
+          "id": "toolkit@mozilla.org",
+          "minVersion": null,
+          "maxVersion": null
+        }
+      ],
+      "targetPlatforms": [],
+      "seen": true,
+      "dependencies": [],
+      "incognito": "spanning",
+      "userPermissions": {
+        "permissions": [],
+        "origins": []
+      },
+      "icons": {
+        "16": "favicon.ico"
+      },
+      "iconURL": null,
+      "blocklistState": 0,
+      "blocklistURL": null,
+      "startupData": null,
+      "hidden": true,
+      "installTelemetryInfo": null,
+      "recommendationState": null,
+      "rootURI": "resource://search-extensions/twitter/",
+      "location": "app-builtin"
+    },
+    {
+      "id": "wikipedia@search.mozilla.org",
+      "syncGUID": "{e3b947bc-9c31-b843-813f-a8353c7a74fc}",
+      "version": "1.0",
+      "type": "extension",
+      "loader": null,
+      "updateURL": null,
+      "optionsURL": null,
+      "optionsType": null,
+      "optionsBrowserStyle": true,
+      "aboutURL": null,
+      "defaultLocale": {
+        "name": "Wikipedia (en)",
+        "description": "Wikipedia, the Free Encyclopedia",
+        "creator": null,
+        "developers": null,
+        "translators": null,
+        "contributors": null
+      },
+      "visible": true,
+      "active": true,
+      "userDisabled": false,
+      "appDisabled": false,
+      "embedderDisabled": false,
+      "installDate": 1581664522958,
+      "applyBackgroundUpdates": 1,
+      "path": null,
+      "skinnable": false,
+      "sourceURI": null,
+      "releaseNotesURI": null,
+      "softDisabled": false,
+      "foreignInstall": false,
+      "strictCompatibility": true,
+      "locales": [
+        {
+          "name": "Wikipedia (en)",
+          "description": "Wikipedia, the Free Encyclopedia",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "en"
+          ]
+        },
+        {
+          "name": "Wikipedija (hr)",
+          "description": "Wikipedija, slobodna enciklopedija",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "hr"
+          ]
+        },
+        {
+          "name": "Wikipedia (fi)",
+          "description": "Wikipedia (fi), vapaa tietosanakirja",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "fi"
+          ]
+        },
+        {
+          "name": "Wikipedia (hy)",
+          "description": "\u054e\u056b\u0584\u056b\u0583\u0565\u0564\u056b\u0561\u055d \u0561\u0566\u0561\u057f \u0570\u0561\u0576\u0580\u0561\u0563\u056b\u057f\u0561\u0580\u0561\u0576",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "hy"
+          ]
+        },
+        {
+          "name": "\u0423\u0438\u043a\u0438\u043f\u0435\u0434\u0438\u044f (kk)",
+          "description": "\u0423\u0438\u043a\u0438\u043f\u0435\u0434\u0438\u044f (kk)",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "kk"
+          ]
+        },
+        {
+          "name": "\u0412\u0456\u043a\u0456\u043f\u0435\u0434\u044b\u044f (be)",
+          "description": "\u0412\u0456\u043a\u0456\u043f\u0435\u0434\u044b\u044f, \u0441\u0432\u0430\u0431\u043e\u0434\u043d\u0430\u044f \u044d\u043d\u0446\u044b\u043a\u043b\u0430\u043f\u0435\u0434\u044b\u044f",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "be"
+          ]
+        },
+        {
+          "name": "\uc704\ud0a4\ubc31\uacfc (ko)",
+          "description": "Wikipedia, the free encyclopedia",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "kr"
+          ]
+        },
+        {
+          "name": "Wikipedia (ro)",
+          "description": "Wikipedia, enciclopedia liber\u0103",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "ro"
+          ]
+        },
+        {
+          "name": "Wikipedia (bs)",
+          "description": "Slobodna enciklopedija",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "bs"
+          ]
+        },
+        {
+          "name": "Wikipedia (pt)",
+          "description": "Wikip\u00e9dia, a enciclop\u00e9dia livre",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "pt"
+          ]
+        },
+        {
+          "name": "Vikipet\u00e3 (gn)",
+          "description": "Vikipet\u00e3, opaite tembikuaa hekos\u00e3s\u00f3va renda",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "gn"
+          ]
+        },
+        {
+          "name": "\u0ab5\u0abf\u0a95\u0abf\u0aaa\u0ac0\u0aa1\u0abf\u0aaf\u0abe (gu)",
+          "description": "\u0ab5\u0ac0\u0a95\u0ac0\u0aaa\u0ac0\u0aa1\u0abf\u0aaf\u0abe, \u0aae\u0ac1\u0a95\u0acd\u0aa4 \u0a8f\u0aa8\u0ab8\u0abe\u0aaf\u0a95\u0acd\u0ab2\u0acb\u0aaa\u0ac0\u0aa1\u0abf\u0aaf\u0abe",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "gu"
+          ]
+        },
+        {
+          "name": "Wikipedia (el)",
+          "description": "\u0392\u03b9\u03ba\u03b9\u03c0\u03b1\u03af\u03b4\u03b5\u03b9\u03b1, \u03b7 \u03b5\u03bb\u03b5\u03cd\u03b8\u03b5\u03c1\u03b7 \u03b5\u03b3\u03ba\u03c5\u03ba\u03bb\u03bf\u03c0\u03b1\u03af\u03b4\u03b5\u03b9\u03b1",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "el"
+          ]
+        },
+        {
+          "name": "Wikipedia (es)",
+          "description": "Wikipedia, la enciclopedia libre",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "es"
+          ]
+        },
+        {
+          "name": "\u05d5\u05d9\u05e7\u05d9\u05e4\u05d3\u05d9\u05d4",
+          "description": "\u05d5\u05d9\u05e7\u05d9\u05e4\u05d3\u05d9\u05d4",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "he"
+          ]
+        },
+        {
+          "name": "Wikipedia (da)",
+          "description": "Wikipedia, den frie encyklop\u00e6di",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "da"
+          ]
+        },
+        {
+          "name": "Wikipedia (tr)",
+          "description": "Vikipedi, \u00f6zg\u00fcr ansiklopedi",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "tr"
+          ]
+        },
+        {
+          "name": "Wikipedija (hsb)",
+          "description": "Wikipedija, swobodna encyklopedija",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "hsb"
+          ]
+        },
+        {
+          "name": "Wikipedy (fy)",
+          "description": "De fergese ensyklopedy",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "fy-NL"
+          ]
+        },
+        {
+          "name": "\u0935\u093f\u0915\u093f\u092a\u0940\u0921\u093f\u092f\u093e (ne)",
+          "description": "\u0935\u093f\u0915\u093f\u092a\u093f\u0921\u093f\u092f\u093e \u090f\u0915 \u0938\u094d\u0935\u0924\u0928\u094d\u0924\u094d\u0930 \u0935\u093f\u0936\u094d\u0935\u0915\u094b\u0937",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "ne"
+          ]
+        },
+        {
+          "name": "Wikipedia (nl)",
+          "description": "De vrije encyclopedie",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "nl"
+          ]
+        },
+        {
+          "name": "Wikipedia (ja)",
+          "description": "Wikipedia - \u30d5\u30ea\u30fc\u767e\u79d1\u4e8b\u5178",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "ja"
+          ]
+        },
+        {
+          "name": "Vikipeedia (et)",
+          "description": "Vikipeedia, vaba ents\u00fcklopeedia",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "et"
+          ]
+        },
+        {
+          "name": "Wikip\u00e8dia (oc)",
+          "description": "Wikip\u00e8dia, l'enciclop\u00e8dia liura",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "oc"
+          ]
+        },
+        {
+          "name": "Wicipedia (cy)",
+          "description": "Wicipedia, Y Gwyddioniadur Rhydd",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "cy"
+          ]
+        },
+        {
+          "name": "\u0c35\u0c3f\u0c15\u0c40\u0c2a\u0c40\u0c21\u0c3f\u0c2f\u0c3e (te)",
+          "description": "\u0c35\u0c3f\u0c15\u0c40\u0c2a\u0c40\u0c21\u0c3f\u0c2f\u0c3e (te)",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "te"
+          ]
+        },
+        {
+          "name": "Wikip\u00e9dia (fr)",
+          "description": "Wikip\u00e9dia, l'encyclop\u00e9die libre",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "fr"
+          ]
+        },
+        {
+          "name": "Wikipedia (tl)",
+          "description": "Wikipedia, ang malayang ensiklopedya",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "tl"
+          ]
+        },
+        {
+          "name": "\u7ef4\u57fa\u767e\u79d1",
+          "description": "\u7ef4\u57fa\u767e\u79d1\uff0c\u81ea\u7531\u7684\u767e\u79d1\u5168\u4e66",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "zh-CN"
+          ]
+        },
+        {
+          "name": "Wikipedia (lij)",
+          "description": "Wikipedia, l'enciclopedia libera",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "lij"
+          ]
+        },
+        {
+          "name": "\u179c\u17b8\u1782\u17b8\u1797\u17b8\u178c\u17b6 (km)",
+          "description": "\u179c\u17b8\u1782\u17b8\u1797\u17b8\u178c\u17b6 \u179f\u1796\u17d2\u179c\u200b\u179c\u1785\u1793\u17b6\u200b\u1792\u17b7\u1794\u17d2\u1794\u17b6\u1799\u200b\u179f\u17c1\u179a\u17b8",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "km"
+          ]
+        },
+        {
+          "name": "\u0423\u0438\u043a\u0438\u043f\u0435\u0434\u0438\u044f (bg)",
+          "description": "\u0423\u0438\u043a\u0438\u043f\u0435\u0434\u0438\u044f, \u0441\u0432\u043e\u0431\u043e\u0434\u043d\u0430\u0442\u0430 \u0435\u043d\u0446\u0438\u043a\u043b\u043e\u043f\u043e\u0434\u0438\u044f",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "bg"
+          ]
+        },
+        {
+          "name": "Wikipedia (id)",
+          "description": "Wikipedia, ensiklopedia bebas",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "id"
+          ]
+        },
+        {
+          "name": "Wikipedia (pa)",
+          "description": "\u0a35\u0a3f\u0a15\u0a3f\u0a2a\u0a40\u0a21\u0a3f\u0a06, \u0a2e\u0a41\u0a2b\u0a3c\u0a24/\u0a2e\u0a41\u0a15\u0a24 \u0a38\u0a3c\u0a2c\u0a26\u0a15\u0a4b\u0a38\u0a3c",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "pa"
+          ]
+        },
+        {
+          "name": "\u0989\u0987\u0995\u09bf\u09aa\u09bf\u09a1\u09bf\u09df\u09be (bn)",
+          "description": "\u0989\u0987\u0995\u09bf\u09aa\u09bf\u09a1\u09bf\u09df\u09be, \u09ae\u09c1\u0995\u09cd\u09a4 \u09ac\u09bf\u09b6\u09cd\u09ac\u0995\u09cb\u09b7",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "bn"
+          ]
+        },
+        {
+          "name": "Wikipedia (eu)",
+          "description": "Wikipedia, entziklopedia askea",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "eu"
+          ]
+        },
+        {
+          "name": "Wikipedie (cs)",
+          "description": "Wikipedia, svobodn\u00e1 encyclopedie",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "cz"
+          ]
+        },
+        {
+          "name": "Wikip\u00e9dia (hu)",
+          "description": "Wikipedia, a szabad enciklop\u00e9dia",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "hu"
+          ]
+        },
+        {
+          "name": "Wikipedia (kn)",
+          "description": "Wikipedia, the free encyclopedia",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "kn"
+          ]
+        },
+        {
+          "name": "Wikipedia (is)",
+          "description": "Wikipedia, the free encyclopedia",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "is"
+          ]
+        },
+        {
+          "name": "\u0412\u0456\u043a\u0456\u043f\u0435\u0434\u0456\u044f (uk)",
+          "description": "\u0412\u0456\u043a\u0456\u043f\u0435\u0434\u0456\u044f, \u0432\u0456\u043b\u044c\u043d\u0430 \u0435\u043d\u0446\u0438\u043a\u043b\u043e\u043f\u0435\u0434\u0456\u044f",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "uk"
+          ]
+        },
+        {
+          "name": "Wikipedia (kab)",
+          "description": "Wikipedia, tasanayt tilellit",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "kab"
+          ]
+        },
+        {
+          "name": "Wikipedia (zh)",
+          "description": "\u7dad\u57fa\u767e\u79d1\uff0c\u81ea\u7531\u7684\u767e\u79d1\u5168\u66f8",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "zh-TW"
+          ]
+        },
+        {
+          "name": "\u0648\u06cc\u06a9\u06cc\u067e\u06cc\u0688\u06cc\u0627 (ur)",
+          "description": "\u0648\u06cc\u06a9\u06cc\u067e\u06cc\u0688\u06cc\u0627 \u0622\u0632\u0627\u062f \u062f\u0627\u0626\u0631\u06c3 \u0627\u0644\u0645\u0639\u0627\u0631\u0641",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "ur"
+          ]
+        },
+        {
+          "name": "Vikipedio (eo)",
+          "description": "Vikipedio, la libera enciklopedio",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "eo"
+          ]
+        },
+        {
+          "name": "Wikipedia (si)",
+          "description": "Wikipedia, the free encyclopedia",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "si"
+          ]
+        },
+        {
+          "name": "\u0648\u064a\u0643\u064a\u0628\u064a\u062f\u064a\u0627 (ar)",
+          "description": "\u0648\u064a\u0643\u064a\u0628\u064a\u062f\u064a\u0627 (ar)",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "ar"
+          ]
+        },
+        {
+          "name": "Wikipedia (vi)",
+          "description": "Wikipedia, b\u00e1ch khoa to\u00e0n th\u01b0 m\u1edf",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "vi"
+          ]
+        },
+        {
+          "name": "\u10d5\u10d8\u10d9\u10d8\u10de\u10d4\u10d3\u10d8\u10d0 (ka)",
+          "description": "\u10d5\u10d8\u10d9\u10d8\u10de\u10d4\u10d3\u10d8\u10d0, \u10d7\u10d0\u10d5\u10d8\u10e1\u10e3\u10e4\u10d0\u10da\u10d8 \u10d4\u10dc\u10ea\u10d8\u10d9\u10da\u10dd\u10de\u10d4\u10d3\u10d8\u10d0",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "ka"
+          ]
+        },
+        {
+          "name": "Uicipeid (gd)",
+          "description": "Wikipedia, An leabhar m\u00f2r-e\u00f2lais",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "gd"
+          ]
+        },
+        {
+          "name": "Wikipedia (it)",
+          "description": "Wikipedia, l'enciclopedia libera",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "it"
+          ]
+        },
+        {
+          "name": "Vikipediya (uz)",
+          "description": "Vikipediya, ochiq ensiklopediya",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "uz"
+          ]
+        },
+        {
+          "name": "Wikipedia (lt)",
+          "description": "Vikipedija, laisvoji enciklopedija",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "lt"
+          ]
+        },
+        {
+          "name": "Wikipedia (sq)",
+          "description": "Wikipedia, enciklopedia e lir\u00eb",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "sq"
+          ]
+        },
+        {
+          "name": "Vicip\u00e9id (ga)",
+          "description": "Vicip\u00e9id, an Chiclip\u00e9id Shaor",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "ga-IE"
+          ]
+        },
+        {
+          "name": "\u0935\u093f\u0915\u093f\u092a\u0940\u0921\u093f\u092f\u093e (hi)",
+          "description": "\u0935\u093f\u0915\u093f\u092a\u0940\u0921\u093f\u092f\u093e (\u0939\u093f\u0928\u094d\u0926\u0940)",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "hi"
+          ]
+        },
+        {
+          "name": "Vikipedeja (ltg)",
+          "description": "Vikip\u0113dija, breivuo e\u0146ciklopedeja",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "ltg"
+          ]
+        },
+        {
+          "name": "\u0bb5\u0bbf\u0b95\u0bcd\u0b95\u0bbf\u0baa\u0bcd\u0baa\u0bc0\u0b9f\u0bbf\u0baf\u0bbe (ta)",
+          "description": "\u0bb5\u0bbf\u0b95\u0bcd\u0b95\u0bbf\u0baa\u0bcd\u0baa\u0bc0\u0b9f\u0bbf\u0baf\u0bbe (ta)",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "ta"
+          ]
+        },
+        {
+          "name": "Vikipediya (az)",
+          "description": "Vikipediya, a\u00e7\u0131q ensiklopediya",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "az"
+          ]
+        },
+        {
+          "name": "\u0412\u0438\u043a\u0438\u043f\u0435\u0434\u0438\u0458\u0430 (mk)",
+          "description": "\u0412\u0438\u043a\u0438\u043f\u0435\u0434\u0438\u0458\u0430, \u0441\u043b\u043e\u0431\u043e\u0434\u043d\u0430\u0442\u0430 \u0435\u043d\u0446\u0438\u043a\u043b\u043e\u043f\u0435\u0434\u0438\u0458\u0430",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "mk"
+          ]
+        },
+        {
+          "name": "\u0e27\u0e34\u0e01\u0e34\u0e1e\u0e35\u0e40\u0e14\u0e35\u0e22",
+          "description": "\u0e27\u0e34\u0e01\u0e34\u0e1e\u0e35\u0e40\u0e14\u0e35\u0e22 \u0e2a\u0e32\u0e23\u0e32\u0e19\u0e38\u0e01\u0e23\u0e21\u0e40\u0e2a\u0e23\u0e35",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "th"
+          ]
+        },
+        {
+          "name": "Wikipedia (de)",
+          "description": "Wikipedia, die freie Enzyklop\u00e4die",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "de"
+          ]
+        },
+        {
+          "name": "Wikipedija (dsb)",
+          "description": "Wikipedija, lichotna encyklopedija",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "dsb"
+          ]
+        },
+        {
+          "name": "\u0935\u093f\u0915\u093f\u092a\u0940\u0921\u093f\u092f\u093e (mr)",
+          "description": "\u0935\u093f\u0915\u093f\u092a\u0940\u0921\u093f\u092f\u093e, \u092e\u094b\u092b\u0924 \u092e\u093e\u0939\u093f\u0924\u0940\u0915\u094b\u0937",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "mr"
+          ]
+        },
+        {
+          "name": "Wikipedia (ast)",
+          "description": "La enciclopedia llibre",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "ast"
+          ]
+        },
+        {
+          "name": "Wikipedia (my)",
+          "description": "\u1021\u1001\u1019\u1032\u1037\u101c\u103d\u1010\u103a\u101c\u1015\u103a\u1005\u103d\u101a\u103a\u1005\u102f\u1036\u1000\u103b\u1019\u103a\u1038",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "my"
+          ]
+        },
+        {
+          "name": "Wikipedia (rm)",
+          "description": "Vichipedia, l'enciclopedia libra",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "rm"
+          ]
+        },
+        {
+          "name": "Wikipedia (nn)",
+          "description": "Wikipedia, det frie oppslagsverket",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "NN"
+          ]
+        },
+        {
+          "name": "Wikipedia (wo)",
+          "description": "Wikipedia, Jimbulang bu Ubbeeku bi",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "wo"
+          ]
+        },
+        {
+          "name": "Wikipedia (gl)",
+          "description": "Wikipedia, a enciclopedia libre",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "gl"
+          ]
+        },
+        {
+          "name": "Viquip\u00e8dia (ca)",
+          "description": "L'enciclop\u00e8dia lliure",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "ca"
+          ]
+        },
+        {
+          "name": "Wikip\u00e9dia (sk)",
+          "description": "Wikip\u00e9dia, slobodn\u00e1 a otvoren\u00e1 encyklop\u00e9dia",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "sk"
+          ]
+        },
+        {
+          "name": "\u0412\u0438\u043a\u0438\u043f\u0435\u0434\u0438\u0458\u0430 (sr)",
+          "description": "\u041f\u0440\u0435\u0442\u0440\u0430\u0433\u0430 \u0412\u0438\u043a\u0438\u043f\u0435\u0434\u0438\u0458\u0435 \u043d\u0430 \u0441\u0440\u043f\u0441\u043a\u043e\u043c \u0458\u0435\u0437\u0438\u043a\u0443",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "sr"
+          ]
+        },
+        {
+          "name": "Wikipedia (af)",
+          "description": "Wikipedia, die vrye ensiklopedie",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "af"
+          ]
+        },
+        {
+          "name": "\u0648\u06cc\u06a9\u06cc\u200c\u067e\u062f\u06cc\u0627 (fa)",
+          "description": "\u0648\u06cc\u06a9\u06cc\u200c\u067e\u062f\u06cc\u0627\u060c \u062f\u0627\u0646\u0634\u0646\u0627\u0645\u0647\u0654 \u0622\u0632\u0627\u062f",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "fa"
+          ]
+        },
+        {
+          "name": "Wikipedia (ms)",
+          "description": "Wikipedia, ensiklopedia bebas",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "ms"
+          ]
+        },
+        {
+          "name": "Wikipedia (ia)",
+          "description": "Wikipedia, le encyclopedia libere",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "ia"
+          ]
+        },
+        {
+          "name": "Wikipedia (no)",
+          "description": "Wikipedia, den frie encyklopedi",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "NO"
+          ]
+        },
+        {
+          "name": "\u0412\u0438\u043a\u0438\u043f\u0435\u0434\u0438\u044f (ru)",
+          "description": "\u0412\u0438\u043a\u0438\u043f\u0435\u0434\u0438\u044f, \u0441\u0432\u043e\u0431\u043e\u0434\u043d\u0430\u044f \u044d\u043d\u0446\u0438\u043a\u043b\u043e\u043f\u0435\u0434\u0438\u044f",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "ru"
+          ]
+        },
+        {
+          "name": "Wikipedia (br)",
+          "description": "Wikipedia, an holloueziadur digor",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "br"
+          ]
+        },
+        {
+          "name": "Wikipedia (pl)",
+          "description": "Wikipedia, wolna encyklopedia",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "pl"
+          ]
+        },
+        {
+          "name": "\u0412\u0456\u043a\u0456\u043f\u044d\u0434\u044b\u044f (be-tarask)",
+          "description": "\u0412\u0456\u043a\u0456\u043f\u044d\u0434\u044b\u044f, \u0432\u043e\u043b\u044c\u043d\u0430\u044f \u044d\u043d\u0446\u044b\u043a\u043b\u044f\u043f\u044d\u0434\u044b\u044f",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "be-tarask"
+          ]
+        },
+        {
+          "name": "Wikipedia (sv)",
+          "description": "Wikipedia, den fria encyklopedin",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "sv-SE"
+          ]
+        },
+        {
+          "name": "\u0ea7\u0eb4\u0e81\u0eb4\u0e9e\u0eb5\u0ec0\u0e94\u0e8d (lo)",
+          "description": "\u0ea7\u0eb4\u0e81\u0eb4\u0e9e\u0eb5\u0ec0\u0e94\u0e8d, \u0eaa\u0eb2\u0ea5\u0eb2\u0e99\u0eb8\u0e81\u0ebb\u0ea1\u0ec0\u0eaa\u0ea5\u0eb5",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "lo"
+          ]
+        },
+        {
+          "name": "Wikipedija (sl)",
+          "description": "Wikipedija, prosta enciklopedija",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "sl"
+          ]
+        },
+        {
+          "name": "Vikip\u0113dija",
+          "description": "Vikip\u0113dija, br\u012bv\u0101 enciklop\u0113dija",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "lv"
+          ]
+        },
+        {
+          "name": "Biquipedia (an)",
+          "description": "A enciclopedia Libre",
+          "creator": null,
+          "developers": null,
+          "translators": null,
+          "contributors": null,
+          "locales": [
+            "an"
+          ]
+        }
+      ],
+      "targetApplications": [
+        {
+          "id": "toolkit@mozilla.org",
+          "minVersion": null,
+          "maxVersion": null
+        }
+      ],
+      "targetPlatforms": [],
+      "seen": true,
+      "dependencies": [],
+      "incognito": "spanning",
+      "userPermissions": {
+        "permissions": [],
+        "origins": []
+      },
+      "icons": {
+        "16": "favicon.ico"
+      },
+      "iconURL": null,
+      "blocklistState": 0,
+      "blocklistURL": null,
+      "startupData": null,
+      "hidden": true,
+      "installTelemetryInfo": null,
+      "recommendationState": null,
+      "rootURI": "resource://search-extensions/wikipedia/",
+      "location": "app-builtin"
+    },
+    {
+      "id": "cors-everywhere@spenibus",
+      "syncGUID": "{d6fdfdf7-b606-9747-bf20-0e4ee5e5e518}",
+      "version": "18.11.13.2043",
+      "type": "extension",
+      "loader": null,
+      "updateURL": null,
+      "optionsURL": "options.html",
+      "optionsType": 5,
+      "optionsBrowserStyle": true,
+      "aboutURL": null,
+      "defaultLocale": {
+        "name": "CORS Everywhere",
+        "description": "Bypass CORS restrictions by altering http responses.",
+        "creator": "spenibus",
+        "developers": null,
+        "translators": null,
+        "contributors": null
+      },
+      "visible": true,
+      "active": true,
+      "userDisabled": false,
+      "appDisabled": false,
+      "embedderDisabled": false,
+      "installDate": 1584479095000,
+      "updateDate": 1584479095000,
+      "applyBackgroundUpdates": 1,
+      "path": "/Users/trevorstevenson/Library/Application Support/Firefox/Profiles/jn0t5m6d.default-release/extensions/cors-everywhere@spenibus.xpi",
+      "skinnable": false,
+      "sourceURI": "https://addons.mozilla.org/firefox/downloads/file/1148493/cors_everywhere-18.11.13.2043-fx.xpi?src=dp-btn-primary",
+      "releaseNotesURI": null,
+      "softDisabled": false,
+      "foreignInstall": false,
+      "strictCompatibility": true,
+      "locales": [],
+      "targetApplications": [
+        {
+          "id": "toolkit@mozilla.org",
+          "minVersion": null,
+          "maxVersion": null
+        }
+      ],
+      "targetPlatforms": [],
+      "signedState": 2,
+      "seen": true,
+      "dependencies": [],
+      "incognito": "spanning",
+      "userPermissions": {
+        "permissions": [
+          "webRequest",
+          "webRequestBlocking",
+          "storage"
+        ],
+        "origins": [
+          "<all_urls>"
+        ]
+      },
+      "icons": {},
+      "iconURL": null,
+      "blocklistState": 0,
+      "blocklistURL": null,
+      "startupData": null,
+      "hidden": false,
+      "installTelemetryInfo": {
+        "source": "amo",
+        "sourceURL": "https://addons.mozilla.org/en-US/firefox/addon/access-control-allow-origin/",
+        "method": "amWebAPI"
+      },
+      "recommendationState": null,
+      "rootURI": "jar:file:///Users/trevorstevenson/Library/Application%20Support/Firefox/Profiles/jn0t5m6d.default-release/extensions/cors-everywhere@spenibus.xpi!/",
+      "location": "app-profile"
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "nextId": 2,
+  "logins": [
+    {
+      "id": 1,
+      "hostname": "https://shib.oit.duke.edu",
+      "httpRealm": null,
+      "formSubmitURL": "https://shib.oit.duke.edu",
+      "usernameField": "j_username",
+      "passwordField": "j_password",
+      "encryptedUsername": "MDIEEPgAAAAAAAAAAAAAAAAAAAEwFAYIKoZIhvcNAwcECDnIMfmi386OBAgL36eEaDjUvw==",
+      "encryptedPassword": "MDoEEPgAAAAAAAAAAAAAAAAAAAEwFAYIKoZIhvcNAwcECFNTBuAHdAqCBBDymjTFWfFeAbTOot6CvuEH",
+      "guid": "{10db4aee-bfcd-194e-90d0-f6f9672fe0a0}",
+      "encType": 1,
+      "timeCreated": 1581720186140,
+      "timeLastUsed": 1584372291298,
+      "timePasswordChanged": 1581720186140,
+      "timesUsed": 4
+    }
+  ],
+  "potentiallyVulnerablePasswords": [],
+  "dismissedBreachAlertsByLoginGUID": {},
+  "version": 3
+}

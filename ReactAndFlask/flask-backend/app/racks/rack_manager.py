@@ -87,7 +87,13 @@ def _modify_rack_range(
     datacenter_name: str,
 ) -> List[Any]:
     """ Modify a range of racks """
-    if (not start_letter.isalpha) or (not stop_letter.isalpha):
+    if type(start_letter) is not str or type(stop_letter) is not str:
+        raise InvalidRangeError
+
+    if type(start_number) is not int or type(stop_number) is not int:
+        raise InvalidRangeError
+
+    if (not start_letter.isalpha()) or (not stop_letter.isalpha()):
         raise InvalidRangeError
 
     if start_number < 1 or start_number > stop_number:

@@ -1,0 +1,30 @@
+{
+  "chrome://browser/content/browser.xhtml": {
+    "main-window": {
+      "screenX": "219",
+      "screenY": "39",
+      "width": "1280",
+      "height": "923",
+      "sizemode": "maximized"
+    },
+    "sidebar-box": {
+      "sidebarcommand": "",
+      "width": ""
+    },
+    "sidebar-title": {
+      "value": ""
+    }
+  },
+  "chrome://mozapps/content/downloads/unknownContentType.xul": {
+    "unknownContentType": {
+      "screenX": "419",
+      "screenY": "282"
+    }
+  },
+  "chrome://mozapps/content/downloads/unknownContentType.xhtml": {
+    "unknownContentTypeWindow": {
+      "screenX": "453",
+      "screenY": "282"
+    }
+  }
+}

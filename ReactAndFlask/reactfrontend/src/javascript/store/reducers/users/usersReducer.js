@@ -3,21 +3,21 @@ import * as UserConstants from "../../../users/UserConstants";
 
 const initailState = {
 	items:[],
+
 	statusOpen:false,
 	statusSeverity:'',
 	statusMessage:'',
-	searchUsernm:'',
-	searchEml:'',
-	searchDspNm:'',
-	searchPriv:'',
-	deleteUsername:'',
-	viewUser:'',
+
 	csvData:[],
+
 	showDetailedView: false,
 	detailViewLoading:false,
 	originalUsername:'',
 	allDCPrivileges:[],
 	loadingPrivileges:true,
+
+	filters:{},
+	privilege: "",
 };
 
 export default function (state=initailState, action) {
@@ -131,6 +131,11 @@ export default function (state=initailState, action) {
 				statusOpen: false,
 				statusMessage:"",
 				statusSeverity:"",
+			}
+		case UserActionTypes.UPDATE_SEARCH_FITLERS:
+			return {
+				...state,
+				filters: { ...state.filters, [action.payload.target.id]: action.payload.target.value},
 			}
 		default:
 			return state;

@@ -1,57 +1,23 @@
 import React from 'react';
 
-import Button from '@material-ui/core/Button';
-import Grid from '@material-ui/core/Grid';
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
-import InputLabel from '@material-ui/core/InputLabel';
-import FormControl from '@material-ui/core/FormControl';
-import ExpansionPanel from '@material-ui/core/ExpansionPanel';
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
-import TextField from "@material-ui/core/TextField";
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import Typography from '@material-ui/core/Typography';
-import Card from '@material-ui/core/Card';
+import { connect } from "react-redux"
+import PropTypes from "prop-types";
+import {
+    Button,
+    Grid,
+    TextField,
+    Typography,
+    Card
+} from '@material-ui/core';
 
 import PrivilegePicker from "./functions/PrivilegePicker";
+import { updateSearchText, searchUsers } from "../../store/actions/users/userActions";
 
-export default class Filters extends React.Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            filters:{},
-            privilege: "",
-        };
-    }
-
-    updateSearchText(event) {
-        console.log(event.target.id);
-        if (this.state.filters.hasOwnProperty(event.target.id)) {
-            this.state.filters[event.target.id] = event.target.value;
-            this.forceUpdate();
-        } else {
-            this.state.filters[event.target.id] = event.target.value;
-            this.forceUpdate();
-        }
-    }
-
-    search() {
-        console.log(this.state.filters);
-        this.props.search(this.state.filters);
-    }
-
-    updateSelect = (event) => {
-        this.state.filters["privilege"] = event.target.value;
-        this.forceUpdate();
-        this.setState({ privilege: event.target.value });
-    }
-
+class Filters extends React.Component {
     render() {
         return (
-            <Card>
-                <Typography>Search</Typography>
+            <Card elevation={3} padding={3}>
+                <Typography variant="h6">Search</Typography>
                 <Grid
                     container
                     spacing={1}
@@ -67,11 +33,11 @@ export default class Filters extends React.Component {
                             label="Username"
                             placeholder={"Username"}
                             name="username"
-                            onChange={this.updateSearchText.bind(this)}
+                            onChange={(event) => this.props.updateSearchText(event)}
                         />
                     </Grid>
                     <Grid item xs={6}>
-                        <TextField id="display_name" variant="outlined" label="Display Name" name="display_name" onChange={this.updateSearchText.bind(this)}/>
+                        <TextField id="display_name" variant="outlined" label="Display Name" name="display_name" onChange={(event) => this.props.updateSearchText(event)}/>
                     </Grid>
                     <Grid item xs={12}>
                         <TextField
@@ -79,7 +45,7 @@ export default class Filters extends React.Component {
                             variant="outlined"
                             label="Email"
                             name="email"
-                            onChange={this.updateSearchText.bind(this)}
+                            onChange={(event) => this.props.updateSearchText(event)}
                             style={{"width": "100%"}}
                         />
                     </Grid>
@@ -101,7 +67,7 @@ export default class Filters extends React.Component {
                         <Button
                             variant="contained"
                             color="primary"
-                            onClick={this.search.bind(this)}
+                            onClick={() => this.props.searchUsers(this.props.filters)}
                             style={{"width": "100%", "marginTop": "20px"}}
                         >
                             Search
@@ -112,3 +78,14 @@ export default class Filters extends React.Component {
         );
     }
 }
+
+Filters.propTypes = {
+    searchUsers: PropTypes.func.isRequired,
+    updateSearchText: PropTypes.func.isRequired,
+}
+
+const mapStateToProps = state => ({
+	filters: state.usersReducer.filters,
+})
+
+export default connect(mapStateToProps, { updateSearchText, searchUsers })(Filters);

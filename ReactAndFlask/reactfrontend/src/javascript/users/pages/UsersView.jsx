@@ -31,11 +31,11 @@ class UsersView extends React.Component {
                         {(this.props.privilege === Privilege.ADMIN) ? <CreateUser /> : null}
                     </Grid>
                     <Grid item xs={12} sm={6} md={4} lg={6}>
-                        {/*<FilterUser />
+                        <FilterUser />
                     </Grid>
-                    <Grid item xs={12}>
-                        <UsersTable />*/}
-                    </Grid>
+                    {/*<Grid item xs={12}>
+                        <UsersTable />
+                    </Grid>*/}
                 </Grid>
                 <StatusDisplay
                     close={this.props.closeStatus}

@@ -59,6 +59,7 @@ class UserManager:
 
     def search(self, request):
         request_data = request.get_json()
+        print(request_data)
         filters = request_data.get(Constants.FILTER_KEY)
         limit = filters.get(Constants.LIMIT_KEY)
         if limit is None:

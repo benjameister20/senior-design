@@ -132,7 +132,7 @@ class UserManager:
         except:
             raise UserException("Could not create user")
 
-        return self.__add_message_to_JSON(response, "Successfully created user")
+        return self.__add_message_to_JSON(response, "success")
 
     def delete(self, request):
         """Route for deleting users

@@ -19,13 +19,18 @@ export const getPrivileges = () => dispatch => {
 }
 
 export const createUser = (username, password, display_name, email, privileges) => dispatch => {
+	console.log("creating user");
 	axios.post(
 		getURL(Constants.USERS_MAIN_PATH, UserCommand.create),
 		makeCreateJSON(username, password, display_name, email, privileges)
-		).then(response => dispatch({
+		).then(response => {
+			console.log("response");
+			console.log(response);
+			dispatch({
 			type: UserActionTypes.CREATE,
 			payload: response,
-		}));
+		})
+	});
 }
 
 export const editUser = (originalUsername, username, password, display_name, email, privileges) => dispatch => {
@@ -89,7 +94,7 @@ export const updateUserEdited = (event) => dispatch => {
 	});
 }
 
-export const closeShowStatus = () => dispatch => {
+export const closeStatus = () => dispatch => {
 	dispatch({
 		type: UserActionTypes.CLOSE_SHOW_STATUS,
 		payload: false,

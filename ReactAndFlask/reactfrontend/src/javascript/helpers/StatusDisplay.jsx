@@ -1,37 +1,28 @@
-import React from 'react';
+import React, { Component } from 'react'
 
-import IconButton from '@material-ui/core/IconButton';
+import {
+    IconButton,
+    Snackbar
+} from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
-import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 
-
-export default class StatusDisplay extends React.Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-
-        };
-    }
-
+class StatusDisplay extends React.Component {
     render() {
         return (
             <div>
-                <Snackbar open={this.props.open} autoHideDuration={4000} onClose={this.props.closeStatus}>
-                    <MuiAlert elevation={6} variant="filled"
-                        severity={this.props.severity}
-                    >
+                <Snackbar open={this.props.open} autoHideDuration={8000} onClose={() => this.props.close() }>
+                    <MuiAlert elevation={6} variant="filled" severity={this.props.severity} >
                         <div>
-                        {this.props.message}
-                        <IconButton
-                            aria-label="close"
-                            color="inherit"
-                            size="small"
-                            onClick={this.props.closeStatus}
-                        >
-                            <CloseIcon fontSize="inherit" />
-                        </IconButton>
+                            {this.props.message}
+                            <IconButton
+                                aria-label="close"
+                                color="inherit"
+                                size="small"
+                                onClick={() => this.props.close() }
+                            >
+                                <CloseIcon fontSize="inherit" />
+                            </IconButton>
                         </div>
                     </MuiAlert >
                 </Snackbar>
@@ -39,3 +30,5 @@ export default class StatusDisplay extends React.Component {
         )
     }
 }
+
+export default StatusDisplay;

@@ -10,14 +10,9 @@ import UsersTable from '../helpers/UsersTable';
 import StatusDisplay from '../../helpers/StatusDisplay';
 import { Privilege } from '../../enums/privilegeTypes.ts'
 
+import { closeStatus } from "../../store/actions/users/userActions";
+
 class UsersView extends React.Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-        };
-    }
-
     render() {
         return (
             <div>
@@ -33,10 +28,7 @@ class UsersView extends React.Component {
                         <Typography variant="h4">Users</Typography>
                     </Grid>
                     <Grid item xs={12} sm={6} md={4} lg={6}>
-                        {(this.props.privilege === Privilege.ADMIN) ?
-                        (<div>
-                            <CreateUser />
-                        </div>) : null}
+                        {(this.props.privilege === Privilege.ADMIN) ? <CreateUser /> : null}
                     </Grid>
                     <Grid item xs={12} sm={6} md={4} lg={6}>
                         {/*<FilterUser />
@@ -45,10 +37,21 @@ class UsersView extends React.Component {
                         <UsersTable />*/}
                     </Grid>
                 </Grid>
-                <StatusDisplay />
+                <StatusDisplay
+                    close={this.props.closeStatus}
+                    open={this.props.statusOpen}
+                    message={this.props.statusMessage}
+                    severity={this.props.statusSeverity}
+                />
             </div>
         );
     }
 }
 
-export default connect(null, {})(UsersView);
+const mapStateToProps = state => ({
+	statusOpen: state.usersReducer.statusOpen,
+    statusSeverity: state.usersReducer.statusSeverity,
+    statusMessage: state.usersReducer.statusMessage,
+})
+
+export default connect(mapStateToProps, { closeStatus })(UsersView);

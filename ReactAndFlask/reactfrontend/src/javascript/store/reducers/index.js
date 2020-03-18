@@ -3,6 +3,7 @@ import {
 } from "redux";
 
 import usersReducer from "./users/usersReducer";
+import statusReducer from "./status/statusReducer";
 
 const rootReducer = combineReducers({
 	/**
@@ -12,6 +13,7 @@ const rootReducer = combineReducers({
 	 * ...
 	 */
 	usersReducer,
+	statusReducer,
 })
 
 export default rootReducer;

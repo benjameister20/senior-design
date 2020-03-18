@@ -1,24 +1,14 @@
 import React from 'react';
+
 import { connect } from "react-redux"
 import PropTypes from "prop-types";
-
-import axios from "axios";
-
 import {
     TextField,
     Button,
-    ExpansionPanel,
-    ExpansionPanelSummary,
-    ExpansionPanelDetails,
     Typography,
     Grid,
-    Select,
-    MenuItem,
-    InputLabel,
-    FormControl,
     Card,
 } from "@material-ui/core/";
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 import PrivilegePicker from "./functions/PrivilegePicker";
 import { createUser } from "../../store/actions/users/userActions";
@@ -29,7 +19,7 @@ class CreateModal extends React.Component {
 
         this.state = {
             username: "",
-            display_name: "",
+            displayName: "",
             password: "",
             email: "",
             privilege: "",
@@ -37,14 +27,8 @@ class CreateModal extends React.Component {
         };
     }
 
-    resetCreate = (success) => {
-        if (success) {
-            this.setState({username: "", display_name: "", password: "", email: "", privilege: ""});
-        }
-    }
-
     createModel = () => {
-        this.props.createModel(this.state.username, this.state.password, this.state.display_name, this.state.email, this.state.selectedPrivileges);
+        this.props.createUser(this.state.username, this.state.password, this.state.displayName, this.state.email, "admin"/*this.state.selectedPrivileges*/);
     }
 
     updateSelectedPrivileges = (privilege, checked) => {
@@ -63,7 +47,7 @@ class CreateModal extends React.Component {
 
     render() {
         return (
-        <Card elevation={3} padding>
+        <Card elevation={3} padding={3}>
             <Typography variant="h6">Create</Typography>
             <Grid
                 container
@@ -76,7 +60,7 @@ class CreateModal extends React.Component {
                     <TextField id="standard-basic" variant="outlined" label="Username" name="username" value={this.state.username} onChange={(e) => this.setState({ username: e.target.value })}/>
                 </Grid>
                 <Grid item xs={6}>
-                    <TextField id="standard-basic" variant="outlined" label="Display Name" name="display_name" value={this.state.display_name} onChange={(e) => this.setState({ display_name: e.target.value })}/>
+                    <TextField id="standard-basic" variant="outlined" label="Display Name" name="displayName" value={this.state.displayName} onChange={(e) => this.setState({ displayName: e.target.value })}/>
                 </Grid>
                 <Grid item xs={6}>
                     <TextField id="standard-basic" variant="outlined" label="Password" name="password" type="password" value={this.state.password} onChange={(e) => this.setState({ password: e.target.value })}/>
@@ -101,7 +85,7 @@ class CreateModal extends React.Component {
                 >
                     <Button
                         variant="contained"
-                        onClick={this.createModel}
+                        onClick={() => this.createModel()}
                         style={{
                             "width": "100%",
                             "marginTop": "20px",

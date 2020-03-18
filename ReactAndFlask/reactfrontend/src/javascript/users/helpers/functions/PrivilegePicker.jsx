@@ -24,7 +24,7 @@ export default function PrivilegePicker(props) {
 		"Model",
 		"Audit",
 		"Power",
-		"Admin",
+		"admin",
 	]
 
 	return (

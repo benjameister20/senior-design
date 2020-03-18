@@ -128,7 +128,9 @@ export default function (state=initailState, action) {
 		case UserActionTypes.CLOSE_SHOW_STATUS:
 			return {
 				...state,
-				statusOpen: false
+				statusOpen: false,
+				statusMessage:"",
+				statusSeverity:"",
 			}
 		default:
 			return state;

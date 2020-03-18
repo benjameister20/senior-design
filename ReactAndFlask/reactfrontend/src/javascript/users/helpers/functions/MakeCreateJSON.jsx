@@ -6,6 +6,6 @@ export default function makeCreateJSON(username, password, display_name, email, 
 		'password': password,
 		'display_name': display_name,
 		'email': email,
-		'privileges': privileges,
+		'privilege': privileges,
 	}
 }

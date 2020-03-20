@@ -64,6 +64,10 @@ users:
 test:
 	python -m pytest ReactAndFlask/flask-backend/app -p no:warnings --cov=ReactAndFlask/flask-backend/app --cov-report term-missing:skip-covered
 
+.PHONY: test-ui
+test-ui:
+	cd ReactAndFlask/reactfrontend && ./node_modules/.bin/nightwatch src/tests
+
 .PHONY: clean
 clean:
 	rm -rf .vscode/

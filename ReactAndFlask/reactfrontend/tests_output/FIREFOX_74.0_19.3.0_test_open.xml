@@ -5,9 +5,9 @@
 
   <testsuite name="test_open"
     errors="0" failures="0" hostname="" id="" package="test_open" skipped="0"
-    tests="1" time="7.200" timestamp="">
+    tests="1" time="7.772" timestamp="">
 
-    <testcase name="Test opening site" classname="test_open" time="7.200" assertions="5">
+    <testcase name="Test opening site" classname="test_open" time="7.772" assertions="5">
 
 
 
@@ -21,6 +21,12 @@
     </testcase>
 
 
+
+    <system-err>
+      [0;31m  NoSuchElementError: An error occurred while running .isVisible() command on &lt;button#sign-in-button&gt;: undefined; undefined
+   {&#34;value&#34;:[]}[0m
+[0;90m       at processTicksAndRejections (internal/process/task_queues.js:97:5)[0m
+    </system-err>
 
 
 

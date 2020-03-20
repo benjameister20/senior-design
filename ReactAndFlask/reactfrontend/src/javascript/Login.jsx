@@ -207,7 +207,7 @@ export default class Login extends React.Component {
                                     </Grid>
                                     <Grid item xs={12}>
                                         <Button
-                                            id="sign-in-button"
+                                            className="sign-in"
                                             onClick={this.submitCredentials}
                                             variant="contained"
                                             color="primary"

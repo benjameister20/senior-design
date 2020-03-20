@@ -159,6 +159,7 @@ class CreateModel extends React.Component {
                     </Grid>
                     <Grid item xs={12}>
                         <Button
+                            className="create-model"
                             variant="contained"
                             style={{
                                 width: "100%",

@@ -5,17 +5,17 @@
 
   <testsuite name="test_aaa_login"
     errors="0" failures="1" hostname="" id="" package="test_aaa_login" skipped="0"
-    tests="1" time="10.73" timestamp="">
+    tests="1" time="7.806" timestamp="">
 
-    <testcase name="Test login" classname="test_aaa_login" time="10.73" assertions="5">
-
-
+    <testcase name="Test login" classname="test_aaa_login" time="7.806" assertions="5">
 
 
 
 
 
-      <failure message="Timed out while waiting for element &lt;div#homepage&gt; to be present for 5000 milliseconds. - expected [0;32m&#34;visible&#34;[0m but got: [0;31m&#34;not found&#34;[0m [0;90m(5104ms)[0m">    at Object.Test login (/Users/trevorstevenson/Developer/SeniorDesign/senior-design/ReactAndFlask/reactfrontend/src/tests/test_aaa_login.js:15:14)
+
+
+      <failure message="Timed out while waiting for element &lt;div#homepage&gt; to be present for 5000 milliseconds. - expected [0;32m&#34;visible&#34;[0m but got: [0;31m&#34;not found&#34;[0m [0;90m(5084ms)[0m">    at Object.Test login (/Users/trevorstevenson/Developer/SeniorDesign/senior-design/ReactAndFlask/reactfrontend/src/tests/test_aaa_login.js:15:14)
     at processTicksAndRejections (internal/process/task_queues.js:97:5)</failure>
 
 

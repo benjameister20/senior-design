@@ -88,3 +88,10 @@ deploy-heroku:
 	mkdir ~/ReactAndFlask/flask-backend/templates/
 	cp -r ~/ReactAndFlask/reactfrontend/build/static/* ~/ReactAndFlask/flask-backend/static/
 	cp ~/ReactAndFlask/reactfrontend/build/index.html ~/ReactAndFlask/flask-backend/templates/index.html
+
+.PHONY: deploy
+deploy:
+	cd ./ReactAndFlask/reactfrontend && yarn install
+	cd ./ReactAndFlask/reactfrontend && yarn build
+	cp -r ./ReactAndFlask/reactfrontend/build/static/* ./ReactAndFlask/flask-backend/static/
+	cp ./ReactAndFlask/reactfrontend/build/index.html ./ReactAndFlask/flask-backend/templates/index.html

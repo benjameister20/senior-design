@@ -7,7 +7,7 @@ export const testServerEndpoint = 'https://parseltongue-finishinge-lfw68m.heroku
 export const devServerEndpoint = 'https://parseltongue-dev.herokuapp.com/';
 export const prodServerEndpoint = 'https://parseltongue-prod.herokuapp.com/';
 
-export const serverEndpoint = 'https://parseltongue-test.herokuapp.com';
+export const serverEndpoint = 'https://parseltongue-test.herokuapp.com/';
 
 export const RackX = [
     'A', 'B', 'C', 'D', 'E',

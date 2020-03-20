@@ -1,20 +1,24 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuites errors="0"
+<testsuites errors="1"
             failures="0"
             tests="1">
 
-  <testsuite name="test_smoke"
-    errors="0" failures="0" hostname="" id="" package="test_smoke" skipped="0"
-    tests="1" time="3.750" timestamp="">
+  <testsuite name="login"
+    errors="1" failures="0" hostname="" id="" package="login" skipped="0"
+    tests="1" time="0.001000" timestamp="">
 
-    <testcase name="Test opening site" classname="test_smoke" time="3.750" assertions="4">
-
-
-
-
-
-
-
+    <testcase name="command" classname="login" time="0.001000" assertions="0">
+      <error message="this.maximizeWindow is not a function" type="error">TypeError: this.maximizeWindow is not a function
+    at Object.module.exports.command (/Users/trevorstevenson/Developer/SeniorDesign/senior-design/ReactAndFlask/reactfrontend/src/tests/login.js:2:17)
+    at Context.call (/Users/trevorstevenson/Developer/SeniorDesign/senior-design/ReactAndFlask/reactfrontend/node_modules/nightwatch/lib/testsuite/context.js:379:35)
+    at TestCase.run (/Users/trevorstevenson/Developer/SeniorDesign/senior-design/ReactAndFlask/reactfrontend/node_modules/nightwatch/lib/testsuite/testcase.js:49:31)
+    at Runnable.__runFn (/Users/trevorstevenson/Developer/SeniorDesign/senior-design/ReactAndFlask/reactfrontend/node_modules/nightwatch/lib/testsuite/index.js:374:80)
+    at Runnable.run (/Users/trevorstevenson/Developer/SeniorDesign/senior-design/ReactAndFlask/reactfrontend/node_modules/nightwatch/lib/testsuite/runnable.js:123:21)
+    at TestSuite.createRunnable (/Users/trevorstevenson/Developer/SeniorDesign/senior-design/ReactAndFlask/reactfrontend/node_modules/nightwatch/lib/testsuite/index.js:441:33)
+    at TestSuite.handleRunnable (/Users/trevorstevenson/Developer/SeniorDesign/senior-design/ReactAndFlask/reactfrontend/node_modules/nightwatch/lib/testsuite/index.js:446:18)
+    at /Users/trevorstevenson/Developer/SeniorDesign/senior-design/ReactAndFlask/reactfrontend/node_modules/nightwatch/lib/testsuite/index.js:374:21
+    at processTicksAndRejections (internal/process/task_queues.js:97:5)
+    at async DefaultRunner.runTestSuite (/Users/trevorstevenson/Developer/SeniorDesign/senior-design/ReactAndFlask/reactfrontend/node_modules/nightwatch/lib/runner/test-runners/default.js:68:7)</error>
 
     </testcase>
 

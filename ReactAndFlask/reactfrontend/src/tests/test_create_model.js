@@ -1,12 +1,9 @@
 module.exports = {
     'Test create model' : function (browser) {
         browser
-            .maximizeWindow()
-            .url('https://parseltongue-test.herokuapp.com')
-            .waitForElementVisible('body')
-            .assert.titleContains('Hyposoft')
+            .login()
             .assert.visible('button.create-model')
-            .useXpath().click("//*[contains(text(),'Create')]")
+            .click('button#create-model')
             .pause(100)
             .setValue('input#select-vendor', 'Dell')
             .end();

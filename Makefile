@@ -66,7 +66,7 @@ test:
 
 .PHONY: test-ui
 test-ui:
-	cd ReactAndFlask/reactfrontend && ./node_modules/.bin/nightwatch src/tests
+	cd ReactAndFlask/reactfrontend && ./node_modules/.bin/nightwatch
 
 .PHONY: clean
 clean:

@@ -6,7 +6,7 @@ module.exports = {
             .waitForElementVisible('body')
             .assert.titleContains('Hyposoft')
             .assert.visible('button.create-model')
-            .click('button.create-model')
+            .useXpath().click("//*[contains(text(),'Create')]")
             .pause(100)
             .setValue('input#select-vendor', 'Dell')
             .end();

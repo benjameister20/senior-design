@@ -10,8 +10,8 @@ module.exports = {
             .pause(100)
             .setValue('input#password-input', 'P8ssw0rd1!@')
             .pause(100)
-            .assert.visible('button.sign-in')
-            .click('button.sign-in')
+            .useXpath().assert.visible("//*[contains(text(),'Sign In')]")
+            .click("//*[contains(text(), 'Sign In')]").useCss()
             .waitForElementVisible('div#homepage')
             .assert.visible('div#hompage')
             .end();

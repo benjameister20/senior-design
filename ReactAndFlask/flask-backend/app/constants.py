@@ -88,3 +88,5 @@ class Constants:
     # Decommission Constants
     DECOM_USER_KEY = "decommission_user"
     TIMESTAMP_KEY = "timestamp"
+    START_DATE_KEY = "start_date"
+    END_DATE_KEY = "end_date"

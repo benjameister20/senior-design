@@ -55,7 +55,23 @@ class DecommissionManager:
         except Exception as e:
             print(str(e))
             raise InvalidInputsError(
-                "An error occurred when attempting to create the asset."
+                "An error occurred when attempting to decommission the asset."
+            )
+
+    def get_decommissions(self, filter):
+        decommission_user = filter.get(Constants.DECOM_USER_KEY)
+        start_date = filter.get(Constants.START_DATE_KEY)
+        end_date = filter.get(Constants.END_DATE_KEY)
+
+        try:
+            decommission_list = self.decommission_table.get_decommissions_with_filters(
+                user=decommission_user, start_date=start_date, end_date=end_date,
+            )
+            return decommission_list
+        except Exception as e:
+            print(str(e))
+            raise InvalidInputsError(
+                "An error occurred when retrieving decommissioned assets."
             )
 
     def make_decommission(

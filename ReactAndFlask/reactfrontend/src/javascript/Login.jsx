@@ -1,14 +1,9 @@
 import React from 'react';
-import Grid from '@material-ui/core/Grid';
-import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
+import { Grid, Button, TextField, Card, CardContent, Typography } from '@material-ui/core';
 import axios from 'axios';
 import getURL from './helpers/functions/GetURL';
 import { Privilege } from './enums/privilegeTypes.ts'
 import StatusDisplay from './helpers/StatusDisplay';
-import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
-import Typography from '@material-ui/core/Typography';
 import logo from '../images/logo.png';
 import ShibLogin from './ShibLogin';
 import * as Constants from "./Constants";
@@ -21,13 +16,20 @@ export default class Login extends React.Component {
         super(props);
 
         this.state = {
+            // Login info
             username:'',
             password:'',
-            statusMessage:'',
-            showStatus:false,
-            statusSeverity:'info',
-            initialized:false,
-            oauth:false,
+
+            // Snackbar
+            statusMessage: '',
+            showStatus: false,
+            statusSeverity: 'info',
+
+            // If view has been initialized
+            initialized: false,
+
+            // OAuth NetID login
+            oauth: false,
         };
 
         this.closeShowStatus = this.closeShowStatus.bind(this);
@@ -44,47 +46,56 @@ export default class Login extends React.Component {
         } catch(e) {
             console.log("tried:")
         }
+
         this.setState({ initialized: true });
     }
 
+    // Login and send credentials to backend
     submitCredentials() {
         axios.post(
             getURL(loginMainPath, 'authenticate'), {
                 username: this.state.username,
                 password: this.state.password,
             }).then(response => {
-                console.log(response);
-                var valid = response.data['message'];
-                if (valid === 'success') {
+                const message = response.data['message'];
+                if (message === 'success') {
                     this.setState({ message: '' });
                     this.props.loginFunc(response.data['token'], this.state.username, response.data['privilege']);
                 } else {
-                    this.setState({ showStatus:true, statusMessage:response.data['message'] });
+                    this.setState({ showStatus: true, statusMessage: message });
                 }
             });
         //this.props.loginFunc('token', "Administrator", Privilege.ADMIN);
     }
 
+    // Set the username
     updateUsername(event) {
         this.setState({ username: event.target.value })
     }
 
+    // Set the password
     updatePassword(event) {
         this.setState({ password: event.target.value })
     }
 
+    // Close snackbar
     closeShowStatus() {
         this.setState({ showStatus: false })
     }
 
+    // Fired when key is pressed, login on enter
     onKeyPressed(event) {
         if (event.key === 'Enter') {
+            // Intercept key event
             event.preventDefault();
             event.stopPropagation();
+
+            // Login
             this.submitCredentials();
         }
     }
 
+    // Get Duke info from colab API
     getDukeCredentials = (token) => {
         axios.get('https://api.colab.duke.edu/identity/v1/', {
             headers: {
@@ -93,42 +104,42 @@ export default class Login extends React.Component {
             }
         }).then(response => {
             axios.post(
-                getURL(loginMainPath, 'oauth'),
-                {
-                    "username":response.data.netid,
-                    "email":response.data.mail,
-                    "display_name":response.data.displayName,
-                    "client_id":Constants.CLIENT_ID,
-                    "token":token,
-                }
-                ).then(response => {
-                    console.log("response:")
-                    console.log(response);
-                    var valid = response.data['message'];
+                getURL(loginMainPath, 'oauth'), {
+                    "username": response.data.netid,
+                    "email": response.data.mail,
+                    "display_name": response.data.displayName,
+                    "client_id": Constants.CLIENT_ID,
+                    "token": token,
+                }).then(response => {
+                    const message = response.data['message'];
                     if (response.status === Constants.HTTPS_STATUS_OK) {
                         this.setState({
-                            username:'',
-                            password:'',
-                            statusMessage:'',
-                            showStatus:false,
-                            statusSeverity:'info',
-                            initialized:false,
+                            username: '',
+                            password: '',
+
+                            statusMessage: '',
+                            showStatus: false,
+                            statusSeverity:' info',
+
+                            initialized: false,
+
                             oauth:false,
                          });
+
                         this.props.loginFuncOAuth(response.data['token'], response.data.username, response.data['privilege']);
                     } else {
-                        this.setState({ showStatus:true, statusMessage:response.data['message'] });
+                        this.setState({ showStatus: true, statusMessage: message });
                     }
             });
         });
     }
 
+    // Redirect to shibboleth login
     loginWithOAuth = () => {
         window.location = Constants.SHIBBOLETH_LOGIN;
     }
 
-
-
+    // Render view
     render() {
         return (
             <div>
@@ -148,16 +159,10 @@ export default class Login extends React.Component {
                     }}
                 >
                     <Grid item xs={12}>
-                        <img src={logo} style={{height: "200px", "marginTop": "50px"}} alt="Hyposoft" />
+                        <img src={logo} style={{ height: "200px", "marginTop": "50px" }} alt="Hyposoft" />
                     </Grid>
                     <Grid item xs={12}>
-                        <Card
-                            style={
-                                {
-                                    minWidth: '20vw',
-                                }
-                            }
-                        >
+                        <Card style={{ minWidth: '20vw' }}>
                             <CardContent>
                                 <Grid
                                     container

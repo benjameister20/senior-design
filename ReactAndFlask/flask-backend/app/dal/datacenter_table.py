@@ -88,6 +88,16 @@ class DatacenterTable:
 
         return datacenter.identifier
 
+    def get_datacenter_id_by_abbreviation(self, abbreviation: str) -> Optional[int]:
+        datacenter: DatacenterEntry = DatacenterEntry.query.filter_by(
+            abbreviation=abbreviation
+        ).first()
+        if datacenter is None:
+            print("no dc found")
+            return None
+
+        return datacenter.identifier
+
     def get_datacenter_id_by_abbrev(self, abbreviation: str) -> Optional[int]:
         datacenter: DatacenterEntry = DatacenterEntry.query.filter_by(
             abbreviation=abbreviation

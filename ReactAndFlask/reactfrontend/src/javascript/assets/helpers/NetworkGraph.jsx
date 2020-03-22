@@ -50,8 +50,9 @@ function getGraph(primaryHosts, host) {
 
     try {
         console.log("nodes and edges");
+        console.log(primaryHosts);
         Object.entries(primaryHosts).map(([primaryHost, secondaryHosts]) => {
-            if (primaryHost !== "message" && primaryHost !=="") {
+            if (primaryHost !== "message" && primaryHost !=="" && primaryHost!=="metadata") {
                 if (hostnameMapping[primaryHost] !== undefined) {
                     edges.push({ from: hostID, to:hostnameMapping[primaryHost] });
                     edges.push({ from: hostnameMapping[primaryHost], to:hostID });

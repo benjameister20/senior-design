@@ -280,9 +280,15 @@ class EditAsset extends React.Component {
         axios.post(
             getURL(Constants.USERS_MAIN_PATH, searchPath), emptySearch).then(
             response => {
-                var users = [];
-                response.data.users.map(user => users.push(user.username + "/" + user.display_name));
-                this.setState({ loadingOwners: false, ownerList: users });
+                try {
+                    console.log(response);
+                    var users = [];
+                    response.data.users.map(user => users.push(user.username + "/" + user.display_name));
+                    this.setState({ loadingOwners: false, ownerList: users });
+                } catch {
+                    this.setState({ loadingOwners: false})
+                }
+
             });
     }
 
@@ -623,6 +629,15 @@ class EditAsset extends React.Component {
                 <Grid container spacing={3}>
                     <Grid item xs={3}>
                         <Tooltip placement="top" open={this.state.inputs.model.Tooltip} title={this.state.inputs.model.description}>
+                            {this.props.disabled ?
+                            <TextField
+                                label={this.state.inputs.model.label}
+                                name={this.state.inputs.model.name}
+                                variant="outlined"
+                                fullWidth
+                                value={this.state.model}
+                                disabled
+                            /> :
                             <Autocomplete
                                 id="select-model"
                                 options={this.state.modelList}
@@ -640,11 +655,20 @@ class EditAsset extends React.Component {
                                     required
                                 />
                                 )}
-                            />
+                            />}
                         </Tooltip>
                     </Grid>
                     <Grid item xs={3}>
                         <Tooltip placement="top" open={this.state.inputs.owner.Tooltip} title={this.state.inputs.owner.description}>
+                            {this.props.disabled ?
+                            <TextField
+                                label={this.state.inputs.owner.label}
+                                name={this.state.inputs.owner.name}
+                                variant="outlined"
+                                fullWidth
+                                value={this.state.owner}
+                                disabled
+                            /> :
                             <Autocomplete
                                 id="select-owner"
                                 options={this.state.ownerList}
@@ -663,11 +687,20 @@ class EditAsset extends React.Component {
                                     disabled={this.props.disabled}
                                 />
                                 )}
-                            />
+                            />}
                         </Tooltip>
                     </Grid>
                     <Grid item xs={3}>
                         <Tooltip placement="top" open={this.state.inputs.datacenter.Tooltip} title={this.state.inputs.datacenter.description}>
+                            {this.props.disabled ?
+                            <TextField
+                                label={this.state.inputs.datacenter.label}
+                                name={this.state.inputs.datacenter.name}
+                                variant="outlined"
+                                fullWidth
+                                value={this.state.datacenter_name}
+                                disabled
+                            /> :
                             <Autocomplete
                                 id="input-datacenter"
                                 options={this.state.datacenterList}
@@ -687,7 +720,7 @@ class EditAsset extends React.Component {
 
                                 />
                                 )}
-                            />
+                            />}
                         </Tooltip>
                     </Grid>
                     <Grid item xs={3}>
@@ -778,6 +811,15 @@ class EditAsset extends React.Component {
                             </Grid>
                             <Grid item xs={3}>
                                 <Tooltip placement="top" open={this.state.inputs.networkConnections.Tooltip} title={this.state.inputs.networkConnections.description}>
+                                {this.props.disabled ?
+                                    <TextField
+                                        label={"Connection Hostname"}
+                                        name={"Connection Hostname"}
+                                        variant="outlined"
+                                        fullWidth
+                                        value={this.getConnectingHostname(networkPort)}
+                                        disabled
+                                    /> :
                                     <Autocomplete
                                         id="input-network-ports-hostname"
                                         options={this.state.assetNumList}
@@ -795,11 +837,20 @@ class EditAsset extends React.Component {
                                                 fullWidth
                                             />
                                         )}
-                                    />
+                                    />}
                                 </Tooltip>
                             </Grid>
                             <Grid item xs={3}>
                                 <Tooltip placement="top" open={this.state.inputs.networkConnections.Tooltip} title={this.state.inputs.networkConnections.description}>
+                                    {this.props.disabled ?
+                                    <TextField
+                                        label={"Connection Port"}
+                                        name={"Connection Port"}
+                                        variant="outlined"
+                                        fullWidth
+                                        value={this.getConnectionPort(networkPort)}
+                                        disabled
+                                    /> :
                                     <Autocomplete
                                         id="input-network-ports-connection-port"
                                         options={this.state.portOptions}
@@ -817,7 +868,7 @@ class EditAsset extends React.Component {
                                                 fullWidth
                                             />
                                         )}
-                                    />
+                                    />}
                                 </Tooltip>
                             </Grid>
                         </Grid>
@@ -849,18 +900,21 @@ class EditAsset extends React.Component {
                                             control={<Radio color="primary" />}
                                             label="Left"
                                             labelPlacement="bottom"
+                                            disabled={this.props.disabled}
                                         />
                                         <FormControlLabel
                                             value={right}
                                             control={<Radio color="primary" />}
                                             label="Right"
                                             labelPlacement="bottom"
+                                            disabled={this.props.disabled}
                                         />
                                         <FormControlLabel
                                             value={off}
                                             control={<Radio color="primary" />}
                                             label="No Connection"
                                             labelPlacement="bottom"
+                                            disabled={this.props.disabled}
                                         />
                                     </RadioGroup>
                                 </FormControl>
@@ -872,6 +926,7 @@ class EditAsset extends React.Component {
                                         value={(this.state.power_connections===null) ? 1 : (this.state.power_connections[k]===undefined?1:this.state.power_connections[k])}
                                         InputProps={{ inputProps: { min: 1, max: 24} }}
                                         onChange={(event) => {this.updatePowerPort(event, k)} }
+                                        disabled={this.props.disabled}
                                     />
                                     <FormHelperText>Power Port Number</FormHelperText>
                                 </Grid>
@@ -890,9 +945,11 @@ class EditAsset extends React.Component {
                                 multiline={true}
                                 fullWidth
                                 defaultValue={this.props.defaultValues.comment}
+                                disabled={this.props.disabled}
                             />
                     </Grid>
                     <Grid item xs={6} />
+                    {this.props.disabled ? null:
                     <Grid item xs={1}>
                         <Button
                             variant="contained"
@@ -901,7 +958,8 @@ class EditAsset extends React.Component {
                         >
                             Save
                         </Button>
-                    </Grid>
+                    </Grid>}
+                    {this.props.disabled ? null:
                     <Grid item xs={9}>
                         <Button
                             variant="contained"
@@ -910,7 +968,7 @@ class EditAsset extends React.Component {
                         >
                             Delete
                         </Button>
-                    </Grid>
+                    </Grid>}
                 </Grid></div></form>}
                 {this.state.statusOpen ?
                 <Alert

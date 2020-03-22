@@ -63,6 +63,7 @@ class DatacenterView extends React.Component {
             editDCName:"",
             editDCAbbr:"",
             selectedDatacenter: "",
+            fullDatacenter: {},
             racks: {},
         };
     }
@@ -75,8 +76,13 @@ class DatacenterView extends React.Component {
         this.setState({ loadingDCList:true });
         axios.get(getURL(Constants.DATACENTERS_MAIN_PATH, DatacenterCommand.GET_ALL_DATACENTERS)).then(
             response => {
-                this.setState({ datacentersList: response.data.datacenters, loadingDCList:false, selectedDatacenter: response.data.datacenters[0] });
-                this.getAllRacks(response.data.datacenters[0], true);
+                console.log(response.data.datacenters);
+                var datacenter = response.data.datacenters[0];
+                console.log(datacenter);
+                var name = datacenter === undefined ? "" : datacenter.name;
+                console.log(name);
+                this.setState({ datacentersList: response.data.datacenters, loadingDCList:false, selectedDatacenter: name, fullDatacenter: datacenter });
+                this.getAllRacks(name, true);
             }
         );
     }
@@ -147,7 +153,7 @@ class DatacenterView extends React.Component {
                 'stop_letter': rack2[0],
                 'start_number': rack1.substring(1),
                 'stop_number': rack2.substring(1),
-                "datacenter_name": this.state.selectedDatacenter.name,
+                "datacenter_name": this.state.selectedDatacenter,
             }
             ).then(response => {
                 if (response.data.message === 'success') {
@@ -161,13 +167,13 @@ class DatacenterView extends React.Component {
                 } else {
                     this.setState({ showStatus: true, statusMessage: response.data.message, statusSeverity:"error" })
                 }
-                this.getAllRacks(this.state.selectedDatacenter.name, false);
+                this.getAllRacks(this.state.selectedDatacenter, false);
             });
     }
 
     getAllRacks = (datacenter, showSnack) => {
         axios.post(getURL(racksMainPath, RackCommand.GET_ALL_RACKS), {
-            "datacenter_name": datacenter.name
+            "datacenter_name": datacenter
         }).then(response => {
             console.log(response.data.racks);
             var racks = {};
@@ -195,7 +201,7 @@ class DatacenterView extends React.Component {
     }
 
     updateDatacenter = (event) => {
-        this.setState({ selectedDatacenter: event.target.value }, this.getAllRacks(event.target.value, true));
+        this.setState({ selectedDatacenter: event.target.value.name, fullDatacenter: event.target.value }, this.getAllRacks(event.target.value.name, true));
     }
 
     render() {
@@ -217,7 +223,7 @@ class DatacenterView extends React.Component {
                                 Datacenters
                             </Typography>
                         </Grid>
-                        {this.props.privilege === Privilege.ADMIN ? <CreateDatacenter search={this.getDatacenters} selectedDatacenter={this.state.selectedDatacenter} selectDatacenter={this.updateDatacenter} datacenterList={this.state.datacentersList} /> : null }
+                        <CreateDatacenter disabled={this.props.disabled} search={this.getDatacenters} selectedDatacenter={this.state.selectedDatacenter} dc={this.state.fullDatacenter} selectDatacenter={this.updateDatacenter} datacenterList={this.state.datacentersList} />
                         {this.state.loadingDCList ?
                         <div className={classes.progress}><CircularProgress /></div> :
 
@@ -230,7 +236,10 @@ class DatacenterView extends React.Component {
                             editDatacenter={this.openEditDatacenter}
                             selectedDatacenter={this.state.selectedDatacenter}
                             updateRacks={this.updateRacks}
-                        /></Grid>}
+                            disabled={this.props.disabled}
+                            dc={this.state.fullDatacenter}
+                            />
+                        </Grid>}
                         <Grid item xs={6}>
                         <EditDatacenter
                             show={this.state.showEditDC}
@@ -260,18 +269,12 @@ class DatacenterView extends React.Component {
                     >
                     <Grid item xs={12}>
                         <RacksView
-                            privilege={this.props.privilege}
-                            datacenter={this.state.selectedDatacenter.name}
+                            disabled={this.props.disabled}
+                            datacenter={this.state.selectedDatacenter}
                             racks={this.state.racks}
                         />
                     </Grid>
                     </Grid>
-                    <StatusDisplay
-                        open={this.state.showStatus}
-                        severity={this.state.statusSeverity}
-                        closeStatus={this.closeShowStatus}
-                        message={this.state.statusMessage}
-                    />
                     <StatusDisplay
                         open={this.state.showStatus}
                         severity={this.state.statusSeverity}

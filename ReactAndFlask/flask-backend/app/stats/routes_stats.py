@@ -42,7 +42,10 @@ def generate_report():
         return addMessageToJSON(returnJSON, str(e))
     except Exception as e:
         print(e)
-        return addMessageToJSON(returnJSON, "shit")
+        return addMessageToJSON(
+            returnJSON,
+            "Could not generate a report. Please make sure there is at least one datacenter with racks.",
+        )
 
 
 def createJSON() -> dict:

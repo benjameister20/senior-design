@@ -433,8 +433,7 @@ class InstanceManager:
         self.rack_table.edit_rack(rack)
         return Constants.API_SUCCESS
 
-    def get_network_neighborhood(self, asset_data):
-        asset_number = self.check_null(asset_data[Constants.ASSET_NUMBER_KEY])
+    def get_network_neighborhood(self, asset_number):
         if asset_number is None or asset_number == "":
             raise InvalidInputsError("No asset number found in the request.")
 

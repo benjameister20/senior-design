@@ -1,6 +1,7 @@
 import json
 from typing import List
 
+from app.constants import Constants
 from app.decorators.auth import requires_auth, requires_role
 from app.decorators.logs import log
 from app.exceptions.InvalidInputsException import InvalidInputsError
@@ -216,8 +217,10 @@ def get_network_neighborhood():
 
     try:
         asset_data = request.get_json()
-        returnJSON = INSTANCE_MANAGER.get_network_neighborhood(asset_data)
-        return addMessageToJSON(returnJSON, "success")
+        returnJSON = INSTANCE_MANAGER.get_network_neighborhood(
+            asset_data[Constants.ASSET_NUMBER_KEY]
+        )
+        return addMessageToJSON(returnJSON, Constants.API_SUCCESS)
     except InvalidInputsError as e:
         return addMessageToJSON(returnJSON, e.message)
 

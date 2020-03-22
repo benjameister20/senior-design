@@ -18,12 +18,13 @@ class DecommissionManager:
     def decommission_asset(self, asset_data):
         try:
             asset_number = self.check_null(asset_data[Constants.ASSET_NUMBER_KEY])
-            decommission_user = self.check_null(asset_data[Constants.USERNAME_KEY])
+            decommission_user = self.check_null(asset_data[Constants.DECOM_USER_KEY])
 
             timestamp = datetime.date.today()
 
             try:
                 asset = self.instance_table.get_instance_by_asset_number(asset_number)
+                print("got asset")
                 network_neighborhood = self.instance_manager.get_network_neighborhood(
                     asset_number
                 )
@@ -41,14 +42,14 @@ class DecommissionManager:
 
             try:
                 self.decommission_table.add_decommission(decommission)
-                self.instance_table.delete_instance_by_asset_number(asset_number)
+                asset_data = {
+                    Constants.ASSET_NUMBER_KEY: asset_number,
+                }
+                self.instance_manager.delete_instance(asset_data)
             except:
                 raise InvalidInputsError(
                     "An error occurred when attempting to decommission the asset."
                 )
-
-            # Remove network/power connections
-
         except InvalidInputsError as e:
             print(e.message)
             raise InvalidInputsError(e.message)

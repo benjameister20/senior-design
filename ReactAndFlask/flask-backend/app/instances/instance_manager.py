@@ -444,6 +444,8 @@ class InstanceManager:
         connections_dict = {}
         for port in asset.network_connections:
             hostname = asset.network_connections[port]["connection_hostname"]
+            if hostname is None or hostname == "":
+                continue
             connected_asset = self.table.get_instance_by_hostname(hostname)
             if connected_asset is None:
                 raise InvalidInputsError(

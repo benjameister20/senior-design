@@ -85,7 +85,7 @@ class DecommissionTable:
         """ Get a list of all decommissioned assets containing the given filters """
         conditions = []
         if user is not None and user != "":
-            conditions.append(DecommissionEntry.decommission_user == user)
+            conditions.append(DecommissionEntry.decommission_user.contains(user))
         if start_date is not None and start_date != "":
             conditions.append(DecommissionEntry.timestamp >= start_date)
         if end_date is not None and end_date != "":

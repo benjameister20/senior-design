@@ -1,7 +1,6 @@
 from typing import List
 
 from app.decommissions.decommission_manager import DecommissionManager
-from app.decorators.auth import requires_auth
 from app.exceptions.InvalidInputsException import InvalidInputsError
 from app.logging.logger import Logger
 from flask import Blueprint, request
@@ -21,7 +20,7 @@ def test():
 
 
 @decommissions.route("/decommissions/decommission_asset", methods=["POST"])
-@requires_auth(request)
+# @requires_auth(request)
 def decommission_asset():
     """ route to decommissioning an asset """
     global DECOMMISSION_MANAGER
@@ -36,7 +35,7 @@ def decommission_asset():
 
 
 @decommissions.route("/decommissions/search", methods=["POST"])
-@requires_auth(request)
+# @requires_auth(request)
 def search():
     """ Route for searching decommissions """
     global DECOMMISSION_MANAGER
@@ -51,11 +50,7 @@ def search():
         decommission_list = DECOMMISSION_MANAGER.get_decommissions(filter)
         returnJSON = addDecommissionTOJSON(
             addMessageToJSON(returnJSON, "success"),
-            list(
-                map(
-                    lambda x: x.make_json_with_model_and_datacenter(), decommission_list
-                )
-            ),
+            list(map(lambda x: x.make_json(), decommission_list)),
         )
         return returnJSON
     except InvalidInputsError as e:

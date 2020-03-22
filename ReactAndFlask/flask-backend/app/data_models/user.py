@@ -15,13 +15,14 @@ class User:
     """
 
     def __init__(
-        self, username: str, display_name: str, email: str, password, privilege: str,
+        self, username: str, display_name: str, email: str, password, privilege: JSON
     ) -> None:
         self.username: str = username
         self.display_name: str = display_name
         self.email: str = email
         self.password = password
-        self.privilege: str = privilege
+        # self.privilege: str = privilege
+        self.privilege: JSON = privilege
 
     def make_json(self) -> JSON:
         return {
@@ -39,6 +40,11 @@ class User:
         is_username = self.username == user.username
         is_email = self.email == user.email
         is_display_name = self.display_name == user.display_name
-        is_privilege = self.privilege == user.privilege
+        # is_privilege = self.privilege == user.privilege
+        is_privilege = True
+        for key in self.privilege:
+            if self.privilege[key] != user.privilege[key]:
+                is_privilege = False
+                break
 
         return is_username and is_email and is_display_name and is_privilege

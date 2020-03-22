@@ -14,6 +14,7 @@ from app.exceptions.UserExceptions import (
     UserException,
     UsernameTakenError,
 )
+from app.permissions.permissions_constants import PermissionConstants
 from app.users.authentication import AuthManager
 from app.users.validator import Validator
 
@@ -39,6 +40,23 @@ class UserManager:
 
     @staticmethod
     def __make_user_from_json(json) -> User:
+        json.get(Constants.PRIVILEGE_KEY)
+
+        # if json.get(Constants.USERNAME_KEY) is None:
+        #     raise TypeError("Username cannot be None. Requires type str.")
+
+        # if json.get(Constants.DISPLAY_NAME_KEY) is None:
+        #     raise TypeError("Username cannot be None. Requires type str.")
+
+        # if json.get(Constants.EMAIL_KEY) is None:
+        #     raise TypeError("Username cannot be None. Requires type str.")
+
+        # if json.get(Constants.PASSWORD_KEY) is None:
+        #     raise TypeError("Username cannot be None. Requires type str.")
+
+        # if json.get(Constants.PRIVILEGE_KEY) is None:
+        #     raise TypeError("Username cannot be None. Requires type dict.")
+
         return User(
             username=json.get(Constants.USERNAME_KEY),
             display_name=json.get(Constants.DISPLAY_NAME_KEY),
@@ -104,7 +122,7 @@ class UserManager:
         response = {}
 
         request_data = request.get_json()
-        print(request_data)
+        # print(request_data)
         try:
             username = request_data.get(Constants.USERNAME_KEY)
             password = request_data.get(Constants.PASSWORD_KEY)
@@ -197,7 +215,10 @@ class UserManager:
         self.USER_TABLE.delete_user(old_user)
         self.USER_TABLE.add_user(updated_user)
 
-        if old_user.privilege == "admin" and updated_user.privilege != "admin":
+        if (
+            old_user.privilege[PermissionConstants.ADMIN] == True
+            and updated_user.privilege[PermissionConstants.ADMIN] != True
+        ):
             return self.__add_message_to_JSON(
                 response,
                 f"Success, Demotion to user privilege will take effect within the next {self.AUTH_MANAGER.TOKEN_EXP_DAYS} Days, {self.AUTH_MANAGER.TOKEN_EXP_HOURS} Hours, {self.AUTH_MANAGER.TOKEN_EXP_MINUTES} Minutes, and {self.AUTH_MANAGER.TOKEN_EXP_SECONDS} Seconds.",

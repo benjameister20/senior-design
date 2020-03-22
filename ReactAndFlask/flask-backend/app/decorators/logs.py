@@ -13,6 +13,10 @@ def log(request, resource, action):
     def wrap(f):
         @wraps(f)
         def wrapped(*args, **kwargs):
+            # print(request)
+            # print(request.json)
+            # print(request.get_json())
+            # print(request)
             token = request.headers.get(Constants.TOKEN_KEY)
             username = ""
             try:

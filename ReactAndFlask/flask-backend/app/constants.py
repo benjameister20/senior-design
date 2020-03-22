@@ -19,6 +19,9 @@ class Constants:
     PRIVILEGE_KEY = "privilege"
     NETID_PASSWORD = "netid"
     TOKEN_KEY = "token"
+    PERMISSION_KEY = "permission"
+    PERMISSIONS_KEY = "permissions"
+    PERMISSIONS_DC_KEY = "datacenters"
 
     # Model Keys
     VENDOR_KEY = "vendor"

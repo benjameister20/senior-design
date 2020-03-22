@@ -1,8 +1,9 @@
 from typing import List
 
 from app.constants import Constants
+from app.data_models.permission import Permission
 from app.datacenters.datacenter_manager import DatacenterManager
-from app.decorators.auth import requires_auth, requires_role
+from app.decorators.auth import requires_auth, requires_permission
 from app.decorators.logs import log
 from app.exceptions.InvalidInputsException import InvalidInputsError
 from app.logging.logger import Logger
@@ -43,7 +44,12 @@ def list_all():
 
 @datacenters.route("/datacenters/create/", methods=["POST"])
 @requires_auth(request)
-@requires_role(request, "admin")
+@requires_permission(
+    request,
+    Permission(
+        model=False, asset=False, datacenters=[], power=False, audit=False, admin=True
+    ),
+)
 @log(request, LOGGER.DATACENTERS, LOGGER.ACTIONS.DATACENTERS.CREATE)
 def create():
     """ Route for creating datacenters"""
@@ -65,7 +71,12 @@ def create():
 
 @datacenters.route("/datacenters/edit/", methods=["POST"])
 @requires_auth(request)
-@requires_role(request, "admin")
+@requires_permission(
+    request,
+    Permission(
+        model=False, asset=False, datacenters=[], power=False, audit=False, admin=True
+    ),
+)
 @log(request, LOGGER.DATACENTERS, LOGGER.ACTIONS.DATACENTERS.EDIT)
 def edit():
     """ Route for creating datacenters """
@@ -85,7 +96,12 @@ def edit():
 
 @datacenters.route("/datacenters/delete/", methods=["POST"])
 @requires_auth(request)
-@requires_role(request, "admin")
+@requires_permission(
+    request,
+    Permission(
+        model=False, asset=False, datacenters=[], power=False, audit=False, admin=True
+    ),
+)
 @log(request, LOGGER.DATACENTERS, LOGGER.ACTIONS.DATACENTERS.DELETE)
 def delete():
     """ Route for deleting datacenters """

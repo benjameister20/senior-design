@@ -32,16 +32,7 @@ def decommission_asset()
 - Returns:
 ```language=json
 {
-    "datacenters": [
-        {
-            "abbreviation" : "DATACENTER ABBREVIATION",
-            "datacenter_name": "DATACENTER_NAME"
-        }
-        {
-            "abbreviation" : "DATACENTER ABBREVIATION",
-            "datacenter_name": "DATACENTER_NAME"
-        }    
-    ]
+    "message": "success|failure"
 }
 ```
 -----------------------------

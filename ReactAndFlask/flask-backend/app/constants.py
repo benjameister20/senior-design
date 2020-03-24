@@ -93,3 +93,8 @@ class Constants:
     TIMESTAMP_KEY = "timestamp"
     START_DATE_KEY = "start_date"
     END_DATE_KEY = "end_date"
+
+    # BACKUPS
+    BACKUPS_DB = "test"
+    BACKUPS_HOST = ""
+    ADMIN_EMAIL = "cfg11@duke.edu"

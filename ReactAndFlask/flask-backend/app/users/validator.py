@@ -12,6 +12,8 @@ from app.exceptions.UserExceptions import (
     UserException,
     UsernameTakenError,
 )
+from app.main.types import JSON
+from app.permissions.permissions_constants import PermissionConstants
 
 USER_TABLE = UserTable()
 
@@ -127,13 +129,21 @@ class Validator:
 
         return user
 
-    def validate_privilege(self, privilege: str, username: str) -> bool:
+    def validate_privilege(self, privilege: JSON, username: str) -> bool:
 
-        if not (privilege == "admin" or privilege == "user"):
-            raise InvalidPrivilegeError("Privilege levels are 'admin' and 'user'")
+        # VALUE IN JSON COULD BE A STRING NOT A BOOL
+        if username == "admin" and privilege[PermissionConstants.ADMIN] != True:
+            raise InvalidPrivilegeError(
+                "Cannot revoke admin permission from admin user"
+            )
 
-        if username == "admin" and privilege != "admin":
-            raise InvalidPrivilegeError("Cannot edit admin privilege")
+        for key in privilege:
+            if key is not PermissionConstants.DATACENTERS:
+                if type(privilege[key]) is not bool:
+                    raise TypeError(f"{key} must be of type bool.")
+            else:
+                if type(privilege[key]) is not dict:
+                    raise TypeError(f"{key} must be of type dict.")
 
         return True
 

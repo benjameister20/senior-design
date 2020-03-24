@@ -79,7 +79,7 @@ class Logger:
 
         return log_message
 
-    def __log_user_request(self, action, request):
+    def __log_user_request(self, action, request, username):
 
         if action == Logger.ACTIONS.USERS.CREATE:
             log_message = f"""CREATE User (Username: {request.get(Constants.USERNAME_KEY)}, Email: {request.get(Constants.EMAIL_KEY)}, Display Name: {request.get(Constants.DISPLAY_NAME_KEY)}, Privilege: {request.get(Constants.PRIVILEGE_KEY)})"""
@@ -99,9 +99,7 @@ class Logger:
             # log_syntax = "AUTHENTICATE user (<<username>>)"
 
         if action == Logger.ACTIONS.USERS.LOGOUT:
-            log_message = (
-                f"""LOGOUT User (Username: {request.get(Constants.USERNAME_KEY)})"""
-            )
+            log_message = f"""LOGOUT User (Username: {username})"""
             # log_syntax = "LOGOUT user (<<username>>)"
 
         if action == Logger.ACTIONS.USERS.OAUTH:
@@ -236,7 +234,7 @@ class Logger:
         # print("username")
 
         if resource == Logger.USERS:
-            log_message = self.__log_user_request(action, request)
+            log_message = self.__log_user_request(action, request, username)
         if resource == Logger.MODELS:
             log_message = self.__log_model_request(action, request)
         if resource == Logger.INSTANCES:

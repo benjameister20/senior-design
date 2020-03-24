@@ -2,7 +2,8 @@ import json
 from typing import List
 
 from app.constants import Constants
-from app.decorators.auth import requires_auth, requires_role
+from app.data_models.permission import Permission
+from app.decorators.auth import requires_auth, requires_permission
 from app.decorators.logs import log
 from app.exceptions.InvalidInputsException import InvalidInputsError
 from app.instances.asset_num_generator import AssetNumGenerator
@@ -80,7 +81,12 @@ def search():
 
 @instances.route("/instances/create", methods=["POST"])
 @requires_auth(request)
-@requires_role(request, "admin")
+@requires_permission(
+    request,
+    Permission(
+        model=False, asset=True, datacenters=[], power=False, audit=False, admin=False
+    ),
+)
 @log(request, LOGGER.INSTANCES, LOGGER.ACTIONS.INSTANCES.CREATE)
 def create():
     """ Route for creating instances """
@@ -107,7 +113,12 @@ def create():
 
 @instances.route("/instances/delete", methods=["POST"])
 @requires_auth(request)
-@requires_role(request, "admin")
+@requires_permission(
+    request,
+    Permission(
+        model=False, asset=True, datacenters=[], power=False, audit=False, admin=False
+    ),
+)
 @log(request, LOGGER.INSTANCES, LOGGER.ACTIONS.INSTANCES.DELETE)
 def delete():
     """ Route for deleting instances """
@@ -125,7 +136,12 @@ def delete():
 
 @instances.route("/instances/edit", methods=["POST"])
 @requires_auth(request)
-@requires_role(request, "admin")
+@requires_permission(
+    request,
+    Permission(
+        model=False, asset=True, datacenters=[], power=False, audit=False, admin=False
+    ),
+)
 @log(request, LOGGER.INSTANCES, LOGGER.ACTIONS.INSTANCES.EDIT)
 def edit():
     """ Route for editing instances """
@@ -188,7 +204,12 @@ def assisted_model_input():
 
 @instances.route("/instances/nextAssetNumber", methods=["GET"])
 @requires_auth(request)
-@requires_role(request, "admin")
+@requires_permission(
+    request,
+    Permission(
+        model=False, asset=True, datacenters=[], power=False, audit=False, admin=False
+    ),
+)
 def get_next_asset_number():
     """ Route to get next valid asset number"""
     global INSTANCE_MANAGER

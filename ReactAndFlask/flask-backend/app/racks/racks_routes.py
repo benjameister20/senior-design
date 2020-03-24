@@ -5,8 +5,9 @@ from app.dal.database import DBWriteException
 from app.dal.datacenter_table import DatacenterTable
 from app.dal.instance_table import RackDoesNotExistError
 from app.dal.rack_table import RackTable
+from app.data_models.permission import Permission
 from app.data_models.rack import Rack
-from app.decorators.auth import requires_auth, requires_role
+from app.decorators.auth import requires_auth, requires_permission
 from app.decorators.logs import log
 from app.logging.logger import Logger
 from app.main.types import JSON
@@ -132,7 +133,12 @@ def get_rack_details():
 
 @racks.route("/delete", methods=["POST"])
 @requires_auth(request)
-@requires_role(request, "admin")
+@requires_permission(
+    request,
+    Permission(
+        model=False, asset=False, datacenters=[], power=False, audit=False, admin=True
+    ),
+)
 @log(request, LOGGER.RACKS, LOGGER.ACTIONS.RACKS.DELETE)
 def delete_racks():
     """ Delete a range of racks """
@@ -173,7 +179,12 @@ def delete_racks():
 
 @racks.route("/nextPDU", methods=["POST"])
 @requires_auth(request)
-@requires_role(request, "admin")
+@requires_permission(
+    request,
+    Permission(
+        model=False, asset=False, datacenters=[], power=False, audit=False, admin=True
+    ),
+)
 def next_pdu_port():
     """ Returns first available PDU port for a given rack"""
     data: JSON = request.get_json()

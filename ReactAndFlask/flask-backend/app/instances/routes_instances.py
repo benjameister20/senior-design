@@ -9,7 +9,7 @@ from app.instances.asset_num_generator import AssetNumGenerator
 from app.instances.barcode_generator import BarcodeGenerator
 from app.instances.instance_manager import InstanceManager
 from app.logging.logger import Logger
-from flask import Blueprint, request
+from flask import Blueprint, request, send_file
 
 instances = Blueprint(
     "instances", __name__, template_folder="templates", static_folder="static"
@@ -226,7 +226,7 @@ def get_network_neighborhood():
 
 
 @instances.route("/instances/labelgen", methods=["POST"])
-@requires_auth(request)
+# @requires_auth(request)
 def get_barcode_labels():
     """ Route to get barcode labels for assets"""
     returnJSON = createJSON()
@@ -234,7 +234,12 @@ def get_barcode_labels():
     try:
         asset_data = request.get_json()
         BarcodeGenerator().create_barcode_labels(asset_data)
-
+        return send_file(
+            filename_or_fp="static/asset_labels.pdf",
+            mimetype="application/pdf",
+            as_attachment=True,
+        )
+        # return addMessageToJSON(returnJSON, "success")
     except InvalidInputsError as e:
         return addMessageToJSON(returnJSON, e.message)
 

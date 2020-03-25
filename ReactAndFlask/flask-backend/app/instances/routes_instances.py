@@ -10,7 +10,7 @@ from app.instances.asset_num_generator import AssetNumGenerator
 from app.instances.barcode_generator import BarcodeGenerator
 from app.instances.instance_manager import InstanceManager
 from app.logging.logger import Logger
-from flask import Blueprint, request, send_from_directory
+from flask import Blueprint, request, send_file
 
 instances = Blueprint(
     "instances", __name__, template_folder="templates", static_folder="static"
@@ -255,8 +255,10 @@ def get_barcode_labels():
         asset_data = request.get_json()
         print(asset_data)
         BarcodeGenerator().create_barcode_labels(asset_data)
-        return send_from_directory(
-            directory="static/", filename="asset_labels.pdf", as_attachment=True,
+        return send_file(
+            filename_or_fp="static/asset_labels.pdf",
+            mimetype="application/pdf",
+            as_attachment=True,
         )
         # return addMessageToJSON(returnJSON, "success")
     except InvalidInputsError as e:

@@ -201,10 +201,14 @@ class TableAsset extends React.Component {
 		body[AssetInput.ASSET_NUMBER] = this.state.selectedItems;
 
 		axios.post(
-			getURL(AssetConstants.ASSETS_MAIN_PATH, AssetCommand.GENERATE_LABELS), body
+			getURL(AssetConstants.ASSETS_MAIN_PATH, AssetCommand.GENERATE_LABELS), body,
+			{
+				responseType: 'arraybuffer',
+			}
 		).then(response => {
+			console.log(response);
+			console.log(response.data);
 			try {
-				//var arrBuffer = base64ToArrayBuffer(String(response.data));
 				var blob=new Blob([response.data], {type:"application/pdf"});
 				var link=document.createElement('a');
 				link.href=window.URL.createObjectURL(blob);
@@ -216,7 +220,7 @@ class TableAsset extends React.Component {
 					statusSeverity: AssetConstants.SUCCESS_TOKEN,
 				});
 			} catch {
-				this.setState({ showStatus: true, statusMessage: response.data.message, statusSeverity: AssetConstants.ERROR_TOKEN })
+				this.setState({ showStatus: true, statusMessage: "Could not generate asset labels", statusSeverity: AssetConstants.ERROR_TOKEN })
 			}
 		});
 	}

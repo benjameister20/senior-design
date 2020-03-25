@@ -2,7 +2,9 @@ from typing import List, Optional
 
 from app.dal.database import db
 from app.data_models.user import User
+from app.main.types import JSON
 from sqlalchemy import and_
+from sqlalchemy.dialects import postgresql as pg
 
 
 class UserEntry(db.Model):
@@ -12,7 +14,7 @@ class UserEntry(db.Model):
     password_hash = db.Column(db.Binary(512))
     display_name = db.Column(db.String(80))
     email = db.Column(db.String(80))
-    privilege = db.Column(db.String(80))
+    privilege = db.Column(pg.JSON, nullable=True)
 
     def __init__(self, user: User):
         self.username = user.username
@@ -43,7 +45,7 @@ class UserTable:
         username: Optional[str],
         display_name: Optional[str],
         email: Optional[str],
-        privilege: Optional[str],
+        privilege: Optional[JSON],
         limit: int,
     ) -> List[User]:
         """ Get a list of all users matching the given criteria """
@@ -54,8 +56,9 @@ class UserTable:
             criteria.append(UserEntry.display_name == display_name)
         if email is not None and email != "":
             criteria.append(UserEntry.email == email)
-        if privilege is not None and privilege != "":
-            criteria.append(UserEntry.privilege == privilege)
+        if privilege is not None:
+            for key in privilege:
+                criteria.append(dict(UserEntry.privilege)[key].astext == privilege[key])
 
         filtered_users: List[UserEntry] = UserEntry.query.filter(and_(*criteria)).limit(
             limit

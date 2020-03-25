@@ -1,5 +1,5 @@
 
-# routes_uesrs.py
+# routes_users.py
 -----------------------------
 ```language=python
 def test()
@@ -43,21 +43,42 @@ def search():
             "password":"PASSWORD",
             "email":"EMAIL",
             "display_name":"DISPLAY_NAME",
-            "privilege": "PRIVILEGE"
+            "privilege": {
+                "Model": bool,
+                "Asset": bool,
+                "Datacenters": List[str],
+                "Power": bool,
+                "Audit": bool,
+                "Admin": bool
+            }
         },
         {
             "username":"USERNAME",
             "password":"PASSWORD",
             "email":"EMAIL",
             "display_name":"DISPLAY_NAME",
-            "privilege": "PRIVILEGE"
+            "privilege": {
+                "Model": bool,
+                "Asset": bool,
+                "Datacenters": List[str],
+                "Power": bool,
+                "Audit": bool,
+                "Admin": bool
+            }
         },
         {
             "username":"USERNAME",
             "password":"PASSWORD",
             "email":"EMAIL",
             "display_name":"DISPLAY_NAME",
-            "privilege": "PRIVILEGE"
+            "privilege": {
+                "Model": bool,
+                "Asset": bool,
+                "Datacenters": List[str],
+                "Power": bool,
+                "Audit": bool,
+                "Admin": bool
+            }
         }
     ]
 }

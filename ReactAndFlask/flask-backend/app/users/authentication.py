@@ -93,6 +93,7 @@ class AuthManager:
         Returns:
             str: Confirms or denies authentication
         """
+
         try:
             payload = jwt.decode(auth_token, self.TOKEN_SECRET_KEY)
             return payload["sub"]
@@ -100,6 +101,8 @@ class AuthManager:
             raise ExpiredTokenError(self.SESSION_EXPIRED)
         except jwt.InvalidTokenError:
             raise InvalidTokenError(self.INVALID_TOKEN)
+        except Exception as e:
+            raise InvalidTokenError(str(e))
 
     def validate_auth_token(self, headers):
 
@@ -113,7 +116,15 @@ class AuthManager:
             contents = json.load(infile)
             BLACKLIST = contents.get("blacklist")
 
-        decoded = self.decode_auth_token(auth_token)
+        try:
+            decoded = self.decode_auth_token(auth_token)
+        except jwt.ExpiredSignatureError:
+            raise ExpiredTokenError(self.SESSION_EXPIRED)
+        except jwt.InvalidTokenError:
+            raise InvalidTokenError(self.INVALID_TOKEN)
+        except Exception as e:
+            raise InvalidTokenError(str(e))
+
         if decoded == self.SESSION_EXPIRED:
             return [False, self.SESSION_EXPIRED]
         elif decoded == self.INVALID_TOKEN:

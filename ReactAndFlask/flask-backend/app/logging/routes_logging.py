@@ -1,5 +1,7 @@
+from app.data_models.permission import Permission
+from app.decorators.auth import requires_permission
 from app.logging.logger import Logger
-from flask import Blueprint
+from flask import Blueprint, request
 
 logs = Blueprint("logs", __name__, template_folder="templates", static_folder="static")
 LOGGER = Logger()
@@ -18,6 +20,12 @@ def test():
 
 
 @logs.route("/logs/getlogs", methods=["GET"])
+@requires_permission(
+    request,
+    Permission(
+        model=False, asset=False, datacenters=[], power=False, audit=True, admin=False
+    ),
+)
 def get_logs():
     response = {}
 

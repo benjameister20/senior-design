@@ -9,6 +9,7 @@ class Constants:
     LABEL_KEY = "label"
 
     DATACENTER_KEY = "datacenter_id"
+    NETWORK_NEIGHBORHOOD_KEY = "network_neighborhood"
 
     # User Keys
     ORIGINAL_USERNAME_KEY = "username_original"
@@ -19,6 +20,9 @@ class Constants:
     PRIVILEGE_KEY = "privilege"
     NETID_PASSWORD = "netid"
     TOKEN_KEY = "token"
+    PERMISSION_KEY = "permission"
+    PERMISSIONS_KEY = "permissions"
+    PERMISSIONS_DC_KEY = "datacenters"
 
     # Model Keys
     VENDOR_KEY = "vendor"
@@ -83,3 +87,9 @@ class Constants:
     CSV_SRC_MAC = "src_mac"
     CSV_DEST_HOST = "dest_hostname"
     CSV_DEST_PORT = "dest_port"
+
+    # Decommission Constants
+    DECOM_USER_KEY = "decommission_user"
+    TIMESTAMP_KEY = "timestamp"
+    START_DATE_KEY = "start_date"
+    END_DATE_KEY = "end_date"

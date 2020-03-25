@@ -11,7 +11,7 @@ module.exports.command = function() {
             .pause(100)
             .assert.visible('button#sign-in-button')
             .click('button#sign-in-button')
-            .waitForElementVisible('div#homepage')
-            .assert.visible('div#hompage');
+            .pause(1000)
+            .assert.visible('div#homepage')
     });
 }

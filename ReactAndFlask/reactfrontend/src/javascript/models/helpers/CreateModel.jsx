@@ -159,7 +159,7 @@ class CreateModel extends React.Component {
                     </Grid>
                     <Grid item xs={12}>
                         <Button
-                            className="create-model"
+                            id="create-button"
                             variant="contained"
                             style={{
                                 width: "100%",
@@ -229,10 +229,10 @@ class CreateModel extends React.Component {
                                 />
                             </Grid>
                             <Grid item xs={12} sm={6} md={4} lg={3}>
-                                <TextField id="standard-basic" required={true} variant="outlined" label={inputs.modelNumber.label} name={inputs.modelNumber.name} onChange={this.props.updateModelCreator}/>
+                                <TextField id="model-num" required={true} variant="outlined" label={inputs.modelNumber.label} name={inputs.modelNumber.name} onChange={this.props.updateModelCreator}/>
                             </Grid>
                             <Grid item xs={3}>
-                                <TextField type="number" id="standard-basic" required={true} variant="outlined" label={inputs.height.label} name={inputs.height.name} onChange={this.props.updateModelCreator} InputProps={{ inputProps: { min: 1, max: 42} }} style={{ width: "100%" }} />
+                                <TextField type="number" id="height" required={true} variant="outlined" label={inputs.height.label} name={inputs.height.name} onChange={this.props.updateModelCreator} InputProps={{ inputProps: { min: 1, max: 42} }} style={{ width: "100%" }} />
                             </Grid>
                             <Grid item xs={3}>
                                 <TextField type="number" id="standard-basic" variant="outlined" label={inputs.ethernetPorts.label} name={inputs.ethernetPorts.name} onChange={this.updateNetworkPorts} InputProps={{ inputProps: { min: 0} }} />
@@ -290,6 +290,7 @@ class CreateModel extends React.Component {
                             </Grid>
                             <Grid item xs={3}>
                                 <Button
+                                    id="create-model-button"
                                     variant="contained"
                                     color="primary"
                                     type="submit"

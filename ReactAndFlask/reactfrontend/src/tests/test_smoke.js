@@ -1,7 +1,7 @@
 module.exports = {
     'Test opening site' : function (browser) {
         browser
-            .url('http://localhost:3000')
+            .url('https://parseltongue-test.herokuapp.com')
             .waitForElementVisible('body')
             .assert.titleContains('Hyposoft')
             .assert.visible('input#username-input')

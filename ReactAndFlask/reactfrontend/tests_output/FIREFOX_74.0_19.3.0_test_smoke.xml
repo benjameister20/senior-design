@@ -5,9 +5,9 @@
 
   <testsuite name="test_smoke"
     errors="0" failures="0" hostname="" id="" package="test_smoke" skipped="0"
-    tests="1" time="3.750" timestamp="">
+    tests="1" time="3.888" timestamp="">
 
-    <testcase name="Test opening site" classname="test_smoke" time="3.750" assertions="4">
+    <testcase name="Test opening site" classname="test_smoke" time="3.888" assertions="4">
 
 
 
@@ -21,16 +21,11 @@
 
 
     <system-err>
-      [0;31m  TypeError: this.maximizeWindow is not a function
-   - writing an ES6 async test case? - keep in mind that commands return a Promise;
-   - writing unit tests? - make sure to specify &#34;unit_tests_mode=true&#34; in your config.[0m
-[0;90m       at Object.module.exports.command (/Users/trevorstevenson/Developer/SeniorDesign/senior-design/ReactAndFlask/reactfrontend/src/tests/login.js:2:17)
-       at processTicksAndRejections (internal/process/task_queues.js:97:5)[0m
-[0;31m  NoSuchElementError: An error occurred while running .click() command on &lt;button#sign-in-button&gt;: undefined; undefined
+      [0;31m  NoSuchElementError: An error occurred while running .click() command on &lt;button#create-model&gt;: undefined; undefined
    {&#34;value&#34;:[]}[0m
 [0;90m       at processTicksAndRejections (internal/process/task_queues.js:97:5)[0m
-[0;31m  NoSuchElementError: An error occurred while running .click() command on &lt;button#sign-in-button&gt;: no such window; Browsing context has been discarded
-   {&#34;status&#34;:-1,&#34;value&#34;:{&#34;error&#34;:&#34;no such window&#34;,&#34;message&#34;:&#34;Browsing context has been discarded&#34;,&#34;stacktrace&#34;:&#34;WebDriverError@chrome://marionette/content/error.js:175:5\nNoSuchWindowError@chrome://marionette/content/error.js:409:5\nassert.that/&lt;@chrome://marionette/content/assert.js:448:13\nassert.open@chrome://marionette/content/assert.js:183:72\nGeckoDriver.prototype.findElements@chrome://marionette/content/driver.js:2118:22\ndespatch@chrome://marionette/content/server.js:305:40\nexecute@chrome://marionette/content/server.js:275:16\nonPacket/&lt;@chrome://marionette/content/server.js:248:20\nonPacket@chrome://marionette/content/server.js:249:9\n_onJSONObjectReady/&lt;@chrome://marionette/content/transport.js:501:20\n&#34;},&#34;errorStatus&#34;:&#34;&#34;,&#34;error&#34;:&#34;Browsing context has been discarded&#34;,&#34;httpStatusCode&#34;:404}[0m
+[0;31m  NoSuchElementError: An error occurred while running .setValue() command on &lt;input#select-vendor&gt;: undefined; undefined
+   {&#34;value&#34;:[]}[0m
 [0;90m       at processTicksAndRejections (internal/process/task_queues.js:97:5)[0m
     </system-err>
 

@@ -261,7 +261,6 @@ class CreateAsset extends React.Component {
 
     validJSON = (json) => {
         var valid = (json.model !== ""
-        && json.owner !== ""
         && json.datacenter_name !== ""
         && json.rack !== ""
         && json.rack_position !== -1
@@ -592,7 +591,6 @@ class CreateAsset extends React.Component {
                                     onBlur={this.updateOwner}
                                     variant="outlined"
                                     fullWidth
-                                    required
                                 />
                                 )}
                             />

@@ -26,12 +26,12 @@ def test():
 
 @users.route("/users/search", methods=["POST"])
 @requires_auth(request)
-@requires_permission(
-    request,
-    Permission(
-        model=False, asset=False, datacenters=[], power=False, audit=False, admin=True
-    ),
-)
+# @requires_permission(
+#     request,
+#     Permission(
+#         model=False, asset=False, datacenters=[], power=False, audit=False, admin=True
+#     ),
+# )
 def search():
     response = {}
     try:

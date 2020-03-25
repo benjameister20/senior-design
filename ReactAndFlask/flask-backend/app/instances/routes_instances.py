@@ -10,7 +10,7 @@ from app.instances.asset_num_generator import AssetNumGenerator
 from app.instances.barcode_generator import BarcodeGenerator
 from app.instances.instance_manager import InstanceManager
 from app.logging.logger import Logger
-from flask import Blueprint, request, send_file
+from flask import Blueprint, request, send_from_directory
 
 instances = Blueprint(
     "instances", __name__, template_folder="templates", static_folder="static"
@@ -81,12 +81,12 @@ def search():
 
 @instances.route("/instances/create", methods=["POST"])
 @requires_auth(request)
-@requires_permission(
-    request,
-    Permission(
-        model=False, asset=True, datacenters=[], power=False, audit=False, admin=False
-    ),
-)
+# @requires_permission(
+#     request,
+#     Permission(
+#         model=False, asset=True, datacenters=[], power=False, audit=False, admin=False
+#     ),
+# )
 @log(request, LOGGER.INSTANCES, LOGGER.ACTIONS.INSTANCES.CREATE)
 def create():
     """ Route for creating instances """
@@ -204,12 +204,12 @@ def assisted_model_input():
 
 @instances.route("/instances/nextAssetNumber", methods=["GET"])
 @requires_auth(request)
-@requires_permission(
-    request,
-    Permission(
-        model=False, asset=True, datacenters=[], power=False, audit=False, admin=False
-    ),
-)
+# @requires_permission(
+#     request,
+#     Permission(
+#         model=False, asset=True, datacenters=[], power=False, audit=False, admin=False
+#     ),
+# )
 def get_next_asset_number():
     """ Route to get next valid asset number"""
     global INSTANCE_MANAGER
@@ -251,14 +251,12 @@ def get_network_neighborhood():
 def get_barcode_labels():
     """ Route to get barcode labels for assets"""
     returnJSON = createJSON()
-
     try:
         asset_data = request.get_json()
+        print(asset_data)
         BarcodeGenerator().create_barcode_labels(asset_data)
-        return send_file(
-            filename_or_fp="static/asset_labels.pdf",
-            mimetype="application/pdf",
-            as_attachment=True,
+        return send_from_directory(
+            directory="static/", filename="asset_labels.pdf", as_attachment=True,
         )
         # return addMessageToJSON(returnJSON, "success")
     except InvalidInputsError as e:

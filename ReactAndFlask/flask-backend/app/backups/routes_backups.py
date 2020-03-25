@@ -2,7 +2,7 @@ from app.backups.backups_manager import BackupsManager
 from app.constants import Constants
 from app.exceptions.BackupExceptions import BackupError
 from app.logging.logger import Logger
-from flask import Blueprint, make_response, send_file
+from flask import Blueprint, Response, make_response, request, send_file
 
 BM = BackupsManager()
 LOGGER = Logger()
@@ -28,6 +28,12 @@ def backup():
     response = {}
     metadata = None
 
+    if not BM.authorize_backup(request.headers["passkey"]):
+        print("Unauthorized request")
+        return Response(
+            add_message_to_JSON(response, "Unauthorized request for backup"), status=403
+        )
+
     try:
         metadata = BM.generate_backup()
     except BackupError as e:
@@ -43,6 +49,7 @@ def backup():
     )
 
     response.headers["filename"] = metadata["filename"]
+    response.headers["datetime"] = metadata["datetime"]
 
     return response
 

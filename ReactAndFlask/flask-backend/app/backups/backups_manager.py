@@ -3,14 +3,24 @@ from datetime import datetime
 
 from app.constants import Constants
 from app.exceptions.BackupExceptions import BackupError
+from app.users.authentication import AuthManager
 
 
 class BackupsManager:
 
     FILE_PATH = os.path.dirname(__file__)
+    passkey_encrypted = b"$2b$12$D/Z2zQxafNrraBjzDgvHt.yZB.PrSe8fyDstcjgiO9hOpss2Z6A5a"
 
     def __init__(self):
-        pass
+        self.AM = AuthManager()
+
+    def authorize_backup(self, passkey):
+        result = self.AM.compare_pw(passkey, BackupsManager.passkey_encrypted)
+
+        return result
+
+    def encrypt_pw(self, pw):
+        return self.AM.encrypt_pw(pw)
 
     def generate_backup(self):
         command = f"pg_dump {Constants.BACKUPS_DB} -O -F t > "

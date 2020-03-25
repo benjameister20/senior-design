@@ -12,6 +12,8 @@ class ChangePlan:
         identifier (int): unique id for the datacenter
         owner (Str): the owner that created the change plan
         name (str): full name of datacenter
+        executed (bool): indicates if the change plan has been executed
+        timestamp (str): time of execution if applicable
     """
 
     def __init__(

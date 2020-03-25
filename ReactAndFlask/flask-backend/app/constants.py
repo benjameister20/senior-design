@@ -98,3 +98,12 @@ class Constants:
     # Change Plan
     EXECUTED_KEY = "executed"
     IDENTIFIER_KEY = "identifier"
+    CHANGE_PLAN_ID_KEY = "change_plan_id"
+    STEP_KEY = "step"
+    NEW_RECORD_KEY = "new_record"
+
+    ACTION_KEY = "action"
+    CREATE_KEY = "create"
+    DELETE_KEY = "delete"
+    UPDATE_KEY = "update"
+    COLLATERAL_KEY = "collateral"

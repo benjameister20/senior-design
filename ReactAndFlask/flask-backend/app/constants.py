@@ -7,6 +7,7 @@ class Constants:
     FILTER_KEY = "filter"
     LIMIT_KEY = "limit"
     LABEL_KEY = "label"
+    NAME_KEY = "name"
 
     DATACENTER_KEY = "datacenter_id"
     NETWORK_NEIGHBORHOOD_KEY = "network_neighborhood"
@@ -93,3 +94,7 @@ class Constants:
     TIMESTAMP_KEY = "timestamp"
     START_DATE_KEY = "start_date"
     END_DATE_KEY = "end_date"
+
+    # Change Plan
+    EXECUTED_KEY = "executed"
+    IDENTIFIER_KEY = "identifier"

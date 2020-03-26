@@ -27,7 +27,9 @@ class BackupsManager:
         return self.AM.encrypt_pw(pw)
 
     def generate_backup(self):
-        command = f"pg_dump {Constants.BACKUPS_DB} -O -F t > "
+        # command = f"pg_dump {Constants.BACKUPS_DB} -O -F t > "
+        # command = f"pg_dump -d {Constants.BACKUPS_DB} -h {Constants.BACKUP_HOST} -p {Constants.BACKUP_PORT} -U {Constants.BACKUP_USER} -W {Constants.BACKUP_PASS} -O -F t > "
+        command = f"pg_dump --dbname=postgresql://{Constants.BACKUPS_USER}:{Constants.BACKUPS_PASS}@{Constants.BACKUPS_HOST}:{Constants.BACKUPS_PORT}/{Constants.BACKUPS_DB}"
         utc_time = datetime.utcnow()
         filename = str(utc_time) + ".tar"
         date, time = filename.split(" ")

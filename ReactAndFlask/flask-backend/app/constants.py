@@ -95,8 +95,12 @@ class Constants:
     END_DATE_KEY = "end_date"
 
     # BACKUPS
-    BACKUPS_DB = "postgresql-sinuous-38561"
     ADMIN_EMAIL = "hyposoft1@gmail.com"
     # ADMIN_EMAIL = "cfg11@duke.edu"
     EMAIL_SUBJECT = "System Backup"
     EMAIL_MESSAGE = "A system backup has been initiated by your backup server."
+    BACKUPS_DB = "d28l05824mjrs1"
+    BACKUPS_HOST = "ec2-184-72-235-159.compute-1.amazonaws.com"
+    BACKUPS_PORT = "5432"
+    BACKUPS_USER = "jypkfovvccdrut"
+    BACKUPS_PASS = "e98f55a65df17ec6ad5fb5662c9fd5d6df6b080256d03c44c16f508c30612da7"

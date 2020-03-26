@@ -591,7 +591,7 @@ class EditAsset extends React.Component {
     deleteAsset = () => {
         this.setState({ showConfirmationBox:false })
         axios.post(getURL(Constants.ASSETS_MAIN_PATH, AssetCommand.delete),
-         { "asset_number":this.props.defaultValues.asset_number }).then(
+         { "asset_number":this.props.defaultValues.asset_number, "datacenter_name":this.props.defaultValues.datacenter_name }).then(
             response => {
                 if (response.data.message === "success") {
                     this.props.close();

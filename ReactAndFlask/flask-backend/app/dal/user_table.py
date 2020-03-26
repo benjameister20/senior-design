@@ -27,7 +27,6 @@ class UserEntry(db.Model):
 class UserTable:
     def get_user(self, username: str) -> Optional[User]:
         """ Get the user for the given username """
-        # print(username)
         user: UserEntry = UserEntry.query.filter_by(username=username).first()
         if user is None:
             return None

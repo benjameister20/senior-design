@@ -53,12 +53,10 @@ class DatacenterTable:
             db.session.add(datacenter_entry)
             db.session.commit()
         except IntegrityError:
-            print(f"Unable to add duplicate datacenter {datacenter_entry.name}")
             raise DBWriteException(
                 f"Unable to add duplicate rack {datacenter_entry.name}"
             )
         except:
-            print(f"Failed to add datacenter {datacenter_entry.name}")
             raise DBWriteException
 
     def edit_datacenter(self, datacenter: Datacenter, original_name: str) -> None:
@@ -93,7 +91,6 @@ class DatacenterTable:
             abbreviation=abbreviation
         ).first()
         if datacenter is None:
-            print("no dc found")
             return None
 
         return datacenter.identifier

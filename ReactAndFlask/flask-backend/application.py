@@ -25,7 +25,6 @@ AUTH_MANAGER = AuthManager()
 
 class FlaskApp(Flask):
     def make_response(self, rv):
-        print(rv)
         if isinstance(rv, dict):
             rv = jsonify(rv)
         elif (
@@ -37,8 +36,6 @@ class FlaskApp(Flask):
             rv = jsonify(rv[0]), rv[1]
         elif isinstance(rv, HTTPStatus):
             rv = jsonify({"status": rv}), rv
-
-        # print(rv)
         return super().make_response(rv)
 
 

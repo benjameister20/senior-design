@@ -15,6 +15,9 @@ class BackupsManager:
         self.AM = AuthManager()
 
     def authorize_backup(self, passkey):
+        if passkey is None:
+            raise BackupError("Authorization failed. Please provide password header.")
+
         result = self.AM.compare_pw(passkey, BackupsManager.passkey_encrypted)
 
         return result

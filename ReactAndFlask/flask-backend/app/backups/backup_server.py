@@ -22,12 +22,13 @@ password = "B@ckUpSist3ms!@"
 
 ##### DEFINE VARIABLES
 
+server = dev_server
 context = os.path.dirname(__file__)
-url = local_server + endpoint
-backups_directory = f"{context}/backup_zips/"
-# backups_directory = "~/backups/"
-log_file = f"{context}/backup_zips/log.json"
-# log_file = "~/log.json"
+url = server + endpoint
+# backups_directory = f"{context}/backup_zips/"
+backups_directory = "~/backups/"
+# log_file = f"{context}/backup_zips/log.json"
+log_file = "~/log.json"
 
 
 ##### DEFINE FUNCTIONS

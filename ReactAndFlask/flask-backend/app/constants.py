@@ -96,5 +96,7 @@ class Constants:
 
     # BACKUPS
     BACKUPS_DB = "test"
-    BACKUPS_HOST = ""
-    ADMIN_EMAIL = "cfg11@duke.edu"
+    ADMIN_EMAIL = "hyposoft1@gmail.com"
+    # ADMIN_EMAIL = "cfg11@duke.edu"
+    EMAIL_SUBJECT = "System Backup"
+    EMAIL_MESSAGE = "A system backup has been initiated by your backup server."

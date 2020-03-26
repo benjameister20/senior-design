@@ -1,10 +1,12 @@
 from app.backups.backups_manager import BackupsManager
+from app.backups.email_manager import EmailManager
 from app.constants import Constants
 from app.exceptions.BackupExceptions import BackupError
 from app.logging.logger import Logger
-from flask import Blueprint, Response, make_response, request, send_file
+from flask import Blueprint, make_response, request, send_file
 
 BM = BackupsManager()
+EM = EmailManager()
 LOGGER = Logger()
 
 backups = Blueprint(
@@ -28,14 +30,21 @@ def backup():
     response = {}
     metadata = None
 
-    if not BM.authorize_backup(request.headers["passkey"]):
-        print("Unauthorized request")
-        return Response(
-            add_message_to_JSON(response, "Unauthorized request for backup"), status=403
-        )
+    try:
+        if not BM.authorize_backup(request.headers.get("passkey")):
+            return add_message_to_JSON(response, "Unauthorized request for backup"), 403
+    except BackupError as e:
+        return add_message_to_JSON(response, e.message)
+    except:
+        return add_message_to_JSON(response, "Authorization failed")
 
     try:
         metadata = BM.generate_backup()
+        EM.send_message(
+            receiver=Constants.ADMIN_EMAIL,
+            subject=Constants.EMAIL_SUBJECT,
+            message=Constants.EMAIL_MESSAGE,
+        )
     except BackupError as e:
         return add_message_to_JSON(response, e.message)
 

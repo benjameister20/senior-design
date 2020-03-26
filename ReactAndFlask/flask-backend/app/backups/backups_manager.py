@@ -28,7 +28,7 @@ class BackupsManager:
 
     def generate_backup(self):
         # Remove all files in the backups directory
-        files = os.listdir(BackupsManager.FILE_PATH)
+        files = os.listdir(f"{BackupsManager.FILE_PATH}/backup_zips/")
         for f in files:
             os.remove(f)
         # command = f"pg_dump {Constants.BACKUPS_DB} -O -F t > "

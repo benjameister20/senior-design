@@ -47,6 +47,8 @@ def backup():
         )
     except BackupError as e:
         return add_message_to_JSON(response, e.message)
+    # except:
+    #     return add_message_to_JSON(response, "Backup failed")
 
     response = make_response(
         send_file(

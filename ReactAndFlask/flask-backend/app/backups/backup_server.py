@@ -23,12 +23,13 @@ password = "B@ckUpSist3ms!@"
 ##### DEFINE VARIABLES
 
 server = dev_server
-context = os.path.dirname(__file__)
+# context = os.path.dirname(__file__)
+context = "/home/cfg11"
 url = server + endpoint
 # backups_directory = f"{context}/backup_zips/"
-backups_directory = "~/backups/"
+backups_directory = f"{context}/backups/"
 # log_file = f"{context}/backup_zips/log.json"
-log_file = "~/log.json"
+log_file = f"{context}/log.json"
 
 
 ##### DEFINE FUNCTIONS
@@ -53,6 +54,7 @@ def fetch_and_store_backup():
     headers = {"passkey": password}
     response = requests.get(url, headers=headers, stream=True)
     filename = None
+    print(response)
 
     if response.status_code == 200:
         filename = response.headers["filename"]

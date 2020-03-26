@@ -72,7 +72,7 @@ def requires_permission(request, permission):
             user_permissions = user.privilege
             datacenter_name = request.json.get(Constants.DC_NAME_KEY)
             # Check input permissions against permissions that the user has
-
+            print(user_permissions)
             if not user_permissions[PermissionConstants.ADMIN]:
                 # check bool permissions are satisfied
                 for key in permission.make_json():

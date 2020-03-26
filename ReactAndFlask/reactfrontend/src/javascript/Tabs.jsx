@@ -100,7 +100,6 @@ class TabViewer extends React.Component {
                             onClose={this.handleMenuClose}
                         >
                             <MenuItem>{"Username: " + this.props.username}</MenuItem>
-                            <MenuItem>{"Privilege: " + this.props.privilege}</MenuItem>
                             <MenuItem onClick={this.props.logout} >LOGOUT</MenuItem>
                         </Menu>
                     </div>

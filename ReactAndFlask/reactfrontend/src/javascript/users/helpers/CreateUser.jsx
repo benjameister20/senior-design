@@ -30,14 +30,27 @@ export default class CreateModal extends React.Component {
             display_name: "",
             password: "",
             email: "",
-            privilege: "",
-            selectedPrivileges:[],
+            selectedPrivileges:{
+                "Model":false,
+                "Asset":false,
+                "Datacenters":[],
+                "Power":false,
+                "Audit":false,
+                "Admin":false,
+            },
         };
     }
 
     resetCreate = (success) => {
         if (success) {
-            this.setState({username: "", display_name: "", password: "", email: "", privilege: ""});
+            this.setState({username: "", display_name: "", password: "", email: "", selectedPrivileges:{
+                "Model":false,
+                "Asset":false,
+                "Datacenters":[],
+                "Power":false,
+                "Audit":false,
+                "Admin":false,
+            },});
         }
     }
 
@@ -45,18 +58,23 @@ export default class CreateModal extends React.Component {
         this.props.createModel(this.state.username, this.state.password, this.state.display_name, this.state.email, this.state.selectedPrivileges, this.resetCreate);
     }
 
-    updateSelectedPrivileges = (privilege, checked) => {
-        var selected = [];
+    updateSelectedPrivileges = (event, values) => {
+        var privs = {
+            "Model":false,
+            "Asset":false,
+            "Datacenters":this.state.selectedPrivileges["Datacenters"],
+            "Power":false,
+            "Audit":false,
+            "Admin":false,
+        };
+        values.map(priv => { privs[priv.value] = true; });
+        this.setState({ selectedPrivileges: privs });
+    }
 
-        this.state.selectedPrivileges.map(priv => {
-            if (priv !== privilege || (priv === privilege && checked)) {
-                selected.push(priv);
-            }
-        });
-        if (!this.state.selectedPrivileges.includes(privilege) && checked) {
-            selected.push(privilege);
-        }
-        this.setState({ selectedPrivileges: selected });
+    updateDCPrivilege = (event, values) => {
+        var privs = this.state.selectedPrivileges;
+        privs["Datacenters"] = values;
+        this.setState({ selectedPrivileges: privs });
     }
 
     render() {
@@ -87,6 +105,7 @@ export default class CreateModal extends React.Component {
                         dcPrivileges={this.props.privileges}
                         loading={this.props.loading}
                         updatePrivilege={this.updateSelectedPrivileges}
+                        updateDCPrivilege={this.updateDCPrivilege}
                     />
                 </Grid>
                 <Grid

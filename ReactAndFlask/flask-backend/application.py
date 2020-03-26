@@ -9,6 +9,7 @@ from app.import_export.routes import import_export
 from app.instances.routes_instances import instances
 from app.logging.routes_logging import logs
 from app.models.routes_models import models
+from app.permissions.routes_permissions import permissions
 from app.racks.racks_routes import racks
 from app.stats.routes_stats import stats
 from app.users.authentication import AuthManager
@@ -71,6 +72,7 @@ def _register_routes() -> None:
     application.register_blueprint(logs)
     application.register_blueprint(datacenters)
     application.register_blueprint(decommissions)
+    application.register_blueprint(permissions)
 
 
 def init() -> None:

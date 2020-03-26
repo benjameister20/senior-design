@@ -11,20 +11,12 @@ import TextField from "@material-ui/core/TextField";
 import { Typography } from "@material-ui/core";
 
 export default function PrivilegePicker(props) {
-	const [state, setState] = React.useState(false);
-
-	const handleChange = name => event => {
-		console.log("handling change");
-		setState({ ...state, [name]: event.target.checked });
-		console.log("updating props");
-		props.updatePrivilege(name, event.target.checked);
-	  };
-
 	const generalPrivileges=[
-		"Model",
-		"Audit",
-		"Power",
-		"Admin",
+		{title:"Model Management", value:"Model"},
+		{title:"Global Asset Management", value:"Asset"},
+		{title:"Auditing", value:"Audit"},
+		{title:"Power Management", value:"Power"},
+		{title:"Administrator", value:"Admin"},
 	]
 
 	return (
@@ -33,7 +25,9 @@ export default function PrivilegePicker(props) {
 			<Autocomplete
 				multiple
 				id="tags-standard"
+				getOptionLabel={option => option.title}
 				options={generalPrivileges}
+				onChange={props.updatePrivilege}
 				renderInput={params => (
 				<TextField
 					{...params}
@@ -48,6 +42,7 @@ export default function PrivilegePicker(props) {
 				multiple
 				id="tags-standard"
 				options={props.dcPrivileges}
+				onChange={props.updateDCPrivilege}
 				renderInput={params => (
 				<TextField
 					{...params}
@@ -57,25 +52,6 @@ export default function PrivilegePicker(props) {
 				/>
 				)}
 			/>}
-			{/* <List
-				style={{
-					maxHeight: "100px",
-					overflow: "auto",
-					flexGrow:1,
-				}}
-			>
-				{props.loading ? <CircularProgress /> :
-				props.privileges.map(privilege => {
-					return (
-					<ListItem role={undefined} dense>
-						<FormControlLabel
-							control={<Checkbox checked={state.privilege} onChange={handleChange(privilege)} value={privilege} color="primary" />}
-							label={privilege}
-						/>
-					</ListItem>
-					);
-				})}
-			</List> */}
 		</span>
 	)
 

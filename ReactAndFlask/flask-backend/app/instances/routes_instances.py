@@ -81,12 +81,12 @@ def search():
 
 @instances.route("/instances/create", methods=["POST"])
 @requires_auth(request)
-# @requires_permission(
-#     request,
-#     Permission(
-#         model=False, asset=True, datacenters=[], power=False, audit=False, admin=False
-#     ),
-# )
+@requires_permission(
+    request,
+    Permission(
+        model=False, asset=True, datacenters=[], power=False, audit=False, admin=False
+    ),
+)
 @log(request, LOGGER.INSTANCES, LOGGER.ACTIONS.INSTANCES.CREATE)
 def create():
     """ Route for creating instances """
@@ -204,12 +204,12 @@ def assisted_model_input():
 
 @instances.route("/instances/nextAssetNumber", methods=["GET"])
 @requires_auth(request)
-# @requires_permission(
-#     request,
-#     Permission(
-#         model=False, asset=True, datacenters=[], power=False, audit=False, admin=False
-#     ),
-# )
+@requires_permission(
+    request,
+    Permission(
+        model=False, asset=True, datacenters=[], power=False, audit=False, admin=False
+    ),
+)
 def get_next_asset_number():
     """ Route to get next valid asset number"""
     global INSTANCE_MANAGER

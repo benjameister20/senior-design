@@ -57,111 +57,120 @@ export default class UsersView extends React.Component {
         super(props);
 
         this.state = {
-            items:[],
-            statusOpen:false,
-            statusSeverity:'',
-            statusMessage:'',
-            searchUsernm:'',
-            searchEml:'',
-            searchDspNm:'',
-            searchPriv:'',
-            deleteUsername:'',
-            viewUser:'',
-            csvData:[],
+            items: [],
+            statusOpen: false,
+            statusSeverity: '',
+            statusMessage: '',
+            searchUsernm: '',
+            searchEml: '',
+            searchDspNm: '',
+            searchPriv: '',
+            deleteUsername: '',
+            viewUser: '',
+            csvData: [],
             showDetailedView: false,
-            detailViewLoading:false,
-            originalUsername:'',
-            allDCPrivileges:[],
-            loadingPrivileges:true,
+            detailViewLoading: false,
+            originalUsername: '',
+            allDCPrivileges: [],
+            loadingPrivileges: true,
         };
     }
 
     componentDidMount() {
-        this.searchUsers();
+        this.searchUsers({});
         this.getPrivileges();
     }
 
     createUser = (username, password, display_name, email, privileges, completion) => {
+        console.log(makeCreateJSON(username, password, display_name, email, privileges));
         axios.post(
             getURL(Constants.USERS_MAIN_PATH, UserCommand.create),
             makeCreateJSON(username, password, display_name, email, privileges)
-            ).then(response => {
-                if (response.data.message === UserConstants.USER_SUCCESS_TOKEN) {
-                    completion(true);
-                    this.setDisplayStatus(true, UserConstants.USER_CREATION_SUCCESS_MESSAGE, UserConstants.USER_SUCCESS_TOKEN);
-                    this.searchUsers();
-                } else {
-                    completion(false);
-                    this.setDisplayStatus(true, UserConstants.USER_CREATION_FAILURE_MESSAGE, UserConstants.USER_FAILURE_TOKEN)
-                }
-            });
+        ).then(response => {
+            if (response.data.message === UserConstants.USER_SUCCESS_TOKEN) {
+                completion(true);
+                this.setDisplayStatus(true, UserConstants.USER_CREATION_SUCCESS_MESSAGE, UserConstants.USER_SUCCESS_TOKEN);
+                this.searchUsers();
+            } else {
+                completion(false);
+                this.setDisplayStatus(true, UserConstants.USER_CREATION_FAILURE_MESSAGE, UserConstants.USER_FAILURE_TOKEN)
+            }
+        });
     }
 
     editUser = (originalUsername, username, password, display_name, email, privileges, completion) => {
         axios.post(
             getURL(Constants.USERS_MAIN_PATH, UserCommand.edit),
             makeEditJSON(originalUsername, username, password, display_name, email, privileges, completion)
-            ).then(response => this.processResponse(response, UserConstants.USER_EDIT_SUCCESS_MESSAGE,  UserConstants.USER_EDIT_FAILURE_MESSAGE));
+        ).then(response => this.processResponse(response, UserConstants.USER_EDIT_SUCCESS_MESSAGE, UserConstants.USER_EDIT_FAILURE_MESSAGE));
     }
 
     deleteUser = (username) => {
         axios.post(
             getURL(Constants.USERS_MAIN_PATH, UserCommand.delete),
             makeDeleteJSON(username)
-            ).then(response => this.processResponse(response, UserConstants.USER_DELETE_SUCCESS_MESSAGE,  UserConstants.USER_DELETE_FAILURE_MESSAGE));
+        ).then(response => this.processResponse(response, UserConstants.USER_DELETE_SUCCESS_MESSAGE, UserConstants.USER_DELETE_FAILURE_MESSAGE));
     }
 
     detailViewUser = (username) => {
         axios.post(
             getURL(Constants.USERS_MAIN_PATH, UserCommand.detailView),
             makeDetailViewJSON(username)
-            ).then(response => this.setState({ detailedValues: response.data['user'], detailViewLoading:false}));
+        ).then(response => this.setState({ detailedValues: response.data['user'], detailViewLoading: false }));
     }
 
     searchUsers = (filters) => {
         axios.post(
             getURL(Constants.USERS_MAIN_PATH, UserCommand.search),
             filters
-            ).then(response => {
-                const models = response.data['users'] === undefined ? [] : response.data['users'];
-                var rows = [];
-                Object.values(models).forEach(model => {
-                    var row = {};
-                    Object.keys(model).forEach(key => {
-                        if (key in columnLookup) {
-                            row[columnLookup[key]] = model[key];
-                        } else {
-                            row[key] = model[key];
-                        }
-                    });
-                    rows.push(row);
+        ).then(response => {
+            const models = response.data['users'] === undefined ? [] : response.data['users'];
+            var rows = [];
+            Object.values(models).forEach(model => {
+                var row = {};
+                Object.keys(model).forEach(key => {
+                    if (key in columnLookup) {
+                        row[columnLookup[key]] = model[key];
+                    } else {
+                        row[key] = model[key];
+                    }
                 });
-
-                this.setState({ items: rows });
+                rows.push(row);
             });
+
+            this.setState({ items: rows });
+        });
     }
 
     getPrivileges = () => {
         axios.get(getURL(Constants.PERMISSIONS_MAIN_PATH, PrivilegeCommand.GET_PRIVILEGES)).then(
             response => {
-                this.setState({
-                    allDCPrivileges: response.data.privileges.Datacenters,
-                    loadingPrivileges:false,
-                 });
+                console.log(response);
+                try {
+                    this.setState({
+                        allDCPrivileges: response.data.datacenters,
+                        loadingPrivileges: false,
+                    });
+                } catch {
+                    this.setState({
+                        allDCPrivileges: [],
+                        loadingPrivileges: false,
+                    });
+                }
             }
         );
     }
 
     setDisplayStatus = (open, message, severity) => {
-        this.setState({ statusOpen:open, statusMessage:message, statusSeverity:severity });
+        this.setState({ statusOpen: open, statusMessage: message, statusSeverity: severity });
     }
 
     showDetailedView = (id) => {
         this.setState({
             showDetailedView: true,
-            detailViewLoading:true,
-            originalUsername:this.state.items[id]['username'],
-         });
+            detailViewLoading: true,
+            originalUsername: this.state.items[id]['username'],
+        });
 
         var username = this.state.items[id]['username'];
 
@@ -189,7 +198,7 @@ export default class UsersView extends React.Component {
             this.setDisplayStatus(true, successMessage, UserConstants.USER_SUCCESS_TOKEN);
             this.searchUsers();
         } else {
-            this.setDisplayStatus(true, failureMessage,  UserConstants.USER_FAILURE_TOKEN);
+            this.setDisplayStatus(true, failureMessage, UserConstants.USER_FAILURE_TOKEN);
         }
     }
 
@@ -208,7 +217,7 @@ export default class UsersView extends React.Component {
                     direction="row"
                     justify="flex-start"
                     alignItems="center"
-                    style={{margin: "0px", maxWidth: "95vw"}}
+                    style={{ margin: "0px", maxWidth: "95vw" }}
                 >
                     <Grid item xs={12}>
                         <Typography variant="h4">
@@ -217,19 +226,19 @@ export default class UsersView extends React.Component {
                     </Grid>
                     <Grid item xs={12} sm={6} md={4} lg={6}>
                         {(this.props.privilege === Privilege.ADMIN) ?
-                        (<div>
-                            <CreateUser
-                                showCreateModal={this.state.showCreateModal}
-                                closeCreateModal={this.closeCreateModal}
-                                createModel={this.createUser}
-                                updateModelCreator={this.updateUserCreator}
-                                inputs={inputs}
-                                options={[]}
-                                useAutocomplete={false}
-                                loading={this.state.loadingPrivileges}
-                                privileges={this.state.allDCPrivileges}
-                            />
-                        </div>) : null}
+                            (<div>
+                                <CreateUser
+                                    showCreateModal={this.state.showCreateModal}
+                                    closeCreateModal={this.closeCreateModal}
+                                    createModel={this.createUser}
+                                    updateModelCreator={this.updateUserCreator}
+                                    inputs={inputs}
+                                    options={[]}
+                                    useAutocomplete={false}
+                                    loading={this.state.loadingPrivileges}
+                                    privileges={this.state.allDCPrivileges}
+                                />
+                            </div>) : null}
                     </Grid>
                     <Grid item xs={12} sm={6} md={4} lg={6}>
                         <FilterUser

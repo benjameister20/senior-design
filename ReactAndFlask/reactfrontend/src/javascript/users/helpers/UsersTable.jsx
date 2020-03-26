@@ -122,7 +122,7 @@ class UsersTable extends React.Component {
             <TableBody>
               {this.props.vals.map((row, index)=> (
               <TableRow id={index}>
-                  { this.props.privilege === Privilege.ADMIN ? <TableCell scope="row" align="center">
+                  { this.props.privilege.Admin ? <TableCell scope="row" align="center">
                     {row["Username"] !== "admin" ? <div><Button>
                         { this.state.canEdit ? <SaveIcon onClick={this.endEditing} /> : <EditIcon onClick={(e) => {this.beginEditing(e, row)}} /> }
                       </Button>

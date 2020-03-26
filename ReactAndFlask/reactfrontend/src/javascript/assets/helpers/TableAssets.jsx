@@ -333,7 +333,7 @@ class TableAsset extends React.Component {
 			<React.Fragment>
 				<Grid container spacing={3}>
 					<Grid item xs={12} sm={6} md={4} lg={3}>
-						{(this.props.privilege.Admin) ? <AddAsset showStatus={this.showStatusBar} getAssetList={this.getAssetList} /> : null}
+						{(this.props.privilege.Admin || this.props.privilege.Asset || this.props.privilege.Datacenters.length > 0) ? <AddAsset showStatus={this.showStatusBar} getAssetList={this.getAssetList} privilege={this.props.privilege} /> : null}
 					</Grid>
 					<Grid item xs={12} sm={6} md={4} lg={6}>
 						<FilterAsset
@@ -343,7 +343,7 @@ class TableAsset extends React.Component {
 						/>
 					</Grid>
 					<Grid item xs={12} sm={6} md={4} lg={3}>
-						{(this.props.privilege.Admin) ? <ExportAsset items={this.state.tableItems} /> : null}
+						<ExportAsset items={this.state.tableItems} />
 					</Grid>
 					<Grid item xs={12}>
 						<Toolbar

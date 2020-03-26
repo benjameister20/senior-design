@@ -231,7 +231,13 @@ class CreateAsset extends React.Component {
             getURL(Constants.DATACENTERS_MAIN_PATH, "all/")).then(
             response => {
                 var datacenters = [];
-                response.data.datacenters.map(datacenter => datacenters.push(datacenter.name));
+                response.data.datacenters.map(datacenter => {
+                    if (this.props.privilege.Datacenters.length > 0) {
+                        if (this.props.privilege.Datacenters[0] === "*" || this.props.privilege.Datacenters.includes(datacenter.abbreviation)) {
+                            datacenters.push(datacenter.name);
+                        }
+                    }
+                });
                 this.setState({ loadingDatacenters: false, datacenterList: datacenters })
             });
     }

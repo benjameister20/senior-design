@@ -31,7 +31,7 @@ export default class PageSelector extends React.Component {
   }
 
   login = (token, username, privilege) => {
-    console.log(privilege.Admin);
+    console.log(privilege);
     sessionStorage.setItem(storedToken, token);
     sessionStorage.setItem(storedPrivilege, privilege);
     sessionStorage.setItem(storedLoggedIn, true);

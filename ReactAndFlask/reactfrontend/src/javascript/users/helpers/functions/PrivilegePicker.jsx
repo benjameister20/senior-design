@@ -19,6 +19,29 @@ export default function PrivilegePicker(props) {
 		{title:"Administrator", value:"Admin"},
 	]
 
+	var defaultPrivs = [];
+	var defaultDCs = [];
+
+	if(props.defaultPrivileges !== undefined) {
+		if (props.defaultPrivileges.Model) {
+			defaultPrivs.push(generalPrivileges[0]);
+		}
+		if (props.defaultPrivileges.Asset) {
+			defaultPrivs.push(generalPrivileges[1]);
+		}
+		if (props.defaultPrivileges.Audit) {
+			defaultPrivs.push(generalPrivileges[2]);
+		}
+		if (props.defaultPrivileges.Power) {
+			defaultPrivs.push(generalPrivileges[3]);
+		}
+		if (props.defaultPrivileges.Admin) {
+			defaultPrivs.push(generalPrivileges[4]);
+		}
+
+		defaultDCs = props.defaultPrivileges.Datacenters
+	}
+
 	return (
 		<span>
 			<Typography>Privileges</Typography>
@@ -28,6 +51,7 @@ export default function PrivilegePicker(props) {
 				getOptionLabel={option => option.title}
 				options={generalPrivileges}
 				onChange={props.updatePrivilege}
+				defaultValue={defaultPrivs}
 				renderInput={params => (
 				<TextField
 					{...params}
@@ -43,6 +67,7 @@ export default function PrivilegePicker(props) {
 				id="tags-standard"
 				options={props.dcPrivileges}
 				onChange={props.updateDCPrivilege}
+				defaultValue={defaultDCs}
 				renderInput={params => (
 				<TextField
 					{...params}

@@ -50,6 +50,23 @@ const columnLookup = {
     'privilege': 'Privilege'
 }
 
+const blankSearch = {
+    "filter":
+    {
+        "username": "",
+        "display_name": "",
+        "email": "",
+        "privilege": {
+            "Model": true,
+            "Asset": true,
+            "Datacenters": ["*"],
+            "Power": true,
+            "Audit": true,
+            "Admin": true
+        }
+    }
+}
+
 export default class UsersView extends React.Component {
     constructor(props) {
         super(props);
@@ -75,22 +92,7 @@ export default class UsersView extends React.Component {
     }
 
     componentDidMount() {
-        this.searchUsers({
-            "filter":
-            {
-                "username": "",
-                "display_name": "",
-                "email": "",
-                "privilege": {
-                    "Model": true,
-                    "Asset": true,
-                    "Datacenters": ["*"],
-                    "Power": true,
-                    "Audit": true,
-                    "Admin": true
-                }
-            }
-        });
+        this.searchUsers(blankSearch);
         this.getPrivileges();
     }
 
@@ -103,7 +105,7 @@ export default class UsersView extends React.Component {
             if (response.data.message === UserConstants.USER_SUCCESS_TOKEN) {
                 completion(true);
                 this.setDisplayStatus(true, UserConstants.USER_CREATION_SUCCESS_MESSAGE, UserConstants.USER_SUCCESS_TOKEN);
-                this.searchUsers();
+                this.searchUsers(blankSearch);
             } else {
                 completion(false);
                 this.setDisplayStatus(true, response.data.message, UserConstants.USER_FAILURE_TOKEN)
@@ -114,7 +116,7 @@ export default class UsersView extends React.Component {
     editUser = (originalUsername, username, password, display_name, email, privileges, completion) => {
         axios.post(
             getURL(Constants.USERS_MAIN_PATH, UserCommand.edit),
-            makeEditJSON(originalUsername, username, password, display_name, email, privileges, completion)
+            makeEditJSON(originalUsername, username, password, display_name, email, privileges)
         ).then(response => this.processResponse(response, UserConstants.USER_EDIT_SUCCESS_MESSAGE, UserConstants.USER_EDIT_FAILURE_MESSAGE));
     }
 
@@ -211,9 +213,9 @@ export default class UsersView extends React.Component {
     processResponse = (response, successMessage, failureMessage) => {
         if (response.data.message === UserConstants.USER_SUCCESS_TOKEN) {
             this.setDisplayStatus(true, successMessage, UserConstants.USER_SUCCESS_TOKEN);
-            this.searchUsers();
+            this.searchUsers(blankSearch);
         } else {
-            this.setDisplayStatus(true, failureMessage, UserConstants.USER_FAILURE_TOKEN);
+            this.setDisplayStatus(true, response.data.message, UserConstants.USER_FAILURE_TOKEN);
         }
     }
 
@@ -276,7 +278,7 @@ export default class UsersView extends React.Component {
                             save={this.editUser}
                             editUser={this.updateEditUser}
                             loading={this.state.loadingPrivileges}
-                            privileges={this.state.allPrivileges}
+                            privileges={this.state.allDCPrivileges}
                         />
                     </Grid>
                 </Grid>

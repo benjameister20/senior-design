@@ -168,8 +168,8 @@ class Validator:
         if not (user.email == old_user.email):
             self.validate_email(user.email)
 
-        if user.password is not None:
-            self.validate_password(user.password)
+        # if user.password is not None:
+        #     self.validate_password(user.password)
 
         if not (user.privilege == old_user.privilege):
             self.validate_privilege(user.privilege, user.username)

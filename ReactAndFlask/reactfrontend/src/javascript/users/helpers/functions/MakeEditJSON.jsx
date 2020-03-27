@@ -7,6 +7,6 @@ export default function makeEditJSON(originalUsername, username, password, displ
 		'password': password,
 		'display_name': display_name,
 		'email': email,
-		'privileges': privileges,
+		'privilege': privileges,
 	}
 }

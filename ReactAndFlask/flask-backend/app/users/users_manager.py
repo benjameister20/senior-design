@@ -202,26 +202,23 @@ class UserManager:
 
         old_user = None
         try:
+            print("trying")
             user = self.__make_user_from_json(request_data)
+            print("made new user")
             updated_user, old_user = self.VALIDATOR.validate_edit_user(
                 user, username_original
             )
+            print("validated new user")
         except UserException as e:
             raise UserException(e.message)
         except Exception as e:
             print(e)
             raise UserException("Could not edit user")
 
-        # old_user = self.USER_TABLE.get_user(username_original)
-        # updated_user = User(
-        #     username=username,
-        #     display_name=display_name,
-        #     email=email,
-        #     password=old_user.password,
-        #     privilege=privilege,
-        # )
         self.USER_TABLE.delete_user(old_user)
+        print("deleted old user")
         self.USER_TABLE.add_user(updated_user)
+        print("added new user")
 
         if (
             old_user.privilege[PermissionConstants.ADMIN] == True
@@ -232,7 +229,7 @@ class UserManager:
                 f"Success, Demotion to user privilege will take effect within the next {self.AUTH_MANAGER.TOKEN_EXP_DAYS} Days, {self.AUTH_MANAGER.TOKEN_EXP_HOURS} Hours, {self.AUTH_MANAGER.TOKEN_EXP_MINUTES} Minutes, and {self.AUTH_MANAGER.TOKEN_EXP_SECONDS} Seconds.",
             )
 
-        return self.__add_message_to_JSON(response, "Successfully edited user")
+        return self.__add_message_to_JSON(response, "success")
 
     def authenticate(self, request):
         # TESTED AND FUNCTIONAL

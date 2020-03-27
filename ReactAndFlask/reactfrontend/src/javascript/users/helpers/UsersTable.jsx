@@ -57,8 +57,20 @@ class UsersTable extends React.Component {
 			showDeleteModal: false,
 			username: '',
 
-			privileges: [],
-			selectedPrivileges: [],
+			originalUsername:"",
+			username: "",
+			display_name: "",
+			password: "",
+			email: "",
+			selectedPrivileges:{
+				"Model":false,
+				"Asset":false,
+				"Datacenters":[],
+				"Power":false,
+				"Audit":false,
+				"Admin":false,
+			},
+			password:"",
 		};
 	}
 
@@ -68,12 +80,27 @@ class UsersTable extends React.Component {
 
 	beginEditing = (event, row) => {
 		this.setState({ canEdit: true });
-		this.props.editUser(row["Username"], row["Display Name"], row["Email"], row["Privilege"]);
+		console.log(row);
+		this.setState({
+			originalUsername:row.Username,
+			username:row.Username,
+			display_name:row["Display Name"],
+			email:row.Email,
+			selectedPrivileges:row.Privilege,
+			password:row.password,
+		});
 	}
 
 	endEditing = () => {
 		this.setState({ canEdit: false });
-		this.props.save(this.state.selectedPrivileges);
+		this.props.save(
+			this.state.originalUsername,
+			this.state.username,
+			this.state.password,
+			this.state.display_name,
+			this.state.email,
+			this.state.selectedPrivileges
+		);
 	}
 
 	showDeleteModal = (row) => {
@@ -89,23 +116,24 @@ class UsersTable extends React.Component {
 		this.closeDeleteModal();
 	}
 
-	changePrivilege = (event, row) => {
-		this.props.editUser(row["Username"], row["Display Name"], row["Email"], event.target.value);
-	}
+	updateSelectedPrivileges = (event, values) => {
+        var privs = {
+            "Model":false,
+            "Asset":false,
+            "Datacenters":this.state.selectedPrivileges["Datacenters"],
+            "Power":false,
+            "Audit":false,
+            "Admin":false,
+        };
+        values.map(priv => { privs[priv.value] = true; });
+        this.setState({ selectedPrivileges: privs });
+    }
 
-	updateSelectedPrivileges = (privilege, checked) => {
-		var selected = [];
-
-		this.state.selectedPrivileges.map(priv => {
-			if (priv !== privilege || (priv === privilege && checked)) {
-				selected.push(priv);
-			}
-		});
-		if (!this.state.selectedPrivileges.includes(privilege) && checked) {
-			selected.push(privilege);
-		}
-		this.setState({ selectedPrivileges: selected });
-	}
+    updateDCPrivilege = (event, values) => {
+        var privs = this.state.selectedPrivileges;
+        privs["Datacenters"] = values;
+        this.setState({ selectedPrivileges: privs });
+    }
 
 	render() {
 		const { classes } = this.props;
@@ -116,7 +144,14 @@ class UsersTable extends React.Component {
 					<Table style={{ minWidth: 1000 }} aria-label="simple table">
 						<TableHead>
 							<TableRow >
-								{this.props.columns.map(col => (<TableCell align="center"><span id={col} style={{ fontWeight: "bold" }}>{col}</span></TableCell>))}
+								{this.props.columns.map(col => {
+									if (col === "Privilege") {
+										return (this.state.canEdit ? <TableCell align="center"><span id={col} style={{ fontWeight: "bold" }}>{col}</span></TableCell>:null)
+									} else {
+										return <TableCell align="center"><span id={col} style={{ fontWeight: "bold" }}>{col}</span></TableCell>
+									}
+									})
+								}
 							</TableRow>
 						</TableHead>
 						<TableBody>
@@ -134,11 +169,13 @@ class UsersTable extends React.Component {
 										if (key === "Privilege") {
 											return (this.state.canEdit && row["Username"] !== "admin" ? <TableCell scope="row" align="center">
 												<PrivilegePicker
-													privileges={this.props.privileges}
+													dcPrivileges={this.props.privileges}
 													loading={this.props.loading}
-													updatePrivilege={(event) => this.updateSelectedPrivileges(event)}
+													updatePrivilege={this.updateSelectedPrivileges}
+													updateDCPrivilege={this.updateDCPrivilege}
+													defaultPrivileges={row.Privilege}
 												/>
-											</TableCell> : <TableCell scope="row" align="center">{row[key] === 'admin' ? 'Administrator' : 'User'}</TableCell>);
+											</TableCell> : null);
 										}
 
 										return (<TableCell scope="row" align="center">{row[key]}</TableCell>)

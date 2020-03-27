@@ -122,7 +122,7 @@ class UserManager:
         response = {}
 
         request_data = request.get_json()
-        # print(request_data)
+        print(request_data)
         try:
             username = request_data.get(Constants.USERNAME_KEY)
             password = request_data.get(Constants.PASSWORD_KEY)
@@ -135,14 +135,18 @@ class UserManager:
             )
 
         try:
+            print("here 1")
             user = self.__make_user_from_json(request_data)
+            print("here 2")
             self.VALIDATOR.validate_create_user(user)
+            print("here 3")
         except UserException as e:
             raise UserException(e.message)
         except:
             raise UserException("Could not create user")
 
         try:
+            print("here")
             encrypted_password = self.AUTH_MANAGER.encrypt_pw(password)
 
             user = User(username, display_name, email, encrypted_password, privilege)
@@ -150,7 +154,7 @@ class UserManager:
         except:
             raise UserException("Could not create user")
 
-        return self.__add_message_to_JSON(response, "Successfully created user")
+        return self.__add_message_to_JSON(response, "success")
 
     def delete(self, request):
         """Route for deleting users

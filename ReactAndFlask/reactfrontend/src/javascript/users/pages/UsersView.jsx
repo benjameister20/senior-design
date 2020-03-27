@@ -93,7 +93,7 @@ export default class UsersView extends React.Component {
                 this.searchUsers();
             } else {
                 completion(false);
-                this.setDisplayStatus(true, UserConstants.USER_CREATION_FAILURE_MESSAGE, UserConstants.USER_FAILURE_TOKEN)
+                this.setDisplayStatus(true, response.data.message, UserConstants.USER_FAILURE_TOKEN)
             }
         });
     }
@@ -120,6 +120,7 @@ export default class UsersView extends React.Component {
     }
 
     searchUsers = (filters) => {
+        console.log(filters);
         axios.post(
             getURL(Constants.USERS_MAIN_PATH, UserCommand.search),
             filters
@@ -162,6 +163,7 @@ export default class UsersView extends React.Component {
     }
 
     setDisplayStatus = (open, message, severity) => {
+        console.log(severity);
         this.setState({ statusOpen: open, statusMessage: message, statusSeverity: severity });
     }
 

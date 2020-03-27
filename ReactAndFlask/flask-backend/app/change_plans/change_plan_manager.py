@@ -20,7 +20,7 @@ class ChangePlanManager:
         except Exception as e:
             print(str(e))
             raise InvalidInputsError(
-                "An error occurred when attempting to create the asset."
+                "An error occurred when attempting to create the change plan."
             )
 
     def delete_change_plan(self, cp_data):
@@ -43,7 +43,7 @@ class ChangePlanManager:
         except Exception as e:
             print(str(e))
             raise InvalidInputsError(
-                "An error occurred when attempting to create the asset."
+                "An error occurred when attempting to delete the change plan."
             )
 
     def edit_change_plan(self, cp_data):
@@ -63,7 +63,7 @@ class ChangePlanManager:
         except Exception as e:
             print(str(e))
             raise InvalidInputsError(
-                "An error occurred when attempting to create the asset."
+                "An error occurred when attempting to edit the change plan."
             )
 
     def execute_cp(self, cp_data):
@@ -80,7 +80,7 @@ class ChangePlanManager:
         except Exception as e:
             print(str(e))
             raise InvalidInputsError(
-                "An error occurred when attempting to create the asset."
+                "An error occurred when attempting to execute the change plan."
             )
 
     def make_cp(self, cp_data) -> ChangePlan:

@@ -27,7 +27,6 @@ class UserEntry(db.Model):
 class UserTable:
     def get_user(self, username: str) -> Optional[User]:
         """ Get the user for the given username """
-        # print(username)
         user: UserEntry = UserEntry.query.filter_by(username=username).first()
         if user is None:
             return None
@@ -58,12 +57,11 @@ class UserTable:
             criteria.append(UserEntry.email == email)
         if privilege is not None:
             for key in privilege:
-                criteria.append(dict(UserEntry.privilege)[key].astext == privilege[key])
-
+                # criteria.append(dict(UserEntry.privilege)[key].astext == privilege[key])
+                print("")
         filtered_users: List[UserEntry] = UserEntry.query.filter(and_(*criteria)).limit(
             limit
         )
-
         return [
             User(
                 username=user.username,

@@ -129,8 +129,6 @@ class ModelTable:
 
             add, update, ignore = False, False, False
             if result is not None:
-                # print(str(result.make_model().ethernet_ports))
-                # print(str(model.ethernet_ports))
                 if result.make_model() == model:
                     ignore = True
                 else:
@@ -143,7 +141,6 @@ class ModelTable:
                 add = True
 
             db.session.commit()
-            # print(f"add {add} ignore {ignore} update {update}")
 
             return int(add), int(update), int(ignore)
         except:

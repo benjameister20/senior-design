@@ -60,6 +60,7 @@ export default class Login extends React.Component {
                 const message = response.data['message'];
                 if (message === 'success') {
                     this.setState({ message: '' });
+                    console.log(response);
                     this.props.loginFunc(response.data['token'], this.state.username, response.data['privilege']);
                 } else {
                     this.setState({ showStatus: true, statusMessage: message });

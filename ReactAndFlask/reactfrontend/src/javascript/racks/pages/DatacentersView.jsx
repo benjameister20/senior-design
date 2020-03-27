@@ -22,20 +22,20 @@ const racksMainPath = 'racks/';
 
 const useStyles = theme => ({
     root: {
-      width: '100%',
+        width: '100%',
     },
     heading: {
-      fontSize: theme.typography.pxToRem(15),
-      fontWeight: theme.typography.fontWeightRegular,
+        fontSize: theme.typography.pxToRem(15),
+        fontWeight: theme.typography.fontWeightRegular,
     },
     progress: {
         display: 'flex',
         '& > * + *': {
-          marginLeft: theme.spacing(2),
+            marginLeft: theme.spacing(2),
         },
-        justify:"center",
-        alignItems:"center",
-      },
+        justify: "center",
+        alignItems: "center",
+    },
     modal: {
         display: 'flex',
         alignItems: 'center',
@@ -47,7 +47,7 @@ const useStyles = theme => ({
         boxShadow: theme.shadows[5],
         padding: theme.spacing(2, 4, 3),
     },
-  });
+});
 
 
 class DatacenterView extends React.Component {
@@ -55,13 +55,13 @@ class DatacenterView extends React.Component {
         super(props);
 
         this.state = {
-            datacentersList:[],
-            loadingDCList:true,
-            showConfirmationBox:false,
-            currentDatacenter:"",
-            showEditDC:false,
-            editDCName:"",
-            editDCAbbr:"",
+            datacentersList: [],
+            loadingDCList: true,
+            showConfirmationBox: false,
+            currentDatacenter: "",
+            showEditDC: false,
+            editDCName: "",
+            editDCAbbr: "",
             selectedDatacenter: "",
             fullDatacenter: {},
             racks: {},
@@ -73,7 +73,7 @@ class DatacenterView extends React.Component {
     }
 
     getDatacenters = () => {
-        this.setState({ loadingDCList:true });
+        this.setState({ loadingDCList: true });
         axios.get(getURL(Constants.DATACENTERS_MAIN_PATH, DatacenterCommand.GET_ALL_DATACENTERS)).then(
             response => {
                 console.log(response.data.datacenters);
@@ -81,7 +81,7 @@ class DatacenterView extends React.Component {
                 console.log(datacenter);
                 var name = datacenter === undefined ? "" : datacenter.name;
                 console.log(name);
-                this.setState({ datacentersList: response.data.datacenters, loadingDCList:false, selectedDatacenter: name, fullDatacenter: datacenter });
+                this.setState({ datacentersList: response.data.datacenters, loadingDCList: false, selectedDatacenter: name, fullDatacenter: datacenter });
                 this.getAllRacks(name, true);
             }
         );
@@ -90,9 +90,9 @@ class DatacenterView extends React.Component {
     deleteDatacenter = () => {
         console.log(this.state.currentDatacenter);
         axios.post(getURL(Constants.DATACENTERS_MAIN_PATH, DatacenterCommand.DELETE),
-        {
-            "datacenter_name": this.state.currentDatacenter
-        }
+            {
+                "datacenter_name": this.state.currentDatacenter
+            }
         ).then(
             response => {
                 console.log("Deleteting");
@@ -100,18 +100,18 @@ class DatacenterView extends React.Component {
                 if (response.data.message === "success") {
                     this.setState({
                         showConfirmationBox: false,
-                        showStatus:true,
-                        statusMessage:"Successfully deleted datacenter",
-                        statusSeverity:"success",
-                     });
+                        showStatus: true,
+                        statusMessage: "Successfully deleted datacenter",
+                        statusSeverity: "success",
+                    });
                     this.getDatacenters();
                 } else {
                     this.setState({
                         showConfirmationBox: false,
-                        showStatus:true,
-                        statusMessage:response.data.message,
-                        statusSeverity:"error",
-                     });
+                        showStatus: true,
+                        statusMessage: response.data.message,
+                        statusSeverity: "error",
+                    });
                 }
 
             }
@@ -119,26 +119,26 @@ class DatacenterView extends React.Component {
     }
 
     openConfirmationBox = (event, datacenter) => {
-        this.setState({ showConfirmationBox: true, currentDatacenter:datacenter });
+        this.setState({ showConfirmationBox: true, currentDatacenter: datacenter });
     }
 
     closeConfirmationBox = () => {
         this.setState({ showConfirmationBox: false });
     }
 
-    openEditDatacenter= (event, datacenterName, datacenterAbbrev) => {
+    openEditDatacenter = (event, datacenterName, datacenterAbbrev) => {
         this.setState({ editDCName: datacenterName, editDCAbbr: datacenterAbbrev }, () => this.setState({ showEditDC: true, }));
     }
 
     closeEditDatacenter = () => {
         this.setState({
             showEditDC: false,
-            editDCName:"",
-            editDCAbbr:"",
+            editDCName: "",
+            editDCAbbr: "",
             showStatus: false,
             statusMessage: '',
             statusSeverity: 'info',
-         });
+        });
     }
 
     closeShowStatus = () => {
@@ -155,20 +155,20 @@ class DatacenterView extends React.Component {
                 'stop_number': rack2.substring(1),
                 "datacenter_name": this.state.selectedDatacenter,
             }
-            ).then(response => {
-                if (response.data.message === 'success') {
-                    this.setState({ showStatus: true, statusMessage: "Success", statusSeverity:"success", showConfirmationBox:false });
-                    if (command === RackCommand.GET_RACK_DETAILS) {
-                        const win = window.open(response.data.link, '_blank');
-                        if (win != null) {
-                            win.focus();
-                        }
+        ).then(response => {
+            if (response.data.message === 'success') {
+                this.setState({ showStatus: true, statusMessage: "Success", statusSeverity: "success", showConfirmationBox: false });
+                if (command === RackCommand.GET_RACK_DETAILS) {
+                    const win = window.open(response.data.link, '_blank');
+                    if (win != null) {
+                        win.focus();
                     }
-                } else {
-                    this.setState({ showStatus: true, statusMessage: response.data.message, statusSeverity:"error" })
                 }
-                this.getAllRacks(this.state.selectedDatacenter, false);
-            });
+            } else {
+                this.setState({ showStatus: true, statusMessage: response.data.message, statusSeverity: "error" })
+            }
+            this.getAllRacks(this.state.selectedDatacenter, false);
+        });
     }
 
     getAllRacks = (datacenter, showSnack) => {
@@ -192,10 +192,10 @@ class DatacenterView extends React.Component {
 
             if (response.data.message === 'success') {
                 if (showSnack) {
-                    this.setState({ showStatus: true, statusMessage: "Racks loaded", statusSeverity:"success", racksList:response.data.racks })
+                    this.setState({ showStatus: true, statusMessage: "Racks loaded", statusSeverity: "success", racksList: response.data.racks })
                 }
             } else {
-                this.setState({ showStatus: true, statusMessage: response.data.message, statusSeverity:"error" })
+                this.setState({ showStatus: true, statusMessage: response.data.message, statusSeverity: "error" })
             }
         });
     }
@@ -216,46 +216,53 @@ class DatacenterView extends React.Component {
                         direction="row"
                         justify="center"
                         alignItems="center"
-                        style={{margin: "0px", maxWidth: "95vw"}}
+                        style={{ margin: "0px", maxWidth: "95vw" }}
                     >
                         <Grid item xs={12}>
                             <Typography variant="h4">
                                 Datacenters
                             </Typography>
                         </Grid>
-                        <CreateDatacenter disabled={this.props.disabled} search={this.getDatacenters} selectedDatacenter={this.state.selectedDatacenter} dc={this.state.fullDatacenter} selectDatacenter={this.updateDatacenter} datacenterList={this.state.datacentersList} />
-                        {this.state.loadingDCList ?
-                        <div className={classes.progress}><CircularProgress /></div> :
-
-                        <Grid item xs={12}>
-                        <ShowDatacenters
-                            classes={classes}
-                            datacentersList={this.state.datacentersList}
-                            privilege={this.props.privilege}
-                            openConfirmationBox={this.openConfirmationBox}
-                            editDatacenter={this.openEditDatacenter}
-                            selectedDatacenter={this.state.selectedDatacenter}
-                            updateRacks={this.updateRacks}
+                        <CreateDatacenter
                             disabled={this.props.disabled}
-                            dc={this.state.fullDatacenter}
-                            />
-                        </Grid>}
-                        <Grid item xs={6}>
-                        <EditDatacenter
-                            show={this.state.showEditDC}
-                            close={this.closeEditDatacenter}
-                            dcName={this.state.editDCName}
-                            dcAbbrev={this.state.editDCAbbr}
                             search={this.getDatacenters}
+                            selectedDatacenter={this.state.selectedDatacenter}
+                            dc={this.state.fullDatacenter}
+                            selectDatacenter={this.updateDatacenter}
+                            datacenterList={this.state.datacentersList}
                         />
+                        {this.state.loadingDCList ?
+                            <div className={classes.progress}><CircularProgress /></div> :
+
+                            <Grid item xs={12}>
+                                <ShowDatacenters
+                                    classes={classes}
+                                    datacentersList={this.state.datacentersList}
+                                    privilege={this.props.privilege}
+                                    openConfirmationBox={this.openConfirmationBox}
+                                    editDatacenter={this.openEditDatacenter}
+                                    selectedDatacenter={this.state.selectedDatacenter}
+                                    updateRacks={this.updateRacks}
+                                    disabled={this.props.disabled}
+                                    dc={this.state.fullDatacenter}
+                                />
+                            </Grid>}
+                        <Grid item xs={6}>
+                            <EditDatacenter
+                                show={this.state.showEditDC}
+                                close={this.closeEditDatacenter}
+                                dcName={this.state.editDCName}
+                                dcAbbrev={this.state.editDCAbbr}
+                                search={this.getDatacenters}
+                            />
                         </Grid>
                         <Grid item xs={6}>
-                        <ConfirmDeteleDC
-                            showConfirmationBox={this.state.showConfirmationBox}
-                            closeConfirmationBox={this.closeConfirmationBox}
-                            deleteDatacenter={this.deleteDatacenter}
-                            close={this.closeEditDatacneter}
-                        />
+                            <ConfirmDeteleDC
+                                showConfirmationBox={this.state.showConfirmationBox}
+                                closeConfirmationBox={this.closeConfirmationBox}
+                                deleteDatacenter={this.deleteDatacenter}
+                                close={this.closeEditDatacneter}
+                            />
                         </Grid>
                     </Grid>
 
@@ -265,15 +272,15 @@ class DatacenterView extends React.Component {
                         direction="row"
                         justify="center"
                         alignItems="center"
-                        style={{margin: "0px", maxWidth: "95vw"}}
+                        style={{ margin: "0px", maxWidth: "95vw" }}
                     >
-                    <Grid item xs={12}>
-                        <RacksView
-                            disabled={this.props.disabled}
-                            datacenter={this.state.selectedDatacenter}
-                            racks={this.state.racks}
-                        />
-                    </Grid>
+                        <Grid item xs={12}>
+                            <RacksView
+                                disabled={this.props.disabled}
+                                datacenter={this.state.selectedDatacenter}
+                                racks={this.state.racks}
+                            />
+                        </Grid>
                     </Grid>
                     <StatusDisplay
                         open={this.state.showStatus}
@@ -284,8 +291,8 @@ class DatacenterView extends React.Component {
                 </ErrorBoundary>
             </React.Fragment>
         );
+    }
 }
-  }
 
 
-  export default withStyles(useStyles)(DatacenterView);
+export default withStyles(useStyles)(DatacenterView);

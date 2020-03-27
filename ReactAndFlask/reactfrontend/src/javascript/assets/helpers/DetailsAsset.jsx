@@ -86,7 +86,8 @@ class DetailAsset extends React.Component {
                             defaultValues={this.props.asset}
                             disabled={this.props.disabled}
                             close={this.props.close}
-						    getAssetList={this.props.getAssetList}
+                            getAssetList={this.props.getAssetList}
+                            privilege={this.props.privilege}
                         />
                     </ExpansionPanelDetails>
                 </ExpansionPanel>

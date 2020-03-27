@@ -123,6 +123,7 @@ def delete():
 def edit():
 
     response = {}
+    print(request.get_json())
     try:
         response = USER_MANAGER.edit(request)
     except UserException as e:

@@ -13,4 +13,5 @@ export enum AssetCommand {
     EXPORT_FILE = 'export/',
     GET_NEXT_ASSET_NUM = 'nextAssetNumber/',
     GET_NETWORK_NEIGHBORHOOD = "networkNeighborhood/",
+    GENERATE_LABELS = 'labelgen/',
 }

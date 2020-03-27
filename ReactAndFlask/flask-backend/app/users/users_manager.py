@@ -77,11 +77,14 @@ class UserManager:
 
     def search(self, request):
         request_data = request.get_json()
+        print("request data: ", request_data)
+        print("here 1")
         filters = request_data.get(Constants.FILTER_KEY)
+        print("here 2")
         limit = filters.get(Constants.LIMIT_KEY)
         if limit is None:
             limit = 1000
-
+        print("here 3")
         users = self.USER_TABLE.search_users(
             username=filters.get(Constants.USERNAME_KEY),
             display_name=filters.get(Constants.DISPLAY_NAME_KEY),
@@ -89,9 +92,10 @@ class UserManager:
             privilege=filters.get(Constants.PRIVILEGE_KEY),
             limit=limit,
         )
-
+        print("here 4")
         json_list = [user.make_json() for user in users]
-
+        print("json list of users")
+        json.dumps(json_list)
         return json_list
 
     def create_user(self, request):

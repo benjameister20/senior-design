@@ -278,7 +278,22 @@ class EditAsset extends React.Component {
 
     getOwnerList = () => {
         axios.post(
-            getURL(Constants.USERS_MAIN_PATH, searchPath), emptySearch).then(
+            getURL(Constants.USERS_MAIN_PATH, searchPath), {
+                "filter":
+                {
+                    "username": "",
+                    "display_name": "",
+                    "email": "",
+                    "privilege": {
+                        "Model": true,
+                        "Asset": true,
+                        "Datacenters": ["*"],
+                        "Power": true,
+                        "Audit": true,
+                        "Admin": true
+                    }
+                }
+            }).then(
             response => {
                 try {
                     console.log(response);

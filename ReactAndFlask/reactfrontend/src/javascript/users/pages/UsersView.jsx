@@ -1,19 +1,17 @@
 import React from 'react';
 import axios from 'axios';
 
-import { UserCommand } from '../enums/UserCommands.ts'
+import {
+    Typography,
+    Grid,
+} from '@material-ui/core';
 
+import { UserCommand } from '../enums/UserCommands.ts'
 import FilterUser from '../helpers/FilterUser';
 import CreateUser from '../helpers/CreateUser';
-
 import getURL from '../../helpers/functions/GetURL';
 import UsersTable from '../helpers/UsersTable';
 import StatusDisplay from '../../helpers/StatusDisplay';
-
-import { Privilege } from '../../enums/privilegeTypes.ts'
-
-import { Typography } from '@material-ui/core';
-import Grid from '@material-ui/core/Grid';
 import * as UserConstants from "../UserConstants";
 import { PrivilegeCommand } from "../enums/PrivilegeCommands.ts";
 import * as Constants from "../../Constants";
@@ -77,7 +75,22 @@ export default class UsersView extends React.Component {
     }
 
     componentDidMount() {
-        this.searchUsers({});
+        this.searchUsers({
+            "filter":
+            {
+                "username": "",
+                "display_name": "",
+                "email": "",
+                "privilege": {
+                    "Model": true,
+                    "Asset": true,
+                    "Datacenters": ["*"],
+                    "Power": true,
+                    "Audit": true,
+                    "Admin": true
+                }
+            }
+        });
         this.getPrivileges();
     }
 
@@ -123,7 +136,7 @@ export default class UsersView extends React.Component {
         console.log(filters);
         axios.post(
             getURL(Constants.USERS_MAIN_PATH, UserCommand.search),
-            filters
+            filters,
         ).then(response => {
             const models = response.data['users'] === undefined ? [] : response.data['users'];
             var rows = [];

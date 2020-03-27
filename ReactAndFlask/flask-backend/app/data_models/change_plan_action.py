@@ -30,11 +30,14 @@ class ChangePlanAction:
         self.original_asset_number: int = original_asset_number
         self.new_record: Dict[str, Any] = new_record
 
+        self.old_record: Dict[str, Any] = {}
+
     def make_json(self) -> JSON:
         return {
             Constants.CHANGE_PLAN_ID_KEY: self.change_plan_id,
             Constants.STEP_KEY: self.step,
             Constants.ACTION_KEY: self.action,
             Constants.ASSET_NUMBER_ORIG_KEY: self.original_asset_number,
+            Constants.OLD_RECORD_KEY: self.old_record,
             Constants.NEW_RECORD_KEY: self.new_record,
         }

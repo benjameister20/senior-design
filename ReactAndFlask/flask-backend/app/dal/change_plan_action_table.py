@@ -122,6 +122,20 @@ class ChangePlanActionTable:
         except:
             print("Failed to delete change plan action")
 
+    def get_newest_asset_record_in_plan(
+        self, change_plan_id: int, original_asset_number: int
+    ) -> ChangePlanAction:
+        change_plan_action_entry: ChangePlanActionEntry = ChangePlanActionEntry.query.filter_by(
+            change_plan_id=change_plan_id, original_asset_number=original_asset_number
+        ).order_by(
+            ChangePlanActionEntry.step.desc()
+        ).first()
+
+        if change_plan_action_entry is None:
+            return None
+
+        return change_plan_action_entry.make_change_plan_action()
+
     def _edit_change_plan_sequence(
         self, change_plan_id: int, original_step: int, new_step: int
     ) -> None:

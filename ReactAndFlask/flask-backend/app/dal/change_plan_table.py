@@ -11,7 +11,7 @@ class ChangePlanEntry(db.Model):
     owner = db.Column(db.String(128))
     name = db.Column(db.String(128))
     executed = db.Column(db.Boolean)
-    timestamp = db.Column(db.String(128))
+    timestamp = db.Column(db.Date)
 
     def __init__(self, change_plan: ChangePlan):
         self.abbreviation = change_plan.owner

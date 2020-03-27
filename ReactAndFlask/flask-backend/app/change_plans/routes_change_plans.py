@@ -2,6 +2,7 @@ from typing import List
 
 from app.change_plans.change_plan_action_manager import ChangePlanActionManager
 from app.change_plans.change_plan_manager import ChangePlanManager
+from app.constants import Constants
 from app.decorators.auth import requires_auth
 from app.exceptions.InvalidInputsException import InvalidInputsError
 from app.logging.logger import Logger
@@ -83,6 +84,52 @@ def execute():
         return addMessageToJSON(returnJSON, e.message)
 
 
+@changeplans.route("/changeplans/getplans", methods=["POST"])
+@requires_auth(request)
+def get_cps():
+    """ Route for getting change plans associated with a user """
+    global CP_MANAGER
+    global cpArr
+    returnJSON = createJSON()
+
+    try:
+        cp_data = request.get_json()
+        cp_list = CP_MANAGER.get_change_plans(cp_data)
+        returnJSON = addCpsTOJSON(
+            addMessageToJSON(returnJSON, "success"),
+            list(map(lambda x: x.make_json(), cp_list)),
+        )
+        return returnJSON
+    except InvalidInputsError as e:
+        return addMessageToJSON(returnJSON, e.message)
+
+
+# ------------------------ CHANGE PLAN ACTION ROUTES ------------------------
+
+
+@changeplans.route("/changeplans/getactions", methods=["POST"])
+@requires_auth(request)
+def get_cp_actions():
+    """ Route for getting a change plan's actions """
+    global CP_ACTION_MANAGER
+    global cpActionsArr
+    returnJSON = createJSON()
+
+    try:
+        cp_data = request.get_json()
+        cp_id = cp_data.get(Constants.CHANGE_PLAN_ID_KEY)
+        cp_action_list = CP_ACTION_MANAGER.get_change_plan_actions(cp_id)
+
+        returnJSON = addCpActionsTOJSON(
+            addMessageToJSON(returnJSON, "success"),
+            list(map(lambda x: x.make_json(), cp_action_list)),
+        )
+
+        return returnJSON
+    except InvalidInputsError as e:
+        return addMessageToJSON(returnJSON, e.message)
+
+
 def createJSON() -> dict:
     return {"metadata": "none"}
 
@@ -92,6 +139,11 @@ def addMessageToJSON(json, message) -> dict:
     return json
 
 
-def addInstancesTOJSON(json, cpArr: List[str]) -> dict:
+def addCpsTOJSON(json, cpArr: List[str]) -> dict:
     json["change_plans"] = cpArr
+    return json
+
+
+def addCpActionsTOJSON(json, cpActionsArr: List[str]) -> dict:
+    json["change_plan_actions"] = cpActionsArr
     return json

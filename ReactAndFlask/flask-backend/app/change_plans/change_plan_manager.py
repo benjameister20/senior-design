@@ -1,7 +1,10 @@
+from typing import List
+
 from app.constants import Constants
 from app.dal.change_plan_action_table import ChangePlanActionTable
 from app.dal.change_plan_table import ChangePlanTable
 from app.data_models.change_plan import ChangePlan
+from app.data_models.change_plan_action import ChangePlanAction
 from app.exceptions.InvalidInputsException import InvalidInputsError
 
 
@@ -66,10 +69,26 @@ class ChangePlanManager:
                 "An error occurred when attempting to edit the change plan."
             )
 
+    def get_change_plans(self, cp_data):
+        try:
+            cp_owner = cp_data.get(Constants.OWNER_KEY)
+            cp_list = self.cp_table.get_change_plan_by_owner(cp_owner)
+            return cp_list
+        except InvalidInputsError as e:
+            print(e.message)
+            raise InvalidInputsError(e.message)
+        except Exception as e:
+            print(str(e))
+            raise InvalidInputsError(
+                "An error occurred when attempting to retrieve your change plans."
+            )
+
     def execute_cp(self, cp_data):
         try:
             identifier = self.check_null(cp_data.get(Constants.CHANGE_PLAN_ID_KEY))
-            self.cp_action_table.get_actions_by_change_plan_id(identifier)
+            change_plan_actions: List[
+                ChangePlanAction
+            ] = self.cp_action_table.get_actions_by_change_plan_id(identifier)
 
             # Write function to execute each action
             # Edit change plan to mark as executed with timestamp

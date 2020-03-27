@@ -36,8 +36,6 @@ def search():
     global instancesArr
     returnJSON = createJSON()
 
-    print(json.dumps(request.json, indent=4))
-    print("")
     filter = request.json.get("filter")
     if filter is None:
         return addMessageToJSON(returnJSON, "Please include a filter")
@@ -72,7 +70,6 @@ def search():
                 )
             ),
         )
-        print(json.dumps(returnJSON, indent=4))
         return returnJSON
     except InvalidInputsError as e:
         print(e.message)

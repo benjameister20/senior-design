@@ -153,8 +153,6 @@ class InstanceTable:
 
             add, update, ignore = False, False, False
             if result is not None:
-                print(result.make_instance().asset_number)
-                print(instance.asset_number)
                 if result.make_instance() == instance:
                     ignore = True
                 else:
@@ -237,9 +235,6 @@ class InstanceTable:
         instance_entries: List[InstanceEntry] = InstanceEntry.query.filter_by(
             model_id=model_id
         ).all()
-        print("INSTANCE ENTRIES")
-        print(instance_entries)
-        print(model_id)
         if instance_entries is None or len(instance_entries) == 0:
             return None
 

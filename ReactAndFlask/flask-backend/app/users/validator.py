@@ -136,13 +136,12 @@ class Validator:
             raise InvalidPrivilegeError(
                 "Cannot revoke admin permission from admin user"
             )
-
         for key in privilege:
-            if key is not PermissionConstants.DATACENTERS:
+            if key != PermissionConstants.DATACENTERS:
                 if type(privilege[key]) is not bool:
                     raise TypeError(f"{key} must be of type bool.")
             else:
-                if type(privilege[key]) is not dict:
+                if not isinstance(privilege[key], list):
                     raise TypeError(f"{key} must be of type dict.")
 
         return True
@@ -151,7 +150,9 @@ class Validator:
         self.validate_email(user.email)
         self.validate_password(user.password)
         self.validate_privilege(user.privilege, user.username)
+        print("validated username and privilege")
         self.validate_new_username(user.username)
+        print("validated username")
 
         return True
 
@@ -167,8 +168,8 @@ class Validator:
         if not (user.email == old_user.email):
             self.validate_email(user.email)
 
-        if user.password is not None:
-            self.validate_password(user.password)
+        # if user.password is not None:
+        #     self.validate_password(user.password)
 
         if not (user.privilege == old_user.privilege):
             self.validate_privilege(user.privilege, user.username)

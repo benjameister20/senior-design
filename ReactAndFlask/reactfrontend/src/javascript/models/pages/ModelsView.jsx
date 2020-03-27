@@ -526,7 +526,7 @@ export default class ModelsView extends React.Component {
                         </Typography>
                     </Grid>
                     <Grid item xs={12} sm={6} md={4} lg={3}>
-                        {(this.props.privilege == Privilege.ADMIN) ?
+                        {(this.props.privilege.admin || this.props.privilege.model) ?
                         (<div>
                             <CreateModel
                                 showStatus={this.state.createshowStatus}
@@ -554,7 +554,7 @@ export default class ModelsView extends React.Component {
                         />
                     </Grid>
                     <Grid item xs={12} sm={6} md={4} lg={3}>
-                        {(this.props.privilege === Privilege.ADMIN) ?
+                        {(this.props.privilege.admin || this.props.privilege.model) ?
                         (<div>
 
                         <ExportModel
@@ -574,12 +574,12 @@ export default class ModelsView extends React.Component {
                     </Grid>
                     <Grid item xs={12}>
                         <ModelsTable
-                            columns={this.props.privilege == Privilege.ADMIN ? adminColumns : columns}
+                            columns={this.props.privilege.admin || this.props.privilege.model ? adminColumns : columns}
                             vals={this.state.rows}
                             privilege={this.props.privilege}
                             token={this.props.token}
                             keys={columns}
-                            filters={this.props.privilege == Privilege.ADMIN ? adminColumns : columns}
+                            filters={this.props.privilege.admin || this.props.privilege.model ? adminColumns : columns}
                             updateModelColor={this.updateModelColorDetails}
                             deleteModel={this.deleteModel}
                             editModel={this.editModel}

@@ -15,4 +15,5 @@ export enum AssetCommand {
     GET_NETWORK_NEIGHBORHOOD = "networkNeighborhood/",
     CHANGE_PLAN_CREATE = 'changeplan/create/',
     CHANGE_PLAN_ADD_ITEM = 'changeplan/add/',
+    GENERATE_LABELS = 'labelgen/',
 }

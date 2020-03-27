@@ -240,7 +240,7 @@ class ModelsTable extends React.Component {
                         <TableBody>
                             {this.props.vals.map((row, index) => (
                                 <TableRow id={index} hover={true}>
-                                    {this.props.privilege === Privilege.ADMIN ? (
+                                    {this.props.privilege.admin || this.props.privilege.model ? (
                                         <TableCell scope="row" align="center">
                                             <Button
                                                 startIcon={<EditIcon />}

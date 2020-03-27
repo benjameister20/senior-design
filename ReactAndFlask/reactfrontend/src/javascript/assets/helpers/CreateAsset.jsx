@@ -218,7 +218,22 @@ class CreateAsset extends React.Component {
 
     getOwnerList = () => {
         axios.post(
-            getURL(Constants.USERS_MAIN_PATH, searchPath), emptySearch).then(
+            getURL(Constants.USERS_MAIN_PATH, searchPath), {
+                "filter":
+                {
+                    "username": "",
+                    "display_name": "",
+                    "email": "",
+                    "privilege": {
+                        "Model": true,
+                        "Asset": true,
+                        "Datacenters": ["*"],
+                        "Power": true,
+                        "Audit": true,
+                        "Admin": true
+                    }
+                }
+            }).then(
             response => {
                 var users = [];
                 response.data.users.map(user => users.push(user.username + "/" + user.display_name));
@@ -231,7 +246,13 @@ class CreateAsset extends React.Component {
             getURL(Constants.DATACENTERS_MAIN_PATH, "all/")).then(
             response => {
                 var datacenters = [];
-                response.data.datacenters.map(datacenter => datacenters.push(datacenter.name));
+                response.data.datacenters.map(datacenter => {
+                    if (this.props.privilege.datacenters.length > 0) {
+                        if (this.props.privilege.datacenters[0] === "*" || this.props.privilege.datacenters.includes(datacenter.abbreviation) || this.props.privilege.asset) {
+                            datacenters.push(datacenter.name);
+                        }
+                    }
+                });
                 this.setState({ loadingDatacenters: false, datacenterList: datacenters })
             });
     }
@@ -261,7 +282,6 @@ class CreateAsset extends React.Component {
 
     validJSON = (json) => {
         var valid = (json.model !== ""
-        && json.owner !== ""
         && json.datacenter_name !== ""
         && json.rack !== ""
         && json.rack_position !== -1
@@ -592,7 +612,6 @@ class CreateAsset extends React.Component {
                                     onBlur={this.updateOwner}
                                     variant="outlined"
                                     fullWidth
-                                    required
                                 />
                                 )}
                             />

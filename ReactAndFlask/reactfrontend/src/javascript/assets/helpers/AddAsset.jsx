@@ -127,6 +127,7 @@ class AddAsset extends React.Component {
 						close={this.closeCreate}
 						getAssetList={this.props.getAssetList}
 						showStatus={this.props.showStatus}
+						privilege={this.props.privilege}
 					/>
 				</Dialog>
 

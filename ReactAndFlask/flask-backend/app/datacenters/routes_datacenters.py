@@ -53,7 +53,6 @@ def list_all():
 @log(request, LOGGER.DATACENTERS, LOGGER.ACTIONS.DATACENTERS.CREATE)
 def create():
     """ Route for creating datacenters"""
-    print("CREATE ROUTE")
 
     global DATACENTER_MANAGER
     returnJSON = createJSON()
@@ -62,7 +61,6 @@ def create():
         dc_data = request.get_json()
         error = DATACENTER_MANAGER.create_datacenter(dc_data)
         if error is not None:
-            print(error.message)
             return addMessageToJSON(returnJSON, error.message)
         return addMessageToJSON(returnJSON, Constants.API_SUCCESS)
     except InvalidInputsError as e:
@@ -87,7 +85,6 @@ def edit():
         dc_data = request.get_json()
         error = DATACENTER_MANAGER.edit_datacenter(dc_data)
         if error is not None:
-            print(error.message)
             return addMessageToJSON(returnJSON, error.message)
         return addMessageToJSON(returnJSON, Constants.API_SUCCESS)
     except InvalidInputsError as e:
@@ -112,7 +109,6 @@ def delete():
         dc_data = request.get_json()
         error = DATACENTER_MANAGER.delete_datacenter(dc_data)
         if error is not None:
-            print(error.message)
             return addMessageToJSON(returnJSON, error.message)
         return addMessageToJSON(returnJSON, Constants.API_SUCCESS)
     except InvalidInputsError as e:

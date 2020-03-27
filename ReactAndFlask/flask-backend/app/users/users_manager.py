@@ -77,11 +77,14 @@ class UserManager:
 
     def search(self, request):
         request_data = request.get_json()
+        print("request data: ", request_data)
+        print("here 1")
         filters = request_data.get(Constants.FILTER_KEY)
+        print("here 2")
         limit = filters.get(Constants.LIMIT_KEY)
         if limit is None:
             limit = 1000
-
+        print("here 3")
         users = self.USER_TABLE.search_users(
             username=filters.get(Constants.USERNAME_KEY),
             display_name=filters.get(Constants.DISPLAY_NAME_KEY),
@@ -89,9 +92,10 @@ class UserManager:
             privilege=filters.get(Constants.PRIVILEGE_KEY),
             limit=limit,
         )
-
+        print("here 4")
         json_list = [user.make_json() for user in users]
-
+        print("json list of users")
+        json.dumps(json_list)
         return json_list
 
     def create_user(self, request):
@@ -122,7 +126,7 @@ class UserManager:
         response = {}
 
         request_data = request.get_json()
-        # print(request_data)
+        print(request_data)
         try:
             username = request_data.get(Constants.USERNAME_KEY)
             password = request_data.get(Constants.PASSWORD_KEY)
@@ -135,14 +139,18 @@ class UserManager:
             )
 
         try:
+            print("here 1")
             user = self.__make_user_from_json(request_data)
+            print("here 2")
             self.VALIDATOR.validate_create_user(user)
+            print("here 3")
         except UserException as e:
             raise UserException(e.message)
         except:
             raise UserException("Could not create user")
 
         try:
+            print("here")
             encrypted_password = self.AUTH_MANAGER.encrypt_pw(password)
 
             user = User(username, display_name, email, encrypted_password, privilege)
@@ -150,7 +158,7 @@ class UserManager:
         except:
             raise UserException("Could not create user")
 
-        return self.__add_message_to_JSON(response, "Successfully created user")
+        return self.__add_message_to_JSON(response, "success")
 
     def delete(self, request):
         """Route for deleting users
@@ -194,26 +202,23 @@ class UserManager:
 
         old_user = None
         try:
+            print("trying")
             user = self.__make_user_from_json(request_data)
+            print("made new user")
             updated_user, old_user = self.VALIDATOR.validate_edit_user(
                 user, username_original
             )
+            print("validated new user")
         except UserException as e:
             raise UserException(e.message)
         except Exception as e:
             print(e)
             raise UserException("Could not edit user")
 
-        # old_user = self.USER_TABLE.get_user(username_original)
-        # updated_user = User(
-        #     username=username,
-        #     display_name=display_name,
-        #     email=email,
-        #     password=old_user.password,
-        #     privilege=privilege,
-        # )
         self.USER_TABLE.delete_user(old_user)
+        print("deleted old user")
         self.USER_TABLE.add_user(updated_user)
+        print("added new user")
 
         if (
             old_user.privilege[PermissionConstants.ADMIN] == True
@@ -224,7 +229,7 @@ class UserManager:
                 f"Success, Demotion to user privilege will take effect within the next {self.AUTH_MANAGER.TOKEN_EXP_DAYS} Days, {self.AUTH_MANAGER.TOKEN_EXP_HOURS} Hours, {self.AUTH_MANAGER.TOKEN_EXP_MINUTES} Minutes, and {self.AUTH_MANAGER.TOKEN_EXP_SECONDS} Seconds.",
             )
 
-        return self.__add_message_to_JSON(response, "Successfully edited user")
+        return self.__add_message_to_JSON(response, "success")
 
     def authenticate(self, request):
         # TESTED AND FUNCTIONAL

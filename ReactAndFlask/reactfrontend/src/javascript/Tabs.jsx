@@ -100,7 +100,6 @@ class TabViewer extends React.Component {
                             onClose={this.handleMenuClose}
                         >
                             <MenuItem>{"Username: " + this.props.username}</MenuItem>
-                            <MenuItem>{"Privilege: " + this.props.privilege}</MenuItem>
                             <MenuItem onClick={this.props.logout} >LOGOUT</MenuItem>
                         </Menu>
                     </div>
@@ -114,10 +113,10 @@ class TabViewer extends React.Component {
             >
                     <Tab value={0} style={{flexGrow: 1,}} label="Models"> </Tab>
                     <Tab value={1} style={{flexGrow: 1,}} label="Assets" ></Tab>
-                    {(this.props.privilege === Privilege.ADMIN) ? <Tab value={2} style={{flexGrow: 1,}} label="Users"></Tab> : null}
-                    <Tab value={3} style={{flexGrow: 1,}} label="Datacenters" />
+                    {(this.props.privilege.admin) ? <Tab value={2} style={{flexGrow: 1,}} label="Users"></Tab> : null}
+                    {(this.props.privilege.admin || this.props.privilege.asset) ? <Tab value={3} style={{flexGrow: 1,}} label="Datacenters" /> : null}
                     <Tab value={4} style={{flexGrow: 1,}} label="Statistics" />
-                    <Tab value={5} style={{flexGrow: 1,}} label="Logs" />
+                    {(this.props.privilege.admin || this.props.privilege.audit) ? <Tab value={5} style={{flexGrow: 1,}} label="Logs" />:null}
             </Tabs>
             {this.state.currentTabID !== 0 ? null :
             <Typography

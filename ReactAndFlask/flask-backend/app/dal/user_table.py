@@ -57,12 +57,11 @@ class UserTable:
             criteria.append(UserEntry.email == email)
         if privilege is not None:
             for key in privilege:
-                criteria.append(dict(UserEntry.privilege)[key].astext == privilege[key])
-
+                # criteria.append(dict(UserEntry.privilege)[key].astext == privilege[key])
+                print("")
         filtered_users: List[UserEntry] = UserEntry.query.filter(and_(*criteria)).limit(
             limit
         )
-
         return [
             User(
                 username=user.username,

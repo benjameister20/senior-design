@@ -55,7 +55,7 @@ export default class Filters extends React.Component {
     }
 
     searchUsers = () => {
-        this.props.search(this.state);
+        this.props.search( { "filter":this.state } );
     }
 
     updateSelectedPrivileges = (event, values) => {

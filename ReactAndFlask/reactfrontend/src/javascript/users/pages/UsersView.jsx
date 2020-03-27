@@ -258,7 +258,7 @@ export default class UsersView extends React.Component {
                     <Grid item xs={12} sm={6} md={4} lg={6}>
                         <FilterUser
                             updateSearchText={this.updateSearchText}
-                            search={this.search}
+                            search={this.searchUsers}
                             filters={columns}
                             loading={this.state.loadingPrivileges}
                             privileges={this.state.allDCPrivileges}

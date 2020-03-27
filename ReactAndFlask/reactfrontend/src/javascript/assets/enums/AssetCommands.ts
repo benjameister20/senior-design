@@ -13,4 +13,6 @@ export enum AssetCommand {
     EXPORT_FILE = 'export/',
     GET_NEXT_ASSET_NUM = 'nextAssetNumber/',
     GET_NETWORK_NEIGHBORHOOD = "networkNeighborhood/",
+    CHANGE_PLAN_CREATE = 'changeplan/create/',
+    CHANGE_PLAN_ADD_ITEM = 'changeplan/add/',
 }

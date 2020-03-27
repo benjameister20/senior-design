@@ -2,18 +2,11 @@ import React from 'react';
 
 import axios from 'axios';
 
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import { Button } from '@material-ui/core';
-import Paper from '@material-ui/core/Paper';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
-import Grid from '@material-ui/core/Grid';
+import { Grid, Paper, Button } from '@material-ui/core';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
-
+import { Alert, AlertTitle } from '@material-ui/lab';
 import { AssetInput } from '../enums/AssetInputs.ts';
 import { AssetCommand } from '../enums/AssetCommands.ts';
 import getURL from '../../helpers/functions/GetURL';
@@ -27,7 +20,9 @@ import AddAsset from "./AddAsset";
 import ExportAsset from "./ExportAsset";
 import * as Constants from '../../Constants';
 import StatusDisplay from "../../helpers/StatusDisplay";
-
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import { SpeedDial, SpeedDialAction, SpeedDialIcon } from '@material-ui/lab';
+import TrackChangesIcon from '@material-ui/icons/TrackChanges';
 
 const useStyles = theme => ({
 	styledTableRow: {
@@ -124,6 +119,10 @@ class TableAsset extends React.Component {
 		showStatus:false,
 		statusSeverity:"",
 		statusMessage:"",
+
+		// Change plan
+		changePlanAlert: false,
+		speedDialOpen: false,
     };
   }
 
@@ -210,12 +209,35 @@ class TableAsset extends React.Component {
 		this.setState({ showStatus:false, statusSeverity:"", statusMessage:"" });
 	}
 
+	beginChangePlan = () => {
+		this.setState({ changePlanAlert: true });
+	}
+
+	exitChangePlan = () => {
+		this.setState({ changePlanAlert: false });
+	}
+
+	openSpeedDial = () => {
+		this.setState({ speedDialOpen: true });
+	}
+
+	closeSpeedDial = () => {
+		this.setState({ speedDialOpen: false });
+	}
+
 	render() {
 	const { classes } = this.props;
 
 	return (
 		<React.Fragment>
 			<Grid container spacing={3}>
+				<Grid item xs={12}>
+					{this.state.changePlanAlert ?
+					<Alert severity="info">
+						<AlertTitle>Change Plan Mode</AlertTitle>
+						You are currently in change plan mode! Changes made are being logged in the plan and not actually made in the system.
+					</Alert> : null}
+				</Grid>
 				<Grid item xs={12} sm={6} md={4} lg={3}>
 					{(this.props.privilege === Privilege.ADMIN) ? <AddAsset showStatus={this.showStatusBar} getAssetList={this.getAssetList} /> : null}
 				</Grid>
@@ -227,11 +249,13 @@ class TableAsset extends React.Component {
 					/>
 				</Grid>
 				<Grid item xs={12} sm={6} md={4} lg={3}>
-					{(this.props.privilege === Privilege.ADMIN) ? <ExportAsset items={this.state.tableItems} />:null}
+					{(this.props.privilege === Privilege.ADMIN) ? <ExportAsset items={this.state.tableItems} begin={this.beginChangePlan} />:null}
 				</Grid>
 				<Grid item xs={12}>
 					<TableContainer component={Paper}>
-						<Table className={classes.table} aria-label="customized table">
+						<Table className={classes.table} aria-label="customized table" style={{
+							backgroundColor: this.state.changePlanAlert ? "#2196f3" : "",
+						}}>
 							<TableHead>
 							<TableRow className={classes.styledTableRow}>
 							{headCells.map(headCell => (
@@ -302,6 +326,26 @@ class TableAsset extends React.Component {
 			asset={this.state.detailAsset}
 			search={this.getAssetList}
 		/>:null}
+		<SpeedDial
+			ariaLabel="SpeedDial openIcon example"
+			style={{
+				position: 'absolute',
+    			bottom: '30px',
+    			right: '30px',
+			}}
+			hidden={false}
+			icon={<TrackChangesIcon />}
+			onClose={this.closeSpeedDial}
+			onOpen={this.openSpeedDial}
+			open={this.state.speedDialOpen}
+		>
+			<SpeedDialAction
+				key="exit"
+				icon={<ExitToAppIcon />}
+				tooltipTitle="Exit Change Plan"
+				onClick={this.exitChangePlan}
+			/>
+      	</SpeedDial>
 		<StatusDisplay
 			open={this.state.showStatus}
 			severity={this.state.statusSeverity}

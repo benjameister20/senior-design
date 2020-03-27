@@ -247,7 +247,7 @@ def get_network_neighborhood():
 
 
 @instances.route("/instances/labelgen", methods=["POST"])
-# @requires_auth(request)
+@requires_auth(request)
 def get_barcode_labels():
     """ Route to get barcode labels for assets"""
     returnJSON = createJSON()

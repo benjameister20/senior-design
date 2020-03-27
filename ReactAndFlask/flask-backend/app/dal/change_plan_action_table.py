@@ -43,6 +43,8 @@ class ChangePlanActionTable:
         """ Returns all change plan actions associated with a change plan """
         change_plan_action_entries: ChangePlanActionEntry = ChangePlanActionEntry.query.filter_by(
             change_plan_id=change_plan_id
+        ).order_by(
+            ChangePlanActionEntry.step
         ).all()
         if change_plan_action_entries is None:
             return None

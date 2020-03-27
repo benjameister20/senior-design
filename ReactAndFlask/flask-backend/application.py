@@ -1,5 +1,6 @@
 from http import HTTPStatus
 
+from app.change_plans.routes_change_plans import changeplans
 from app.dal.database import db
 from app.dal.routes import database
 from app.data_models.user import User
@@ -71,6 +72,7 @@ def _register_routes() -> None:
     application.register_blueprint(logs)
     application.register_blueprint(datacenters)
     application.register_blueprint(decommissions)
+    application.register_blueprint(changeplans)
 
 
 def init() -> None:

@@ -302,23 +302,25 @@ class TableAsset extends React.Component {
 	}
 
 	addCheckedItem = (event, assetNum) => {
-		const selectedIndex = this.state.selectedItems.indexOf(assetNum);
-		let newSelected = [];
+		if (event.target.getAttribute("class") !== "MuiButton-label") {
+			const selectedIndex = this.state.selectedItems.indexOf(assetNum);
+			let newSelected = [];
 
-		if (selectedIndex === -1) {
-			newSelected = newSelected.concat(this.state.selectedItems, assetNum);
-		} else if (selectedIndex === 0) {
-			newSelected = newSelected.concat(this.state.selectedItems.slice(1));
-		} else if (selectedIndex === this.state.selectedItems.length - 1) {
-			newSelected = newSelected.concat(this.state.selectedItems.slice(0, -1));
-		} else if (selectedIndex > 0) {
-			newSelected = newSelected.concat(
-				this.state.selectedItems.slice(0, selectedIndex),
-				this.state.selectedItems.slice(selectedIndex + 1),
-			);
+			if (selectedIndex === -1) {
+				newSelected = newSelected.concat(this.state.selectedItems, assetNum);
+			} else if (selectedIndex === 0) {
+				newSelected = newSelected.concat(this.state.selectedItems.slice(1));
+			} else if (selectedIndex === this.state.selectedItems.length - 1) {
+				newSelected = newSelected.concat(this.state.selectedItems.slice(0, -1));
+			} else if (selectedIndex > 0) {
+				newSelected = newSelected.concat(
+					this.state.selectedItems.slice(0, selectedIndex),
+					this.state.selectedItems.slice(selectedIndex + 1),
+				);
+			}
+			console.log(newSelected);
+			this.setState({ selectedItems: newSelected });
 		}
-		console.log(newSelected);
-		this.setState({ selectedItems: newSelected });
 	}
 
 	render() {
@@ -434,7 +436,7 @@ class TableAsset extends React.Component {
 														<Button
 															color="primary"
 															variant="contained"
-															onClick={(event) => { this.openDetailedView(event, row) }}
+															onClick={(event) => { this.openDetailedView(event, row); }}
 														>
 															More Details
 													</Button>
@@ -455,6 +457,7 @@ class TableAsset extends React.Component {
 						disabled={this.props.privilege === Privilege.USER /* && username !== row.owner*/}
 						asset={this.state.detailAsset}
 						search={this.getAssetList}
+						privilege={this.props.privilege}
 					/> : null}
 				<StatusDisplay
 					open={this.state.showStatus}

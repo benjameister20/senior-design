@@ -136,6 +136,7 @@ class TableAsset extends React.Component {
 			tableItems: [],
 			selectedItems: [],
 			allSelected:false,
+			decAssets:[],
 
 			detailStatusOpen: false,
 			detailStatusSeverity: '',
@@ -157,6 +158,8 @@ class TableAsset extends React.Component {
 			showStatus: false,
 			statusSeverity: "",
 			statusMessage: "",
+
+			displayDec:false,
 		};
 	}
 
@@ -263,6 +266,18 @@ class TableAsset extends React.Component {
 				response => { console.log("got list"); console.log(response); this.setState({ allAssets: response.data.instances }); });
 	}
 
+	getDecommissionedAssets = () => {
+		axios.post(
+			getURL(Constants.DECOMMISSIONS_MAIN_PATH, AssetCommand.search), {
+                "filter":{
+                    "decommission_user":"",
+                    "start_date":"",
+                    "end_date":"",
+                }
+            }).then(
+				response => this.setState({ decAssets: response.data.decommissions }));
+	}
+
 	showStatusBar = (status, severity, message) => {
 		this.setState({ showStatus: status, statusSeverity: severity, statusMessage: message });
 	}
@@ -323,6 +338,10 @@ class TableAsset extends React.Component {
 		}
 	}
 
+	switchToDec = (switchBool) => {
+		this.setState({ displayDec:switchBool });
+	}
+
 	render() {
 		const { classes } = this.props;
 
@@ -341,7 +360,8 @@ class TableAsset extends React.Component {
 						<FilterAsset
 							updateItems={this.updateItems}
 							getAssetList={this.getAssetList}
-							allAssets={this.state.allAssets}
+							allAssets={this.state.displayDec ? this.state.decAssets : this.state.allAssets}
+							switchToDec={this.switchToDec}
 						/>
 					</Grid>
 					<Grid item xs={12} sm={6} md={4} lg={3}>

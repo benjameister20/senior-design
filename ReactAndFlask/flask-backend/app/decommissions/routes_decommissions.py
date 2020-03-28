@@ -46,12 +46,6 @@ def decommission_asset():
 
 @decommissions.route("/decommissions/search", methods=["POST"])
 # @requires_auth(request)
-@requires_permission(
-    request,
-    Permission(
-        model=False, asset=True, datacenters=[], power=False, audit=False, admin=False
-    ),
-)
 def search():
     """ Route for searching decommissions """
     global DECOMMISSION_MANAGER

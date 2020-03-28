@@ -7,6 +7,7 @@ class Constants:
     FILTER_KEY = "filter"
     LIMIT_KEY = "limit"
     LABEL_KEY = "label"
+    NAME_KEY = "name"
 
     DATACENTER_KEY = "datacenter_id"
     NETWORK_NEIGHBORHOOD_KEY = "network_neighborhood"
@@ -93,6 +94,21 @@ class Constants:
     TIMESTAMP_KEY = "timestamp"
     START_DATE_KEY = "start_date"
     END_DATE_KEY = "end_date"
+
+    # Change Plan
+    EXECUTED_KEY = "executed"
+    IDENTIFIER_KEY = "identifier"
+    CHANGE_PLAN_ID_KEY = "change_plan_id"
+    STEP_KEY = "step"
+    ORIGINAL_STEP_KEY = "stepOriginal"
+    OLD_RECORD_KEY = "old_record"
+    NEW_RECORD_KEY = "new_record"
+
+    ACTION_KEY = "action"
+    CREATE_KEY = "create"
+    DECOMMISSION_KEY = "decommission"
+    UPDATE_KEY = "update"
+    COLLATERAL_KEY = "collateral"
 
     # BACKUPS
     ADMIN_EMAIL = "hyposoft1@gmail.com"

@@ -31,8 +31,14 @@ with application.app_context():
     db.session.commit()
 
     encrypted_password = AuthManager().encrypt_pw(password="P8ssw0rd1!@")
+    datacenters = ["*"]
     priv: Permission = Permission(
-        model=True, asset=True, datacenters=["*"], power=True, audit=True, admin=True,
+        model=True,
+        asset=True,
+        datacenters=datacenters,
+        power=True,
+        audit=True,
+        admin=True,
     )
     user: User = User(
         username="admin",
@@ -40,6 +46,7 @@ with application.app_context():
         email="admin@email.com",
         password=encrypted_password,
         privilege=priv.make_json(),
+        datacenters=datacenters,
     )
 
     UserTable().add_user(user=user)

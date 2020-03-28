@@ -3,8 +3,10 @@ from typing import List, Optional
 from app.dal.database import db
 from app.data_models.user import User
 from app.main.types import JSON
-from sqlalchemy import and_
+from app.permissions.permissions_constants import PermissionConstants
+from sqlalchemy import and_, any_
 from sqlalchemy.dialects import postgresql as pg
+from sqlalchemy.types import Boolean, Text
 
 
 class UserEntry(db.Model):
@@ -15,6 +17,7 @@ class UserEntry(db.Model):
     display_name = db.Column(db.String(80))
     email = db.Column(db.String(80))
     privilege = db.Column(pg.JSON, nullable=True)
+    datacenters = db.Column(pg.ARRAY(Text), nullable=True)
 
     def __init__(self, user: User):
         self.username = user.username
@@ -22,6 +25,7 @@ class UserEntry(db.Model):
         self.display_name = user.display_name
         self.email = user.email
         self.privilege = user.privilege
+        self.datacenters = user.datacenters
 
 
 class UserTable:
@@ -31,12 +35,15 @@ class UserTable:
         if user is None:
             return None
 
+        print(user)
+
         return User(
             username=user.username,
             display_name=user.display_name,
             email=user.email,
             password=user.password_hash,
             privilege=user.privilege,
+            datacenters=user.datacenters,
         )
 
     def search_users(
@@ -45,6 +52,7 @@ class UserTable:
         display_name: Optional[str],
         email: Optional[str],
         privilege: Optional[JSON],
+        datacenters: Optional[List[str]],
         limit: int,
     ) -> List[User]:
         """ Get a list of all users matching the given criteria """
@@ -57,8 +65,17 @@ class UserTable:
             criteria.append(UserEntry.email == email)
         if privilege is not None:
             for key in privilege:
-                # criteria.append(dict(UserEntry.privilege)[key].astext == privilege[key])
-                print("")
+                if privilege[key] and key != PermissionConstants.DATACENTERS:
+                    criteria.append(
+                        UserEntry.privilege[key].astext.cast(Boolean) == privilege[key]
+                    )
+        if datacenters is not None:
+            for center in datacenters:
+                print(center)
+                # criteria.append(UserEntry.datacenters.any([f"{{{center}}}"]))
+                # criteria.append(UserEntry.datacenters.all(center))
+                criteria.append(center == any_(UserEntry.datacenters))
+
         filtered_users: List[UserEntry] = UserEntry.query.filter(and_(*criteria)).limit(
             limit
         )
@@ -69,6 +86,7 @@ class UserTable:
                 email=user.email,
                 password=user.password_hash,
                 privilege=user.privilege,
+                datacenters=user.datacenters,
             )
             for user in filtered_users
         ]
@@ -85,6 +103,7 @@ class UserTable:
             email=user.email,
             password=user.password_hash,
             privilege=user.privilege,
+            datacenters=user.datacenters,
         )
 
     def add_user(self, user: User) -> None:
@@ -127,6 +146,7 @@ class UserTable:
                 email=entry.email,
                 password=entry.password_hash,
                 privilege=entry.privilege,
+                datacenters=entry.datacenters,
             )
             for entry in all_users
         ]

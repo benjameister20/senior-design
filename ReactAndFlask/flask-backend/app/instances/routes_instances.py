@@ -36,8 +36,6 @@ def search():
     global instancesArr
     returnJSON = createJSON()
 
-    print(json.dumps(request.json, indent=4))
-    print("")
     filter = request.json.get("filter")
     if filter is None:
         return addMessageToJSON(returnJSON, "Please include a filter")
@@ -72,7 +70,6 @@ def search():
                 )
             ),
         )
-        print(json.dumps(returnJSON, indent=4))
         return returnJSON
     except InvalidInputsError as e:
         print(e.message)
@@ -247,7 +244,7 @@ def get_network_neighborhood():
 
 
 @instances.route("/instances/labelgen", methods=["POST"])
-# @requires_auth(request)
+@requires_auth(request)
 def get_barcode_labels():
     """ Route to get barcode labels for assets"""
     returnJSON = createJSON()

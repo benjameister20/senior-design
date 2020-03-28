@@ -57,12 +57,12 @@ const blankSearch = {
         "display_name": "",
         "email": "",
         "privilege": {
-            "Model": true,
-            "Asset": true,
-            "Datacenters": ["*"],
-            "Power": true,
-            "Audit": true,
-            "Admin": true
+            "model": true,
+            "asset": true,
+            "datacenters": ["*"],
+            "power": true,
+            "audit": true,
+            "admin": true
         }
     }
 }

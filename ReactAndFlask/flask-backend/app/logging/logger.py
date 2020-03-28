@@ -43,12 +43,25 @@ class DataCenterActions:
     EDIT = "EDIT"
 
 
+class DecommissionActions:
+    DECOMMISSION = "DECOMMISSION"
+    SEARCH = "SEARCH"
+
+
+class ChangeplanActions:
+    CREATE = "CREATE"
+    EDIT = "EDIT"
+    DELETE = "DELETE"
+
+
 class Actions:
     USERS = UserActions()
     MODELS = ModelActions()
     INSTANCES = InstanceActions()
     RACKS = RackActions()
     DATACENTERS = DataCenterActions()
+    DECOMMISSIONS = DecommissionActions()
+    CHANGEPLAN = ChangeplanActions()
 
 
 class Logger:
@@ -58,6 +71,8 @@ class Logger:
     RACKS = "racks"
     USERS = "users"
     DATACENTERS = "datacenters"
+    DECOMMISSIONS = "decommissions"
+    CHANGEPLAN = "changeplan"
     ACTIONS = Actions()
 
     def __init__(self):
@@ -165,6 +180,24 @@ class Logger:
 
         return log_message
 
+    def __log_decommission_request(self, action, request):
+        if action == Logger.ACTIONS.DECOMMISSIONS.DECOMMISSION:
+            log_message = f"""DECOMMISSION Asset (Asset Number: {request.get(Constants.ASSET_NUMBER_KEY)})"""
+
+        return log_message
+
+    def __log_changeplan_request(self, action, request):
+        if action == Logger.ACTIONS.CHANGEPLAN.CREATE:
+            log_message = f"""CREATE Changeplan (Name: )"""
+
+        if action == Logger.ACTIONS.CHANGEPLAN.EDIT:
+            log_message = f"""EDIT Changeplan (Name: )"""
+
+        if action == Logger.ACTIONS.CHANGEPLAN.DELETE:
+            log_message = f"""DELETE Changeplan (Name: )"""
+
+        return log_message
+
     def __create_log_entry_request(
         self, request, resource, log_message, username, action
     ):
@@ -243,6 +276,10 @@ class Logger:
             log_message = self.__log_rack_request(action, request)
         if resource == Logger.DATACENTERS:
             log_message = self.__log_datacenter_request(action, request)
+        if resource == Logger.DECOMMISSIONS:
+            log_message = self.__log_decommission_request(action, request)
+        if resource == Logger.CHANGEPLAN:
+            log_message = self.__log_changeplan_request(action, request)
 
         self.__create_log_entry_request(
             request, resource, log_message, username, action

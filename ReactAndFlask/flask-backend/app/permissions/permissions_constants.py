@@ -1,7 +1,7 @@
 class PermissionConstants:
-    MODEL = "model"
-    ASSET = "ssset"
-    POWER = "power"
-    AUDIT = "audit"
-    ADMIN = "admin"
-    DATACENTERS = "datacenters"
+    MODEL = "Model"
+    ASSET = "Asset"
+    POWER = "Power"
+    AUDIT = "Audit"
+    ADMIN = "Admin"
+    DATACENTERS = "Datacenters"

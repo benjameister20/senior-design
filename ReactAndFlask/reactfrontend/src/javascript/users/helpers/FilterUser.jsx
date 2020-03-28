@@ -31,12 +31,12 @@ export default class Filters extends React.Component {
             password: "",
             email: "",
             selectedPrivileges:{
-                "Model":false,
-                "Asset":false,
-                "Datacenters":[],
-                "Power":false,
-                "Audit":false,
-                "Admin":false,
+                "model":false,
+                "asset":false,
+                "datacenters":[],
+                "power":false,
+                "audit":false,
+                "admin":false,
             },
         };
     }
@@ -44,12 +44,12 @@ export default class Filters extends React.Component {
     resetCreate = (success) => {
         if (success) {
             this.setState({username: "", display_name: "", password: "", email: "", selectedPrivileges:{
-                "Model":false,
-                "Asset":false,
-                "Datacenters":[],
-                "Power":false,
-                "Audit":false,
-                "Admin":false,
+                "model":false,
+                "asset":false,
+                "datacenters":[],
+                "power":false,
+                "audit":false,
+                "admin":false,
             },});
         }
     }
@@ -60,12 +60,12 @@ export default class Filters extends React.Component {
 
     updateSelectedPrivileges = (event, values) => {
         var privs = {
-            "Model":false,
-            "Asset":false,
-            "Datacenters":this.state.selectedPrivileges["Datacenters"],
-            "Power":false,
-            "Audit":false,
-            "Admin":false,
+            "model":false,
+            "asset":false,
+            "datacenters":this.state.selectedPrivileges["datacenters"],
+            "power":false,
+            "audit":false,
+            "admin":false,
         };
         values.map(priv => { privs[priv.value] = true; });
         this.setState({ selectedPrivileges: privs });
@@ -73,7 +73,7 @@ export default class Filters extends React.Component {
 
     updateDCPrivilege = (event, values) => {
         var privs = this.state.selectedPrivileges;
-        privs["Datacenters"] = values;
+        privs["datacenters"] = values;
         this.setState({ selectedPrivileges: privs });
     }
 

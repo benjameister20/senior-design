@@ -51,3 +51,8 @@ class ExpiredTokenError(UserException):
 class InvalidTokenError(UserException):
     def __init__(self, message):
         self.message = message
+
+
+class InvalidDatacenterError(UserException):
+    def __init__(self, message):
+        self.message = message

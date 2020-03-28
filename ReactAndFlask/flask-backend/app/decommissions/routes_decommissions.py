@@ -1,6 +1,9 @@
 from typing import List
 
+from app.data_models.permission import Permission
 from app.decommissions.decommission_manager import DecommissionManager
+from app.decorators.auth import requires_permission
+from app.decorators.logs import log
 from app.exceptions.InvalidInputsException import InvalidInputsError
 from app.logging.logger import Logger
 from flask import Blueprint, request
@@ -21,6 +24,13 @@ def test():
 
 @decommissions.route("/decommissions/decommission_asset", methods=["POST"])
 # @requires_auth(request)
+@requires_permission(
+    request,
+    Permission(
+        model=False, asset=True, datacenters=[], power=False, audit=False, admin=False
+    ),
+)
+@log(request, Logger.DECOMMISSIONS, Logger.ACTIONS.DECOMMISSIONS.DECOMMISSION)
 def decommission_asset():
     """ route to decommissioning an asset """
     global DECOMMISSION_MANAGER
@@ -36,6 +46,12 @@ def decommission_asset():
 
 @decommissions.route("/decommissions/search", methods=["POST"])
 # @requires_auth(request)
+@requires_permission(
+    request,
+    Permission(
+        model=False, asset=True, datacenters=[], power=False, audit=False, admin=False
+    ),
+)
 def search():
     """ Route for searching decommissions """
     global DECOMMISSION_MANAGER

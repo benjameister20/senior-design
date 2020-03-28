@@ -63,12 +63,12 @@ class UsersTable extends React.Component {
 			password: "",
 			email: "",
 			selectedPrivileges:{
-				"Model":false,
-				"Asset":false,
-				"Datacenters":[],
-				"Power":false,
-				"Audit":false,
-				"Admin":false,
+				"model":false,
+				"asset":false,
+				"datacenters":[],
+				"power":false,
+				"audit":false,
+				"admin":false,
 			},
 			password:"",
 		};
@@ -118,12 +118,12 @@ class UsersTable extends React.Component {
 
 	updateSelectedPrivileges = (event, values) => {
         var privs = {
-            "Model":false,
-            "Asset":false,
-            "Datacenters":this.state.selectedPrivileges["Datacenters"],
-            "Power":false,
-            "Audit":false,
-            "Admin":false,
+            "model":false,
+            "asset":false,
+            "datacenters":this.state.selectedPrivileges["datacenters"],
+            "power":false,
+            "audit":false,
+            "admin":false,
         };
         values.map(priv => { privs[priv.value] = true; });
         this.setState({ selectedPrivileges: privs });
@@ -131,7 +131,7 @@ class UsersTable extends React.Component {
 
     updateDCPrivilege = (event, values) => {
         var privs = this.state.selectedPrivileges;
-        privs["Datacenters"] = values;
+        privs["datacenters"] = values;
         this.setState({ selectedPrivileges: privs });
     }
 

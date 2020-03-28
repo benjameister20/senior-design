@@ -51,7 +51,6 @@ class ChangePlanTable:
         change_plan_entries: List[ChangePlanEntry] = ChangePlanEntry.query.filter_by(
             owner=owner
         ).all()
-        print(change_plan_entries)
         if change_plan_entries is None:
             return None
 

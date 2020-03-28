@@ -3,6 +3,9 @@ from typing import List
 from app.change_plans.change_plan_action_manager import ChangePlanActionManager
 from app.change_plans.change_plan_manager import ChangePlanManager
 from app.constants import Constants
+from app.data_models.permission import Permission
+from app.decorators.auth import requires_permission
+from app.decorators.logs import log
 from app.exceptions.InvalidInputsException import InvalidInputsError
 from app.logging.logger import Logger
 from flask import Blueprint, request
@@ -70,6 +73,7 @@ def edit_cp():
 
 @changeplans.route("/changeplans/execute", methods=["POST"])
 # @requires_auth(request)
+@log(request, Logger.CHANGEPLAN, Logger.ACTIONS.CHANGEPLAN.EXECUTE)
 def execute():
     """ Route for executing a change plans """
     global CP_MANAGER
@@ -108,6 +112,12 @@ def get_cps():
 
 @changeplans.route("/changeplans/createaction", methods=["POST"])
 # @requires_auth(request)
+@requires_permission(
+    request,
+    Permission(
+        model=False, asset=True, datacenters=[], power=False, audit=False, admin=False
+    ),
+)
 def create_cp_action():
     """ Route for creating a change plan action """
     global CP_ACTION_MANAGER
@@ -139,6 +149,12 @@ def delete_cp_action():
 
 @changeplans.route("/changeplans/editaction", methods=["POST"])
 # @requires_auth(request)
+@requires_permission(
+    request,
+    Permission(
+        model=False, asset=True, datacenters=[], power=False, audit=False, admin=False
+    ),
+)
 def edit_cp_action():
     """ Route for editing change plan actions """
     global CP_ACTION_MANAGER

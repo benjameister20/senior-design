@@ -368,14 +368,12 @@ class TableAsset extends React.Component {
 						/>
 					</Grid>
 					<Grid item xs={12} sm={6} md={4} lg={3}>
-						<ExportAsset items={this.state.tableItems} begin={this.beginChangePlan} />
+						<ExportAsset items={this.state.tableItems} begin={this.beginChangePlan} changePlanActive={this.state.changePlanAlert} />
 					</Grid>
 				</Grid>
 
 				<Grid item xs={12}>
-						<Toolbar
-
-						>
+						<Toolbar>
 							{this.state.selectedItems.length > 0 ? (
 								<Typography className={classes.title} color="inherit" variant="subtitle1">
 									{this.state.selectedItems.length} {this.state.selectedItems.length === 1 ? "label" : "labels"} ready to be generated
@@ -392,7 +390,7 @@ class TableAsset extends React.Component {
 						</Toolbar>
 						<TableContainer component={Paper}>
 							<Table className={classes.table} aria-label="customized table" style={{
-								backgroundColor: this.state.changePlanAlert ? "#2196f3" : "",
+								backgroundColor: this.state.changePlanAlert ? "#64b5f6" : "",
 							}}>
 								<TableHead>
 									<TableRow className={classes.styledTableRow}>
@@ -492,7 +490,7 @@ class TableAsset extends React.Component {
     			bottom: '30px',
     			right: '30px',
 			}}
-			hidden={false}
+			hidden={!this.state.changePlanAlert}
 			icon={<TrackChangesIcon />}
 			onClose={this.closeSpeedDial}
 			onOpen={this.openSpeedDial}

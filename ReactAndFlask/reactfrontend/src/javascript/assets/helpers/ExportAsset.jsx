@@ -50,8 +50,8 @@ class ExportAsset extends React.Component {
 
         this.state = {
             csvData: "",
-            changePlanActive: false,
             changePlanModal: false,
+            changeDescriptionModal: false,
 		};
 	}
 
@@ -83,7 +83,7 @@ class ExportAsset extends React.Component {
 
     beginChangePlan = () => {
         this.closeChangePlanModal();
-        this.props.begin();
+        this.setState({ changeDescriptionModal: true });
 
         axios.post(
             getURL(AssetConstants.ASSETS_MAIN_PATH, AssetCommand.CHANGE_PLAN_CREATE),
@@ -92,8 +92,13 @@ class ExportAsset extends React.Component {
             }
             ).then(response => {
                 console.log(response);
-                this.props.begin();
-            });
+        });
+    }
+
+    closeDescriptionModal = () => {
+        this.setState({ changeDescriptionModal: false });
+
+        this.props.begin();
     }
 
     render() {
@@ -129,13 +134,15 @@ class ExportAsset extends React.Component {
                             Export All Data
                         </Button>
                     </Grid>
+                    { !this.props.changePlanActive ?
                     <Grid container item direciton="row" justify="center" alignItems="center" xs={12}>
 							<hr style={{width: "5vw"}} />
 							<Typography color="textSecondary">
 								Or
 							</Typography>
 							<hr style={{width: "5vw"}} />
-						</Grid>
+						</Grid> : null }
+                    { !this.props.changePlanActive ?
 						<Grid item xs={12}>
 							<Button
 								variant="contained"
@@ -146,7 +153,7 @@ class ExportAsset extends React.Component {
 							>
 								Create Change Plan
 							</Button>
-						</Grid>
+						</Grid> : null }
                 </Grid>
             </Paper>
 
@@ -222,9 +229,9 @@ class ExportAsset extends React.Component {
                 onClose={this.closeDescriptionModal}
                 closeAfterTransition
             >
-                <Fade in={this.state.changePlanModal}>
+                <Fade in={this.state.changeDescriptionModal}>
                     <Backdrop
-                        open={this.state.changePlanModal}
+                        open={this.state.changeDescriptionModal}
                     >
                     <div className={classes.grid}>
                         <Grid
@@ -235,34 +242,28 @@ class ExportAsset extends React.Component {
                             alignItems="center"
                         >
                             <Grid item xs={3}>
+                            </Grid>
+                            <Grid item xs={6}>
                                 <Typography>
-                                    Enter plan name:
+                                    You are now in change plan mode. All changes made will be logged to the change plan and will not actually be made in the system. Use the icon in the bottom right corner to exit change plan mode!
                                 </Typography>
                             </Grid>
-                            <Grid item xs={9}>
-                                <TextField type="text" id="change-plan-name" variant="outlined" label="Change Plan Name" name="change-plan-name" onChange={this.updatePlanName} style={{ width: "100%" }} />
+                            <Grid item xs={3}>
+                            </Grid>
+                            <Grid item xs={3}>
                             </Grid>
                             <Grid item xs={6}>
                                 <Button
                                     variant="contained"
                                     color="primary"
-                                    onClick={this.beginChangePlan}
+                                    onClick={this.closeDescriptionModal}
                                     style={{width: "100%"}}
                                 >
-                                    Begin
+                                    Ok
                                 </Button>
                             </Grid>
-                            <Grid item xs={6}>
-                                <Button
-                                    variant="contained"
-                                    color="secondary"
-                                    onClick={this.closeChangePlanModal}
-                                    style={{width: "100%"}}
-                                >
-                                    Cancel
-                                </Button>
+                            <Grid item xs={3}>
                             </Grid>
-
                         </Grid>
                         </div>
                 </Backdrop>

@@ -312,7 +312,6 @@ class CreateAsset extends React.Component {
                     }
                 });
         }
-
     }
 
     updateModel = (event) => {
@@ -321,14 +320,16 @@ class CreateAsset extends React.Component {
         if (model !== "") {
             var ports = this.state.networkList[model];
             var networkConns = {};
-            ports.map(port => {
-                var defaultNetworkPort = {
-                    "mac_address":"",
-                    "connection_hostname":"",
-                    "connection_port":"",
-                }
-                networkConns[port] = defaultNetworkPort;
-            });
+            if (ports !== null) {
+                ports.map(port => {
+                    var defaultNetworkPort = {
+                        "mac_address":"",
+                        "connection_hostname":"",
+                        "connection_port":"",
+                    }
+                    networkConns[port] = defaultNetworkPort;
+                });
+            }
         } else {
             var networkConns = {};
         }

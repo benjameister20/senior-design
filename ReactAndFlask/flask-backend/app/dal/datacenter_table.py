@@ -31,6 +31,22 @@ class DatacenterTable:
 
         return datacenter.make_datacenter()
 
+    def get_datacenter_by_name(self, name: str):
+        datacenter: DatacenterEntry = DatacenterEntry.query.filter_by(name=name).first()
+        if datacenter is None:
+            return None
+
+        return datacenter.make_datacenter()
+
+    def get_datacenter_by_abbreviation(self, abbreviation: str):
+        datacenter: DatacenterEntry = DatacenterEntry.query.filter_by(
+            abbreviation=abbreviation
+        ).first()
+        if datacenter is None:
+            return None
+
+        return datacenter.make_datacenter()
+
     def get_datacenter_name_by_id(self, identifier: int):
         datacenter: DatacenterEntry = DatacenterEntry.query.filter_by(
             identifier=identifier

@@ -8,8 +8,8 @@ from app.users.authentication import AuthManager
 
 class BackupsManager:
 
-    FILE_PATH = "/app/ReactAndFlask/flask-backend/app/backups"
-    # FILE_PATH = os.path.dirname(__file__)
+    # FILE_PATH = "/app/ReactAndFlask/flask-backend/app/backups"
+    FILE_PATH = os.path.dirname(__file__)
     passkey_encrypted = b"$2b$12$D/Z2zQxafNrraBjzDgvHt.yZB.PrSe8fyDstcjgiO9hOpss2Z6A5a"
 
     def __init__(self):
@@ -60,9 +60,19 @@ class BackupsManager:
 
         return file_data
 
+    def save_backup_upload(self, backup):
+        # backup.save(os.path.join(f"{BackupsManager.FILE_PATH}/restore_archive", secure_filename(backup.filename)))
+        backup_files = os.listdir(f"{BackupsManager.FILE_PATH}/restore_archive/")
+        for f in backup_files:
+            os.remove(f"{BackupsManager.FILE_PATH}/restore_archive/{f}")
+
+        backup.save(
+            os.path.join(f"{BackupsManager.FILE_PATH}/restore_archive", backup.filename)
+        )
+
     def restore_from_backup(self, filename):
-        file_path = f"{BackupsManager.FILE_PATH}/backup_zips/{filename}"
-        command = f"pg_restore {file_path} -c -d {Constants.BACKUPS_DB} -F t"
+        file_path = f"{BackupsManager.FILE_PATH}/restore_archive/{filename}"
+        command = f"pg_restore {file_path} -c -F t --dbname=postgresql://{Constants.BACKUPS_USER}:{Constants.BACKUPS_PASS}@{Constants.BACKUPS_HOST}:{Constants.BACKUPS_PORT}/{Constants.BACKUPS_DB}"
 
         try:
             os.system(command)
@@ -70,6 +80,13 @@ class BackupsManager:
             raise BackupError("Failed to backup Postgres database")
         except:
             raise BackupError("Failed to create backup")
+
+    def validate_filename(self, filename):
+        if filename == "":
+            raise BackupError("Invalid file name. Filename cannot be blank.")
+
+        if filename[-4:] != ".tar":
+            raise BackupError("Invalid file type. Backups must be tar archives.")
 
     def list_backups(self):
         pass

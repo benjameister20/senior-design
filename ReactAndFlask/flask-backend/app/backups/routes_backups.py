@@ -5,6 +5,8 @@ from app.exceptions.BackupExceptions import BackupError
 from app.logging.logger import Logger
 from flask import Blueprint, make_response, request, send_file
 
+# from werkzeug import secure_filename
+
 BM = BackupsManager()
 EM = EmailManager()
 LOGGER = Logger()
@@ -47,8 +49,8 @@ def backup():
         )
     except BackupError as e:
         return add_message_to_JSON(response, e.message)
-    # except:
-    #     return add_message_to_JSON(response, "Backup failed")
+    except:
+        return add_message_to_JSON(response, "Backup failed")
 
     response = make_response(
         send_file(
@@ -63,6 +65,37 @@ def backup():
     response.headers["datetime"] = metadata["datetime"]
 
     return response
+
+
+@backups.route("/backups/restore", methods=["POST"])
+def restore():
+
+    response = {}
+
+    backup = None
+    try:
+        backup = request.files["file"]
+    except KeyError:
+        return add_message_to_JSON(
+            response, "Please attach file to request with key 'file'"
+        )
+
+    try:
+        BM.validate_filename(backup.filename)
+    except BackupError as e:
+        return add_message_to_JSON(response, e.message)
+    except:
+        return add_message_to_JSON(response, "File invalid")
+
+    try:
+        BM.save_backup_upload(backup)
+        BM.restore_from_backup(backup.filename)
+    except BackupError as e:
+        return add_message_to_JSON(response, e.message)
+    except:
+        return add_message_to_JSON(response, "Failed to restore from backup archive")
+
+    return add_message_to_JSON(response, "success")
 
 
 def add_message_to_JSON(json, message) -> dict:

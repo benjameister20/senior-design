@@ -190,6 +190,26 @@ class Logger:
 
         return log_message
 
+    def log_changeplan_action(self, request, resource, action):
+
+        if request.get(Constants.IS_CHANGE_PLAN_KEY) is None:
+            return None
+
+        if action == Logger.ACTIONS.INSTANCES.CREATE:
+            log_message = f"""CREATE Asset (Asset Number: {request.get(Constants.ASSET_NUMBER_KEY)}, Model Name: {request.get(Constants.MODEL_KEY)}>>, Datacenter Name: {request.get(Constants.DC_NAME_KEY)}, Hostname: {request.get(Constants.HOSTNAME_KEY)}, Rack: {request.get(Constants.RACK_KEY)}, Rack Position: {request.get(Constants.RACK_POSITION_KEY)}, Owner: {request.get(Constants.OWNER_KEY)}, Comment: {request.get(Constants.COMMENT_KEY)}, Network Connections: {json.dumps(request.get(Constants.NETWORK_CONNECTIONS_KEY))}, Power Connections: {json.dumps(request.get(Constants.POWER_CONNECTIONS_KEY))})"""
+
+        if action == Logger.ACTIONS.INSTANCES.EDIT:
+            log_message = f"""EDIT Asset (Asset Number: {request.get(Constants.ASSET_NUMBER_ORIG_KEY)}) becomes (Asset Number: {request.get(Constants.ASSET_NUMBER_KEY)}, Model Name: {request.get(Constants.MODEL_KEY)}>>, Datacenter Name: {request.get(Constants.DC_NAME_KEY)}, Hostname: {request.get(Constants.HOSTNAME_KEY)}, Rack: {request.get(Constants.RACK_KEY)}, Rack Position: {request.get(Constants.RACK_POSITION_KEY)}, Owner: {request.get(Constants.OWNER_KEY)}, Comment: {request.get(Constants.COMMENT_KEY)}, Network Connections: {json.dumps(request.get(Constants.NETWORK_CONNECTIONS_KEY))}, Power Connections: {json.dumps(request.get(Constants.POWER_CONNECTIONS_KEY))})"""
+
+        if action == Logger.ACTIONS.DECOMMISSIONS.DECOMMISSION:
+            log_message = f"""DECOMMISSION Asset (Asset Number: {request.get(Constants.ASSET_NUMBER_KEY)})"""
+
+        username = request.get(Constants.USERNAME_KEY)
+
+        self.__create_log_entry_request(
+            request, resource, log_message, username, action
+        )
+
     def __create_log_entry_request(
         self, request, resource, log_message, username, action
     ):

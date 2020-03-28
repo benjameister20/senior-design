@@ -107,6 +107,37 @@ def get_cps():
 # ------------------------ CHANGE PLAN ACTION ROUTES ------------------------
 
 
+@changeplans.route("/changeplans/createaction", methods=["POST"])
+@requires_auth(request)
+def create_cp_action():
+    """ Route for creating a change plan action """
+    global CP_ACTION_MANAGER
+    returnJSON = createJSON()
+
+    try:
+        cp_action_data = request.get_json()
+        CP_ACTION_MANAGER.create_change_plan_action(cp_action_data)
+        return addMessageToJSON(returnJSON, "success")
+    except InvalidInputsError as e:
+        print(e.message)
+        return addMessageToJSON(returnJSON, e.message)
+
+
+@changeplans.route("/changeplans/deleteaction", methods=["POST"])
+@requires_auth(request)
+def delete_cp_action():
+    """ Route for deleting change plans """
+    global CP_ACTION_MANAGER
+    returnJSON = createJSON()
+
+    try:
+        cp_action_data = request.get_json()
+        CP_ACTION_MANAGER.delete_change_plan_action(cp_action_data)
+        return addMessageToJSON(returnJSON, "success")
+    except InvalidInputsError as e:
+        return addMessageToJSON(returnJSON, e.message)
+
+
 @changeplans.route("/changeplans/getactions", methods=["POST"])
 @requires_auth(request)
 def get_cp_actions():
@@ -126,6 +157,21 @@ def get_cp_actions():
         )
 
         return returnJSON
+    except InvalidInputsError as e:
+        return addMessageToJSON(returnJSON, e.message)
+
+
+@changeplans.route("/changeplans/editaction", methods=["POST"])
+@requires_auth(request)
+def edit_cp_action():
+    """ Route for editing change plans """
+    global CP_ACTION_MANAGER
+    returnJSON = createJSON()
+
+    try:
+        cp_action_data = request.get_json()
+        CP_ACTION_MANAGER.edit_change_plan_action(cp_action_data)
+        return addMessageToJSON(returnJSON, "success")
     except InvalidInputsError as e:
         return addMessageToJSON(returnJSON, e.message)
 

@@ -88,6 +88,20 @@ class ChangePlanActionTable:
             old_entry.original_asset_number = change_plan_action.original_asset_number
             old_entry.new_record = change_plan_action.new_record
 
+            # Deleting old colateral conditions
+            conditions_colat = []
+            conditions_colat.append(
+                ChangePlanActionEntry.change_plan_id
+                == change_plan_action.change_plan_id
+            )
+            conditions_colat.append(ChangePlanActionEntry.step == original_step)
+            conditions_colat.append(
+                ChangePlanActionEntry.action == Constants.COLLATERAL_KEY
+            )
+
+            ChangePlanActionEntry.query.filter(and_(*conditions_colat)).delete()
+
+            # Edit sequence of actions if order changes
             if original_step != change_plan_action.step:
                 self._edit_change_plan_sequence(
                     change_plan_action.change_plan_id,
@@ -101,13 +115,17 @@ class ChangePlanActionTable:
                 f"Failed to update change plan action on asset {change_plan_action.original_asset_number}"
             )
 
-    def delete_change_plan_action(self, change_plan_action: ChangePlanAction) -> None:
+    def delete_change_plan_action(
+        self, change_plan_id: int, change_plan_step: int
+    ) -> None:
         """ Removes a change plan action from the database """
         try:
             ChangePlanActionEntry.query.filter_by(
-                change_plan_id=change_plan_action.change_plan_id,
-                step=change_plan_action.step,
+                change_plan_id=change_plan_id, step=change_plan_step,
             ).delete()
+
+            self._edit_change_plan_sequence(change_plan_id, change_plan_step, 999999999)
+
             db.session.commit()
         except:
             print("Failed to delete change plan action")
@@ -157,7 +175,6 @@ class ChangePlanActionTable:
             if entry.step == original_step:
                 entry.step = new_step
                 continue
-
             if increase:
                 entry.step += 1
             else:

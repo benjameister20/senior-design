@@ -16,13 +16,58 @@ class ChangePlanActionManager:
         self.instance_manager = InstanceManager()
 
     def create_change_plan_action(self, cp_action_data):
-        pass
+        try:
+            change_plan_action: ChangePlanAction = self.make_cp_action(cp_action_data)
+
+            # Add validation
+
+            self.cp_action_table.add_change_plan_action(change_plan_action)
+
+            # Add Collateral impacts
+
+        except InvalidInputsError as e:
+            print(e.message)
+            raise InvalidInputsError(e.message)
+        except Exception as e:
+            print(str(e))
+            raise InvalidInputsError(
+                "An error occurred when attempting to create the change plan action."
+            )
 
     def delete_change_plan_action(self, cp_action_data):
-        pass
+        try:
+            cp_id = cp_action_data.get(Constants.CHANGE_PLAN_ID_KEY)
+            cp_step = cp_action_data.get(Constants.STEP_KEY)
+            if cp_id is None or cp_step is None:
+                raise InvalidInputsError(
+                    "Must provide both a change plan id and step to delete."
+                )
+            self.cp_action_table.delete_change_plan_action(cp_id, cp_step)
+        except InvalidInputsError as e:
+            print(e.message)
+            raise InvalidInputsError(e.message)
+        except Exception as e:
+            print(str(e))
+            raise InvalidInputsError(
+                "An error occurred when attempting to delete the change plan action."
+            )
 
     def edit_change_plan_action(self, cp_action_data):
-        pass
+        try:
+            original_step = cp_action_data.get(Constants.ORIGINAL_STEP_KEY)
+            new_cp_action = self.make_cp_action(cp_action_data)
+            self.cp_action_table.edit_change_plan_actio(original_step, new_cp_action)
+
+            # Add colateral impacts
+
+        except InvalidInputsError as e:
+            print(e.message)
+            raise InvalidInputsError(e.message)
+        except Exception as e:
+            print(str(e))
+            raise InvalidInputsError(
+                "An error occurred when attempting to edit the change plan action."
+            )
 
     def get_change_plan_actions(self, cp_id) -> List[ChangePlanAction]:
         try:

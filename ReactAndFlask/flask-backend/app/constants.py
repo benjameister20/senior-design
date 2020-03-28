@@ -100,6 +100,7 @@ class Constants:
     IDENTIFIER_KEY = "identifier"
     CHANGE_PLAN_ID_KEY = "change_plan_id"
     STEP_KEY = "step"
+    ORIGINAL_STEP_KEY = "stepOriginal"
     OLD_RECORD_KEY = "old_record"
     NEW_RECORD_KEY = "new_record"
 

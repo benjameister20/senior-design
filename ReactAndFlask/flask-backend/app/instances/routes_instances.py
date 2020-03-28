@@ -168,6 +168,8 @@ def detail_view():
 
     try:
         instance_data = request.get_json()
+        print("DETAIL VIEW JSON")
+        print(instance_data)
         instance = INSTANCE_MANAGER.detail_view(instance_data)
         if instance is None:
             return addMessageToJSON(returnJSON, "Cannot view instance of type None")

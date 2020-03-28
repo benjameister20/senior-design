@@ -81,7 +81,8 @@ class ChangePlanActionManager:
                 cp_action.old_record = prev_record
 
             return change_plan_actions
-        except:
+        except Exception as e:
+            print(str(e))
             raise InvalidInputsError(
                 "Unable to retrieve actions for the specified change plan."
             )
@@ -123,13 +124,9 @@ class ChangePlanActionManager:
             return {}
 
         model = self.instance_manager.get_model_from_id(original_record.model_id)
-        model_name = model.vendor + " " + model.model_number
-
         datacenter = self.instance_manager.get_dc_from_id(original_record.datacenter_id)
 
-        return original_record.make_json_with_model_and_datacenter(
-            model_name, datacenter.name
-        )
+        return original_record.make_json_with_model_and_datacenter(model, datacenter)
 
     def check_null(self, val):
         if val is None:

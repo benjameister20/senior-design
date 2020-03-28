@@ -140,7 +140,7 @@ class ChangePlanManager:
             asset_data[
                 Constants.ASSET_NUMBER_ORIG_KEY
             ] = cp_action.original_asset_number
-            self.instance_manager.create_instance(asset_data)
+            self.instance_manager.edit_instance(asset_data)
         elif cp_action.action == Constants.DECOMMISSION_KEY:
             decom_data: Dict[str, Any] = {}
             decom_data[Constants.IS_CHANGE_PLAN_KEY] = True

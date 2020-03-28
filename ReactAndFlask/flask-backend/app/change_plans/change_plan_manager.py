@@ -146,6 +146,7 @@ class ChangePlanManager:
     def _execute_action(self, cp_action: ChangePlanAction, owner: str):
         asset_data = cp_action.new_record
         asset_data[Constants.IS_CHANGE_PLAN_KEY] = True
+        asset_data[Constants.USERNAME_KEY] = owner
         if cp_action.action == Constants.CREATE_KEY:
             self.instance_manager.create_instance(asset_data)
         elif cp_action.action == Constants.UPDATE_KEY:
@@ -158,6 +159,7 @@ class ChangePlanManager:
             decom_data[Constants.IS_CHANGE_PLAN_KEY] = True
             decom_data[Constants.ASSET_NUMBER_KEY] = cp_action.original_asset_number
             decom_data[Constants.DECOM_USER_KEY] = owner
+            decom_data[Constants.USERNAME_KEY] = owner
             self.decommission_manager.decommission_asset(decom_data)
 
     def check_null(self, val):

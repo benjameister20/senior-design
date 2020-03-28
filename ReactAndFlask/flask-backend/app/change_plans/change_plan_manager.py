@@ -1,4 +1,4 @@
-from typing import List
+from typing import Any, Dict, List
 
 from app.constants import Constants
 from app.dal.change_plan_action_table import ChangePlanActionTable
@@ -132,14 +132,20 @@ class ChangePlanManager:
             )
 
     def _execute_action(self, cp_action: ChangePlanAction):
+        asset_data = cp_action.new_record
+        asset_data[Constants.IS_CHANGE_PLAN_KEY] = True
         if cp_action.action == Constants.CREATE_KEY:
-            pass
+            self.instance_manager.create_instance(asset_data)
         elif cp_action.action == Constants.UPDATE_KEY:
-            pass
+            asset_data[
+                Constants.ASSET_NUMBER_ORIG_KEY
+            ] = cp_action.original_asset_number
+            self.instance_manager.create_instance(asset_data)
         elif cp_action.action == Constants.DECOMMISSION_KEY:
-            pass
-        elif cp_action.action == Constants.COLLATERAL_KEY:
-            pass
+            decom_data: Dict[str, Any] = {}
+            decom_data[Constants.IS_CHANGE_PLAN_KEY] = True
+            decom_data[Constants.ASSET_NUMBER_KEY] = cp_action.original_asset_number
+            self.decommission_manager.decommission_asset(decom_data)
 
     def check_null(self, val):
         if val is None:

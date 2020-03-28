@@ -141,13 +141,26 @@ class ChangePlanActionTable:
             print("Failed to delete change plan action")
 
     def get_newest_asset_record_in_plan(
-        self, change_plan_id: int, original_asset_number: int
+        self, change_plan_id: int, original_asset_number: int, step: int,
     ) -> ChangePlanAction:
-        change_plan_action_entry: ChangePlanActionEntry = ChangePlanActionEntry.query.filter_by(
-            change_plan_id=change_plan_id, original_asset_number=original_asset_number
+        conditions = []
+        conditions.append(ChangePlanActionEntry.change_plan_id == change_plan_id)
+        conditions.append(
+            ChangePlanActionEntry.original_asset_number == original_asset_number
+        )
+        conditions.append(ChangePlanActionEntry.step < step)
+
+        change_plan_action_entry: ChangePlanActionEntry = ChangePlanActionEntry.query.filter(
+            and_(*conditions)
         ).order_by(
             ChangePlanActionEntry.step.desc()
         ).first()
+
+        # change_plan_action_entry: ChangePlanActionEntry = ChangePlanActionEntry.query.filter_by(
+        #     change_plan_id=change_plan_id, original_asset_number=original_asset_number
+        # ).order_by(
+        #     ChangePlanActionEntry.step.desc()
+        # ).first()
 
         if change_plan_action_entry is None:
             return None

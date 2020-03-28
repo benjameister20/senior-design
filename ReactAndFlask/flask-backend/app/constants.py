@@ -103,6 +103,7 @@ class Constants:
     ORIGINAL_STEP_KEY = "stepOriginal"
     OLD_RECORD_KEY = "old_record"
     NEW_RECORD_KEY = "new_record"
+    IS_CHANGE_PLAN_KEY = "is_change_plan"
 
     ACTION_KEY = "action"
     CREATE_KEY = "create"

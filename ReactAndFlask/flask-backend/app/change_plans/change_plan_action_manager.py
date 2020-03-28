@@ -111,7 +111,7 @@ class ChangePlanActionManager:
 
     def get_prev_record(self, cp_action: ChangePlanAction):
         prev_change_plan_update: ChangePlanAction = self.cp_action_table.get_newest_asset_record_in_plan(
-            cp_action.change_plan_id, cp_action.original_asset_number
+            cp_action.change_plan_id, cp_action.original_asset_number, cp_action.step
         )
         if prev_change_plan_update is not None:
             return prev_change_plan_update.new_record

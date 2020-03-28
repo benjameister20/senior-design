@@ -3,7 +3,6 @@ from http import HTTPStatus
 from app.backups.routes_backups import backups
 from app.dal.database import db
 from app.dal.routes import database
-from app.data_models.user import User
 from app.datacenters.routes_datacenters import datacenters
 from app.decommissions.routes_decommissions import decommissions
 from app.import_export.routes import import_export
@@ -47,7 +46,7 @@ heroku = Heroku(app=application)
 
 @application.route("/")
 def index():
-    user = User(username="", display_name="", email="", password="", privilege="")
+    # user = User(username="", display_name="", email="", password="", privilege="")
     return render_template("index.html")
 
 

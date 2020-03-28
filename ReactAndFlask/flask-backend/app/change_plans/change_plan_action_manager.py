@@ -56,6 +56,9 @@ class ChangePlanActionManager:
         try:
             original_step = cp_action_data.get(Constants.ORIGINAL_STEP_KEY)
             new_cp_action = self.make_cp_action(cp_action_data)
+
+            # Add validation
+
             self.cp_action_table.edit_change_plan_actio(original_step, new_cp_action)
 
             # Add colateral impacts
@@ -81,7 +84,8 @@ class ChangePlanActionManager:
                 cp_action.old_record = prev_record
 
             return change_plan_actions
-        except:
+        except Exception as e:
+            print(str(e))
             raise InvalidInputsError(
                 "Unable to retrieve actions for the specified change plan."
             )
@@ -111,7 +115,7 @@ class ChangePlanActionManager:
 
     def get_prev_record(self, cp_action: ChangePlanAction):
         prev_change_plan_update: ChangePlanAction = self.cp_action_table.get_newest_asset_record_in_plan(
-            cp_action.change_plan_id, cp_action.original_asset_number
+            cp_action.change_plan_id, cp_action.original_asset_number, cp_action.step
         )
         if prev_change_plan_update is not None:
             return prev_change_plan_update.new_record
@@ -123,13 +127,9 @@ class ChangePlanActionManager:
             return {}
 
         model = self.instance_manager.get_model_from_id(original_record.model_id)
-        model_name = model.vendor + " " + model.model_number
-
         datacenter = self.instance_manager.get_dc_from_id(original_record.datacenter_id)
 
-        return original_record.make_json_with_model_and_datacenter(
-            model_name, datacenter.name
-        )
+        return original_record.make_json_with_model_and_datacenter(model, datacenter)
 
     def check_null(self, val):
         if val is None:

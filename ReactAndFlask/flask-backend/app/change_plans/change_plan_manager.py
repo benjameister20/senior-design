@@ -1,4 +1,5 @@
-from typing import List
+import datetime
+from typing import Any, Dict, List
 
 from app.constants import Constants
 from app.dal.change_plan_action_table import ChangePlanActionTable
@@ -62,6 +63,11 @@ class ChangePlanManager:
             if change_plan is None:
                 raise InvalidInputsError("Could not find change plan to be edited.")
 
+            if change_plan.executed:
+                raise InvalidInputsError(
+                    "Cannot update a change plan that has been executed."
+                )
+
             change_plan.name = name
             self.cp_table.edit_change_plan(change_plan)
         except InvalidInputsError as e:
@@ -93,15 +99,21 @@ class ChangePlanManager:
     def execute_cp(self, cp_data):
         try:
             identifier = self.check_null(cp_data.get(Constants.CHANGE_PLAN_ID_KEY))
+            owner = self.check_null(cp_data.get(Constants.OWNER_KEY))
             change_plan_actions: List[
                 ChangePlanAction
             ] = self.cp_action_table.get_actions_by_change_plan_id(identifier)
 
+            # Execute actions in change plan
             for cp_action in change_plan_actions:
-                self._execute_action(cp_action)
+                self._execute_action(cp_action, owner)
 
-            # Edit change plan to mark as executed with timestamp
-
+            # Update change plan with executed and timestamp
+            change_plan: ChangePlan = self.cp_table.get_change_plan(identifier)
+            change_plan.executed = True
+            change_plan.timestamp = datetime.datetime.now()
+            print("TIMESTAMP", change_plan.timestamp)
+            self.cp_table.edit_change_plan(change_plan)
         except InvalidInputsError as e:
             print(e.message)
             raise InvalidInputsError(e.message)
@@ -131,15 +143,22 @@ class ChangePlanManager:
                 "Could not read data fields correctly. Client-server error occurred."
             )
 
-    def _execute_action(self, cp_action: ChangePlanAction):
+    def _execute_action(self, cp_action: ChangePlanAction, owner: str):
+        asset_data = cp_action.new_record
+        asset_data[Constants.IS_CHANGE_PLAN_KEY] = True
         if cp_action.action == Constants.CREATE_KEY:
-            pass
+            self.instance_manager.create_instance(asset_data)
         elif cp_action.action == Constants.UPDATE_KEY:
-            pass
+            asset_data[
+                Constants.ASSET_NUMBER_ORIG_KEY
+            ] = cp_action.original_asset_number
+            self.instance_manager.edit_instance(asset_data)
         elif cp_action.action == Constants.DECOMMISSION_KEY:
-            pass
-        elif cp_action.action == Constants.COLLATERAL_KEY:
-            pass
+            decom_data: Dict[str, Any] = {}
+            decom_data[Constants.IS_CHANGE_PLAN_KEY] = True
+            decom_data[Constants.ASSET_NUMBER_KEY] = cp_action.original_asset_number
+            decom_data[Constants.DECOM_USER_KEY] = owner
+            self.decommission_manager.decommission_asset(decom_data)
 
     def check_null(self, val):
         if val is None:

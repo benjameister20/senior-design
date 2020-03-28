@@ -313,8 +313,8 @@ class EditAsset extends React.Component {
                 response => {
                     var datacenters = [];
                     response.data.datacenters.map(datacenter => {
-                        if (this.props.privilege.Datacenters.length > 0) {
-                            if (this.props.privilege.Datacenters[0] === "*" || this.props.privilege.Datacenters.includes(datacenter.abbreviation) || this.props.privilege.asset) {
+                        if (this.props.privilege.datacenters.length > 0) {
+                            if (this.props.privilege.datacenters[0] === "*" || this.props.privilege.datacenters.includes(datacenter.abbreviation) || this.props.privilege.asset) {
                                 datacenters.push(datacenter.name);
                             }
                         }
@@ -705,7 +705,6 @@ class EditAsset extends React.Component {
                                     onBlur={this.updateOwner}
                                     variant="outlined"
                                     fullWidth
-                                    required
                                     disabled={this.props.disabled}
                                 />
                                 )}
@@ -849,7 +848,6 @@ class EditAsset extends React.Component {
                                         onChange={(event, value) => {this.changeNetworkHostname(value, networkPort)}}
                                         required={this.getNetworkConnections()[networkPort].connection_port!==""}
                                         value={this.getConnectingHostname(networkPort)}
-                                        disabled={this.connectionsDisabled()}
                                         renderInput={params => (
                                             <TextField
                                                 {...params}

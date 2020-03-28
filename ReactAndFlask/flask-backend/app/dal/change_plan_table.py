@@ -11,13 +11,17 @@ class ChangePlanEntry(db.Model):
     owner = db.Column(db.String(128))
     name = db.Column(db.String(128))
     executed = db.Column(db.Boolean)
-    timestamp = db.Column(db.Date)
+    timestamp = db.Column(db.Date, nullable=True)
 
     def __init__(self, change_plan: ChangePlan):
-        self.abbreviation = change_plan.owner
+        self.owner = change_plan.owner
         self.name = change_plan.name
         self.executed = change_plan.executed
-        self.timestamp = change_plan.timestamp
+
+        if change_plan.timestamp == "":
+            self.timestamp = None
+        else:
+            self.timestamp = change_plan.timestamp
 
         if change_plan.identifier != -1:
             self.identifier = change_plan.identifier
@@ -44,9 +48,10 @@ class ChangePlanTable:
         return change_plan.make_change_plan()
 
     def get_change_plan_by_owner(self, owner: str) -> List[ChangePlan]:
-        change_plan_entries: ChangePlanEntry = ChangePlanEntry.query.filter_by(
+        change_plan_entries: List[ChangePlanEntry] = ChangePlanEntry.query.filter_by(
             owner=owner
         ).all()
+        print(change_plan_entries)
         if change_plan_entries is None:
             return None
 
@@ -55,11 +60,15 @@ class ChangePlanTable:
     def add_change_plan(self, change_plan: ChangePlan) -> None:
         """ Adds a change plan to the database """
         change_plan_entry: ChangePlanEntry = ChangePlanEntry(change_plan=change_plan)
+        print("owner", change_plan_entry.owner)
+        print("id", change_plan_entry.identifier)
 
         try:
             db.session.add(change_plan_entry)
+            print("owner", change_plan_entry.owner)
+            print("id", change_plan_entry.identifier)
             db.session.commit()
-        except:
+        except Exception as e:
             print(f"Failed to add change plan {change_plan.name}")
             raise DBWriteException
 
@@ -73,7 +82,9 @@ class ChangePlanTable:
             old_entry.owner = change_plan.owner
             old_entry.name = change_plan.name
             old_entry.executed = change_plan.executed
-            old_entry.timestamp = change_plan.timestamp
+
+            if change_plan.timestamp is not None and change_plan.timestamp != "":
+                old_entry.timestamp = change_plan.timestamp
 
             db.session.commit()
         except:

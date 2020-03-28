@@ -106,7 +106,7 @@ class Constants:
 
     ACTION_KEY = "action"
     CREATE_KEY = "create"
-    DELETE_KEY = "delete"
+    DECOMMISSION_KEY = "decommission"
     UPDATE_KEY = "update"
     COLLATERAL_KEY = "collateral"
 

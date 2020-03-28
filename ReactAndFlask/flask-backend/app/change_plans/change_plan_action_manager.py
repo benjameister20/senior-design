@@ -96,6 +96,9 @@ class ChangePlanActionManager:
             original_asset_number = self.check_null(
                 cp_action_data.get(Constants.ASSET_NUMBER_ORIG_KEY)
             )
+            if original_asset_number == "":
+                original_asset_number = -1
+
             new_record = self.check_null(cp_action_data.get(Constants.NEW_RECORD_KEY))
 
             return ChangePlanAction(

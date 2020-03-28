@@ -5,13 +5,17 @@ from app.dal.change_plan_action_table import ChangePlanActionTable
 from app.dal.change_plan_table import ChangePlanTable
 from app.data_models.change_plan import ChangePlan
 from app.data_models.change_plan_action import ChangePlanAction
+from app.decommissions.decommission_manager import DecommissionManager
 from app.exceptions.InvalidInputsException import InvalidInputsError
+from app.instances.instance_manager import InstanceManager
 
 
 class ChangePlanManager:
     def __init__(self):
         self.cp_table = ChangePlanTable()
         self.cp_action_table = ChangePlanActionTable()
+        self.instance_manager = InstanceManager()
+        self.decommission_manager = DecommissionManager()
 
     def create_change_plan(self, cp_data):
         try:
@@ -72,7 +76,10 @@ class ChangePlanManager:
     def get_change_plans(self, cp_data):
         try:
             cp_owner = cp_data.get(Constants.OWNER_KEY)
+            print(cp_owner)
             cp_list = self.cp_table.get_change_plan_by_owner(cp_owner)
+            print("CP LIST")
+            print(cp_list)
             return cp_list
         except InvalidInputsError as e:
             print(e.message)
@@ -90,7 +97,9 @@ class ChangePlanManager:
                 ChangePlanAction
             ] = self.cp_action_table.get_actions_by_change_plan_id(identifier)
 
-            # Write function to execute each action
+            for cp_action in change_plan_actions:
+                self._execute_action(cp_action)
+
             # Edit change plan to mark as executed with timestamp
 
         except InvalidInputsError as e:
@@ -121,6 +130,16 @@ class ChangePlanManager:
             raise InvalidInputsError(
                 "Could not read data fields correctly. Client-server error occurred."
             )
+
+    def _execute_action(self, cp_action: ChangePlanAction):
+        if cp_action.action == Constants.CREATE_KEY:
+            pass
+        elif cp_action.action == Constants.UPDATE_KEY:
+            pass
+        elif cp_action.action == Constants.DECOMMISSION_KEY:
+            pass
+        elif cp_action.action == Constants.COLLATERAL_KEY:
+            pass
 
     def check_null(self, val):
         if val is None:

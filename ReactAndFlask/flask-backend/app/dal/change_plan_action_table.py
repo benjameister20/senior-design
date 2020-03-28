@@ -83,11 +83,6 @@ class ChangePlanActionTable:
                 and_(*conditions)
             ).first()
 
-            old_entry.step = change_plan_action.step
-            old_entry.action = change_plan_action.action
-            old_entry.original_asset_number = change_plan_action.original_asset_number
-            old_entry.new_record = change_plan_action.new_record
-
             # Deleting old colateral conditions
             conditions_colat = []
             conditions_colat.append(
@@ -108,6 +103,11 @@ class ChangePlanActionTable:
                     original_step,
                     change_plan_action.step,
                 )
+
+            old_entry.step = change_plan_action.step
+            old_entry.action = change_plan_action.action
+            old_entry.original_asset_number = change_plan_action.original_asset_number
+            old_entry.new_record = change_plan_action.new_record
 
             db.session.commit()
         except:
@@ -162,8 +162,8 @@ class ChangePlanActionTable:
             low_step = new_step
             increase = True
         else:
-            high_step = original_step
-            low_step = new_step
+            low_step = original_step
+            high_step = new_step
             increase = False
 
         change_plan_action_entries: List[

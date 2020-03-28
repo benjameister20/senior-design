@@ -4,6 +4,7 @@ import os
 import requests
 from app.constants import Constants
 from app.dal.user_table import UserTable
+from app.data_models.permission import Permission
 from app.data_models.user import User
 from app.exceptions.InvalidInputsException import InvalidInputsError
 from app.exceptions.UserExceptions import (
@@ -40,7 +41,7 @@ class UserManager:
 
     @staticmethod
     def __make_user_from_json(json) -> User:
-        json.get(Constants.PRIVILEGE_KEY)
+        privilege = json.get(Constants.PRIVILEGE_KEY)
 
         # if json.get(Constants.USERNAME_KEY) is None:
         #     raise TypeError("Username cannot be None. Requires type str.")
@@ -62,7 +63,8 @@ class UserManager:
             display_name=json.get(Constants.DISPLAY_NAME_KEY),
             email=json.get(Constants.EMAIL_KEY),
             password=json.get(Constants.PASSWORD_KEY),
-            privilege=json.get(Constants.PRIVILEGE_KEY),
+            privilege=privilege,
+            datacenters=privilege.get(PermissionConstants.DATACENTERS),
         )
 
     @staticmethod
@@ -78,24 +80,25 @@ class UserManager:
     def search(self, request):
         request_data = request.get_json()
         print("request data: ", request_data)
-        print("here 1")
         filters = request_data.get(Constants.FILTER_KEY)
-        print("here 2")
         limit = filters.get(Constants.LIMIT_KEY)
         if limit is None:
             limit = 1000
-        print("here 3")
+        print()
+        print(filters.get(Constants.PRIVILEGE_KEY).get(PermissionConstants.DATACENTERS))
+        print()
         users = self.USER_TABLE.search_users(
             username=filters.get(Constants.USERNAME_KEY),
             display_name=filters.get(Constants.DISPLAY_NAME_KEY),
             email=filters.get(Constants.EMAIL_KEY),
             privilege=filters.get(Constants.PRIVILEGE_KEY),
+            datacenters=filters.get(Constants.PRIVILEGE_KEY).get(
+                PermissionConstants.DATACENTERS
+            ),
             limit=limit,
         )
-        print("here 4")
         json_list = [user.make_json() for user in users]
-        print("json list of users")
-        json.dumps(json_list)
+        # json.dumps(json_list)
         return json_list
 
     def create_user(self, request):
@@ -133,27 +136,36 @@ class UserManager:
             email = request_data.get(Constants.EMAIL_KEY)
             display_name = request_data.get(Constants.DISPLAY_NAME_KEY)
             privilege = request_data.get(Constants.PRIVILEGE_KEY)
+            datacenters = privilege.get(PermissionConstants.DATACENTERS)
         except:
             raise InvalidInputsError(
                 "Incorrectly formatted message. Application error on the frontend"
             )
 
         try:
-            print("here 1")
             user = self.__make_user_from_json(request_data)
-            print("here 2")
             self.VALIDATOR.validate_create_user(user)
-            print("here 3")
         except UserException as e:
             raise UserException(e.message)
         except:
             raise UserException("Could not create user")
 
-        try:
-            print("here")
-            encrypted_password = self.AUTH_MANAGER.encrypt_pw(password)
+        # dcs = []
+        # for datacenter in datacenters:
+        #     dcs.append(f"{}")
 
-            user = User(username, display_name, email, encrypted_password, privilege)
+        try:
+            encrypted_password = self.AUTH_MANAGER.encrypt_pw(password)
+            user = User(
+                username=username,
+                display_name=display_name,
+                email=email,
+                password=encrypted_password,
+                privilege=privilege,
+                datacenters=datacenters,
+            )
+
+            print(user)
             self.USER_TABLE.add_user(user)
         except:
             raise UserException("Could not create user")
@@ -211,9 +223,10 @@ class UserManager:
             print("validated new user")
         except UserException as e:
             raise UserException(e.message)
-        except Exception as e:
-            print(e)
-            raise UserException("Could not edit user")
+        # except Exception as e:
+        #     print("Could not edit user")
+        #     print(e)
+        #     raise UserException("Could not edit user")
 
         self.USER_TABLE.delete_user(old_user)
         print("deleted old user")
@@ -256,6 +269,9 @@ class UserManager:
 
         answer[Constants.TOKEN_KEY] = self.AUTH_MANAGER.encode_auth_token(username)
         answer[Constants.PRIVILEGE_KEY] = user.privilege
+        answer[Constants.PRIVILEGE_KEY][
+            PermissionConstants.DATACENTERS
+        ] = user.datacenters
 
         return self.__add_message_to_JSON(answer, Constants.API_SUCCESS)
 
@@ -299,7 +315,15 @@ class UserManager:
         username = request_data.get(Constants.USERNAME_KEY)
         email = request_data.get(Constants.EMAIL_KEY)
         display_name = request_data.get(Constants.DISPLAY_NAME_KEY)
-        privilege = "user"
+        privilege = Permission(
+            model=False,
+            asset=False,
+            datacenters=[],
+            power=False,
+            audit=True,
+            admin=False,
+        )
+        datacenters = privilege.datacenters
         password = Constants.NETID_PASSWORD.encode("utf-8")
 
         client_id = request_data.get("client_id")
@@ -315,7 +339,7 @@ class UserManager:
         if not data_matches:
             raise UserException(f"Cannot confirm NetID user {username}")
 
-        user = User(username, display_name, email, password, privilege)
+        user = User(username, display_name, email, password, privilege, datacenters)
 
         try:
             self.VALIDATOR.validate_shibboleth_login(user)

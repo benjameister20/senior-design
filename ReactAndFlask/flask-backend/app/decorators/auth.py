@@ -24,6 +24,9 @@ def requires_auth(request):
         def wrapper(*args, **kwargs):
             try:
                 # print(request.headers)
+                # print(request.headers["token"])
+                # print(Constants.TOKEN_KEY)
+                # print(request.headers.get(Constants.TOKEN_KEY))
                 request.headers[Constants.TOKEN_KEY]
             except KeyError:
                 # print(str(e))
@@ -59,7 +62,7 @@ def requires_permission(request, permission):
         @wraps(f)
         def wrapper(*args, **kwargs):
             try:
-                request.headers[Constants.PRIVILEGE_KEY]
+                # request.headers[Constants.PRIVILEGE_KEY]
                 token = request.headers[Constants.TOKEN_KEY]
             except KeyError as e:
                 print(str(e))
@@ -70,6 +73,7 @@ def requires_permission(request, permission):
                 return {Constants.MESSAGE_KEY: f"User {username} does not exist"}
 
             user_permissions = user.privilege
+            user_datacenters = user.datacenters
             try:
                 datacenter_name = request.json.get(Constants.DC_NAME_KEY)
             except:
@@ -86,15 +90,12 @@ def requires_permission(request, permission):
                 # check datacenter permission satistifed
                 if (
                     datacenter_name is not None
-                    and "*" not in user_permissions[PermissionConstants.DATACENTERS]
+                    and "*" not in user_datacenters
+                    and datacenter_name not in user_datacenters
                 ):
-                    if (
-                        datacenter_name
-                        not in user_permissions[PermissionConstants.DATACENTERS]
-                    ):
-                        return {
-                            Constants.MESSAGE_KEY: f"User {username} does not have access to {datacenter_name} datacenter"
-                        }
+                    return {
+                        Constants.MESSAGE_KEY: f"User {username} does not have access to {datacenter_name} datacenter"
+                    }
 
             return f(*args, **kwargs)
 

@@ -171,7 +171,7 @@ def get_cp_actions()
                 "rack_position":"RACK_U",
                 "owner":"OWNER",
                 "comment":"COMMENT"
-                "datacenter_id": "DATACENTER",
+                "datacenter_name": "DATACENTER",
                 "network_connections": {
                     PORT_NAME_1: {
                         "mac_address":MAC_ADDRESS,
@@ -199,7 +199,7 @@ def get_cp_actions()
                 "rack_position":"RACK_U",
                 "owner":"OWNER",
                 "comment":"COMMENT"
-                "datacenter_id": "DATACENTER",
+                "datacenter_name": "DATACENTER",
                 "network_connections": {
                     PORT_NAME_1: {
                         "mac_address":MAC_ADDRESS,

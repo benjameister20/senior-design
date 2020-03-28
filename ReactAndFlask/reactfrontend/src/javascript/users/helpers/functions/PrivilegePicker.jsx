@@ -39,7 +39,7 @@ export default function PrivilegePicker(props) {
 			defaultPrivs.push(generalPrivileges[4]);
 		}
 
-		defaultDCs = props.defaultPrivileges.Datacenters
+		defaultDCs = props.defaultPrivileges.datacenters
 	}
 
 	return (

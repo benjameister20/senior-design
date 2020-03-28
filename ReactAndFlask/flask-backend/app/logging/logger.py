@@ -49,9 +49,7 @@ class DecommissionActions:
 
 
 class ChangeplanActions:
-    CREATE = "CREATE"
-    EDIT = "EDIT"
-    DELETE = "DELETE"
+    EXECUTE = "EXECUTE"
 
 
 class Actions:
@@ -187,14 +185,8 @@ class Logger:
         return log_message
 
     def __log_changeplan_request(self, action, request):
-        if action == Logger.ACTIONS.CHANGEPLAN.CREATE:
-            log_message = f"""CREATE Changeplan (Name: )"""
-
-        if action == Logger.ACTIONS.CHANGEPLAN.EDIT:
-            log_message = f"""EDIT Changeplan (Name: )"""
-
-        if action == Logger.ACTIONS.CHANGEPLAN.DELETE:
-            log_message = f"""DELETE Changeplan (Name: )"""
+        if action == Logger.ACTIONS.CHANGEPLAN.EXECUTE:
+            log_message = f"""EXECUTE Changeplan (Changeplan ID: {request.get(Constants.CHANGE_PLAN_ID_KEY)})"""
 
         return log_message
 

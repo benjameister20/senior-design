@@ -113,10 +113,10 @@ class TabViewer extends React.Component {
             >
                     <Tab value={0} style={{flexGrow: 1,}} label="Models"> </Tab>
                     <Tab value={1} style={{flexGrow: 1,}} label="Assets" ></Tab>
-                    {(this.props.privilege.Admin) ? <Tab value={2} style={{flexGrow: 1,}} label="Users"></Tab> : null}
-                    {(this.props.privilege.Admin || this.props.privilege.Asset) ? <Tab value={3} style={{flexGrow: 1,}} label="Datacenters" /> : null}
+                    {(this.props.privilege.admin) ? <Tab value={2} style={{flexGrow: 1,}} label="Users"></Tab> : null}
+                    {(this.props.privilege.admin || this.props.privilege.asset) ? <Tab value={3} style={{flexGrow: 1,}} label="Datacenters" /> : null}
                     <Tab value={4} style={{flexGrow: 1,}} label="Statistics" />
-                    {(this.props.privilege.Admin || this.props.privilege.Audit) ? <Tab value={5} style={{flexGrow: 1,}} label="Logs" />:null}
+                    {(this.props.privilege.admin || this.props.privilege.audit) ? <Tab value={5} style={{flexGrow: 1,}} label="Logs" />:null}
             </Tabs>
             {this.state.currentTabID !== 0 ? null :
             <Typography

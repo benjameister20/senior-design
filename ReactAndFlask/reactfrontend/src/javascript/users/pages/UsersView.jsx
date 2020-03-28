@@ -57,12 +57,12 @@ const blankSearch = {
         "display_name": "",
         "email": "",
         "privilege": {
-            "Model": true,
-            "Asset": true,
-            "Datacenters": ["*"],
-            "Power": true,
-            "Audit": true,
-            "Admin": true
+            "model": true,
+            "asset": true,
+            "datacenters": ["*"],
+            "power": true,
+            "audit": true,
+            "admin": true
         }
     }
 }
@@ -242,7 +242,7 @@ export default class UsersView extends React.Component {
                         </Typography>
                     </Grid>
                     <Grid item xs={12} sm={6} md={4} lg={6}>
-                        {(this.props.privilege.Admin) ?
+                        {(this.props.privilege.admin) ?
                             (<div>
                                 <CreateUser
                                     showCreateModal={this.state.showCreateModal}
@@ -268,12 +268,12 @@ export default class UsersView extends React.Component {
                     </Grid>
                     <Grid item xs={12}>
                         <UsersTable
-                            columns={this.props.privilege.Admin ? adminColumns : columns}
+                            columns={this.props.privilege.admin ? adminColumns : columns}
                             vals={this.state.items}
                             keys={columns}
                             privilege={this.props.privilege}
                             showDetailedView={this.showDetailedView}
-                            filters={this.props.privilege.Admin ? adminColumns : columns}
+                            filters={this.props.privilege.admin ? adminColumns : columns}
                             delete={this.deleteUser}
                             save={this.editUser}
                             editUser={this.updateEditUser}

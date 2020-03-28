@@ -12,11 +12,11 @@ import { Typography } from "@material-ui/core";
 
 export default function PrivilegePicker(props) {
 	const generalPrivileges=[
-		{title:"Model Management", value:"Model"},
-		{title:"Global Asset Management", value:"Asset"},
-		{title:"Auditing", value:"Audit"},
-		{title:"Power Management", value:"Power"},
-		{title:"Administrator", value:"Admin"},
+		{title:"Model Management", value:"model"},
+		{title:"Global Asset Management", value:"asset"},
+		{title:"Auditing", value:"audit"},
+		{title:"Power Management", value:"power"},
+		{title:"Administrator", value:"admin"},
 	]
 
 	var defaultPrivs = [];
@@ -35,7 +35,7 @@ export default function PrivilegePicker(props) {
 		if (props.defaultPrivileges.Power) {
 			defaultPrivs.push(generalPrivileges[3]);
 		}
-		if (props.defaultPrivileges.Admin) {
+		if (props.defaultPrivileges.admin) {
 			defaultPrivs.push(generalPrivileges[4]);
 		}
 

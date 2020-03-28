@@ -28,7 +28,7 @@ class DatacenterManagerView extends React.Component {
         return (
             <React.Fragment>
                 <ErrorBoundary>
-                    <DatacenterView disabled={!(this.props.privilege.Admin || this.props.privilege.Asset)} />
+                    <DatacenterView disabled={!(this.props.privilege.admin || this.props.privilege.asset)} />
                 </ErrorBoundary>
             </React.Fragment>
         );

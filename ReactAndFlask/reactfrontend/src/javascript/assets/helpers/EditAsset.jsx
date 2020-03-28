@@ -285,12 +285,12 @@ class EditAsset extends React.Component {
                     "display_name": "",
                     "email": "",
                     "privilege": {
-                        "Model": true,
-                        "Asset": true,
-                        "Datacenters": ["*"],
-                        "Power": true,
-                        "Audit": true,
-                        "Admin": true
+                        "model": true,
+                        "asset": true,
+                        "datacenters": ["*"],
+                        "power": true,
+                        "audit": true,
+                        "admin": true
                     }
                 }
             }).then(
@@ -314,7 +314,7 @@ class EditAsset extends React.Component {
                     var datacenters = [];
                     response.data.datacenters.map(datacenter => {
                         if (this.props.privilege.Datacenters.length > 0) {
-                            if (this.props.privilege.Datacenters[0] === "*" || this.props.privilege.Datacenters.includes(datacenter.abbreviation) || this.props.privilege.Asset) {
+                            if (this.props.privilege.Datacenters[0] === "*" || this.props.privilege.Datacenters.includes(datacenter.abbreviation) || this.props.privilege.asset) {
                                 datacenters.push(datacenter.name);
                             }
                         }

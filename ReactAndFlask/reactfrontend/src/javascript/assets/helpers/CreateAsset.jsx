@@ -247,8 +247,8 @@ class CreateAsset extends React.Component {
             response => {
                 var datacenters = [];
                 response.data.datacenters.map(datacenter => {
-                    if (this.props.privilege.Datacenters.length > 0) {
-                        if (this.props.privilege.Datacenters[0] === "*" || this.props.privilege.Datacenters.includes(datacenter.abbreviation) || this.props.privilege.asset) {
+                    if (this.props.privilege.datacenters.length > 0) {
+                        if (this.props.privilege.datacenters[0] === "*" || this.props.privilege.datacenters.includes(datacenter.abbreviation) || this.props.privilege.asset) {
                             datacenters.push(datacenter.name);
                         }
                     }

@@ -142,6 +142,52 @@ def get_cps()
 -----------------------------
 
 ```language=python
+def create_cp_action()
+```
+- REST Type: 'post'
+- Authentication Required: yes
+- Roled required: none
+- Route: /changeplans/createaction
+- Arguments:
+```language=json
+{
+    "change_plan_id": CHANGE_PLAN_ID,
+    "step": STEP_IN_CHANGE_PLAN,
+    "action": "create/update/decommission",
+    "asset_numberOriginal": "" | NUMBER_OF_ASSET_MODIFIED/DELETED,
+    "new_record" (only relevant for create/update actions): {
+        "model":"MODEL_OF_ASSET",
+        "hostname":"HOSTNAME",
+        "rack":"RACK",
+        "rack_position":RACK_U,
+        "owner":"OWNER",
+        "comment":"COMMENT",
+        "datacenter_name": "DATACENTER_NAME",
+        "network_connections": {
+            "PORT_1": {
+                "mac_address": "MAC_ADDRESS",
+                "connection_hostname":"HOSTNAME_OF_CONNECTED_ASSET",
+                "connection_port":"PORT_ON_OTHER_ASSET_FOR_CONNECTION"
+            },
+            "PORT_2": {
+                "mac_address":"",
+                "connection_hostname":"",
+                "connection_port":""
+            }
+        },
+        "power_connections": [POWER CONNECTIONS ex.("L2", "R2")],
+        "asset_number": ASSET_NUMBER  
+    }
+}
+```
+- Returns:
+```language=json
+{
+    "message":"success"||"ERROR_MESSAGE",
+}
+```
+-----------------------------
+```language=python
 def get_cp_actions()
 ```
 - REST Type: 'post'

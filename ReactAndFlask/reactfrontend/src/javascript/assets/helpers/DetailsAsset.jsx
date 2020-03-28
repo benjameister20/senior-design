@@ -88,6 +88,7 @@ class DetailAsset extends React.Component {
                             close={this.props.close}
                             getAssetList={this.props.getAssetList}
                             privilege={this.props.privilege}
+                            username={this.props.username}
                         />
                     </ExpansionPanelDetails>
                 </ExpansionPanel>

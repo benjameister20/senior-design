@@ -458,6 +458,7 @@ class TableAsset extends React.Component {
 						asset={this.state.detailAsset}
 						search={this.getAssetList}
 						privilege={this.props.privilege}
+						username={this.props.username}
 					/> : null}
 				<StatusDisplay
 					open={this.state.showStatus}

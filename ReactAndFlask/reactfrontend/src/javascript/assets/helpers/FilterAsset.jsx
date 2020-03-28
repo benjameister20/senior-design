@@ -12,7 +12,15 @@ import {
     Paper,
     Typography,
     Button,
+    FormControlLabel,
+    Switch,
 } from '@material-ui/core/';
+import DateFnsUtils from '@date-io/date-fns';
+import {
+    MuiPickersUtilsProvider,
+    KeyboardTimePicker,
+    KeyboardDatePicker,
+} from '@material-ui/pickers';
 
 
 import * as Constants from '../../Constants';
@@ -22,13 +30,17 @@ class FilterAsset extends React.Component {
         super(props);
 
         this.state = {
-            datacenter:"",
-            model:"",
-            hostname:"",
-            startingLetter:"A",
-            endingLetter:"Z",
-            startingNum:1,
-            endingNum:1000,
+            datacenter: "",
+            model: "",
+            hostname: "",
+            startingLetter: "A",
+            endingLetter: "Z",
+            startingNum: 1,
+            endingNum: 1000,
+            showDecommissioned: false,
+            startDate:"",
+            endDate:"",
+            user:"",
         };
     }
 
@@ -64,13 +76,21 @@ class FilterAsset extends React.Component {
         this.setState({ endingNum: event.target.value }, () => { this.search() });
     }
 
-    componentDidUpdate() {
+    updateStartDate = (event) => {
+        this.setState({ startDate: event.target.value }, () => this.search() );
+    }
 
+    updateEndDate = (event) => {
+        this.setState({ endDate: event.target.value }, () => this.search() );
+    }
+
+    updateUser = (event) => {
+        this.setState({ user: event.target.value }, () => this.search() );
     }
 
     search = () => {
-         var items = [];
-         try {
+        var items = [];
+        try {
             this.props.allAssets.map(asset => {
                 if (
                     (asset.datacenter_name.includes(this.state.datacenter) || asset.abbreviation.includes(this.state.datacenter))
@@ -89,99 +109,152 @@ class FilterAsset extends React.Component {
 
     }
 
+    switchToDecommissioned = (event) => {
+        this.setState({ showDecommissioned: event.target.checked });
+
+        if (event.target.checked) {
+
+        }
+    }
+
     render() {
         return (
             <React.Fragment>
                 <Paper elevation={3}>
-                <Grid
-                    container
-                    spacing={2}
-                    direction="row"
-                    justify="flex-start"
-                    alignItems="center"
-                    style={{"padding": "10px"}}
-                >
-                    <Grid item xs={12}>
-                        <Typography variant="h5">Filter</Typography>
-                    </Grid>
-                    <Grid item xs={12} sm={6} md={4} lg={3}>
-                        <TextField
-                            id="datacenter"
-                            label="Datacenter"
-                            name="datacenter"
-                            onChange={(event) => { this.updateDatacenter(event) } }
-                            style={{width: "100%"}}
-                        />
-                    </Grid>
-                    <Grid item xs={12} sm={6} md={4} lg={3}>
-                        <TextField
-                            id="model"
-                            label="Model"
-                            name="model"
-                            onChange={(event) => { this.updateModel(event)} }
-                            style={{width: "100%"}}
-                        />
-                    </Grid>
-                    <Grid item xs={12} sm={6} md={4} lg={3}>
-                        <TextField
-                            id="hostname"
-                            label="Hostname"
-                            name="hostname"
-                            onChange={(event) => this.updateHostname(event)}
-                            style={{width: "100%"}}
-                        />
-                    </Grid>
-                    <Grid item item xs={12} sm={6} md={4} lg={3}></Grid>
-                    <Grid item xs={12} sm={6} md={4} lg={2}>
-                        <FormControl>
-                            <Select
-                                id="starting-letter-selector"
-                                value={this.state.startingLetter}
-                                onChange={this.updateStartingLetter}
-                            >
-                                {Constants.RackX.map(val => (<MenuItem value={val}>{val}</MenuItem>))}
-                            </Select>
-                            <FormHelperText>Starting Letter</FormHelperText>
-                        </FormControl>
-                    </Grid>
-                    <Grid item xs={12} sm={6} md={4} lg={2}>
-                        <FormControl>
-                            <Select
-                                id="ending-letter-selector"
-                                value={this.state.endingLetter}
-                                onChange={this.updateEndingLetter}
-                            >
-                                {Constants.RackX.map(val => (<MenuItem value={val}>{val}</MenuItem>))}
-                            </Select>
-                            <FormHelperText>Ending Letter</FormHelperText>
-                        </FormControl>
-                    </Grid>
-                    <Grid item xs={12} sm={6} md={4} lg={3}>
-                        <FormControl>
+                    <Grid
+                        container
+                        spacing={2}
+                        direction="row"
+                        justify="flex-start"
+                        alignItems="center"
+                        style={{ "padding": "10px" }}
+                    >
+                        <Grid item xs={12}>
+                            <Typography variant="h5">Filter</Typography>
+                        </Grid>
+                        <Grid item xs={12} sm={6} md={4} lg={3}>
                             <TextField
-                                id="starting-num-selector"
-                                type="number"
-                                value={this.state.startingNum}
-                                onChange={this.updateStartingNum}
-                                InputProps={{ inputProps: { min: 1} }}
+                                id="datacenter"
+                                label="Datacenter"
+                                name="datacenter"
+                                onChange={(event) => { this.updateDatacenter(event) }}
+                                style={{ width: "100%" }}
                             />
-                            <FormHelperText>Starting Number</FormHelperText>
-                        </FormControl>
-                    </Grid>
-                    <Grid item xs={12} sm={6} md={4} lg={3}>
-                        <FormControl>
+                        </Grid>
+                        <Grid item xs={12} sm={6} md={4} lg={3}>
                             <TextField
-                                id="ending-num-selector"
-                                type="number"
-                                value={this.state.endingNum}
-                                onChange={this.updateEndingNum}
-                                InputProps={{ inputProps: { min: 1} }}
+                                id="model"
+                                label="Model"
+                                name="model"
+                                onChange={(event) => { this.updateModel(event) }}
+                                style={{ width: "100%" }}
                             />
-                            <FormHelperText>Ending Number</FormHelperText>
-                        </FormControl>
+                        </Grid>
+                        <Grid item xs={12} sm={6} md={4} lg={3}>
+                            <TextField
+                                id="hostname"
+                                label="Hostname"
+                                name="hostname"
+                                onChange={(event) => this.updateHostname(event)}
+                                style={{ width: "100%" }}
+                            />
+                        </Grid>
+                        <Grid item item xs={12} sm={6} md={4} lg={3}></Grid>
+                        <Grid item xs={12} sm={6} md={4} lg={2}>
+                            <FormControl>
+                                <Select
+                                    id="starting-letter-selector"
+                                    value={this.state.startingLetter}
+                                    onChange={this.updateStartingLetter}
+                                >
+                                    {Constants.RackX.map(val => (<MenuItem value={val}>{val}</MenuItem>))}
+                                </Select>
+                                <FormHelperText>Starting Letter</FormHelperText>
+                            </FormControl>
+                        </Grid>
+                        <Grid item xs={12} sm={6} md={4} lg={2}>
+                            <FormControl>
+                                <Select
+                                    id="ending-letter-selector"
+                                    value={this.state.endingLetter}
+                                    onChange={this.updateEndingLetter}
+                                >
+                                    {Constants.RackX.map(val => (<MenuItem value={val}>{val}</MenuItem>))}
+                                </Select>
+                                <FormHelperText>Ending Letter</FormHelperText>
+                            </FormControl>
+                        </Grid>
+                        <Grid item xs={12} sm={6} md={4} lg={3}>
+                            <FormControl>
+                                <TextField
+                                    id="starting-num-selector"
+                                    type="number"
+                                    value={this.state.startingNum}
+                                    onChange={this.updateStartingNum}
+                                    InputProps={{ inputProps: { min: 1 } }}
+                                />
+                                <FormHelperText>Starting Number</FormHelperText>
+                            </FormControl>
+                        </Grid>
+                        <Grid item xs={12} sm={6} md={4} lg={3}>
+                            <FormControl>
+                                <TextField
+                                    id="ending-num-selector"
+                                    type="number"
+                                    value={this.state.endingNum}
+                                    onChange={this.updateEndingNum}
+                                    InputProps={{ inputProps: { min: 1 } }}
+                                />
+                                <FormHelperText>Ending Number</FormHelperText>
+                            </FormControl>
+                        </Grid>
+                        <Grid item xs={2} sm={6} md={4} lg={3}>
+                            <FormControlLabel
+                                control={
+                                    <Switch
+                                        checked={this.state.showDecommissioned}
+                                        onChange={event => { this.switchToDecommissioned(event) }}
+                                        value="checkedB"
+                                        color="primary"
+                                    />
+                                }
+                                labelPlacement="top"
+                                label="Decommissioned"
+                            />
+                        </Grid>
+                        {this.state.showDecommissioned ? <Grid item xs={12} sm={6} md={4} lg={3}>
+                            <TextField
+                                id="user"
+                                label="User"
+                                name="user"
+                                onChange={(event) => { this.updateUser(event) }}
+                                style={{ width: "100%" }}
+                            />
+                        </Grid> : null}
+                        {this.state.showDecommissioned ? <Grid item xs={12} sm={6} md={4} lg={3}>
+                            <TextField
+                                id="start-date"
+                                label="Start Date"
+                                type="date"
+                                onChange={event => this.updateStartDate(event)}
+                                InputLabelProps={{
+                                    shrink: true,
+                                }}
+                            />
+                        </Grid> : null}
+                        {this.state.showDecommissioned ? <Grid item xs={12} sm={6} md={4} lg={3}>
+                            <TextField
+                                id="end-date"
+                                label="End Date"
+                                type="date"
+                                onChange={event => this.updateEndDate(event)}
+                                InputLabelProps={{
+                                    shrink: true,
+                                }}
+                            />
+                        </Grid> : null}
                     </Grid>
-                </Grid>
-            </Paper>
+                </Paper>
             </React.Fragment>
         );
     }

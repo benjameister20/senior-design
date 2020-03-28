@@ -40,6 +40,7 @@ export default class AssetsView extends React.Component {
                         <Grid item xs={12}>
                             <TableAsset
                                 privilege={this.props.privilege}
+                                username={this.props.username}
                             />
                         </Grid>
                     </Grid>

@@ -14,4 +14,5 @@ export enum AssetCommand {
     GET_NEXT_ASSET_NUM = 'nextAssetNumber/',
     GET_NETWORK_NEIGHBORHOOD = "networkNeighborhood/",
     GENERATE_LABELS = 'labelgen/',
+    DECOMMISSION = "decommission_asset/"
 }

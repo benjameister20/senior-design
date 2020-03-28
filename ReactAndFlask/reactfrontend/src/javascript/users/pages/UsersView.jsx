@@ -242,7 +242,7 @@ export default class UsersView extends React.Component {
                         </Typography>
                     </Grid>
                     <Grid item xs={12} sm={6} md={4} lg={6}>
-                        {(this.props.privilege.admin) ?
+                        {(this.props.privilege.Admin) ?
                             (<div>
                                 <CreateUser
                                     showCreateModal={this.state.showCreateModal}
@@ -268,12 +268,12 @@ export default class UsersView extends React.Component {
                     </Grid>
                     <Grid item xs={12}>
                         <UsersTable
-                            columns={this.props.privilege.admin ? adminColumns : columns}
+                            columns={this.props.privilege.Admin ? adminColumns : columns}
                             vals={this.state.items}
                             keys={columns}
                             privilege={this.props.privilege}
                             showDetailedView={this.showDetailedView}
-                            filters={this.props.privilege.admin ? adminColumns : columns}
+                            filters={this.props.privilege.Admin ? adminColumns : columns}
                             delete={this.deleteUser}
                             save={this.editUser}
                             editUser={this.updateEditUser}

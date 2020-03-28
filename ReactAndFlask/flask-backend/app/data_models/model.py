@@ -1,4 +1,3 @@
-import json
 from typing import Any, Dict, List, Optional
 
 from app.constants import Constants
@@ -217,7 +216,6 @@ class Model:
     def to_csv(self) -> str:
         """ Get the model as a csv row """
         json_data: JSON = self.make_json()
-        print(json.dumps(json_data, indent=3))
 
         # JANK CITY FIX WHEN TIME
         key_array = []

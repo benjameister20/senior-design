@@ -62,7 +62,6 @@ class DatacenterManager:
             except InvalidInputsError as e:
                 return e.message
             if edit_validation_result == Constants.API_SUCCESS:
-                print("Updating table")
                 self.dc_table.edit_datacenter(updated_datacenter, original_name)
             else:
                 return InvalidInputsError(edit_validation_result)

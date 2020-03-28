@@ -278,7 +278,22 @@ class EditAsset extends React.Component {
 
     getOwnerList = () => {
         axios.post(
-            getURL(Constants.USERS_MAIN_PATH, searchPath), emptySearch).then(
+            getURL(Constants.USERS_MAIN_PATH, searchPath), {
+                "filter":
+                {
+                    "username": "",
+                    "display_name": "",
+                    "email": "",
+                    "privilege": {
+                        "Model": true,
+                        "Asset": true,
+                        "Datacenters": ["*"],
+                        "Power": true,
+                        "Audit": true,
+                        "Admin": true
+                    }
+                }
+            }).then(
             response => {
                 try {
                     console.log(response);
@@ -295,11 +310,18 @@ class EditAsset extends React.Component {
     getDatacenterList = () => {
         axios.get(
             getURL(Constants.DATACENTERS_MAIN_PATH, "all/")).then(
-            response => {
-                var datacenters = [];
-                response.data.datacenters.map(datacenter => datacenters.push(datacenter.name));
-                this.setState({ loadingDatacenters: false, datacenterList: datacenters })
-            });
+                response => {
+                    var datacenters = [];
+                    response.data.datacenters.map(datacenter => {
+                        if (this.props.privilege.Datacenters.length > 0) {
+                            if (this.props.privilege.Datacenters[0] === "*" || this.props.privilege.Datacenters.includes(datacenter.abbreviation) || this.props.privilege.Asset) {
+                                datacenters.push(datacenter.name);
+                            }
+                        }
+                    });
+                    this.setState({ loadingDatacenters: false, datacenterList: datacenters })
+                });
+
     }
 
     getAssetList = () => {
@@ -591,7 +613,7 @@ class EditAsset extends React.Component {
     deleteAsset = () => {
         this.setState({ showConfirmationBox:false })
         axios.post(getURL(Constants.ASSETS_MAIN_PATH, AssetCommand.delete),
-         { "asset_number":this.props.defaultValues.asset_number }).then(
+         { "asset_number":this.props.defaultValues.asset_number, "datacenter_name":this.props.defaultValues.datacenter_name }).then(
             response => {
                 if (response.data.message === "success") {
                     this.props.close();

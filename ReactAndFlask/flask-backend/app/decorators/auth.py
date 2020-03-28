@@ -70,9 +70,11 @@ def requires_permission(request, permission):
                 return {Constants.MESSAGE_KEY: f"User {username} does not exist"}
 
             user_permissions = user.privilege
-            datacenter_name = request.get(Constants.DC_NAME_KEY)
+            try:
+                datacenter_name = request.json.get(Constants.DC_NAME_KEY)
+            except:
+                datacenter_name = None
             # Check input permissions against permissions that the user has
-
             if not user_permissions[PermissionConstants.ADMIN]:
                 # check bool permissions are satisfied
                 for key in permission.make_json():

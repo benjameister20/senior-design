@@ -89,16 +89,6 @@ class Instance:
         if not isinstance(other, Instance):
             return NotImplemented
 
-        # print(str(self.model_id) == str(other.model_id))
-        # print(self.hostname == other.hostname)
-        # print(self.rack_label == other.rack_label)
-        # print(str(self.rack_position) == str(other.rack_position))
-        # print(self.owner == other.owner)
-        # print(self.comment == other.comment)
-        # print(self.asset_number == other.asset_number)
-        # print("ASSET NUMS")
-        # print(type(self.asset_number))
-        # print(type(other.asset_number))
         return (
             str(self.model_id) == str(other.model_id)
             and self.hostname == other.hostname

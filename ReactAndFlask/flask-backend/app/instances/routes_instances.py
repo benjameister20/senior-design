@@ -248,9 +248,9 @@ def get_network_neighborhood():
 def get_barcode_labels():
     """ Route to get barcode labels for assets"""
     returnJSON = createJSON()
-
     try:
         asset_data = request.get_json()
+        print(asset_data)
         BarcodeGenerator().create_barcode_labels(asset_data)
         return send_file(
             filename_or_fp="static/asset_labels.pdf",

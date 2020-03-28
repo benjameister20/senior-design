@@ -93,12 +93,13 @@ class ChangePlanManager:
     def execute_cp(self, cp_data):
         try:
             identifier = self.check_null(cp_data.get(Constants.CHANGE_PLAN_ID_KEY))
+            owner = self.check_null(cp_data.get(Constants.OWNER_KEY))
             change_plan_actions: List[
                 ChangePlanAction
             ] = self.cp_action_table.get_actions_by_change_plan_id(identifier)
 
             for cp_action in change_plan_actions:
-                self._execute_action(cp_action)
+                self._execute_action(cp_action, owner)
 
             # Edit change plan to mark as executed with timestamp
 
@@ -131,7 +132,7 @@ class ChangePlanManager:
                 "Could not read data fields correctly. Client-server error occurred."
             )
 
-    def _execute_action(self, cp_action: ChangePlanAction):
+    def _execute_action(self, cp_action: ChangePlanAction, owner: str):
         asset_data = cp_action.new_record
         asset_data[Constants.IS_CHANGE_PLAN_KEY] = True
         if cp_action.action == Constants.CREATE_KEY:
@@ -145,6 +146,7 @@ class ChangePlanManager:
             decom_data: Dict[str, Any] = {}
             decom_data[Constants.IS_CHANGE_PLAN_KEY] = True
             decom_data[Constants.ASSET_NUMBER_KEY] = cp_action.original_asset_number
+            decom_data[Constants.DECOM_USER_KEY] = owner
             self.decommission_manager.decommission_asset(decom_data)
 
     def check_null(self, val):

@@ -56,6 +56,9 @@ class ChangePlanActionManager:
         try:
             original_step = cp_action_data.get(Constants.ORIGINAL_STEP_KEY)
             new_cp_action = self.make_cp_action(cp_action_data)
+
+            # Add validation
+
             self.cp_action_table.edit_change_plan_actio(original_step, new_cp_action)
 
             # Add colateral impacts

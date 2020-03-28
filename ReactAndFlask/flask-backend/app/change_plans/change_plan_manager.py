@@ -1,3 +1,4 @@
+import datetime
 from typing import Any, Dict, List
 
 from app.constants import Constants
@@ -62,6 +63,11 @@ class ChangePlanManager:
             if change_plan is None:
                 raise InvalidInputsError("Could not find change plan to be edited.")
 
+            if change_plan.executed:
+                raise InvalidInputsError(
+                    "Cannot update a change plan that has been executed."
+                )
+
             change_plan.name = name
             self.cp_table.edit_change_plan(change_plan)
         except InvalidInputsError as e:
@@ -98,11 +104,16 @@ class ChangePlanManager:
                 ChangePlanAction
             ] = self.cp_action_table.get_actions_by_change_plan_id(identifier)
 
+            # Execute actions in change plan
             for cp_action in change_plan_actions:
                 self._execute_action(cp_action, owner)
 
-            # Edit change plan to mark as executed with timestamp
-
+            # Update change plan with executed and timestamp
+            change_plan: ChangePlan = self.cp_table.get_change_plan(identifier)
+            change_plan.executed = True
+            change_plan.timestamp = datetime.datetime.now()
+            print("TIMESTAMP", change_plan.timestamp)
+            self.cp_table.edit_change_plan(change_plan)
         except InvalidInputsError as e:
             print(e.message)
             raise InvalidInputsError(e.message)

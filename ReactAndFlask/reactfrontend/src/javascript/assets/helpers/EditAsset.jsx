@@ -807,7 +807,6 @@ class EditAsset extends React.Component {
                                                             name={this.state.inputs.macAddress.name}
                                                             onChange={(event) => { this.changeNetworkMacAddress(event, networkPort) }}
                                                             fullWidth
-                                                            disabled={this.state.hostname === "" || this.props.defaultValues.hostname}
                                                             value={this.getMacValue(networkPort)}
                                                         />
                                                     </Tooltip>

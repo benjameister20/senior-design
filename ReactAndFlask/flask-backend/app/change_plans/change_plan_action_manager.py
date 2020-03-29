@@ -96,9 +96,28 @@ class ChangePlanActionManager:
             ] = self.cp_action_table.get_actions_by_change_plan_id(cp_id)
             for cp_action in change_plan_actions:
                 if cp_action.action == Constants.CREATE_KEY:
+                    cp_action.diff = cp_action.new_record
                     continue
                 prev_record = self.get_prev_record(cp_action)
                 cp_action.old_record = prev_record
+
+                # Diff records
+                diff = {}
+                for key in cp_action.old_record.keys():
+                    if (
+                        key == "network_ports"
+                        or key == "height"
+                        or key == "abbreviation"
+                    ):
+                        continue
+
+                    if cp_action.old_record[key] != cp_action.new_record[key]:
+                        diff[key] = [
+                            cp_action.old_record[key],
+                            cp_action.new_record[key],
+                        ]
+
+                cp_action.diff = diff
 
             return change_plan_actions
         except Exception as e:

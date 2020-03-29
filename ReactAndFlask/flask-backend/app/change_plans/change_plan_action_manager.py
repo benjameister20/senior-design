@@ -241,28 +241,27 @@ class ChangePlanActionManager:
                 if connection_hostname == "" and connection_port == "":
                     continue
 
-                other_instance = self.instance_table.get_instance_by_hostname(
-                    connection_hostname
+                other_instance = None
+                cp_action_list: List[
+                    ChangePlanAction
+                ] = self.cp_action_table.get_actions_by_change_plan_id(
+                    cp_action.change_plan_id
                 )
+                for prev_action in cp_action_list:
+                    if prev_action.step >= cp_action.step:
+                        continue
+
+                    if (
+                        prev_action.new_record[Constants.HOSTNAME_KEY]
+                        == connection_hostname
+                    ):
+                        other_instance = self.instance_manager.make_instance(
+                            prev_action.new_record
+                        )
                 if other_instance is None:
-                    cp_action_list: List[
-                        ChangePlanAction
-                    ] = self.cp_action_table.get_actions_by_change_plan_id(
-                        cp_action.change_plan_id
+                    other_instance = self.instance_table.get_instance_by_hostname(
+                        connection_hostname
                     )
-                    for prev_action in cp_action_list:
-                        if prev_action.step >= cp_action.step:
-                            continue
-
-                        if (
-                            prev_action.new_record[Constants.HOSTNAME_KEY]
-                            == connection_hostname
-                        ):
-                            other_instance = self.instance_manager.make_instance(
-                                prev_action.new_record
-                            )
-
-                    print("OTHER INSTANCE", other_instance)
                     if other_instance is None:
                         raise InvalidInputsError(
                             f"An error occurred when attempting to update the proposed network connection. Could not find asset with hostname {connection_hostname}."

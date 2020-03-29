@@ -201,10 +201,17 @@ class InstanceValidator:
     def validate_connections(self, network_connections, hostname):
         print("validating connections")
         result = ""
+        new_connections = {}
         for my_port in network_connections:
             mac_adress = network_connections[my_port][Constants.MAC_ADDRESS_KEY]
             connection_hostname = network_connections[my_port]["connection_hostname"]
             connection_port = network_connections[my_port]["connection_port"]
+
+            if connection_hostname in new_connections.keys():
+                if new_connections[connection_hostname] == connection_port:
+                    result += "Cannot make two network connections to the same port."
+            else:
+                new_connections[connection_hostname] = connection_port
 
             mac_pattern = re.compile(
                 "[a-f0-9]{2}:[a-f0-9]{2}:[a-f0-9]{2}:[a-f0-9]{2}:[a-f0-9]{2}:[a-f0-9]{2}"

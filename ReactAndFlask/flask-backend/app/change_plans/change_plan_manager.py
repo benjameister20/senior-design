@@ -1,6 +1,8 @@
 import datetime
 from typing import Any, Dict, List
 
+from app.change_plans.change_plan_action_manager import ChangePlanActionManager
+from app.change_plans.change_plan_validator import ChangePlanValidator
 from app.constants import Constants
 from app.dal.change_plan_action_table import ChangePlanActionTable
 from app.dal.change_plan_table import ChangePlanTable
@@ -17,6 +19,7 @@ class ChangePlanManager:
         self.cp_action_table = ChangePlanActionTable()
         self.instance_manager = InstanceManager()
         self.decommission_manager = DecommissionManager()
+        self.validator = ChangePlanValidator()
 
     def create_change_plan(self, cp_data):
         try:
@@ -103,6 +106,15 @@ class ChangePlanManager:
             change_plan_actions: List[
                 ChangePlanAction
             ] = self.cp_action_table.get_actions_by_change_plan_id(identifier)
+
+            # Validate Change Plan
+            val_actions = ChangePlanActionManager().get_change_plan_actions(identifier)
+            for cp_action in val_actions:
+                val_result = self.validator.validate_action(cp_action, val_actions)
+                if val_result != Constants.API_SUCCESS:
+                    conflict = f"Change plan cannot be executed due to conflict in step {cp_action.step}. "
+                    conflict += val_result
+                    raise InvalidInputsError(conflict)
 
             # Execute actions in change plan
             for cp_action in change_plan_actions:

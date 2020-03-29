@@ -3,7 +3,7 @@ from typing import List
 from app.constants import Constants
 from app.data_models.permission import Permission
 from app.datacenters.datacenter_manager import DatacenterManager
-from app.decorators.auth import requires_auth, requires_permission
+from app.decorators.auth import PermissionActions, requires_auth, requires_permission
 from app.decorators.logs import log
 from app.exceptions.InvalidInputsException import InvalidInputsError
 from app.logging.logger import Logger
@@ -49,6 +49,7 @@ def list_all():
     Permission(
         model=False, asset=False, datacenters=[], power=False, audit=False, admin=True
     ),
+    PermissionActions.NO_DATACENTER,
 )
 @log(request, LOGGER.DATACENTERS, LOGGER.ACTIONS.DATACENTERS.CREATE)
 def create():
@@ -74,6 +75,7 @@ def create():
     Permission(
         model=False, asset=False, datacenters=[], power=False, audit=False, admin=True
     ),
+    PermissionActions.NO_DATACENTER,
 )
 @log(request, LOGGER.DATACENTERS, LOGGER.ACTIONS.DATACENTERS.EDIT)
 def edit():
@@ -98,6 +100,7 @@ def edit():
     Permission(
         model=False, asset=False, datacenters=[], power=False, audit=False, admin=True
     ),
+    PermissionActions.NO_DATACENTER,
 )
 @log(request, LOGGER.DATACENTERS, LOGGER.ACTIONS.DATACENTERS.DELETE)
 def delete():

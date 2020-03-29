@@ -516,7 +516,7 @@ class CreateAsset extends React.Component {
 
     closeModal = () => {
         this.props.fetchAllAssets();
-        //window.location.reload();
+        this.props.close();
     }
 
     statusClose = () => {

@@ -83,6 +83,7 @@ class DetailAsset extends React.Component {
                 {this.props.changePlanActive ?
 					<Alert severity="info">
 						<AlertTitle>Change Plan Mode</AlertTitle>
+                        <Typography>Current plan: { this.props.changePlanName }</Typography>
 						You are currently in change plan mode! Changes made are being logged in the plan and not actually made in the system.
 					</Alert> : null}
 

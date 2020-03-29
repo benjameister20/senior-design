@@ -46,6 +46,7 @@ export default class AssetsView extends React.Component {
                                 changePlanID={this.props.changePlanID}
                                 changePlanStep={this.props.changePlanStep}
                                 incrementChangePlanStep={this.props.incrementChangePlanStep}
+                                changePlanName={this.props.changePlanName}
                             />
                         </Grid>
                     </Grid>

@@ -358,7 +358,7 @@ class TableAsset extends React.Component {
 	}
 
 	exitChangePlan = () => {
-		this.props.updateChangePlan(false, null, null);
+		this.props.updateChangePlan(false, null, null, "");
 	}
 
 	switchToDec = (switchBool) => {
@@ -379,6 +379,7 @@ class TableAsset extends React.Component {
 						{this.props.changePlanActive ?
 							<Alert severity="info">
 								<AlertTitle>Change Plan Mode</AlertTitle>
+						<Typography>Current plan: { this.props.changePlanName }</Typography>
 						You are currently in change plan mode! Changes made are being logged in the plan and not actually made in the system.
 					</Alert> : null}
 					</Grid>
@@ -555,11 +556,12 @@ class TableAsset extends React.Component {
 						privilege={this.props.privilege}
 						username={this.props.username}
 						fetchAllAssets={this.fetchAllAssets}
+						changePlanName={this.props.changePlanName}
 					/> : null}
 				<SpeedDial
 					ariaLabel="SpeedDial openIcon example"
 					style={{
-						position: 'absolute',
+						position: 'fixed',
 						bottom: '30px',
 						right: '30px',
 					}}

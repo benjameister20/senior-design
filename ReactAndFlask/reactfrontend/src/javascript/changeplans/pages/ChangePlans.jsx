@@ -86,7 +86,19 @@ class ChangePlansView extends React.Component {
             deleteDialog: false,
 
             // Id of change plan to delete
-            deleteId: null
+            deleteId: null,
+
+            // Modal to inform user of change plan mode
+            changeDescriptionModal: false,
+
+            // Id of plan to edit
+            editId: null,
+
+            // Step of plan to edit
+            editStep: null,
+
+            // Name of plan to edit
+            editName: "",
         };
 
         // Axios network request headers
@@ -133,8 +145,9 @@ class ChangePlansView extends React.Component {
     }
 
     // Enter change plan mode for the given change plan unique id
-    startEditing = (identifier, currentStep) => {
-        this.props.updateChangePlan(true, identifier, currentStep);
+    startEditing = () => {
+        this.closeDescriptionModal();
+        this.props.updateChangePlan(true, this.state.editId, this.state.editStep, this.state.editName);
     }
 
     // Saves the plan name
@@ -216,6 +229,16 @@ class ChangePlansView extends React.Component {
                 this.fetchAllChangePlans();
             }
         );
+    }
+
+    // Open the description modal
+    openDescriptionModal = (identifier, currentStep, name) => {
+        this.setState({ editId: identifier, editStep: currentStep, editName: name, changeDescriptionModal: true });
+    }
+
+    // Close the description modal
+    closeDescriptionModal = () => {
+        this.setState({ changeDescriptionModal: false });
     }
 
     // Convert keys from backend to user friendly display names
@@ -317,7 +340,7 @@ class ChangePlansView extends React.Component {
                                         color="default"
                                         style={{width: "100%"}}
                                         startIcon={<EditIcon />}
-                                        onClick={() => { this.startEditing(plan.identifier, step) }}
+                                        onClick={() => { this.openDescriptionModal(plan.identifier, step, plan.name) }}
                                     >
                                         Edit
                                     </Button> : null }
@@ -561,6 +584,55 @@ class ChangePlansView extends React.Component {
                                 </Button>
                             </Grid>
 
+                        </Grid>
+                        </div>
+                </Backdrop>
+                </Fade>
+            </Modal>
+
+            <Modal
+                aria-labelledby="transition-modal-title"
+                aria-describedby="transition-modal-description"
+                className={classes.modal}
+                open={this.state.changeDescriptionModal}
+                onClose={this.closeDescriptionModal}
+                closeAfterTransition
+            >
+                <Fade in={this.state.changeDescriptionModal}>
+                    <Backdrop
+                        open={this.state.changeDescriptionModal}
+                    >
+                    <div className={classes.grid}>
+                        <Grid
+                            container
+                            spacing={1}
+                            direction="row"
+                            justify="flex-start"
+                            alignItems="center"
+                        >
+                            <Grid item xs={3}>
+                            </Grid>
+                            <Grid item xs={6}>
+                                <Typography>
+                                    You are now in change plan mode. All changes made will be logged to the change plan and will not actually be made in the system. Use the icon in the bottom right corner to exit change plan mode!
+                                </Typography>
+                            </Grid>
+                            <Grid item xs={3}>
+                            </Grid>
+                            <Grid item xs={3}>
+                            </Grid>
+                            <Grid item xs={6}>
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    onClick={this.startEditing}
+                                    style={{width: "100%"}}
+                                >
+                                    Ok
+                                </Button>
+                            </Grid>
+                            <Grid item xs={3}>
+                            </Grid>
                         </Grid>
                         </div>
                 </Backdrop>

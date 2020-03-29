@@ -171,7 +171,6 @@ class ExportAsset extends React.Component {
 				target="_blank"
 			/>
 
-
             <Modal
                 aria-labelledby="transition-modal-title"
                 aria-describedby="transition-modal-description"

@@ -298,10 +298,20 @@ class CreateAsset extends React.Component {
     createAsset = (event) => {
         event.preventDefault();
         var json = this.createJSON();
+        var changePlanJSON = {
+            "change_plan_id": this.props.changePlanID,
+            "step": 1,
+            "action": "create",
+            "asset_numberOriginal": this.state.asset_number,
+            "new_record": json
+        };
+        var url = this.props.changePlanActive ? getURL(AssetConstants.CHANGE_PLAN_PATH, AssetCommand.CHANGE_PLAN_CREATE_ACTION) : getURL(AssetConstants.ASSETS_MAIN_PATH, AssetCommand.create);
+
         if (this.validJSON(json)) {
             axios.post(
-                getURL(AssetConstants.ASSETS_MAIN_PATH, AssetCommand.create),
-                json).then(
+                url,
+                this.props.changePlanActive ? changePlanJSON : json
+            ).then(
                     response => {
                     console.log(response);
                     if (response.data.message === AssetConstants.SUCCESS_TOKEN) {
@@ -833,17 +843,20 @@ class CreateAsset extends React.Component {
                             />
                     </Grid>
                     <Grid item xs={6} />
-                    <Grid item xs={1}>
+                    <Grid item xs={3}>
                         <Button
                             variant="contained"
-                            color="primary"
                             type="submit"
                             disabled={!this.state.canSubmit}
+                            color={this.props.changePlanActive ? "" : "primary"}
+                            style={{
+                                backgroundColor: this.props.changePlanActive ? "#64b5f6" : ""
+                            }}
                         >
-                            Create
+                            { this.props.changePlanActive ? "Create in Change Plan" : "Create" }
                         </Button>
                     </Grid>
-                    <Grid item xs={9}>
+                    <Grid item xs={3}>
                         <Button
                             variant="contained"
                             color="primary"

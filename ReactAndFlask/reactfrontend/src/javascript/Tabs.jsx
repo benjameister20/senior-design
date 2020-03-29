@@ -206,6 +206,7 @@ class TabViewer extends React.Component {
                         token={this.props.token}
                         privilege={this.props.privilege}
                         username={this.props.username}
+                        updateChangePlan={this.updateChangePlan}
                     />
                 </Container>
             </Typography>}

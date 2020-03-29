@@ -701,7 +701,6 @@ class EditAsset extends React.Component {
                                     onBlur={this.updateOwner}
                                     variant="outlined"
                                     fullWidth
-                                    required
                                     disabled={this.props.disabled}
                                 />
                                 )}
@@ -845,7 +844,6 @@ class EditAsset extends React.Component {
                                         onChange={(event, value) => {this.changeNetworkHostname(value, networkPort)}}
                                         required={this.getNetworkConnections()[networkPort].connection_port!==""}
                                         value={this.getConnectingHostname(networkPort)}
-                                        disabled={this.connectionsDisabled()}
                                         renderInput={params => (
                                             <TextField
                                                 {...params}

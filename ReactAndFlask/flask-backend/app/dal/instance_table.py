@@ -116,7 +116,7 @@ class InstanceTable:
         if instance_entry is None:
             return None
 
-        return instance_entry
+        return instance_entry.make_instance()
 
     def add_instance(self, instance: Instance) -> None:
         """ Adds an instance to the database """

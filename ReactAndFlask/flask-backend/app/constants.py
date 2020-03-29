@@ -104,6 +104,7 @@ class Constants:
     OLD_RECORD_KEY = "old_record"
     NEW_RECORD_KEY = "new_record"
     DIFF_KEY = "diff"
+    IS_CHANGE_PLAN_KEY = "is_change_plan"
 
     ACTION_KEY = "action"
     CREATE_KEY = "create"

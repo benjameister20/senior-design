@@ -30,7 +30,7 @@ export default class Filters extends React.Component {
             display_name: "",
             password: "",
             email: "",
-            selectedPrivileges:{
+            privilege:{
                 "model":false,
                 "asset":false,
                 "datacenters":[],
@@ -43,7 +43,7 @@ export default class Filters extends React.Component {
 
     resetCreate = (success) => {
         if (success) {
-            this.setState({username: "", display_name: "", password: "", email: "", selectedPrivileges:{
+            this.setState({username: "", display_name: "", password: "", email: "", privilege:{
                 "model":false,
                 "asset":false,
                 "datacenters":[],
@@ -58,23 +58,23 @@ export default class Filters extends React.Component {
         this.props.search( { "filter":this.state } );
     }
 
-    updateSelectedPrivileges = (event, values) => {
+    updateprivilege = (event, values) => {
         var privs = {
             "model":false,
             "asset":false,
-            "datacenters":this.state.selectedPrivileges["datacenters"],
+            "datacenters":this.state.privilege["datacenters"],
             "power":false,
             "audit":false,
             "admin":false,
         };
         values.map(priv => { privs[priv.value] = true; });
-        this.setState({ selectedPrivileges: privs });
+        this.setState({ privilege: privs });
     }
 
     updateDCPrivilege = (event, values) => {
-        var privs = this.state.selectedPrivileges;
+        var privs = this.state.privilege;
         privs["datacenters"] = values;
-        this.setState({ selectedPrivileges: privs });
+        this.setState({ privilege: privs });
     }
 
     render() {
@@ -104,7 +104,7 @@ export default class Filters extends React.Component {
                     <PrivilegePicker
                         dcPrivileges={this.props.privileges}
                         loading={this.props.loading}
-                        updatePrivilege={this.updateSelectedPrivileges}
+                        updatePrivilege={this.updateprivilege}
                         updateDCPrivilege={this.updateDCPrivilege}
                     />
                 </Grid>

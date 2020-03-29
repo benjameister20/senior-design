@@ -600,6 +600,7 @@ class EditAsset extends React.Component {
             response => {
                 if (response.data.message === "success") {
                     this.props.close();
+                    window.location.reload();
                 } else {
                     this.setState({ statusOpen: true, statusMessage: response.data.message, statusSeverity: AssetConstants.ERROR_TOKEN });
                 }
@@ -624,8 +625,7 @@ class EditAsset extends React.Component {
                     (this.state.loadingDatacenters
                         || this.state.loadingModels
                         || this.state.loadingHostnames
-                        || this.state.loadingOwners
-                        || this.props.disabled)
+                        || this.state.loadingOwners)
                     //&& false
                 ) ? <div className={classes.progress}><CircularProgress /></div> :
                     <form
@@ -809,7 +809,6 @@ class EditAsset extends React.Component {
                                                             name={this.state.inputs.macAddress.name}
                                                             onChange={(event) => { this.changeNetworkMacAddress(event, networkPort) }}
                                                             fullWidth
-                                                            disabled={this.state.hostname === "" || this.props.defaultValues.hostname}
                                                             value={this.getMacValue(networkPort)}
                                                         />
                                                     </Tooltip>
@@ -968,7 +967,7 @@ class EditAsset extends React.Component {
                                         </Button>
                                     </Grid>}
                                 {this.props.disabled ? null :
-                                    <Grid item xs={9}>
+                                    <Grid item xs={3}>
                                         <Button
                                             variant="contained"
                                             color="secondary"
@@ -977,9 +976,8 @@ class EditAsset extends React.Component {
                                             {this.props.changePlanActive ? "Delete in Change Plan" : "Delete"}
                                         </Button>
                                     </Grid>}
-                                <Grid item xs={6} />
                                 {this.props.disabled ? null :
-                                    <Grid item xs={8}>
+                                    <Grid item xs={6}>
                                         <Button
                                             variant="contained"
                                             onClick={() => this.decommissionAsset()}

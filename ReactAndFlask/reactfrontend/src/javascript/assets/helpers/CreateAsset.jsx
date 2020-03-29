@@ -691,7 +691,6 @@ class CreateAsset extends React.Component {
                                         name={this.state.inputs.macAddress.name}
                                         onChange={(event) => {this.changeNetworkMacAddress(event, networkPort)}}
                                         fullWidth
-                                        disabled={this.state.hostname===""}
                                         value={ (this.state.network_connections !== null && this.state.network_connections[networkPort]!==undefined) ? this.state.network_connections[networkPort].mac_address : "" }
                                     />
                                 </Tooltip>

@@ -426,9 +426,14 @@ class TableAsset extends React.Component {
 
 						{this.state.selectedItems.length > 0 ? (
 							<Tooltip title="Generate Labels">
-								<IconButton aria-label="generate-labels" onClick={() => this.generateLabels()}>
-									<NoteAddIcon />
-								</IconButton>
+								<Button
+									variant="contained"
+									color="primary"
+									startIcon={<NoteAddIcon />}
+									onClick={() => this.generateLabels()}
+								>
+									Generate Labels
+      							</Button>
 							</Tooltip>
 						) : null}
 					</Toolbar>

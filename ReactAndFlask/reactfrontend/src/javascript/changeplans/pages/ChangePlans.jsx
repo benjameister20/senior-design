@@ -10,7 +10,7 @@ import { AssetCommand } from '../../assets/enums/AssetCommands.ts';
 
 // Material UI Core
 import { Grid, Paper, Typography, Button, withStyles} from '@material-ui/core';
-import { Modal, Fade, Backdrop, TextField } from '@material-ui/core';
+import { Modal, Fade, Backdrop, TextField, Chip } from '@material-ui/core';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from '@material-ui/core';
 import { ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails } from '@material-ui/core';
 
@@ -216,6 +216,7 @@ class ChangePlansView extends React.Component {
         );
     }
 
+    // Convert keys from backend to user friendly display names
     lookup = (key) => {
         return {
             "asset_numberOriginal": "Asset Number",
@@ -261,18 +262,22 @@ class ChangePlansView extends React.Component {
                     <Grid item xs={5}></Grid>
                     <Grid item xs={2}>
                         <Typography>
-                            Saved changed plans
+                            { this.state.changePlans.length > 0 ? "Saved change plans" : "You have no change plans! Create one in the Asset tab."}
                         </Typography>
                     </Grid>
                     <Grid item xs={5}></Grid>
                     <Grid item xs={2}></Grid>
                     <Grid item xs={8}>
                         { this.state.changePlans.map(plan => {
+                            console.log(plan);
                             return (<ExpansionPanel key={plan.identifier}>
                                 <ExpansionPanelSummary
                                     expandIcon={<ExpandMoreIcon />}
                                 >
                                     <Typography>{plan.name}</Typography>
+                                    { plan.executed ? <Chip size="small" label={"Executed at " + plan.timestamp} style={{
+                                        marginLeft: "15px"
+                                    }} /> : null }
                                 </ExpansionPanelSummary>
                                 <ExpansionPanelDetails>
                                 <Grid
@@ -285,6 +290,7 @@ class ChangePlansView extends React.Component {
                                 >
                                     <Grid item xs={3}></Grid>
                                     <Grid item xs={3}>
+                                        { !plan.executed ?
                                     <Button
                                         variant="contained"
                                         color="primary"
@@ -293,10 +299,10 @@ class ChangePlansView extends React.Component {
                                         onClick={() => { this.openRenameDialog(plan.identifier) }}
                                     >
                                         Rename
-                                    </Button>
+                                    </Button> : null }
                                     </Grid>
                                     <Grid item xs={3}>
-                                    <Button
+                                    { !plan.executed ? <Button
                                         variant="contained"
                                         color="default"
                                         style={{width: "100%"}}
@@ -304,7 +310,7 @@ class ChangePlansView extends React.Component {
                                         onClick={() => { this.startEditing(plan.identifier) }}
                                     >
                                         Edit
-                                    </Button>
+                                    </Button> : null }
                                     </Grid>
                                     <Grid item xs={3}></Grid>
                                 <Grid item xs={12}>
@@ -312,9 +318,8 @@ class ChangePlansView extends React.Component {
                                     this.state.changePlanDetails[plan.identifier].map(detail => {
                                         var diff = detail.diff;
                                         var isCreate = detail.action === "create";
-                                        console.log(detail.new_record);
-                                        return (<TableContainer component={Paper}>
-                                                    <Typography>
+                                        return (<div><TableContainer component={Paper}>
+                                                    <Typography style={{margin: "10px"}}>
                                                     { detail.action.charAt(0).toUpperCase() + detail.action.slice(1) } Asset Number: {
                                                         detail.new_record.asset_numberOriginal === undefined ?
                                                         detail.new_record.asset_number : detail.new_record.asset_numberOriginal
@@ -323,7 +328,7 @@ class ChangePlansView extends React.Component {
                                                         <TableHead>
                                                             <TableRow >
                                                                 <TableCell>Field</TableCell>
-                                                                { isCreate ? <TableCell>Value</TableCell> : <TableCell>Old</TableCell>}
+                                                                { isCreate ? <TableCell>Value</TableCell> : <TableCell>Current</TableCell>}
                                                                 { isCreate ? null : <TableCell>New</TableCell> }
                                                             </TableRow>
                                                         </TableHead>
@@ -353,12 +358,12 @@ class ChangePlansView extends React.Component {
                                                         )}
                                                         </TableBody>
                                                     </Table>
-                                                </TableContainer>);
+                                                </TableContainer><br /></div>);
                                     })
                                     : "This change plan has made no changes!" }
                                 </Grid>
                                 <Grid item xs={3}>
-                                    <Button
+                                    { !plan.executed ? <Button
                                         variant="contained"
                                         color="primary"
                                         style={{width: "100%"}}
@@ -366,10 +371,10 @@ class ChangePlansView extends React.Component {
                                         onClick={() => { this.openExecuteDialog(plan.identifier) }}
                                     >
                                         Execute
-                                    </Button>
+                                    </Button> : null }
                                     </Grid>
                                     <Grid item xs={3}>
-                                    <Button
+                                    { !plan.executed ? <Button
                                         variant="contained"
                                         color="secondary"
                                         style={{width: "100%"}}
@@ -377,7 +382,7 @@ class ChangePlansView extends React.Component {
                                         onClick={() => { this.openDeleteDialog(plan.identifier) }}
                                     >
                                         Delete
-                                    </Button>
+                                    </Button> : null }
                                 </Grid>
                                 </Grid>
 

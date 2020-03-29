@@ -225,12 +225,12 @@ class CreateAsset extends React.Component {
                     "display_name": "",
                     "email": "",
                     "privilege": {
-                        "model": true,
-                        "asset": true,
-                        "datacenters": ["*"],
-                        "power": true,
-                        "audit": true,
-                        "admin": true
+                        "model": false,
+                        "asset": false,
+                        "datacenters": [],
+                        "power": false,
+                        "audit": false,
+                        "admin": false,
                     }
                 }
             }).then(

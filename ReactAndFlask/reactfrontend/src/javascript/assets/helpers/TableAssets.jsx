@@ -150,6 +150,8 @@ class TableAsset extends React.Component {
 			// Change plan
 			speedDialOpen: false,
 			displayDec: false,
+
+			rowOwner:"",
 		};
 	}
 
@@ -242,7 +244,7 @@ class TableAsset extends React.Component {
 				Object.assign(dAsset, currAsset);
 			}
 		})
-		this.setState({ detailAsset: dAsset, showDetailedView: true });
+		this.setState({ detailAsset: dAsset, showDetailedView: true, rowOwner:asset.owner });
 	}
 
 	updateItems = (assets) => {
@@ -546,7 +548,7 @@ class TableAsset extends React.Component {
 						privilege={this.props.privilege}
 						changePlanActive={this.props.changePlanActive}
 						changePlanID={this.props.changePlanID}
-						disabled={this.props.privilege === Privilege.USER || this.state.displayDec /* && username !== row.owner*/}
+						disabled={ (!(this.props.privilege.admin || this.props.privilege.asset || this.props.privilege.datacenters.includes(this.state.detailAsset.datacenter_name)) || this.state.displayDec) && (this.props.username !== this.state.rowOwner) }
 						privilege={this.props.privilege}
 						username={this.props.username}
 					/> : null}

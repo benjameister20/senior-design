@@ -156,12 +156,6 @@ class ChangePlanActionTable:
             ChangePlanActionEntry.step.desc()
         ).first()
 
-        # change_plan_action_entry: ChangePlanActionEntry = ChangePlanActionEntry.query.filter_by(
-        #     change_plan_id=change_plan_id, original_asset_number=original_asset_number
-        # ).order_by(
-        #     ChangePlanActionEntry.step.desc()
-        # ).first()
-
         if change_plan_action_entry is None:
             return None
 

@@ -20,8 +20,13 @@ class ChangePlanActionManager:
     def create_change_plan_action(self, cp_action_data):
         try:
             change_plan_action: ChangePlanAction = self.make_cp_action(cp_action_data)
+            all_cp_actions = self.get_change_plan_actions(
+                change_plan_action.change_plan_id
+            )
             print("VALIDATIG CP ACTION")
-            validaiton_result = self.validator.validate_action(change_plan_action)
+            validaiton_result = self.validator.validate_action(
+                change_plan_action, all_cp_actions
+            )
             print("VALIDATED", validaiton_result)
             if validaiton_result != Constants.API_SUCCESS:
                 raise InvalidInputsError(validaiton_result)
@@ -66,7 +71,12 @@ class ChangePlanActionManager:
             original_step = cp_action_data.get(Constants.ORIGINAL_STEP_KEY)
             change_plan_action = self.make_cp_action(cp_action_data)
 
-            validaiton_result = self.validator.validate_action(change_plan_action)
+            all_cp_actions = self.get_change_plan_actions(
+                change_plan_action.change_plan_id
+            )
+            validaiton_result = self.validator.validate_action(
+                change_plan_action, all_cp_actions
+            )
             if validaiton_result != Constants.API_SUCCESS:
                 raise InvalidInputsError(validaiton_result)
 

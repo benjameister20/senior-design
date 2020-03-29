@@ -13,6 +13,7 @@ from app.dal.model_table import ModelTable
 from app.dal.rack_table import RackTable
 from app.dal.user_table import UserTable
 from app.data_models.change_plan_action import ChangePlanAction
+from app.instances.instance_manager import InstanceManager
 
 
 class ChangePlanValidator:
@@ -24,6 +25,7 @@ class ChangePlanValidator:
         self.dc_table = DatacenterTable()
         self.cp_table = ChangePlanTable()
         self.cp_action_table = ChangePlanActionTable()
+        self.instance_manager = InstanceManager()
         self.rack_height = 42
 
     def validate_action(self, cp_action):
@@ -51,8 +53,7 @@ class ChangePlanValidator:
         return Constants.API_SUCCESS
 
     def _create_action_validate(self, cp_action):
-        instance = cp_action.new_record
-
+        instance = self.instance_manager.make_instance(cp_action.new_record)
         input_validation_result = self._validate_inputs(instance)
         if input_validation_result != Constants.API_SUCCESS:
             return input_validation_result
@@ -148,7 +149,7 @@ class ChangePlanValidator:
         return Constants.API_SUCCESS
 
     def _edit_action_validate(self, cp_action):
-        instance = cp_action.new_record
+        instance = self.instance_manager.make_instance(cp_action.new_record)
 
         input_validation_result = self._validate_inputs(instance)
         if input_validation_result != Constants.API_SUCCESS:

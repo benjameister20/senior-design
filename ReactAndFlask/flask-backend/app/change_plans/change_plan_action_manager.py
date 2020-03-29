@@ -20,8 +20,9 @@ class ChangePlanActionManager:
     def create_change_plan_action(self, cp_action_data):
         try:
             change_plan_action: ChangePlanAction = self.make_cp_action(cp_action_data)
-
+            print("VALIDATIG CP ACTION")
             validaiton_result = self.validator.validate_action(change_plan_action)
+            print("VALIDATED", validaiton_result)
             if validaiton_result != Constants.API_SUCCESS:
                 raise InvalidInputsError(validaiton_result)
 
@@ -216,12 +217,11 @@ class ChangePlanActionManager:
 
     def _add_decommission_collateral(self, cp_action: ChangePlanAction):
         try:
-            asset = self.instance_table.get_instance_by_asset_number(
-                cp_action.original_asset_number
-            )
-            if asset is None:
-                raise InvalidInputsError("Failed to find the asset to decommission")
+            asset_data = self.get_prev_record(cp_action)
+            if asset_data is None:
+                raise InvalidInputsError("Could not find asset to decommission.")
 
+            asset = self.instance_manager.make_instance(asset_data)
             for port in asset.network_connections:
                 connection_hostname = asset.network_connections[port][
                     "connection_hostname"
@@ -252,6 +252,7 @@ class ChangePlanActionManager:
                                 prev_action.new_record
                             )
 
+                    print("OTHER INSTANCE", other_instance)
                     if other_instance is None:
                         raise InvalidInputsError(
                             f"An error occurred when attempting to update the proposed network connection. Could not find asset with hostname {connection_hostname}."

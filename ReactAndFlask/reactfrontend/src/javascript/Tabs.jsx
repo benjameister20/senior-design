@@ -19,31 +19,31 @@ import DatacenterManagerView from './racks/pages/DatacenterManagerView';
 import StatisticsView from './statistics/pages/StatisticsView';
 import LogsView from "./logs/pages/LogsView";
 
-import { Privilege } from './enums/privilegeTypes.ts'
-
 import ErrorBoundry from './errors/ErrorBoundry';
 
 import '../stylesheets/TabStyles.css';
 
 const useStyles = theme => ({
     root: {
-      flexGrow: 1,
+        flexGrow: 1,
     },
     menuButton: {
-      marginRight: theme.spacing(2),
+        marginRight: theme.spacing(2),
     },
     title: {
-      flexGrow: 1,
+        flexGrow: 1,
     },
-    tab:{
-        flexGrow:'flex',
+    tab: {
+        flexGrow: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         maxWidth: "100%",
-        width:"100%",
-        margin:"0 auto",
+        width: "100%",
+        margin: "0 auto",
     }
-  });
+});
+
+const currentTab = "currentTab";
 
 class TabViewer extends React.Component {
     constructor(props) {
@@ -52,130 +52,146 @@ class TabViewer extends React.Component {
         this.state = {
             currentTabID:0,
             anchorEl: null,
-            isMenuOpen:false,
+            isMenuOpen: false,
         };
         this.handleChange = this.handleChange.bind(this);
+
+        console.log(sessionStorage.getItem(currentTab));
+    }
+
+    componentDidMount() {
+        console.log(sessionStorage.getItem(currentTab));
+        if (sessionStorage.getItem(currentTab) !== null) {
+            var tab =   parseInt(sessionStorage.getItem(currentTab));
+            this.setState({ currentTabID:tab });
+        }
+
+    }
+
+    componentWillUnmount() {
+        sessionStorage.removeItem(currentTab);
     }
 
     handleChange(event, newValue) {
-        this.setState({ currentTabID: newValue })
+        this.setState({ currentTabID: newValue });
+        sessionStorage.setItem(currentTab, newValue);
     }
 
     handleProfileMenuOpen = (event) => {
-        this.setState({ anchorEl: event.currentTarget, isMenuOpen:true });
+        this.setState({ anchorEl: event.currentTarget, isMenuOpen: true });
     }
 
     handleMenuClose = () => {
-        this.setState({ anchorEl: null, isMenuOpen:false });
+        this.setState({ anchorEl: null, isMenuOpen: false });
     };
 
     render() {
         const { classes } = this.props;
 
         return (
-        <div className={classes.root}>
-            <ErrorBoundry>
-            <AppBar position="static">
-                <Toolbar>
-                    <Typography variant="h6" className={classes.title}>
-                        Hyposoft Server Management
+            <div className={classes.root}>
+                <ErrorBoundry>
+                    <AppBar position="static">
+                        <Toolbar>
+                            <Typography variant="h6" className={classes.title}>
+                                Hyposoft Server Management
                     </Typography>
-                    <div>
-                        <IconButton
-                            aria-label="account of current user"
-                            aria-controls="menu-appbar"
-                            aria-haspopup="true"
-                            color="inherit"
-                            onClick={this.handleProfileMenuOpen}
-                        >
-                            <AccountCircle />
-                        </IconButton>
-                        <Menu
-                            anchorEl={this.state.anchorEl}
-                            anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-                            id='primary-search-account-menu'
-                            keepMounted
-                            transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-                            open={this.state.isMenuOpen}
-                            onClose={this.handleMenuClose}
-                        >
-                            <MenuItem>{"Username: " + this.props.username}</MenuItem>
-                            <MenuItem onClick={this.props.logout} >LOGOUT</MenuItem>
-                        </Menu>
-                    </div>
-                </Toolbar>
-            </AppBar>
+                            <div>
+                                <IconButton
+                                    aria-label="account of current user"
+                                    aria-controls="menu-appbar"
+                                    aria-haspopup="true"
+                                    color="inherit"
+                                    onClick={this.handleProfileMenuOpen}
+                                >
+                                    <AccountCircle />
+                                </IconButton>
+                                <Menu
+                                    anchorEl={this.state.anchorEl}
+                                    anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+                                    id='primary-search-account-menu'
+                                    keepMounted
+                                    transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+                                    open={this.state.isMenuOpen}
+                                    onClose={this.handleMenuClose}
+                                >
+                                    <MenuItem>{"Username: " + this.props.username}</MenuItem>
+                                    <MenuItem onClick={this.props.logout} >LOGOUT</MenuItem>
+                                </Menu>
+                            </div>
+                        </Toolbar>
+                    </AppBar>
 
-            <Tabs value={this.state.currentTabID} onChange={this.handleChange}
-                indicatorColor="primary"
-                textColor="primary"
-                centered
-            >
-                    <Tab value={0} style={{flexGrow: 1,}} label="Models"> </Tab>
-                    <Tab value={1} style={{flexGrow: 1,}} label="Assets" ></Tab>
-                    {(this.props.privilege.admin) ? <Tab value={2} style={{flexGrow: 1,}} label="Users"></Tab> : null}
-                    <Tab value={3} style={{flexGrow: 1,}} label="Datacenters" />
-                    <Tab value={4} style={{flexGrow: 1,}} label="Statistics" />
-                    {(this.props.privilege.admin || this.props.privilege.audit) ? <Tab value={5} style={{flexGrow: 1,}} label="Logs" />:null}
-            </Tabs>
-            {this.state.currentTabID !== 0 ? null :
-            <Typography
-                component="div"
-                role="tabpanel"
-                id={`simple-tabpanel-0`}
-                aria-labelledby={`simple-tab-0`}
-            >
-                <Container className={classes.tab} ><ModelsView token={this.props.token} privilege={this.props.privilege} /></Container>
-            </Typography>}
-            {this.state.currentTabID !== 1 ? null :
-            <Typography
-                component="div"
-                role="tabpanel"
-                id={`simple-tabpanel-0`}
-                aria-labelledby={`simple-tab-0`}
-            >
-                <Container className={classes.tab} ><AssetsView token={this.props.token} privilege={this.props.privilege} username={this.props.username} /></Container>
-            </Typography>}
-            {this.state.currentTabID !== 2 ? null :
-            <Typography
-                component="div"
-                role="tabpanel"
-                id={`simple-tabpanel-0`}
-                aria-labelledby={`simple-tab-0`}
-            >
-                <Container className={classes.tab} ><UsersView token={this.props.token} privilege={this.props.privilege} /></Container>
-            </Typography>}
-            {this.state.currentTabID !== 3 ? null :
-            <Typography
-                component="div"
-                role="tabpanel"
-                id={`simple-tabpanel-0`}
-                aria-labelledby={`simple-tab-0`}
-            >
-                <Container className={classes.tab} ><DatacenterManagerView token={this.props.token} privilege={this.props.privilege} /></Container>
-            </Typography>}
-            {this.state.currentTabID !== 4 ? null :
-            <Typography
-                component="div"
-                role="tabpanel"
-                hidden={this.state.currentTabID !== 4}
-                id={`simple-tabpanel-0`}
-                aria-labelledby={`simple-tab-0`}
-            >
-                <Container className={classes.tab} ><StatisticsView token={this.props.token} privilege={this.props.privilege} /></Container>
-            </Typography>}
-            {this.state.currentTabID !== 5 ? null :
-            <Typography
-                component="div"
-                role="tabpanel"
-                hidden={this.state.currentTabID !== 5}
-                id={`tab-panel-logs`}
-                aria-labelledby={`tab-panel-logs`}
-            >
-                <Container className={classes.tab} ><LogsView /></Container>
-            </Typography>}
-            </ErrorBoundry>
-        </div>);
+                    <Tabs value={this.state.currentTabID} onChange={this.handleChange}
+                        indicatorColor="primary"
+                        textColor="primary"
+                        centered
+                    >
+                        <Tab value={0} style={{ flexGrow: 1, }} label="Models"> </Tab>
+                        <Tab value={1} style={{ flexGrow: 1, }} label="Assets" ></Tab>
+                        {(this.props.privilege.admin) ? <Tab value={2} style={{ flexGrow: 1, }} label="Users"></Tab> : null}
+                        <Tab value={3} style={{ flexGrow: 1, }} label="Datacenters" />
+                        <Tab value={4} style={{ flexGrow: 1, }} label="Statistics" />
+                        {(this.props.privilege.admin || this.props.privilege.audit) ? <Tab value={5} style={{ flexGrow: 1, }} label="Logs" /> : null}
+                    </Tabs>
+                    {this.state.currentTabID !== 0 ? null :
+                        <Typography
+                            component="div"
+                            role="tabpanel"
+                            id={`simple-tabpanel-0`}
+                            aria-labelledby={`simple-tab-0`}
+                        >
+                            <Container className={classes.tab} ><ModelsView token={this.props.token} privilege={this.props.privilege} /></Container>
+                        </Typography>}
+                    {this.state.currentTabID !== 1 ? null :
+                        <Typography
+                            component="div"
+                            role="tabpanel"
+                            id={`simple-tabpanel-0`}
+                            aria-labelledby={`simple-tab-0`}
+                        >
+                            <Container className={classes.tab} ><AssetsView token={this.props.token} privilege={this.props.privilege} username={this.props.username} /></Container>
+                        </Typography>}
+                    {this.state.currentTabID !== 2 ? null :
+                        <Typography
+                            component="div"
+                            role="tabpanel"
+                            id={`simple-tabpanel-0`}
+                            aria-labelledby={`simple-tab-0`}
+                        >
+                            <Container className={classes.tab} ><UsersView token={this.props.token} privilege={this.props.privilege} /></Container>
+                        </Typography>}
+                    {this.state.currentTabID !== 3 ? null :
+                        <Typography
+                            component="div"
+                            role="tabpanel"
+                            id={`simple-tabpanel-0`}
+                            aria-labelledby={`simple-tab-0`}
+                        >
+                            <Container className={classes.tab} ><DatacenterManagerView token={this.props.token} privilege={this.props.privilege} /></Container>
+                        </Typography>}
+                    {this.state.currentTabID !== 4 ? null :
+                        <Typography
+                            component="div"
+                            role="tabpanel"
+                            hidden={this.state.currentTabID !== 4}
+                            id={`simple-tabpanel-0`}
+                            aria-labelledby={`simple-tab-0`}
+                        >
+                            <Container className={classes.tab} ><StatisticsView token={this.props.token} privilege={this.props.privilege} /></Container>
+                        </Typography>}
+                    {this.state.currentTabID !== 5 ? null :
+                        <Typography
+                            component="div"
+                            role="tabpanel"
+                            hidden={this.state.currentTabID !== 5}
+                            id={`tab-panel-logs`}
+                            aria-labelledby={`tab-panel-logs`}
+                        >
+                            <Container className={classes.tab} ><LogsView /></Container>
+                        </Typography>}
+                </ErrorBoundry>
+            </div>);
     }
 }
 

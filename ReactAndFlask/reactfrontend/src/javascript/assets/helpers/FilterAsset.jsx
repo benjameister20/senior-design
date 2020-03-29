@@ -242,7 +242,7 @@ class FilterAsset extends React.Component {
                                     />
                                 }
                                 labelPlacement="top"
-                                label={this.state.showDecommissioned ? "Decommissioned" : "Active Assets" }
+                                label={this.state.showDecommissioned ? "Decommissioned Assets" : "Active Assets" }
                             />
                         </Grid>
                         {this.state.showDecommissioned ? <Grid item xs={12} sm={6} md={4} lg={3}>

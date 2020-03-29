@@ -24,7 +24,7 @@ class DecommissionEntry(db.Model):
     asset_number = db.Column(db.Integer)
 
     decommission_user = db.Column(db.String(80))
-    timestamp = db.Column(db.Date)
+    timestamp = db.Column(db.String(120))
     network_neighborhood = db.Column(pg.JSON, nullable=True)
 
     def __init__(self, decommission: Decommission):
@@ -70,7 +70,7 @@ class DecommissionTable:
         decommission_entry: DecommissionEntry = DecommissionEntry(
             decommission=decommission
         )
-
+        print("decommission_entry.timestamp = ", decommission_entry.timestamp)
         try:
             db.session.add(decommission_entry)
             db.session.commit()

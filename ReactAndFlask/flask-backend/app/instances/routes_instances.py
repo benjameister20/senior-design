@@ -3,7 +3,7 @@ from typing import List
 
 from app.constants import Constants
 from app.data_models.permission import Permission
-from app.decorators.auth import requires_auth, requires_permission
+from app.decorators.auth import PermissionActions, requires_auth, requires_permission
 from app.decorators.logs import log
 from app.exceptions.InvalidInputsException import InvalidInputsError
 from app.instances.asset_num_generator import AssetNumGenerator
@@ -83,6 +83,7 @@ def search():
     Permission(
         model=False, asset=True, datacenters=[], power=False, audit=False, admin=False
     ),
+    PermissionActions.ASSET_CREATE,
 )
 @log(request, LOGGER.INSTANCES, LOGGER.ACTIONS.INSTANCES.CREATE)
 def create():
@@ -115,6 +116,7 @@ def create():
     Permission(
         model=False, asset=True, datacenters=[], power=False, audit=False, admin=False
     ),
+    PermissionActions.ASSET_DELETE,
 )
 @log(request, LOGGER.INSTANCES, LOGGER.ACTIONS.INSTANCES.DELETE)
 def delete():
@@ -138,6 +140,7 @@ def delete():
     Permission(
         model=False, asset=True, datacenters=[], power=False, audit=False, admin=False
     ),
+    PermissionActions.ASSET_EDIT,
 )
 @log(request, LOGGER.INSTANCES, LOGGER.ACTIONS.INSTANCES.EDIT)
 def edit():
@@ -203,12 +206,12 @@ def assisted_model_input():
 
 @instances.route("/instances/nextAssetNumber", methods=["GET"])
 @requires_auth(request)
-@requires_permission(
-    request,
-    Permission(
-        model=False, asset=True, datacenters=[], power=False, audit=False, admin=False
-    ),
-)
+# @requires_permission(
+#     request,
+#     Permission(
+#         model=False, asset=True, datacenters=[], power=False, audit=False, admin=False
+#     ),
+# )
 def get_next_asset_number():
     """ Route to get next valid asset number"""
     global INSTANCE_MANAGER

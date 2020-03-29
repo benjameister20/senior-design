@@ -2,7 +2,7 @@ from typing import List
 
 from app.data_models.permission import Permission
 from app.decommissions.decommission_manager import DecommissionManager
-from app.decorators.auth import requires_permission
+from app.decorators.auth import PermissionActions, requires_permission
 from app.decorators.logs import log
 from app.exceptions.InvalidInputsException import InvalidInputsError
 from app.logging.logger import Logger
@@ -29,6 +29,7 @@ def test():
     Permission(
         model=False, asset=True, datacenters=[], power=False, audit=False, admin=False
     ),
+    PermissionActions.ASSET_DECOMMISSION,
 )
 @log(request, Logger.DECOMMISSIONS, Logger.ACTIONS.DECOMMISSIONS.DECOMMISSION)
 def decommission_asset():

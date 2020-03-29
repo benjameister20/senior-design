@@ -20,31 +20,31 @@ import StatisticsView from './statistics/pages/StatisticsView';
 import LogsView from "./logs/pages/LogsView";
 import ChangePlansView from "./changeplans/pages/ChangePlans";
 
-import { Privilege } from './enums/privilegeTypes.ts'
-
 import ErrorBoundry from './errors/ErrorBoundry';
 
 import '../stylesheets/TabStyles.css';
 
 const useStyles = theme => ({
     root: {
-      flexGrow: 1,
+        flexGrow: 1,
     },
     menuButton: {
-      marginRight: theme.spacing(2),
+        marginRight: theme.spacing(2),
     },
     title: {
-      flexGrow: 1,
+        flexGrow: 1,
     },
-    tab:{
-        flexGrow:'flex',
+    tab: {
+        flexGrow: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         maxWidth: "100%",
-        width:"100%",
-        margin:"0 auto",
+        width: "100%",
+        margin: "0 auto",
     }
-  });
+});
+
+const currentTab = "currentTab";
 
 class TabViewer extends React.Component {
     constructor(props) {
@@ -60,14 +60,30 @@ class TabViewer extends React.Component {
             changePlanID: null,
         };
         this.handleChange = this.handleChange.bind(this);
+
+        console.log(sessionStorage.getItem(currentTab));
+    }
+
+    componentDidMount() {
+        console.log(sessionStorage.getItem(currentTab));
+        if (sessionStorage.getItem(currentTab) !== null) {
+            var tab =   parseInt(sessionStorage.getItem(currentTab));
+            this.setState({ currentTabID:tab });
+        }
+
+    }
+
+    componentWillUnmount() {
+        sessionStorage.removeItem(currentTab);
     }
 
     handleChange(event, newValue) {
-        this.setState({ currentTabID: newValue })
+        this.setState({ currentTabID: newValue });
+        sessionStorage.setItem(currentTab, newValue);
     }
 
     handleProfileMenuOpen = (event) => {
-        this.setState({ anchorEl: event.currentTarget, isMenuOpen:true });
+        this.setState({ anchorEl: event.currentTarget, isMenuOpen: true });
     }
 
     handleMenuClose = () => {
@@ -82,38 +98,38 @@ class TabViewer extends React.Component {
         const { classes } = this.props;
 
         return (
-        <div className={classes.root}>
-            <ErrorBoundry>
-            <AppBar position="static">
-                <Toolbar>
-                    <Typography variant="h6" className={classes.title}>
-                        Hyposoft Server Management
+            <div className={classes.root}>
+                <ErrorBoundry>
+                    <AppBar position="static">
+                        <Toolbar>
+                            <Typography variant="h6" className={classes.title}>
+                                Hyposoft Server Management
                     </Typography>
-                    <div>
-                        <IconButton
-                            aria-label="account of current user"
-                            aria-controls="menu-appbar"
-                            aria-haspopup="true"
-                            color="inherit"
-                            onClick={this.handleProfileMenuOpen}
-                        >
-                            <AccountCircle />
-                        </IconButton>
-                        <Menu
-                            anchorEl={this.state.anchorEl}
-                            anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-                            id='primary-search-account-menu'
-                            keepMounted
-                            transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-                            open={this.state.isMenuOpen}
-                            onClose={this.handleMenuClose}
-                        >
-                            <MenuItem>{"Username: " + this.props.username}</MenuItem>
-                            <MenuItem onClick={this.props.logout} >LOGOUT</MenuItem>
-                        </Menu>
-                    </div>
-                </Toolbar>
-            </AppBar>
+                            <div>
+                                <IconButton
+                                    aria-label="account of current user"
+                                    aria-controls="menu-appbar"
+                                    aria-haspopup="true"
+                                    color="inherit"
+                                    onClick={this.handleProfileMenuOpen}
+                                >
+                                    <AccountCircle />
+                                </IconButton>
+                                <Menu
+                                    anchorEl={this.state.anchorEl}
+                                    anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+                                    id='primary-search-account-menu'
+                                    keepMounted
+                                    transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+                                    open={this.state.isMenuOpen}
+                                    onClose={this.handleMenuClose}
+                                >
+                                    <MenuItem>{"Username: " + this.props.username}</MenuItem>
+                                    <MenuItem onClick={this.props.logout} >LOGOUT</MenuItem>
+                                </Menu>
+                            </div>
+                        </Toolbar>
+                    </AppBar>
 
             <Tabs value={this.state.currentTabID} onChange={this.handleChange}
                 indicatorColor="primary"

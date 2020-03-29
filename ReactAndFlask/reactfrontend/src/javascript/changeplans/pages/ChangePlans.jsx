@@ -10,7 +10,7 @@ import { AssetCommand } from '../../assets/enums/AssetCommands.ts';
 
 // Material UI Core
 import { Grid, Paper, Typography, Button, withStyles} from '@material-ui/core';
-import { Modal, Fade, Backdrop, TextField } from '@material-ui/core';
+import { Modal, Fade, Backdrop, TextField, Chip } from '@material-ui/core';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from '@material-ui/core';
 import { ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails } from '@material-ui/core';
 
@@ -20,6 +20,7 @@ import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import DeleteIcon from '@material-ui/icons/Delete';
 import ReplayIcon from '@material-ui/icons/Replay';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import DoneIcon from '@material-ui/icons/Done';
 
 // Path prefix for change plan routes
 const changePlanPath = "changeplans/";
@@ -85,7 +86,19 @@ class ChangePlansView extends React.Component {
             deleteDialog: false,
 
             // Id of change plan to delete
-            deleteId: null
+            deleteId: null,
+
+            // Modal to inform user of change plan mode
+            changeDescriptionModal: false,
+
+            // Id of plan to edit
+            editId: null,
+
+            // Step of plan to edit
+            editStep: null,
+
+            // Name of plan to edit
+            editName: "",
         };
 
         // Axios network request headers
@@ -116,6 +129,7 @@ class ChangePlansView extends React.Component {
                                 'owner': this.props.username,
                             }).then(response => {
                                 var details = this.state.changePlanDetails;
+                                console.log(response.data.change_plan_actions);
                                 details[plan.identifier] = response.data.change_plan_actions;
 
                                 this.setState({ changePlanDetails: details });
@@ -131,8 +145,9 @@ class ChangePlansView extends React.Component {
     }
 
     // Enter change plan mode for the given change plan unique id
-    startEditing = (identifier) => {
-        this.props.updateChangePlan(true, identifier);
+    startEditing = () => {
+        this.closeDescriptionModal();
+        this.props.updateChangePlan(true, this.state.editId, this.state.editStep, this.state.editName);
     }
 
     // Saves the plan name
@@ -216,6 +231,17 @@ class ChangePlansView extends React.Component {
         );
     }
 
+    // Open the description modal
+    openDescriptionModal = (identifier, currentStep, name) => {
+        this.setState({ editId: identifier, editStep: currentStep, editName: name, changeDescriptionModal: true });
+    }
+
+    // Close the description modal
+    closeDescriptionModal = () => {
+        this.setState({ changeDescriptionModal: false });
+    }
+
+    // Convert keys from backend to user friendly display names
     lookup = (key) => {
         return {
             "asset_numberOriginal": "Asset Number",
@@ -261,18 +287,30 @@ class ChangePlansView extends React.Component {
                     <Grid item xs={5}></Grid>
                     <Grid item xs={2}>
                         <Typography>
-                            Saved changed plans
+                            { this.state.changePlans.length > 0 ? "Saved change plans" : "You have no change plans! Create one in the Asset tab."}
                         </Typography>
                     </Grid>
                     <Grid item xs={5}></Grid>
                     <Grid item xs={2}></Grid>
                     <Grid item xs={8}>
                         { this.state.changePlans.map(plan => {
+                            const executed = plan.executed === "True";
+                            const details = this.state.changePlanDetails[plan.identifer];
+                            var step = 1;
+                            if (details !== undefined) {
+                                details.forEach(s => {
+                                    step = Math.max(step, s.step);
+                                });
+                            }
+
                             return (<ExpansionPanel key={plan.identifier}>
                                 <ExpansionPanelSummary
                                     expandIcon={<ExpandMoreIcon />}
                                 >
                                     <Typography>{plan.name}</Typography>
+                                    { executed ? <Chip size="small" icon={<DoneIcon />} color="primary" label={"Executed at " + plan.timestamp} style={{
+                                        marginLeft: "15px"
+                                    }} /> : null }
                                 </ExpansionPanelSummary>
                                 <ExpansionPanelDetails>
                                 <Grid
@@ -285,6 +323,7 @@ class ChangePlansView extends React.Component {
                                 >
                                     <Grid item xs={3}></Grid>
                                     <Grid item xs={3}>
+                                        { !executed ?
                                     <Button
                                         variant="contained"
                                         color="primary"
@@ -293,18 +332,18 @@ class ChangePlansView extends React.Component {
                                         onClick={() => { this.openRenameDialog(plan.identifier) }}
                                     >
                                         Rename
-                                    </Button>
+                                    </Button> : null }
                                     </Grid>
                                     <Grid item xs={3}>
-                                    <Button
+                                    { !executed ? <Button
                                         variant="contained"
                                         color="default"
                                         style={{width: "100%"}}
                                         startIcon={<EditIcon />}
-                                        onClick={() => { this.startEditing(plan.identifier) }}
+                                        onClick={() => { this.openDescriptionModal(plan.identifier, step, plan.name) }}
                                     >
                                         Edit
-                                    </Button>
+                                    </Button> : null }
                                     </Grid>
                                     <Grid item xs={3}></Grid>
                                 <Grid item xs={12}>
@@ -312,9 +351,8 @@ class ChangePlansView extends React.Component {
                                     this.state.changePlanDetails[plan.identifier].map(detail => {
                                         var diff = detail.diff;
                                         var isCreate = detail.action === "create";
-                                        console.log(detail.new_record);
-                                        return (<TableContainer component={Paper}>
-                                                    <Typography>
+                                        return (<div><TableContainer component={Paper}>
+                                                    <Typography style={{margin: "10px"}}>
                                                     { detail.action.charAt(0).toUpperCase() + detail.action.slice(1) } Asset Number: {
                                                         detail.new_record.asset_numberOriginal === undefined ?
                                                         detail.new_record.asset_number : detail.new_record.asset_numberOriginal
@@ -323,7 +361,7 @@ class ChangePlansView extends React.Component {
                                                         <TableHead>
                                                             <TableRow >
                                                                 <TableCell>Field</TableCell>
-                                                                { isCreate ? <TableCell>Value</TableCell> : <TableCell>Old</TableCell>}
+                                                                { isCreate ? <TableCell>Value</TableCell> : <TableCell>Current</TableCell>}
                                                                 { isCreate ? null : <TableCell>New</TableCell> }
                                                             </TableRow>
                                                         </TableHead>
@@ -353,12 +391,12 @@ class ChangePlansView extends React.Component {
                                                         )}
                                                         </TableBody>
                                                     </Table>
-                                                </TableContainer>);
+                                                </TableContainer><br /></div>);
                                     })
                                     : "This change plan has made no changes!" }
                                 </Grid>
                                 <Grid item xs={3}>
-                                    <Button
+                                    { !executed ? <Button
                                         variant="contained"
                                         color="primary"
                                         style={{width: "100%"}}
@@ -366,10 +404,10 @@ class ChangePlansView extends React.Component {
                                         onClick={() => { this.openExecuteDialog(plan.identifier) }}
                                     >
                                         Execute
-                                    </Button>
+                                    </Button> : null }
                                     </Grid>
                                     <Grid item xs={3}>
-                                    <Button
+                                    { !executed ? <Button
                                         variant="contained"
                                         color="secondary"
                                         style={{width: "100%"}}
@@ -377,7 +415,7 @@ class ChangePlansView extends React.Component {
                                         onClick={() => { this.openDeleteDialog(plan.identifier) }}
                                     >
                                         Delete
-                                    </Button>
+                                    </Button> : null }
                                 </Grid>
                                 </Grid>
 
@@ -546,6 +584,55 @@ class ChangePlansView extends React.Component {
                                 </Button>
                             </Grid>
 
+                        </Grid>
+                        </div>
+                </Backdrop>
+                </Fade>
+            </Modal>
+
+            <Modal
+                aria-labelledby="transition-modal-title"
+                aria-describedby="transition-modal-description"
+                className={classes.modal}
+                open={this.state.changeDescriptionModal}
+                onClose={this.closeDescriptionModal}
+                closeAfterTransition
+            >
+                <Fade in={this.state.changeDescriptionModal}>
+                    <Backdrop
+                        open={this.state.changeDescriptionModal}
+                    >
+                    <div className={classes.grid}>
+                        <Grid
+                            container
+                            spacing={1}
+                            direction="row"
+                            justify="flex-start"
+                            alignItems="center"
+                        >
+                            <Grid item xs={3}>
+                            </Grid>
+                            <Grid item xs={6}>
+                                <Typography>
+                                    You are now in change plan mode. All changes made will be logged to the change plan and will not actually be made in the system. Use the icon in the bottom right corner to exit change plan mode!
+                                </Typography>
+                            </Grid>
+                            <Grid item xs={3}>
+                            </Grid>
+                            <Grid item xs={3}>
+                            </Grid>
+                            <Grid item xs={6}>
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    onClick={this.startEditing}
+                                    style={{width: "100%"}}
+                                >
+                                    Ok
+                                </Button>
+                            </Grid>
+                            <Grid item xs={3}>
+                            </Grid>
                         </Grid>
                         </div>
                 </Backdrop>

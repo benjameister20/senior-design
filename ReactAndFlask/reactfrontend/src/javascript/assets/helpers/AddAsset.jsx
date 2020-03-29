@@ -130,6 +130,9 @@ class AddAsset extends React.Component {
 						privilege={this.props.privilege}
 						changePlanActive={this.props.changePlanActive}
 						changePlanID={this.props.changePlanID}
+						changePlanStep={this.props.changePlanStep}
+						incrementChangePlanStep={this.props.incrementChangePlanStep}
+						fetchAllAssets={this.props.fetchAllAssets}
 					/>
 				</Dialog>
 

@@ -72,8 +72,20 @@ class ChangePlansView extends React.Component {
             // Name to rename a change plan
             planName: "",
 
-            // Id of change plane to rename
+            // Id of change plan to rename
             planId: null,
+
+            // Dialog to execute a change plan
+            executeDialog: false,
+
+            // Id of change plan to execute
+            executeId: null,
+
+            // Dialog to delete a change plan
+            deleteDialog: false,
+
+            // Id of change plan to delete
+            deleteId: null
         };
 
         // Axios network request headers
@@ -152,6 +164,56 @@ class ChangePlansView extends React.Component {
     // Close the dialog to rename the change plan
     closeRenameDialog = () => {
         this.setState({ renameDialog: false });
+    }
+
+    // Open the dialog to execute the change plan for the given unique id
+    openExecuteDialog = (identifier) => {
+        this.setState({ executeDialog: true, executeId: identifier });
+    }
+
+    // Close the dialog to execute the change plan
+    closeExecuteDialog = () => {
+        this.setState({ executeDialog: false });
+    }
+
+    // Execute the change plan
+    executeChangePlan = () => {
+        this.closeExecuteDialog();
+
+        axios.post(
+            getURL(changePlanPath, AssetCommand.CHANGE_PLAN_EXECUTE), {
+                'change_plan_id': this.state.executeId,
+                'owner': this.props.username,
+            }).then(response => {
+                this.setState({ executeId: null });
+                this.fetchAllChangePlans();
+            }
+        );
+    }
+
+    // Open the dialog to delete the change plan for the given unique id
+    openDeleteDialog = (identifier) => {
+        this.setState({ deleteDialog: true, deleteId: identifier });
+    }
+
+    // Close the dialog to delete the change plan
+    closeDeleteDialog = () => {
+        this.setState({ deleteDialog: false });
+    }
+
+    // Delete the change plan
+    deleteChangePlan = () => {
+        this.closeDeleteDialog();
+
+        axios.post(
+            getURL(changePlanPath, AssetCommand.CHANGE_PLAN_DELETE), {
+                'change_plan_id': this.state.deleteId,
+                'owner': this.props.username,
+            }).then(response => {
+                this.setState({ deleteId: null });
+                this.fetchAllChangePlans();
+            }
+        );
     }
 
     lookup = (key) => {
@@ -267,7 +329,7 @@ class ChangePlansView extends React.Component {
                                                         </TableHead>
                                                         <TableBody>
                                                         {Object.keys(diff).map(key => {
-                                                            if (key === "tag") {
+                                                            if (key === "tags") {
                                                                 return null;
                                                             }
 
@@ -301,6 +363,7 @@ class ChangePlansView extends React.Component {
                                         color="primary"
                                         style={{width: "100%"}}
                                         startIcon={<PlayArrowIcon />}
+                                        onClick={() => { this.openExecuteDialog(plan.identifier) }}
                                     >
                                         Execute
                                     </Button>
@@ -311,6 +374,7 @@ class ChangePlansView extends React.Component {
                                         color="secondary"
                                         style={{width: "100%"}}
                                         startIcon={<DeleteIcon />}
+                                        onClick={() => { this.openDeleteDialog(plan.identifier) }}
                                     >
                                         Delete
                                     </Button>
@@ -327,13 +391,13 @@ class ChangePlansView extends React.Component {
 
 
                 <Modal
-                aria-labelledby="transition-modal-title"
-                aria-describedby="transition-modal-description"
-                className={classes.modal}
-                open={this.state.renameDialog}
-                onClose={this.closeRenameDialog}
-                closeAfterTransition
-            >
+                    aria-labelledby="transition-modal-title"
+                    aria-describedby="transition-modal-description"
+                    className={classes.modal}
+                    open={this.state.renameDialog}
+                    onClose={this.closeRenameDialog}
+                    closeAfterTransition
+                >
                 <Fade in={this.state.renameDialog}>
                     <Backdrop
                         open={this.state.renameDialog}
@@ -369,6 +433,113 @@ class ChangePlansView extends React.Component {
                                     variant="contained"
                                     color="secondary"
                                     onClick={this.closeRenameDialog}
+                                    style={{width: "100%"}}
+                                >
+                                    Cancel
+                                </Button>
+                            </Grid>
+
+                        </Grid>
+                        </div>
+                </Backdrop>
+                </Fade>
+            </Modal>
+
+            <Modal
+                    aria-labelledby="transition-modal-title"
+                    aria-describedby="transition-modal-description"
+                    className={classes.modal}
+                    open={this.state.executeDialog}
+                    onClose={this.closeExecuteDialog}
+                    closeAfterTransition
+                >
+                <Fade in={this.state.executeDialog}>
+                    <Backdrop
+                        open={this.state.executeDialog}
+                    >
+                    <div className={classes.grid}>
+                        <Grid
+                            container
+                            spacing={1}
+                            direction="row"
+                            justify="flex-start"
+                            alignItems="center"
+                        >
+                            <Grid item xs={3}>
+                                <Typography>
+                                    Are you sure you want to execute this change plan?
+                                </Typography>
+                            </Grid>
+                            <Grid item xs={9}></Grid>
+                            <Grid item xs={6}>
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    onClick={this.executeChangePlan}
+                                    style={{width: "100%"}}
+                                >
+                                    Yes
+                                </Button>
+                            </Grid>
+                            <Grid item xs={6}>
+                                <Button
+                                    variant="contained"
+                                    color="secondary"
+                                    onClick={this.closeExecuteDialog}
+                                    style={{width: "100%"}}
+                                >
+                                    Cancel
+                                </Button>
+                            </Grid>
+
+                        </Grid>
+                        </div>
+                </Backdrop>
+                </Fade>
+            </Modal>
+
+
+            <Modal
+                    aria-labelledby="transition-modal-title"
+                    aria-describedby="transition-modal-description"
+                    className={classes.modal}
+                    open={this.state.deleteDialog}
+                    onClose={this.closeDeleteDialog}
+                    closeAfterTransition
+                >
+                <Fade in={this.state.deleteDialog}>
+                    <Backdrop
+                        open={this.state.deleteDialog}
+                    >
+                    <div className={classes.grid}>
+                        <Grid
+                            container
+                            spacing={1}
+                            direction="row"
+                            justify="flex-start"
+                            alignItems="center"
+                        >
+                            <Grid item xs={3}>
+                                <Typography>
+                                    Are you sure you want to delete this change plan?
+                                </Typography>
+                            </Grid>
+                            <Grid item xs={9}></Grid>
+                            <Grid item xs={6}>
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    onClick={this.deleteChangePlan}
+                                    style={{width: "100%"}}
+                                >
+                                    Yes
+                                </Button>
+                            </Grid>
+                            <Grid item xs={6}>
+                                <Button
+                                    variant="contained"
+                                    color="secondary"
+                                    onClick={this.closeDeleteDialog}
                                     style={{width: "100%"}}
                                 >
                                     Cancel

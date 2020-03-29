@@ -520,41 +520,7 @@ class EditAsset extends React.Component {
     }
 
     closeModal = () => {
-        this.setState({
-            loadingAssetNumber: true,
-            loadingModels: true,
-            modelList: [],
-            networkList: null,
-            powerPortList: null,
-            loadingOwners: true,
-            ownerList: [],
-            loadingDatacenters: true,
-            datacenterList: [],
-            loadingHostnames: true,
-            assetNumList: [],
-            assetNumToModelList: null,
-            model: "",
-            hostname: "",
-            rack: "",
-            rackU: -1,
-            owner: "",
-            comment: "",
-            datacenter_name: "",
-            tags: [],
-            network_connections: null,
-            power_connections: null,
-            asset_number: 100000,
-            selectedConnection: null,
-            statusOpen: false,
-            statusMessage: "",
-            statusSeverity: "",
-            showModal: false,
-            powerPortState: null,
-            leftRight: null,
-            availableConnections: false,
-            portOptions: [],
-            canSubmit: false,
-        }, () => { this.getLists(); this.props.getAssetList(); this.props.close(); });
+        window.location.reload();
     }
 
     statusClose = () => {
@@ -617,6 +583,7 @@ class EditAsset extends React.Component {
                 response => {
                     if (response.data.message === "success") {
                         this.props.close();
+                        window.location.reload();
                     } else {
                         this.setState({ statusOpen: true, statusMessage: response.data.message, statusSeverity: AssetConstants.ERROR_TOKEN });
                     }

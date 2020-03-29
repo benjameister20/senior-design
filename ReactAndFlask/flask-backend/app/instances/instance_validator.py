@@ -210,7 +210,7 @@ class InstanceValidator:
             if connection_hostname in new_connections.keys():
                 if new_connections[connection_hostname] == connection_port:
                     result += "Cannot make two network connections to the same port."
-            else:
+            elif connection_hostname != "" and connection_port != "":
                 new_connections[connection_hostname] = connection_port
 
             mac_pattern = re.compile(

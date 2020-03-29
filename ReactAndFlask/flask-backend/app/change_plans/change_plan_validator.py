@@ -290,7 +290,7 @@ class ChangePlanValidator:
                     Constants.POWER_CONNECTIONS_KEY
                 )
                 prev_pow_connections = set(prev_pow_connections)
-                pow_intersection = pow_connections.instersects(prev_pow_connections)
+                pow_intersection = pow_connections.intersection(prev_pow_connections)
                 if len(pow_intersection) > 0:
                     return f"There is already an asset connected at PDU port {pow_intersection.pop()}. Please pick an empty PDU port."
 
@@ -302,7 +302,7 @@ class ChangePlanValidator:
                     Constants.POWER_CONNECTIONS_KEY
                 )
                 old_pow_connections = set(old_pow_connections)
-                old_pow_intersection = pow_connections.instersects(old_pow_connections)
+                old_pow_intersection = pow_connections.intersection(old_pow_connections)
                 if len(old_pow_intersection) > 0:
                     self.no_pow_conflict = True
 
@@ -368,7 +368,7 @@ class ChangePlanValidator:
             if connection_hostname in new_connections.keys():
                 if new_connections[connection_hostname] == connection_port:
                     result += "Cannot make two network connections to the same port."
-            else:
+            elif connection_hostname != "" and connection_port != "":
                 new_connections[connection_hostname] = connection_port
 
             mac_pattern = re.compile(
@@ -430,7 +430,7 @@ class ChangePlanValidator:
                     ]
                     != ""
                 ):
-                    result += f"The port {connection_port} on asset with hostname {connection_hostname} is already connected to another asset. \n"
+                    result += f"The port {connection_port} on asset with hostname {connection_hostname} is already connected to another asset."
 
         if result == "":
             return Constants.API_SUCCESS

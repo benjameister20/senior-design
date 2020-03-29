@@ -332,7 +332,7 @@ class EditAsset extends React.Component {
         console.log(json);
         var changePlanJSON = {
             "change_plan_id": this.props.changePlanID,
-            "step": 1,
+            "step": this.props.changePlanStep,
             "action": "update",
             "asset_numberOriginal": this.props.defaultValues.asset_number,
             "new_record": json
@@ -344,6 +344,7 @@ class EditAsset extends React.Component {
         ).then(
             response => {
                 if (response.data.message === AssetConstants.SUCCESS_TOKEN) {
+                    this.props.incrementChangePlanStep();
                     this.setState({ statusOpen: true, statusMessage: "Successfully saved edits", statusSeverity: AssetConstants.SUCCESS_TOKEN });
                 } else {
                     this.setState({ statusOpen: true, statusMessage: response.data.message, statusSeverity: AssetConstants.ERROR_TOKEN });
@@ -516,7 +517,8 @@ class EditAsset extends React.Component {
     }
 
     closeModal = () => {
-        window.location.reload();
+        this.props.fetchAllAssets();
+        //window.location.reload();
     }
 
     statusClose = () => {
@@ -623,7 +625,7 @@ class EditAsset extends React.Component {
                         || this.state.loadingModels
                         || this.state.loadingHostnames
                         || this.state.loadingOwners
-                        || !this.props.disabled)
+                        || this.props.disabled)
                     //&& false
                 ) ? <div className={classes.progress}><CircularProgress /></div> :
                     <form

@@ -98,7 +98,7 @@ class ExportAsset extends React.Component {
             }
             ).then(response => {
                 console.log(response);
-                this.props.updateChangePlan(true, response.data.change_plan);
+                this.props.updateChangePlan(true, response.data.change_plan, 1);
                 this.setState({ changePlanName: "" });
         });
     }

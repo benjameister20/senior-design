@@ -20,6 +20,7 @@ import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import DeleteIcon from '@material-ui/icons/Delete';
 import ReplayIcon from '@material-ui/icons/Replay';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import DoneIcon from '@material-ui/icons/Done';
 
 // Path prefix for change plan routes
 const changePlanPath = "changeplans/";
@@ -116,6 +117,7 @@ class ChangePlansView extends React.Component {
                                 'owner': this.props.username,
                             }).then(response => {
                                 var details = this.state.changePlanDetails;
+                                console.log(response.data.change_plan_actions);
                                 details[plan.identifier] = response.data.change_plan_actions;
 
                                 this.setState({ changePlanDetails: details });
@@ -131,8 +133,8 @@ class ChangePlansView extends React.Component {
     }
 
     // Enter change plan mode for the given change plan unique id
-    startEditing = (identifier) => {
-        this.props.updateChangePlan(true, identifier);
+    startEditing = (identifier, currentStep) => {
+        this.props.updateChangePlan(true, identifier, currentStep);
     }
 
     // Saves the plan name
@@ -269,13 +271,21 @@ class ChangePlansView extends React.Component {
                     <Grid item xs={2}></Grid>
                     <Grid item xs={8}>
                         { this.state.changePlans.map(plan => {
-                            console.log(plan);
+                            const executed = plan.executed === "True";
+                            const details = this.state.changePlanDetails[plan.identifer];
+                            var step = 1;
+                            if (details !== undefined) {
+                                details.forEach(s => {
+                                    step = Math.max(step, s.step);
+                                });
+                            }
+
                             return (<ExpansionPanel key={plan.identifier}>
                                 <ExpansionPanelSummary
                                     expandIcon={<ExpandMoreIcon />}
                                 >
                                     <Typography>{plan.name}</Typography>
-                                    { plan.executed ? <Chip size="small" label={"Executed at " + plan.timestamp} style={{
+                                    { executed ? <Chip size="small" icon={<DoneIcon />} color="primary" label={"Executed at " + plan.timestamp} style={{
                                         marginLeft: "15px"
                                     }} /> : null }
                                 </ExpansionPanelSummary>
@@ -290,7 +300,7 @@ class ChangePlansView extends React.Component {
                                 >
                                     <Grid item xs={3}></Grid>
                                     <Grid item xs={3}>
-                                        { !plan.executed ?
+                                        { !executed ?
                                     <Button
                                         variant="contained"
                                         color="primary"
@@ -302,12 +312,12 @@ class ChangePlansView extends React.Component {
                                     </Button> : null }
                                     </Grid>
                                     <Grid item xs={3}>
-                                    { !plan.executed ? <Button
+                                    { !executed ? <Button
                                         variant="contained"
                                         color="default"
                                         style={{width: "100%"}}
                                         startIcon={<EditIcon />}
-                                        onClick={() => { this.startEditing(plan.identifier) }}
+                                        onClick={() => { this.startEditing(plan.identifier, step) }}
                                     >
                                         Edit
                                     </Button> : null }
@@ -363,7 +373,7 @@ class ChangePlansView extends React.Component {
                                     : "This change plan has made no changes!" }
                                 </Grid>
                                 <Grid item xs={3}>
-                                    { !plan.executed ? <Button
+                                    { !executed ? <Button
                                         variant="contained"
                                         color="primary"
                                         style={{width: "100%"}}
@@ -374,7 +384,7 @@ class ChangePlansView extends React.Component {
                                     </Button> : null }
                                     </Grid>
                                     <Grid item xs={3}>
-                                    { !plan.executed ? <Button
+                                    { !executed ? <Button
                                         variant="contained"
                                         color="secondary"
                                         style={{width: "100%"}}

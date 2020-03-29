@@ -141,7 +141,7 @@ class ChangePlanActionManager:
             change_plan_id = self.check_null(
                 cp_action_data.get(Constants.CHANGE_PLAN_ID_KEY)
             )
-            step = self.check_null(cp_action_data.get(Constants.STEP_KEY))
+            step = int(self.check_null(cp_action_data.get(Constants.STEP_KEY)))
             action = self.check_null(cp_action_data.get(Constants.ACTION_KEY))
             original_asset_number = self.check_null(
                 cp_action_data.get(Constants.ASSET_NUMBER_ORIG_KEY)

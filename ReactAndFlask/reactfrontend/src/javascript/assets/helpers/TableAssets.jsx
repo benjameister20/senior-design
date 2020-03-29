@@ -154,6 +154,11 @@ class TableAsset extends React.Component {
 	}
 
 	componentDidMount() {
+		this.fetchAllAssets();
+	}
+
+	// Fetch all assets for the table
+	fetchAllAssets = () => {
 		axios.post(
 			getURL(Constants.ASSETS_MAIN_PATH, AssetCommand.search), emptySearch).then(
 				response => {
@@ -220,7 +225,7 @@ class TableAsset extends React.Component {
 	}
 
 	closeDetailedView = () => {
-		this.setState({ showDetailedView: false })
+		this.setState({ showDetailedView: false });
 	}
 
 	closeShowStatus = () => {
@@ -353,7 +358,7 @@ class TableAsset extends React.Component {
 	}
 
 	exitChangePlan = () => {
-		this.props.updateChangePlan(false, null);
+		this.props.updateChangePlan(false, null, null);
 	}
 
 	switchToDec = (switchBool) => {
@@ -385,6 +390,9 @@ class TableAsset extends React.Component {
 								privilege={this.props.privilege}
 								changePlanActive={this.props.changePlanActive}
 								changePlanID={this.props.changePlanID}
+								changePlanStep={this.props.changePlanStep}
+								incrementChangePlanStep={this.props.incrementChangePlanStep}
+								fetchAllAssets={this.fetchAllAssets}
 							/> : null}
 					</Grid>
 					<Grid item xs={12} sm={6} md={4} lg={6}>
@@ -541,9 +549,12 @@ class TableAsset extends React.Component {
 						privilege={this.props.privilege}
 						changePlanActive={this.props.changePlanActive}
 						changePlanID={this.props.changePlanID}
+						changePlanStep={this.props.changePlanStep}
+						incrementChangePlanStep={this.props.incrementChangePlanStep}
 						disabled={this.props.privilege === Privilege.USER || this.state.displayDec /* && username !== row.owner*/}
 						privilege={this.props.privilege}
 						username={this.props.username}
+						fetchAllAssets={this.fetchAllAssets}
 					/> : null}
 				<SpeedDial
 					ariaLabel="SpeedDial openIcon example"

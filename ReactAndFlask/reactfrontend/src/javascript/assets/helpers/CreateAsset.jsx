@@ -298,9 +298,10 @@ class CreateAsset extends React.Component {
     createAsset = (event) => {
         event.preventDefault();
         var json = this.createJSON();
+        console.log(this.props.changePlanStep);
         var changePlanJSON = {
             "change_plan_id": this.props.changePlanID,
-            "step": 1,
+            "step": this.props.changePlanStep,
             "action": "create",
             "asset_numberOriginal": this.state.asset_number,
             "new_record": json
@@ -315,6 +316,7 @@ class CreateAsset extends React.Component {
                     response => {
                     console.log(response);
                     if (response.data.message === AssetConstants.SUCCESS_TOKEN) {
+                        this.props.incrementChangePlanStep();
                         this.props.showStatus(true, "success", "Successfully created asset");
                         this.closeModal();
                     } else {
@@ -513,7 +515,8 @@ class CreateAsset extends React.Component {
     }
 
     closeModal = () => {
-        window.location.reload();
+        this.props.fetchAllAssets();
+        //window.location.reload();
     }
 
     statusClose = () => {

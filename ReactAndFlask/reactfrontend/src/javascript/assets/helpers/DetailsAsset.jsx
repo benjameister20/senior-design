@@ -55,7 +55,8 @@ class DetailAsset extends React.Component {
     }
 
     closeDetailView = () => {
-        this.props.search();
+        this.props.close();
+        this.props.fetchAllAssets();
     }
 
     toggleDetails = () => {
@@ -67,10 +68,10 @@ class DetailAsset extends React.Component {
 
         return (
         <span>
-            <Dialog fullScreen open={this.props.open} onClose={() => {window.location.reload();}} TransitionComponent={Transition} padding={3}>
+            <Dialog fullScreen open={this.props.open} TransitionComponent={Transition} padding={3}>
                 <AppBar className={classes.appBar}>
                     <Toolbar>
-                        <IconButton edge="start" color="inherit" onClick={() => {window.location.reload();}} aria-label="close">
+                        <IconButton edge="start" color="inherit" onClick={this.closeDetailView} aria-label="close">
                             <CloseIcon />
                         </IconButton>
                         <Typography variant="h6" className={classes.title}>
@@ -102,7 +103,10 @@ class DetailAsset extends React.Component {
                             privilege={this.props.privilege}
                             changePlanActive={this.props.changePlanActive}
                             changePlanID={this.props.changePlanID}
+                            changePlanStep={this.props.changePlanStep}
+                            incrementChangePlanStep={this.props.incrementChangePlanStep}
                             username={this.props.username}
+                            fetchAllAssets={this.props.fetchAllAssets}
                         />
                     </ExpansionPanelDetails>
                 </ExpansionPanel>

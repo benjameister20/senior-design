@@ -20,8 +20,8 @@ class DecommissionManager:
             asset_number = self.check_null(asset_data[Constants.ASSET_NUMBER_KEY])
             decommission_user = self.check_null(asset_data[Constants.DECOM_USER_KEY])
 
-            timestamp = datetime.date.today()
-
+            timestamp = datetime.datetime.now()
+            print(timestamp)
             try:
                 asset = self.instance_table.get_instance_by_asset_number(asset_number)
                 print("got asset")

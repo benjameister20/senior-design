@@ -18,7 +18,7 @@ import AssetsView from './assets/pages/AssetsView';
 import DatacenterManagerView from './racks/pages/DatacenterManagerView';
 import StatisticsView from './statistics/pages/StatisticsView';
 import LogsView from "./logs/pages/LogsView";
-import ChangePlanView from "./changeplans/pages/ChangePlans";
+import ChangePlansView from "./changeplans/pages/ChangePlans";
 
 import { Privilege } from './enums/privilegeTypes.ts'
 
@@ -54,6 +54,10 @@ class TabViewer extends React.Component {
             currentTabID:0,
             anchorEl: null,
             isMenuOpen:false,
+
+            // Change plan
+            changePlanActive: false,
+            changePlanID: null,
         };
         this.handleChange = this.handleChange.bind(this);
     }
@@ -68,7 +72,11 @@ class TabViewer extends React.Component {
 
     handleMenuClose = () => {
         this.setState({ anchorEl: null, isMenuOpen:false });
-    };
+    }
+
+    updateChangePlan = (status, id) => {
+        this.setState({ changePlanActive: status, changePlanID: id });
+    }
 
     render() {
         const { classes } = this.props;
@@ -114,11 +122,11 @@ class TabViewer extends React.Component {
             >
                 <Tab value={0} style={{flexGrow: 1,}} label="Models"> </Tab>
                 <Tab value={1} style={{flexGrow: 1,}} label="Assets" ></Tab>
-                { (this.props.privilege.Asset || this.props.privilege.Admin) ? <Tab value={6} style={{flexGrow: 1,}} label="Change Plans" ></Tab> : null }
-                {(this.props.privilege.Admin) ? <Tab value={2} style={{flexGrow: 1,}} label="Users"></Tab> : null}
-                {(this.props.privilege.Admin || this.props.privilege.Asset) ? <Tab value={3} style={{flexGrow: 1,}} label="Datacenters" /> : null}
+                { (this.props.privilege.asset || this.props.privilege.admin) ? <Tab value={6} style={{flexGrow: 1,}} label="Change Plans" ></Tab> : null }
+                {(this.props.privilege.admin) ? <Tab value={2} style={{flexGrow: 1,}} label="Users"></Tab> : null}
+                {(this.props.privilege.admin || this.props.privilege.asset) ? <Tab value={3} style={{flexGrow: 1,}} label="Datacenters" /> : null}
                 <Tab value={4} style={{flexGrow: 1,}} label="Statistics" />
-                {(this.props.privilege.Admin || this.props.privilege.Audit) ? <Tab value={5} style={{flexGrow: 1,}} label="Logs" />:null}
+                {(this.props.privilege.admin || this.props.privilege.audit) ? <Tab value={5} style={{flexGrow: 1,}} label="Logs" />:null}
             </Tabs>
             {this.state.currentTabID !== 0 ? null :
             <Typography
@@ -136,7 +144,16 @@ class TabViewer extends React.Component {
                 id={`simple-tabpanel-0`}
                 aria-labelledby={`simple-tab-0`}
             >
-                <Container className={classes.tab} ><AssetsView token={this.props.token} privilege={this.props.privilege} /></Container>
+                <Container className={classes.tab} >
+                    <AssetsView
+                        token={this.props.token}
+                        privilege={this.props.privilege}
+                        username={this.props.username}
+                        changePlanActive={this.state.changePlanActive}
+                        updateChangePlan={this.updateChangePlan}
+                        changePlanID ={this.state.changePlanID}
+                    />
+                </Container>
             </Typography>}
             {this.state.currentTabID !== 2 ? null :
             <Typography
@@ -184,7 +201,13 @@ class TabViewer extends React.Component {
                 id={`tab-panel-logs`}
                 aria-labelledby={`tab-panel-logs`}
             >
-                <Container className={classes.tab} ><ChangePlanView /></Container>
+                <Container className={classes.tab} >
+                    <ChangePlansView
+                        token={this.props.token}
+                        privilege={this.props.privilege}
+                        username={this.props.username}
+                    />
+                </Container>
             </Typography>}
             </ErrorBoundry>
         </div>);

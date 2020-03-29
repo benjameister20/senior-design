@@ -2,28 +2,13 @@ import React from 'react';
 
 import axios from 'axios';
 
-import TextField from "@material-ui/core/TextField";
-import Button from '@material-ui/core/Button';
-import Autocomplete from '@material-ui/lab/Autocomplete';
-import Tooltip from '@material-ui/core/Tooltip';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import Grid from '@material-ui/core/Grid';
+import { TextField, Button, Tooltip, CircularProgress, Grid } from "@material-ui/core";
+import { Autocomplete, Alert } from '@material-ui/lab';
 import { withStyles } from '@material-ui/core/styles';
-import Radio from '@material-ui/core/Radio';
-import RadioGroup from '@material-ui/core/RadioGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormControl from '@material-ui/core/FormControl';
-import FormHelperText from '@material-ui/core/FormHelperText';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import IconButton from '@material-ui/core/IconButton';
+import { Radio, RadioGroup, FormControl, FormControlLabel, FormHelperText } from '@material-ui/core';
+import { AppBar, Toolbar, IconButton, Slide, Dialog } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
-import Slide from '@material-ui/core/Slide';
-import Dialog from '@material-ui/core/Dialog';
-import Alert from '@material-ui/lab/Alert';
-import Collapse from '@material-ui/core/Collapse';
-import Modal from '@material-ui/core/Modal';
-import Backdrop from '@material-ui/core/Backdrop';
+import { Collapse, Modal, Backdrop } from '@material-ui/core';
 
 import StatusDisplay from '../../helpers/StatusDisplay';
 import { AssetInput } from '../enums/AssetInputs.ts';
@@ -313,8 +298,8 @@ class EditAsset extends React.Component {
                 response => {
                     var datacenters = [];
                     response.data.datacenters.map(datacenter => {
-                        if (this.props.privilege.Datacenters.length > 0) {
-                            if (this.props.privilege.Datacenters[0] === "*" || this.props.privilege.Datacenters.includes(datacenter.abbreviation) || this.props.privilege.Asset) {
+                        if (this.props.privilege.datacenters.length > 0) {
+                            if (this.props.privilege.datacenters[0] === "*" || this.props.privilege.datacenters.includes(datacenter.abbreviation) || this.props.privilege.asset) {
                                 datacenters.push(datacenter.name);
                             }
                         }
@@ -345,17 +330,25 @@ class EditAsset extends React.Component {
         event.preventDefault();
         var json = this.createJSON();
         console.log(json);
+        var changePlanJSON = {
+            "change_plan_id": this.props.changePlanID,
+            "step": 1,
+            "action": "update",
+            "asset_numberOriginal": this.props.defaultValues.asset_number,
+            "new_record": json
+        };
+        var url = this.props.changePlanActive ? getURL(AssetConstants.CHANGE_PLAN_PATH, AssetCommand.CHANGE_PLAN_CREATE_ACTION) : getURL(AssetConstants.ASSETS_MAIN_PATH, AssetCommand.edit);
         axios.post(
-            getURL(AssetConstants.ASSETS_MAIN_PATH, AssetCommand.edit),
-            json).then(
-                response => {
-                if (response.data.message === AssetConstants.SUCCESS_TOKEN) {
-                    this.setState({ statusOpen: true, statusMessage: "Successfully saved edits", statusSeverity:AssetConstants.SUCCESS_TOKEN });
-                } else {
-                    this.setState({ statusOpen: true, statusMessage: response.data.message, statusSeverity:AssetConstants.ERROR_TOKEN });
-                }
-            });
-
+            url,
+            this.props.changePlanActive ? changePlanJSON : json
+        ).then(
+            response => {
+            if (response.data.message === AssetConstants.SUCCESS_TOKEN) {
+                this.setState({ statusOpen: true, statusMessage: "Successfully saved edits", statusSeverity:AssetConstants.SUCCESS_TOKEN });
+            } else {
+                this.setState({ statusOpen: true, statusMessage: response.data.message, statusSeverity:AssetConstants.ERROR_TOKEN });
+            }
+        });
     }
 
     updateModel = (event) => {
@@ -364,14 +357,17 @@ class EditAsset extends React.Component {
         if (model !== "") {
             var ports = this.state.networkList[model];
             var networkConns = {};
-            ports.map(port => {
-                var defaultNetworkPort = {
-                    "mac_address":"",
-                    "connection_hostname":"",
-                    "connection_port":"",
-                }
-                networkConns[port] = defaultNetworkPort;
-            });
+
+            if (ports !== null) {
+                ports.map(port => {
+                    var defaultNetworkPort = {
+                        "mac_address":"",
+                        "connection_hostname":"",
+                        "connection_port":"",
+                    }
+                    networkConns[port] = defaultNetworkPort;
+                });
+            }
         } else {
             var networkConns = {};
         }
@@ -972,13 +968,16 @@ class EditAsset extends React.Component {
                     </Grid>
                     <Grid item xs={6} />
                     {this.props.disabled ? null:
-                    <Grid item xs={1}>
+                    <Grid item xs={3}>
                         <Button
                             variant="contained"
-                            color="primary"
+                            color={this.props.changePlanActive ? "" : "primary"}
                             type="submit"
+                            style={{
+                                backgroundColor: this.props.changePlanActive ? "#64b5f6" : ""
+                            }}
                         >
-                            Save
+                            { this.props.changePlanActive ? "Save to Change Plan" : "Save" }
                         </Button>
                     </Grid>}
                     {this.props.disabled ? null:
@@ -988,7 +987,7 @@ class EditAsset extends React.Component {
                             color="secondary"
                             onClick={() => this.openConfirmationBox()}
                         >
-                            Delete
+                            { this.props.changePlanActive ? "Delete in Change Plan" : "Delete" }
                         </Button>
                     </Grid>}
                 </Grid></div></form>}

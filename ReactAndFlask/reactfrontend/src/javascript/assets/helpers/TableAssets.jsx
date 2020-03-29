@@ -154,7 +154,6 @@ class TableAsset extends React.Component {
 			statusMessage: "",
 
 			// Change plan
-			changePlanAlert: false,
 			speedDialOpen: false,
 		};
 	}
@@ -322,14 +321,6 @@ class TableAsset extends React.Component {
 		}
 	}
 
-	beginChangePlan = () => {
-		this.setState({ changePlanAlert: true });
-	}
-
-	exitChangePlan = () => {
-		this.setState({ changePlanAlert: false });
-	}
-
 	openSpeedDial = () => {
 		this.setState({ speedDialOpen: true });
 	}
@@ -338,27 +329,29 @@ class TableAsset extends React.Component {
 		this.setState({ speedDialOpen: false });
 	}
 
+	exitChangePlan = () => {
+		this.props.updateChangePlan(false, null);
+	}
+
 	render() {
 		const { classes } = this.props;
 		var allSelected = true;
 		this.state.tableItems.map(elem => {
-				allSelected = allSelected && this.state.selectedItems.indexOf(elem.asset_number) !== -1;
+			allSelected = allSelected && this.state.selectedItems.indexOf(elem.asset_number) !== -1;
 		});
 
 	return (
-
-
 		<React.Fragment>
 			<Grid container spacing={3}>
 				<Grid item xs={12}>
-					{this.state.changePlanAlert ?
+					{this.props.changePlanActive ?
 					<Alert severity="info">
 						<AlertTitle>Change Plan Mode</AlertTitle>
 						You are currently in change plan mode! Changes made are being logged in the plan and not actually made in the system.
 					</Alert> : null}
 				</Grid>
 				<Grid item xs={12} sm={6} md={4} lg={3}>
-						{(this.props.privilege.Admin || this.props.privilege.Asset || this.props.privilege.Datacenters.length > 0) ? <AddAsset showStatus={this.showStatusBar} getAssetList={this.getAssetList} privilege={this.props.privilege} /> : null}
+						{(this.props.privilege.admin || this.props.privilege.asset || this.props.privilege.datacenters.length > 0) ? <AddAsset showStatus={this.showStatusBar} getAssetList={this.getAssetList} privilege={this.props.privilege} /> : null}
 					</Grid>
 					<Grid item xs={12} sm={6} md={4} lg={6}>
 						<FilterAsset
@@ -368,7 +361,13 @@ class TableAsset extends React.Component {
 						/>
 					</Grid>
 					<Grid item xs={12} sm={6} md={4} lg={3}>
-						<ExportAsset items={this.state.tableItems} begin={this.beginChangePlan} changePlanActive={this.state.changePlanAlert} />
+						<ExportAsset
+							items={this.state.tableItems}
+							changePlanActive={this.props.changePlanActive}
+							updateChangePlan={this.props.updateChangePlan}
+							privilege={this.props.privilege}
+							username={this.props.username}
+						/>
 					</Grid>
 				</Grid>
 
@@ -390,7 +389,7 @@ class TableAsset extends React.Component {
 						</Toolbar>
 						<TableContainer component={Paper}>
 							<Table className={classes.table} aria-label="customized table" style={{
-								backgroundColor: this.state.changePlanAlert ? "#64b5f6" : "",
+								backgroundColor: this.props.changePlanActive ? "#64b5f6" : "",
 							}}>
 								<TableHead>
 									<TableRow className={classes.styledTableRow}>
@@ -475,13 +474,15 @@ class TableAsset extends React.Component {
 					</Grid>
 			{this.state.showDetailedView ?
 				<DetailAsset
-				open={this.state.showDetailedView}
-				close={this.closeDetailedView}
-				search={this.search}
-				disabled={this.props.privilege === Privilege.USER /* && username !== row.owner*/}
-				asset={this.state.detailAsset}
-				search={this.getAssetList}
-				privilege={this.props.privilege}
+					open={this.state.showDetailedView}
+					close={this.closeDetailedView}
+					search={this.search}
+					disabled={this.props.privilege === Privilege.USER /* && username !== row.owner*/}
+					asset={this.state.detailAsset}
+					search={this.getAssetList}
+					privilege={this.props.privilege}
+					changePlanActive={this.props.changePlanActive}
+					changePlanID={this.props.changePlanID}
 			/> : null}
 		<SpeedDial
 			ariaLabel="SpeedDial openIcon example"
@@ -490,7 +491,7 @@ class TableAsset extends React.Component {
     			bottom: '30px',
     			right: '30px',
 			}}
-			hidden={!this.state.changePlanAlert}
+			hidden={!this.props.changePlanActive}
 			icon={<TrackChangesIcon />}
 			onClose={this.closeSpeedDial}
 			onOpen={this.openSpeedDial}

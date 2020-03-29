@@ -34,7 +34,8 @@ def create_Cp():
 
     try:
         cp_data = request.get_json()
-        CP_MANAGER.create_change_plan(cp_data)
+        cp_id: int = CP_MANAGER.create_change_plan(cp_data)
+        returnJSON = addCpToJSON(returnJSON, cp_id)
         return addMessageToJSON(returnJSON, "success")
     except InvalidInputsError as e:
         print(e.message)
@@ -202,6 +203,11 @@ def addMessageToJSON(json, message) -> dict:
 
 def addCpsTOJSON(json, cpArr: List[str]) -> dict:
     json["change_plans"] = cpArr
+    return json
+
+
+def addCpToJSON(json, cp) -> dict:
+    json["change_plan"] = cp
     return json
 
 

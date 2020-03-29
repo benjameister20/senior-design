@@ -12,11 +12,12 @@ import {
     Toolbar,
     Slide,
     IconButton,
-    Grid
+    Grid,
 } from "@material-ui/core/"
+import { Alert, AlertTitle } from "@material-ui/lab";
 import { withStyles } from '@material-ui/core/styles';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
- import CloseIcon from '@material-ui/icons/Close';
+import CloseIcon from '@material-ui/icons/Close';
 
 import { Typography } from '@material-ui/core';
 import NetworkGraph from "./NetworkGraph";
@@ -48,12 +49,17 @@ class DetailAsset extends React.Component {
         super(props);
 
         this.state = {
-            networkNodes:null,
+            networkNodes: null,
+            detailsExpanded: true,
         };
     }
 
     closeDetailView = () => {
         this.props.search();
+    }
+
+    toggleDetails = () => {
+        this.setState({ detailsExpanded: !this.state.detailsExpanded });
     }
 
     render() {
@@ -73,7 +79,13 @@ class DetailAsset extends React.Component {
                     </Toolbar>
                 </AppBar>
 
-                <ExpansionPanel>
+                {this.props.changePlanActive ?
+					<Alert severity="info">
+						<AlertTitle>Change Plan Mode</AlertTitle>
+						You are currently in change plan mode! Changes made are being logged in the plan and not actually made in the system.
+					</Alert> : null}
+
+                <ExpansionPanel expanded={this.state.detailsExpanded} onChange={this.toggleDetails}>
                     <ExpansionPanelSummary
                         expandIcon={<ExpandMoreIcon />}
                         aria-controls="panel1a-content"
@@ -88,6 +100,8 @@ class DetailAsset extends React.Component {
                             close={this.props.close}
                             getAssetList={this.props.getAssetList}
                             privilege={this.props.privilege}
+                            changePlanActive={this.props.changePlanActive}
+                            changePlanID={this.props.changePlanID}
                         />
                     </ExpansionPanelDetails>
                 </ExpansionPanel>

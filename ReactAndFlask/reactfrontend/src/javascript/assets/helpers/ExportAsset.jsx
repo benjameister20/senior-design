@@ -52,8 +52,13 @@ class ExportAsset extends React.Component {
             csvData: "",
             changePlanModal: false,
             changeDescriptionModal: false,
+            canCreateChangePlans: false,
 		};
-	}
+    }
+
+    componentDidMount = () => {
+        this.setState({ canCreateChangePlans: (this.props.privilege.admin || this.props.privilege.asset || this.props.privilege.datacenters.length > 0) });
+    }
 
 	downloadTable = () => {
         axios.post(
@@ -86,19 +91,20 @@ class ExportAsset extends React.Component {
         this.setState({ changeDescriptionModal: true });
 
         axios.post(
-            getURL(AssetConstants.ASSETS_MAIN_PATH, AssetCommand.CHANGE_PLAN_CREATE),
+            getURL(AssetConstants.CHANGE_PLAN_PATH, AssetCommand.CHANGE_PLAN_CREATE),
             {
+                'owner': this.props.username,
                 'name': this.state.changePlanName,
             }
             ).then(response => {
                 console.log(response);
+                this.props.updateChangePlan(true, response.data.change_plan);
+                this.setState({ changePlanName: "" });
         });
     }
 
     closeDescriptionModal = () => {
         this.setState({ changeDescriptionModal: false });
-
-        this.props.begin();
     }
 
     render() {
@@ -134,7 +140,7 @@ class ExportAsset extends React.Component {
                             Export All Data
                         </Button>
                     </Grid>
-                    { !this.props.changePlanActive ?
+                    { !this.props.changePlanActive && this.state.canCreateChangePlans ?
                     <Grid container item direciton="row" justify="center" alignItems="center" xs={12}>
 							<hr style={{width: "5vw"}} />
 							<Typography color="textSecondary">
@@ -142,7 +148,7 @@ class ExportAsset extends React.Component {
 							</Typography>
 							<hr style={{width: "5vw"}} />
 						</Grid> : null }
-                    { !this.props.changePlanActive ?
+                    { !this.props.changePlanActive && this.state.canCreateChangePlans ?
 						<Grid item xs={12}>
 							<Button
 								variant="contained"

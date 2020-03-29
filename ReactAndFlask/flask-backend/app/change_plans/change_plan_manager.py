@@ -17,10 +17,10 @@ class ChangePlanManager:
         self.instance_manager = InstanceManager()
         self.decommission_manager = DecommissionManager()
 
-    def create_change_plan(self, cp_data):
+    def create_change_plan(self, cp_data) -> int:
         try:
             new_change_plan = self.make_cp(cp_data)
-            self.cp_table.add_change_plan(new_change_plan)
+            return self.cp_table.add_change_plan(new_change_plan)
         except InvalidInputsError as e:
             print(e.message)
             raise InvalidInputsError(e.message)

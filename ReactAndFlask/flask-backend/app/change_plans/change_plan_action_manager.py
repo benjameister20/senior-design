@@ -80,6 +80,20 @@ class ChangePlanActionManager:
                 prev_record = self.get_prev_record(cp_action)
                 cp_action.old_record = prev_record
 
+                # Diff records
+                diff = {}
+                for key in cp_action.old_record.keys():
+                    if key == "network_ports":
+                        continue
+
+                    if cp_action.old_record[key] != cp_action.new_record[key]:
+                        diff[key] = [
+                            cp_action.old_record[key],
+                            cp_action.new_record[key],
+                        ]
+
+                cp_action.diff = diff
+
             return change_plan_actions
         except:
             raise InvalidInputsError(

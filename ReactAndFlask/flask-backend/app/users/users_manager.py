@@ -84,9 +84,9 @@ class UserManager:
         limit = filters.get(Constants.LIMIT_KEY)
         if limit is None:
             limit = 1000
-        print()
-        print(filters.get(Constants.PRIVILEGE_KEY).get(PermissionConstants.DATACENTERS))
-        print()
+        # print()
+        # print(filters.get(Constants.PRIVILEGE_KEY).get(PermissionConstants.DATACENTERS))
+        # print()
         users = self.USER_TABLE.search_users(
             username=filters.get(Constants.USERNAME_KEY),
             display_name=filters.get(Constants.DISPLAY_NAME_KEY),

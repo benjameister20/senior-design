@@ -82,6 +82,8 @@ def requires_permission(request, permission):
             if not user_permissions[PermissionConstants.ADMIN]:
                 # check bool permissions are satisfied
                 for key in permission.make_json():
+                    # print(permission[key])
+                    print(user_permissions[key])
                     if permission[key] is True and user_permissions[key] is not True:
                         return {
                             Constants.MESSAGE_KEY: f"User {username} does not have {key} permission"

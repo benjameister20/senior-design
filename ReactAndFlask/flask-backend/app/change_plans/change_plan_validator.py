@@ -1,5 +1,4 @@
 import re
-from typing import List
 
 from app.constants import Constants
 from app.dal.change_plan_action_table import (
@@ -12,7 +11,6 @@ from app.dal.instance_table import InstanceTable
 from app.dal.model_table import ModelTable
 from app.dal.rack_table import RackTable
 from app.dal.user_table import UserTable
-from app.data_models.change_plan_action import ChangePlanAction
 from app.instances.instance_manager import InstanceManager
 
 
@@ -58,56 +56,56 @@ class ChangePlanValidator:
         if input_validation_result != Constants.API_SUCCESS:
             return input_validation_result
 
-        prev_action_list = []
-        all_cp_action_entries: List[
-            ChangePlanActionEntry
-        ] = self.cp_action_table._get_change_plan_actions_between_steps(
-            cp_action.change_plan_id, 0, cp_action.step - 1
-        )
-        for entry in all_cp_action_entries:
-            prev_action_list.append(entry.make_change_plan_action())
+        # prev_action_list = []
+        # all_cp_action_entries: List[
+        #     ChangePlanActionEntry
+        # ] = self.cp_action_table._get_change_plan_actions_between_steps(
+        #     cp_action.change_plan_id, 0, cp_action.step - 1
+        # )
+        # for entry in all_cp_action_entries:
+        #     prev_action_list.append(entry.make_change_plan_action())
 
-        prev_change_plan_action: ChangePlanAction = self.cp_action_table.get_newest_asset_record_in_plan(
-            cp_action.change_plan_id, instance.asset_number, cp_action.step
-        )
-        if prev_change_plan_action is None:
-            if (
-                self.instance_table.get_instance_by_asset_number(instance.asset_number)
-                is not None
-            ):
-                return f"Asset numbers must be unique. An asset with asset number {instance.asset_number} already exists."
-        else:
-            if prev_change_plan_action.action != Constants.DECOMMISSION_KEY:
-                return f"Asset numbers must be unique. An asset with asset number {instance.asset_number} already exists."
+        # prev_change_plan_action: ChangePlanAction = self.cp_action_table.get_newest_asset_record_in_plan(
+        #     cp_action.change_plan_id, instance.asset_number, cp_action.step
+        # )
+        # if prev_change_plan_action is None:
+        #     if (
+        #         self.instance_table.get_instance_by_asset_number(instance.asset_number)
+        #         is not None
+        #     ):
+        #         return f"Asset numbers must be unique. An asset with asset number {instance.asset_number} already exists."
+        # else:
+        #     if prev_change_plan_action.action != Constants.DECOMMISSION_KEY:
+        #         return f"Asset numbers must be unique. An asset with asset number {instance.asset_number} already exists."
 
-        if instance.hostname != "" and instance.hostname is not None:
-            hostname_instance = self.instance_table.get_instance_by_hostname(
-                instance.hostname
-            )
+        # if instance.hostname != "" and instance.hostname is not None:
+        #     hostname_instance = self.instance_table.get_instance_by_hostname(
+        #         instance.hostname
+        #     )
 
-            if hostname_instance is not None:
-                prev_hostname_action: ChangePlanAction = self.cp_action_table.get_newest_asset_record_in_plan(
-                    cp_action.change_plan_id,
-                    hostname_instance.asset_number,
-                    cp_action.step,
-                )
-                if prev_hostname_action is None:
-                    return f"An instance with hostname {hostname_instance.hostname} exists at location {hostname_instance.rack_label} U{hostname_instance.rack_position}"
+        #     if hostname_instance is not None:
+        #         prev_hostname_action: ChangePlanAction = self.cp_action_table.get_newest_asset_record_in_plan(
+        #             cp_action.change_plan_id,
+        #             hostname_instance.asset_number,
+        #             cp_action.step,
+        #         )
+        #         if prev_hostname_action is None:
+        #             return f"An instance with hostname {hostname_instance.hostname} exists at location {hostname_instance.rack_label} U{hostname_instance.rack_position}"
 
-            for prev_action in prev_action_list:
-                h_name = prev_action.new_record.get(Constants.HOSTNAME_KEY)
-                if h_name == instance.hostname:
-                    return f"An instance with hostname {h_name} exists, most recently edited in step {prev_action.step} of the change plan."
+        #     for prev_action in prev_action_list:
+        #         h_name = prev_action.new_record.get(Constants.HOSTNAME_KEY)
+        #         if h_name == instance.hostname:
+        #             return f"An instance with hostname {h_name} exists, most recently edited in step {prev_action.step} of the change plan."
 
-        model_template = self.model_table.get_model(instance.model_id)
-        if model_template is None:
-            return "The model does not exist."
+        # model_template = self.model_table.get_model(instance.model_id)
+        # if model_template is None:
+        #     return "The model does not exist."
 
-        instance_bottom = int(instance.rack_position)
-        instance_top = instance_bottom + int(model_template.height) - 1
+        # instance_bottom = int(instance.rack_position)
+        # instance_top = instance_bottom + int(model_template.height) - 1
 
-        if instance_top > self.rack_height:
-            return "The placement of the instance exceeds the height of the rack."
+        # if instance_top > self.rack_height:
+        #     return "The placement of the instance exceeds the height of the rack."
 
         # instance_list = self.instance_table.get_instances_by_rack(
         #     instance.rack_label, instance.datacenter_id

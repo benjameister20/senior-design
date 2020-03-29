@@ -87,7 +87,7 @@ class UserManager:
 
         print("FILTER")
         print(filters)
-        print(filters.get(Constants.PRIVILEGE_KEY).get(PermissionConstants.DATACENTERS))
+        # print(filters.get(Constants.PRIVILEGE_KEY).get(PermissionConstants.DATACENTERS))
         users = self.USER_TABLE.search_users(
             username=filters.get(Constants.USERNAME_KEY),
             display_name=filters.get(Constants.DISPLAY_NAME_KEY),

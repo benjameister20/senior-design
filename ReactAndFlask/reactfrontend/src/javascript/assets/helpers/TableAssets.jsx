@@ -174,6 +174,7 @@ class TableAsset extends React.Component {
 					});
 					this.setState({ allAssets: response.data.instances, tableItems: items });
 				});
+		this.getDecommissionedAssets();
 	}
 
 	deleteAsset = () => {
@@ -275,7 +276,11 @@ class TableAsset extends React.Component {
                     "end_date":"",
                 }
             }).then(
-				response => this.setState({ decAssets: response.data.decommissions }));
+				response => {
+					console.log("decommissioned assets:");
+					console.log(response.data.decommissions);
+					this.setState({ decAssets: response.data.decommissions })
+				});
 	}
 
 	showStatusBar = (status, severity, message) => {
@@ -360,7 +365,8 @@ class TableAsset extends React.Component {
 						<FilterAsset
 							updateItems={this.updateItems}
 							getAssetList={this.getAssetList}
-							allAssets={this.state.displayDec ? this.state.decAssets : this.state.allAssets}
+							allAssets={this.state.allAssets}
+							decAssets={this.state.decAssets}
 							switchToDec={this.switchToDec}
 						/>
 					</Grid>
@@ -474,7 +480,7 @@ class TableAsset extends React.Component {
 						open={this.state.showDetailedView}
 						close={this.closeDetailedView}
 						search={this.search}
-						disabled={this.props.privilege === Privilege.USER /* && username !== row.owner*/}
+						disabled={this.props.privilege === Privilege.USER || this.state.displayDec /* && username !== row.owner*/}
 						asset={this.state.detailAsset}
 						search={this.getAssetList}
 						privilege={this.props.privilege}

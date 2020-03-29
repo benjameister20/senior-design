@@ -38,9 +38,9 @@ class FilterAsset extends React.Component {
             startingNum: 1,
             endingNum: 1000,
             showDecommissioned: false,
-            startDate:"",
-            endDate:"",
-            user:"",
+            startDate: "",
+            endDate: "",
+            user: "",
         };
     }
 
@@ -78,28 +78,32 @@ class FilterAsset extends React.Component {
 
     updateStartDate = (event) => {
         console.log(event.target);
-        this.setState({ startDate: event.target.value }, () => this.search() );
+        this.setState({ startDate: event.target.value }, () => this.search());
     }
 
     updateEndDate = (event) => {
-        this.setState({ endDate: event.target.value }, () => this.search() );
+        this.setState({ endDate: event.target.value }, () => this.search());
     }
 
     updateUser = (event) => {
-        this.setState({ user: event.target.value }, () => this.search() );
+        this.setState({ user: event.target.value }, () => this.search());
     }
 
     search = () => {
         var items = [];
         try {
-            this.props.allAssets.map(asset => {
-                if (this.state.showDecommissioned) {
-                    var startDate = new Date(this.state.startDate);
-                    var endDate = new Date(this.state.endDate);
+            console.log(this.state.showDecommissioned);
+            if (this.state.showDecommissioned) {
+                this.props.decAssets.map(asset => {
+                    console.log(this.state.startDate);
+                    console.log(this.state.endDate);
+                    console.log(asset.timestamp);
+                    var startDate = new Date(this.state.startDate==="" ? "01/01/2001" : this.state.startDate);
+                    var endDate = new Date(this.state.endDate==="" ? "12/31/2025" : this.state.startDate);
                     var decDate = new Date(asset.timestamp);
                     if (
                         (asset.datacenter_name.includes(this.state.datacenter) || asset.abbreviation.includes(this.state.datacenter))
-                        && asset.model.includes(this.state.model)
+                        && (asset.vendor + asset.model_number).includes(this.state.model)
                         && asset.hostname.includes(this.state.hostname)
                         && asset.rack >= this.state.startingLetter + "" + this.state.startingNum
                         && asset.rack <= this.state.endingLetter + "" + this.state.endingNum
@@ -109,17 +113,20 @@ class FilterAsset extends React.Component {
                     ) {
                         items.push(asset);
                     }
-                }
-                if (
-                    (asset.datacenter_name.includes(this.state.datacenter) || asset.abbreviation.includes(this.state.datacenter))
-                    && asset.model.includes(this.state.model)
-                    && asset.hostname.includes(this.state.hostname)
-                    && asset.rack >= this.state.startingLetter + "" + this.state.startingNum
-                    && asset.rack <= this.state.endingLetter + "" + this.state.endingNum
-                ) {
-                    items.push(asset);
-                }
-            });
+                });
+            } else {
+                this.props.allAssets.map(asset => {
+                    if (
+                        (asset.datacenter_name.includes(this.state.datacenter) || asset.abbreviation.includes(this.state.datacenter))
+                        && asset.model.includes(this.state.model)
+                        && asset.hostname.includes(this.state.hostname)
+                        && asset.rack >= this.state.startingLetter + "" + this.state.startingNum
+                        && asset.rack <= this.state.endingLetter + "" + this.state.endingNum
+                    ) {
+                        items.push(asset);
+                    }
+                });
+            }
             this.props.updateItems(items);
         } catch {
             this.props.updateItems([]);
@@ -128,7 +135,8 @@ class FilterAsset extends React.Component {
     }
 
     switchToDecommissioned = (event) => {
-        this.setState({ showDecommissioned: event.target.checked });
+        console.log(event.target.checked);
+        this.setState({ showDecommissioned: event.target.checked }, () => this.search());
         this.props.switchToDec(event.target.checked);
     }
 
@@ -234,7 +242,7 @@ class FilterAsset extends React.Component {
                                     />
                                 }
                                 labelPlacement="top"
-                                label="Decommissioned"
+                                label={this.state.showDecommissioned ? "Decommissioned" : "Active Assets" }
                             />
                         </Grid>
                         {this.state.showDecommissioned ? <Grid item xs={12} sm={6} md={4} lg={3}>

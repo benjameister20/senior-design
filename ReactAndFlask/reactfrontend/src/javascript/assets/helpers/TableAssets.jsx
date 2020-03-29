@@ -97,24 +97,12 @@ const emptySearch = {
 	"datacenter_name": "",
 }
 
-function base64ToArrayBuffer(data) {
-	console.log("here1");
-	var binaryString = window.atob(data);
-	console.log("here2");
-	var binaryLen = binaryString.length;
-	console.log("here3");
-	var bytes = new Uint8Array(binaryLen);
-	console.log("here4");
-    for (var i = 0; i < binaryLen; i++) {
-        var ascii = binaryString.charCodeAt(i);
-        bytes[i] = ascii;
-	}
-	console.log("here5");
-    return bytes;
-};
-
 function createData(model, hostname, datacenter_name, rack, owner, asset_number) {
 	return { model, hostname, datacenter_name, rack, owner, asset_number };
+}
+
+function createDecData(model, hostname, datacenter_name, rack, owner, asset_number, decommission_user, timestamp) {
+	return { model, hostname, datacenter_name, rack, owner, asset_number, decommission_user, timestamp };
 }
 
 const headCells = [
@@ -126,6 +114,11 @@ const headCells = [
 	{ id: 'asset_number', numeric: false, label: "Asset Number", align: "right" },
 ];
 
+const decommissionHeadCells = [
+	{ id: 'decommission_user', numeric: false, label: "User", align: "right" },
+	{ id: 'timestamp', numeric: false, label: "Timestamp", align: "right" },
+];
+
 
 class TableAsset extends React.Component {
 	constructor(props) {
@@ -135,8 +128,8 @@ class TableAsset extends React.Component {
 			allAssets: [],
 			tableItems: [],
 			selectedItems: [],
-			allSelected:false,
-			decAssets:[],
+			allSelected: false,
+			decAssets: [],
 
 			detailStatusOpen: false,
 			detailStatusSeverity: '',
@@ -159,7 +152,7 @@ class TableAsset extends React.Component {
 			statusSeverity: "",
 			statusMessage: "",
 
-			displayDec:false,
+			displayDec: false,
 		};
 	}
 
@@ -213,10 +206,10 @@ class TableAsset extends React.Component {
 			console.log(response);
 			console.log(response.data);
 			try {
-				var blob=new Blob([response.data], {type:"application/pdf"});
-				var link=document.createElement('a');
-				link.href=window.URL.createObjectURL(blob);
-				link.download="AssetLabels_"+new Date()+".pdf";
+				var blob = new Blob([response.data], { type: "application/pdf" });
+				var link = document.createElement('a');
+				link.href = window.URL.createObjectURL(blob);
+				link.download = "AssetLabels_" + new Date() + ".pdf";
 				link.click();
 				this.setState({
 					showStatus: true,
@@ -243,6 +236,8 @@ class TableAsset extends React.Component {
 	}
 
 	openDetailedView = (event, asset) => {
+		console.log("asset: ");
+		console.log(asset);
 		var dAsset = {};
 		var assets = this.state.displayDec ? this.state.decAssets : this.state.allAssets;
 		assets.map(currAsset => {
@@ -255,9 +250,17 @@ class TableAsset extends React.Component {
 
 	updateItems = (assets) => {
 		var items = [];
-		assets.map(asset => {
-			items.push(createData(asset.model, asset.hostname, asset.datacenter_name, asset.rack + " U" + asset.rack_position, asset.owner, asset.asset_number));
-		});
+
+		if (!this.state.displayDec) {
+			assets.map(asset => {
+				items.push(createData(asset.model, asset.hostname, asset.datacenter_name, asset.rack + " U" + asset.rack_position, asset.owner, asset.asset_number));
+			});
+		} else {
+			assets.map(asset => {
+				items.push(createDecData(asset.vendor + " " + asset.model_number, asset.hostname, asset.datacenter_name, asset.rack + " U" + asset.rack_position, asset.owner, asset.asset_number, asset.decommission_user, asset.timestamp));
+			});
+		}
+
 
 		this.setState({ tableItems: items });
 	}
@@ -271,17 +274,17 @@ class TableAsset extends React.Component {
 	getDecommissionedAssets = () => {
 		axios.post(
 			getURL(Constants.DECOMMISSIONS_MAIN_PATH, AssetCommand.search), {
-                "filter":{
-                    "decommission_user":"",
-                    "start_date":"",
-                    "end_date":"",
-                }
-            }).then(
-				response => {
-					console.log("decommissioned assets:");
-					console.log(response.data.decommissions);
-					this.setState({ decAssets: response.data.decommissions })
-				});
+			"filter": {
+				"decommission_user": "",
+				"start_date": "",
+				"end_date": "",
+			}
+		}).then(
+			response => {
+				console.log("decommissioned assets:");
+				console.log(response.data.decommissions);
+				this.setState({ decAssets: response.data.decommissions })
+			});
 	}
 
 	showStatusBar = (status, severity, message) => {
@@ -345,7 +348,7 @@ class TableAsset extends React.Component {
 	}
 
 	switchToDec = (switchBool) => {
-		this.setState({ displayDec:switchBool });
+		this.setState({ displayDec: switchBool });
 	}
 
 	render() {
@@ -353,7 +356,7 @@ class TableAsset extends React.Component {
 
 		var allSelected = true;
 		this.state.tableItems.map(elem => {
-				allSelected = allSelected && this.state.selectedItems.indexOf(elem.asset_number) !== -1;
+			allSelected = allSelected && this.state.selectedItems.indexOf(elem.asset_number) !== -1;
 		});
 
 		return (
@@ -397,16 +400,16 @@ class TableAsset extends React.Component {
 								<TableHead>
 									<TableRow className={classes.styledTableRow}>
 										<TableCell padding="checkbox">
-												<Tooltip title="Select All">
-													<IconButton aria-label="select-all" onClick={() => this.onSelectAllClick()}>
-														<CheckIcon />
-													</IconButton>
-												</Tooltip>
-												<Tooltip title="Deselect All">
-													<IconButton aria-label="deselect-all" onClick={() => this.deselectAllClick()}>
-														<ClearIcon />
-													</IconButton>
-												</Tooltip>
+											<Tooltip title="Select All">
+												<IconButton aria-label="select-all" onClick={() => this.onSelectAllClick()}>
+													<CheckIcon />
+												</IconButton>
+											</Tooltip>
+											<Tooltip title="Deselect All">
+												<IconButton aria-label="deselect-all" onClick={() => this.deselectAllClick()}>
+													<ClearIcon />
+												</IconButton>
+											</Tooltip>
 										</TableCell>
 										{headCells.map(headCell => (
 											<TableCell
@@ -429,6 +432,27 @@ class TableAsset extends React.Component {
 												</TableSortLabel>
 											</TableCell>
 										))}
+										{this.state.displayDec ?
+										decommissionHeadCells.map(headCell => (
+											<TableCell
+												className={classes.tableCellHead}
+												key={headCell.id}
+												align={headCell.align}
+												sortDirection={this.state.orderBy === headCell.id ? this.state.order : false}
+											>
+												<TableSortLabel
+													active={this.state.orderBy === headCell.id}
+													direction={this.state.orderBy === headCell.id ? this.state.order : 'asc'}
+													onClick={(event) => { this.createSortHandler(event, headCell.id) }}
+												>
+													<span style={{ fontWeight: "bold" }}>{headCell.label}</span>
+													{this.state.orderBy === headCell.id ? (
+														<span className={classes.visuallyHidden}>
+															{this.state.order === 'desc' ? 'sorted descending' : 'sorted ascending'}
+														</span>
+													) : null}
+												</TableSortLabel>
+											</TableCell>)) : null }
 										<TableCell align="left" className={classes.tableCellHead}>{""}</TableCell>
 									</TableRow>
 								</TableHead>
@@ -459,6 +483,8 @@ class TableAsset extends React.Component {
 													<TableCell align="left">{row.rack}</TableCell>
 													<TableCell align="left">{row.owner}</TableCell>
 													<TableCell align="right">{row.asset_number}</TableCell>
+													{this.state.displayDec ? <TableCell align="right">{row.decommission_user}</TableCell> : null}
+													{this.state.displayDec ? <TableCell align="right">{row.timestamp}</TableCell> : null}
 													<TableCell align="center">
 														<Button
 															color="primary"

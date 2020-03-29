@@ -626,7 +626,8 @@ class EditAsset extends React.Component {
                     (this.state.loadingDatacenters
                         || this.state.loadingModels
                         || this.state.loadingHostnames
-                        || this.state.loadingOwners)
+                        || this.state.loadingOwners
+                        || !this.props.disabled)
                     //&& false
                 ) ? <div className={classes.progress}><CircularProgress /></div> :
                     <form

@@ -244,7 +244,8 @@ class TableAsset extends React.Component {
 
 	openDetailedView = (event, asset) => {
 		var dAsset = {};
-		this.state.allAssets.map(currAsset => {
+		var assets = this.state.displayDec ? this.state.decAssets : this.state.allAssets;
+		assets.map(currAsset => {
 			if (currAsset.asset_number === asset.asset_number) {
 				Object.assign(dAsset, currAsset);
 			}

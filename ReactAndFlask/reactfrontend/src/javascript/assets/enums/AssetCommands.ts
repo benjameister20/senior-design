@@ -23,4 +23,5 @@ export enum AssetCommand {
     CHANGE_PLAN_DELETE_ACTION = 'deleteaction/',
     CHANGE_PLAN_GET_ACTIONS = 'getactions/',
     GENERATE_LABELS = 'labelgen/',
+    DECOMMISSION = "decommission_asset/",
 }

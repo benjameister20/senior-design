@@ -67,10 +67,10 @@ class DetailAsset extends React.Component {
 
         return (
         <span>
-            <Dialog fullScreen open={this.props.open} onClose={this.props.close} TransitionComponent={Transition} padding={3}>
+            <Dialog fullScreen open={this.props.open} onClose={() => {window.location.reload();}} TransitionComponent={Transition} padding={3}>
                 <AppBar className={classes.appBar}>
                     <Toolbar>
-                        <IconButton edge="start" color="inherit" onClick={this.props.close} aria-label="close">
+                        <IconButton edge="start" color="inherit" onClick={() => {window.location.reload();}} aria-label="close">
                             <CloseIcon />
                         </IconButton>
                         <Typography variant="h6" className={classes.title}>
@@ -102,6 +102,7 @@ class DetailAsset extends React.Component {
                             privilege={this.props.privilege}
                             changePlanActive={this.props.changePlanActive}
                             changePlanID={this.props.changePlanID}
+                            username={this.props.username}
                         />
                     </ExpansionPanelDetails>
                 </ExpansionPanel>
@@ -122,17 +123,6 @@ class DetailAsset extends React.Component {
                                 />
                     </ExpansionPanelDetails>
                 </ExpansionPanel>:null}
-                {/*<ExpansionPanel>
-                    <ExpansionPanelSummary
-                        expandIcon={<ExpandMoreIcon />}
-                        aria-controls="panel1a-content"
-                        id="power-header"
-                    >
-                        <Typography>Asset Power Management</Typography>
-                    </ExpansionPanelSummary>
-                    <ExpansionPanelDetails>
-                    </ExpansionPanelDetails>
-                </ExpansionPanel>*/}
             </Dialog>
         </span>
         );

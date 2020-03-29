@@ -201,10 +201,17 @@ class InstanceValidator:
     def validate_connections(self, network_connections, hostname):
         print("validating connections")
         result = ""
+        new_connections = {}
         for my_port in network_connections:
             mac_adress = network_connections[my_port][Constants.MAC_ADDRESS_KEY]
             connection_hostname = network_connections[my_port]["connection_hostname"]
             connection_port = network_connections[my_port]["connection_port"]
+
+            if connection_hostname in new_connections.keys():
+                if new_connections[connection_hostname] == connection_port:
+                    result += "Cannot make two network connections to the same port."
+            elif connection_hostname != "" and connection_port != "":
+                new_connections[connection_hostname] = connection_port
 
             mac_pattern = re.compile(
                 "[a-f0-9]{2}:[a-f0-9]{2}:[a-f0-9]{2}:[a-f0-9]{2}:[a-f0-9]{2}:[a-f0-9]{2}"
@@ -261,6 +268,6 @@ class InstanceValidator:
             return result
 
     def return_conflict(self, current_instance):
-        result = f"The instance placement conflicts with instance with hostname {current_instance.hostname} "
+        result = f"The asset placement conflicts with asset with asset number {current_instance.asset_number} "
         result += f"on rack {current_instance.rack_label} at height U{current_instance.rack_position}."
         return result

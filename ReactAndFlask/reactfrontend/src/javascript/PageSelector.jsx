@@ -13,100 +13,110 @@ const storedLoggedIn = 'loggedIn';
 const storedUsername = 'username';
 
 export default class PageSelector extends React.Component {
-  constructor(props) {
-    super(props);
+	constructor(props) {
+		super(props);
 
-    this.state = {
-      token:sessionStorage.getItem(storedToken) || '',
-      privilege:sessionStorage.getItem(storedPrivilege) || '',
-      loggedIn:sessionStorage.getItem(storedLoggedIn) || '',
-      username:sessionStorage.getItem(storedUsername) || '',
-    };
+		this.state = {
+			token: sessionStorage.getItem(storedToken) || '',
+			privilege: sessionStorage.getItem(storedPrivilege) || '',
+			loggedIn: sessionStorage.getItem(storedLoggedIn) || '',
+			username: sessionStorage.getItem(storedUsername) || '',
+		};
 
-  }
+	}
 
-  componentDidMount() {
-	axios.defaults.headers.common['token'] = this.state.token;
-    axios.defaults.headers.common['privilege'] = this.state.privilege;
-  }
+	componentDidMount() {
 
-  login = (token, username, privilege) => {
-    console.log(privilege);
-    sessionStorage.setItem(storedToken, token);
-    sessionStorage.setItem(storedPrivilege, privilege);
-    sessionStorage.setItem(storedLoggedIn, true);
-    sessionStorage.setItem(storedUsername, username);
+		axios.defaults.headers.common['token'] = this.state.token;
+		axios.defaults.headers.common['privilege'] = this.state.privilege;
+	}
 
-    axios.defaults.headers.common['token'] = token;
-    axios.defaults.headers.common['privilege'] = privilege;
+	login = (token, username, privilege) => {
+		console.log(privilege);
+		sessionStorage.setItem(storedToken, token);
+		sessionStorage.setItem(storedPrivilege, JSON.stringify(privilege));
+		sessionStorage.setItem(storedLoggedIn, true);
+		sessionStorage.setItem(storedUsername, username);
 
-    this.setState({
-      token:token,
-      privilege:privilege,
-      loggedIn:true,
-      username: username,
-	});
+		axios.defaults.headers.common['token'] = token;
+		axios.defaults.headers.common['privilege'] = privilege;
 
-	window.history.replaceState({}, "Hyposoft Asset Management", "/")
-  }
+		this.setState({
+			token: token,
+			privilege: privilege,
+			loggedIn: true,
+			username: username,
+		});
 
-  loginWithOAuth = (token, username, privilege) => {
+		window.history.replaceState({}, "Hyposoft Asset Management", "/")
+	}
 
-	sessionStorage.setItem(storedToken, token);
-	sessionStorage.setItem(storedPrivilege, privilege);
-	sessionStorage.setItem(storedLoggedIn, true);
-	sessionStorage.setItem(storedUsername, username);
+	loginWithOAuth = (token, username, privilege) => {
 
-	axios.defaults.headers.common['token'] = token;
-	axios.defaults.headers.common['privilege'] = privilege;
+		sessionStorage.setItem(storedToken, token);
+		sessionStorage.setItem(storedPrivilege, privilege);
+		sessionStorage.setItem(storedLoggedIn, true);
+		sessionStorage.setItem(storedUsername, username);
 
-	this.setState({
-	token:token,
-	privilege:privilege,
-	loggedIn:true,
-	username: username,
-	}, () => { window.history.replaceState({}, "Hyposoft Asset Management", "/") });
-	//window.location.href = Constants.SHIB_REDIRECT_URI;
-  }
+		axios.defaults.headers.common['token'] = token;
+		axios.defaults.headers.common['privilege'] = privilege;
 
-  logout = () => {
-    axios.get(getURL('users/', 'logout'));
+		this.setState({
+			token: token,
+			privilege: privilege,
+			loggedIn: true,
+			username: username,
+		}, () => { window.history.replaceState({}, "Hyposoft Asset Management", "/") });
+	}
 
-    this.setState({
-      token:'',
-      privilege:'',
-      loggedIn:false,
-      username:'',
-    });
+	logout = () => {
+		axios.get(getURL('users/', 'logout'));
 
-    sessionStorage.removeItem(storedToken);
-    sessionStorage.removeItem(storedPrivilege);
-    sessionStorage.removeItem(storedLoggedIn);
-    sessionStorage.removeItem(storedUsername);
+		this.setState({
+			token: '',
+			privilege: '',
+			loggedIn: false,
+			username: '',
+		});
 
-	window.history.replaceState({}, "Hyposoft Asset Management", "/")
-	console.log(window.location.href);
-	console.log(Constants.SHIB_REDIRECT_URI);
-	//window.location = Constants.SHIB_REDIRECT_URI;
-  }
+		sessionStorage.removeItem(storedToken);
+		sessionStorage.removeItem(storedPrivilege);
+		sessionStorage.removeItem(storedLoggedIn);
+		sessionStorage.removeItem(storedUsername);
 
-  render() {
-    return (
-      <div>
-        {this.state.loggedIn ?
-          	<TabViewer
-				token={this.state.token}
-				username={this.state.username}
-				privilege={this.state.privilege}
-				logout={this.logout}
-          	/> :
-		  	<Login
-				loginFunc={this.login}
-				shib={this.props.redirected}
-				loginFuncOAuth={this.loginWithOAuth}
-			/>}
-      </div>
-    );
-  }
+		window.history.replaceState({}, "Hyposoft Asset Management", "/")
+		console.log(window.location.href);
+		console.log(Constants.SHIB_REDIRECT_URI);
+		//window.location = Constants.SHIB_REDIRECT_URI;
+	}
+
+	render() {
+
+		var privilege = "";
+		try {
+			privilege = JSON.parse(this.state.privilege);
+		} catch {
+			privilege = this.state.privilege;
+		}
+		console.log("privilege: ");
+		console.log(privilege);
+
+		return (
+			<div>
+				{this.state.loggedIn ?
+					<TabViewer
+						token={this.state.token}
+						username={this.state.username}
+						privilege={privilege}
+						logout={this.logout}
+					/> :
+					<Login
+						loginFunc={this.login}
+						shib={this.props.redirected}
+						loginFuncOAuth={this.loginWithOAuth}
+					/>}
+			</div>
+		);
+	}
 
 }

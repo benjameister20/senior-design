@@ -12,11 +12,12 @@ import {
     Toolbar,
     Slide,
     IconButton,
-    Grid
+    Grid,
 } from "@material-ui/core/"
+import { Alert, AlertTitle } from "@material-ui/lab";
 import { withStyles } from '@material-ui/core/styles';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
- import CloseIcon from '@material-ui/icons/Close';
+import CloseIcon from '@material-ui/icons/Close';
 
 import { Typography } from '@material-ui/core';
 import NetworkGraph from "./NetworkGraph";
@@ -48,7 +49,8 @@ class DetailAsset extends React.Component {
         super(props);
 
         this.state = {
-            networkNodes:null,
+            networkNodes: null,
+            detailsExpanded: true,
         };
     }
 
@@ -56,15 +58,19 @@ class DetailAsset extends React.Component {
         this.props.search();
     }
 
+    toggleDetails = () => {
+        this.setState({ detailsExpanded: !this.state.detailsExpanded });
+    }
+
     render() {
         const { classes } = this.props;
 
         return (
         <span>
-            <Dialog fullScreen open={this.props.open} onClose={this.props.close} TransitionComponent={Transition} padding={3}>
+            <Dialog fullScreen open={this.props.open} onClose={() => {window.location.reload();}} TransitionComponent={Transition} padding={3}>
                 <AppBar className={classes.appBar}>
                     <Toolbar>
-                        <IconButton edge="start" color="inherit" onClick={this.props.close} aria-label="close">
+                        <IconButton edge="start" color="inherit" onClick={() => {window.location.reload();}} aria-label="close">
                             <CloseIcon />
                         </IconButton>
                         <Typography variant="h6" className={classes.title}>
@@ -73,7 +79,13 @@ class DetailAsset extends React.Component {
                     </Toolbar>
                 </AppBar>
 
-                <ExpansionPanel>
+                {this.props.changePlanActive ?
+					<Alert severity="info">
+						<AlertTitle>Change Plan Mode</AlertTitle>
+						You are currently in change plan mode! Changes made are being logged in the plan and not actually made in the system.
+					</Alert> : null}
+
+                <ExpansionPanel expanded={this.state.detailsExpanded} onChange={this.toggleDetails}>
                     <ExpansionPanelSummary
                         expandIcon={<ExpandMoreIcon />}
                         aria-controls="panel1a-content"
@@ -88,6 +100,9 @@ class DetailAsset extends React.Component {
                             close={this.props.close}
                             getAssetList={this.props.getAssetList}
                             privilege={this.props.privilege}
+                            changePlanActive={this.props.changePlanActive}
+                            changePlanID={this.props.changePlanID}
+                            username={this.props.username}
                         />
                     </ExpansionPanelDetails>
                 </ExpansionPanel>
@@ -108,17 +123,6 @@ class DetailAsset extends React.Component {
                                 />
                     </ExpansionPanelDetails>
                 </ExpansionPanel>:null}
-                {/*<ExpansionPanel>
-                    <ExpansionPanelSummary
-                        expandIcon={<ExpandMoreIcon />}
-                        aria-controls="panel1a-content"
-                        id="power-header"
-                    >
-                        <Typography>Asset Power Management</Typography>
-                    </ExpansionPanelSummary>
-                    <ExpansionPanelDetails>
-                    </ExpansionPanelDetails>
-                </ExpansionPanel>*/}
             </Dialog>
         </span>
         );

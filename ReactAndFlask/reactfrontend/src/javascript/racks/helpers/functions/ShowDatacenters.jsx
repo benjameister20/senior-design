@@ -132,10 +132,10 @@ export default function ShowDatacenters(props) {
                         {rackType === "single" ? <Grid item xs={12}>
                             <TextField id="standard-basic" variant="outlined" label="Rack" name="rack1" onChange={updateRack}/>
                         </Grid> : <Grid container item spacing={3} direciton="row" justify="center"><Grid item xs={6}>
-                            <TextField id="standard-basic" variant="outlined" label="Start Rack" name="rack1" onChange={updateStart}/>
+                            <TextField id="standard-basic" variant="outlined" label="Start Rack (e.g. A1)" name="rack1" onChange={updateStart}/>
                         </Grid>
                         <Grid item xs={6}>
-                            <TextField id="standard-basic" variant="outlined" label="End Rack" name="rack2" onChange={updateEnd}/>
+                            <TextField id="standard-basic" variant="outlined" label="End Rack (e.g. B10)" name="rack2" onChange={updateEnd}/>
                         </Grid></Grid> }
                         {props.disabled ? null :
                         <Grid item xs={6}>

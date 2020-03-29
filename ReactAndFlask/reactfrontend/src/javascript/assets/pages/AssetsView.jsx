@@ -40,6 +40,10 @@ export default class AssetsView extends React.Component {
                         <Grid item xs={12}>
                             <TableAsset
                                 privilege={this.props.privilege}
+                                username={this.props.username}
+                                changePlanActive={this.props.changePlanActive}
+                                updateChangePlan={this.props.updateChangePlan}
+                                changePlanID={this.props.changePlanID}
                             />
                         </Grid>
                     </Grid>

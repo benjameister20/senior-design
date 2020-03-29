@@ -513,43 +513,7 @@ class CreateAsset extends React.Component {
     }
 
     closeModal = () => {
-        this.getLists();
-        this.props.getAssetList();
-        this.setState({
-            loadingAssetNumber:true,
-            loadingModels:true,
-            modelList:[],
-            networkList:null,
-            powerPortList:null,
-            loadingOwners:true,
-            ownerList:[],
-            loadingDatacenters:true,
-            datacenterList:[],
-            loadingHostnames:true,
-            assetNumList:[],
-            assetNumToModelList:null,
-            model:"",
-            hostname:"",
-            rack:"",
-            rackU:-1,
-            owner:"",
-            comment:"",
-            datacenter_name:"",
-            tags:[],
-            network_connections:null,
-            power_connections:null,
-            asset_number:100000,
-            selectedConnection:null,
-            statusOpen: false,
-            statusMessage: "",
-            statusSeverity:"",
-            showModal:false,
-            powerPortState:null,
-            leftRight:null,
-            availableConnections:false,
-            portOptions:[],
-            canSubmit:false,
-        }, () => { this.props.close(); });
+        window.location.reload();
     }
 
     statusClose = () => {

@@ -312,6 +312,7 @@ class ChangePlanValidator:
                 prev_pow_connections = prev_action.new_record.get(
                     Constants.POWER_CONNECTIONS_KEY
                 )
+                print(prev_action.new_record)
                 prev_pow_connections = set(prev_pow_connections)
                 pow_intersection = pow_connections.intersection(prev_pow_connections)
                 if len(pow_intersection) > 0:

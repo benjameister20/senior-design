@@ -2,12 +2,13 @@ from typing import List
 
 from app.change_plans.change_plan_action_manager import ChangePlanActionManager
 from app.change_plans.change_plan_manager import ChangePlanManager
+from app.change_plans.work_order import WorkOrder
 from app.constants import Constants
 from app.decorators.auth import requires_auth
 from app.decorators.logs import log
 from app.exceptions.InvalidInputsException import InvalidInputsError
 from app.logging.logger import Logger
-from flask import Blueprint, request
+from flask import Blueprint, request, send_file
 
 changeplans = Blueprint(
     "changeplans", __name__, template_folder="templates", static_folder="static"
@@ -205,6 +206,25 @@ def get_cp_actions():
         )
 
         return returnJSON
+    except InvalidInputsError as e:
+        return addMessageToJSON(returnJSON, e.message)
+
+
+@changeplans.route("/changeplans/workorder", methods=["POST"])
+# @requires_auth(request)
+def get_work_order():
+    """ Route to get barcode labels for assets"""
+    returnJSON = createJSON()
+    try:
+        cp_data = request.get_json()
+        cp_id = cp_data.get(Constants.CHANGE_PLAN_ID_KEY)
+        WorkOrder().generate_order(cp_id)
+        return send_file(
+            filename_or_fp="static/work_order.pdf",
+            mimetype="application/pdf",
+            as_attachment=True,
+        )
+        # return addMessageToJSON(returnJSON, "success")
     except InvalidInputsError as e:
         return addMessageToJSON(returnJSON, e.message)
 

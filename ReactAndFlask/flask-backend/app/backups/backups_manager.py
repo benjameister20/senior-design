@@ -8,8 +8,8 @@ from app.users.authentication import AuthManager
 
 class BackupsManager:
 
-    # FILE_PATH = "/app/ReactAndFlask/flask-backend/app/backups"
-    FILE_PATH = os.path.dirname(__file__)
+    FILE_PATH = "/app/ReactAndFlask/flask-backend/app/backups"
+    # FILE_PATH = os.path.dirname(__file__)
     passkey_encrypted = b"$2b$12$D/Z2zQxafNrraBjzDgvHt.yZB.PrSe8fyDstcjgiO9hOpss2Z6A5a"
 
     def __init__(self):

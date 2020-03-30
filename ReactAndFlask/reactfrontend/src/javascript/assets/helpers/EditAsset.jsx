@@ -795,7 +795,8 @@ class EditAsset extends React.Component {
 
                                 {this.displayNetworks() ?
                                     <Grid item xs={12}>
-                                        {this.state.networkList[this.getModel()].map(networkPort => (
+                                        { this.state.networkList[this.getModel()].length === Object.keys(this.state.network_connections).length ?
+                                        this.state.networkList[this.getModel()].map(networkPort => (
                                             <Grid container spacing={3}>
                                                 <Grid item xs={2}>
                                                     <Typography>{networkPort + ": "}</Typography>
@@ -875,7 +876,7 @@ class EditAsset extends React.Component {
                                                     </Tooltip>
                                                 </Grid>
                                             </Grid>
-                                        ))}
+                                        )) : null }
                                     </Grid> : null}
 
                                 {(
@@ -968,13 +969,14 @@ class EditAsset extends React.Component {
                                     </Grid>}
                                 {this.props.disabled ? null :
                                     <Grid item xs={3}>
+                                        { this.props.changePlanActive ? null :
                                         <Button
                                             variant="contained"
                                             color="secondary"
                                             onClick={() => this.openConfirmationBox()}
                                         >
-                                            {this.props.changePlanActive ? "Delete in Change Plan" : "Delete"}
-                                        </Button>
+                                            Delete
+                                        </Button>}
                                     </Grid>}
                                 {this.props.disabled ? null :
                                     <Grid item xs={6}>

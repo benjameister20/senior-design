@@ -241,6 +241,27 @@ class ChangePlansView extends React.Component {
         this.setState({ changeDescriptionModal: false });
     }
 
+    // Concatenate network port summaries
+    reducePorts = (portList) => {
+        var result = ""
+
+        portList.forEach(port => {
+            if (port.connection_hostname.length > 0) {
+                result += "Host: " + port.connection_hostname + " ";
+            }
+
+            if (port.connection_port.length > 0) {
+                result += "Port: " + port.connection_port + " ";
+            }
+
+            if (port.mac_address.length > 0) {
+                result += "Mac: " + port.mac_address + " ";
+            }
+        });
+
+        return result;
+    }
+
     // Convert keys from backend to user friendly display names
     lookup = (key) => {
         return {
@@ -376,15 +397,15 @@ class ChangePlansView extends React.Component {
                                                                     <TableRow>
                                                                         <TableCell>{this.lookup(key)}</TableCell>
                                                                         <TableCell>
-                                                                            { (key !== "power_connections" && key !== "network_connections") ? diff[key] : "" }
+                                                                            { (key !== "power_connections") ? (key === "network_connections" ? Object.keys(diff[key]).length : diff[key]) : diff[key].length }
                                                                         </TableCell>
                                                                     </TableRow>
                                                                 ) :
                                                                 (
                                                                     <TableRow>
                                                                         <TableCell>{this.lookup(key)}</TableCell>
-                                                                        <TableCell>{diff[key][0]}</TableCell>
-                                                                        <TableCell>{diff[key][1]}</TableCell>
+                                                                        <TableCell>{ key !== "network_connections" ? diff[key][0] : this.reducePorts(diff[key][0])}</TableCell>
+                                                                        <TableCell>{ key !== "network_connections" ? diff[key][1] : this.reducePorts(diff[key][1])}</TableCell>
                                                                     </TableRow>
                                                                 )
                                                         }

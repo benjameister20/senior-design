@@ -114,11 +114,25 @@ class ChangePlanActionManager:
                 # Diff records
                 diff = {}
                 for key in cp_action.old_record.keys():
+                    if key == "height" or key == "abbreviation":
+                        continue
+
                     if (
-                        key == "network_ports"
-                        or key == "height"
-                        or key == "abbreviation"
+                        key == "network_connections"
+                        and cp_action.old_record[key] != cp_action.new_record[key]
                     ):
+                        old_ports = []
+                        new_ports = []
+                        for port in cp_action.old_record[key]:
+                            if (
+                                cp_action.old_record[key][port]
+                                != cp_action.new_record[key][port]
+                            ):
+                                old_ports.append(cp_action.old_record[key][port])
+                                new_ports.append(cp_action.new_record[key][port])
+
+                        diff[key] = [old_ports, new_ports]
+
                         continue
 
                     if cp_action.old_record[key] != cp_action.new_record[key]:

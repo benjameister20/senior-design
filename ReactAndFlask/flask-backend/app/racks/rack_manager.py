@@ -93,6 +93,9 @@ def _modify_rack_range(
     if start_number < 1 or start_number > stop_number:
         raise InvalidRangeError
 
+    if start_letter.upper() > stop_letter.upper():
+        raise InvalidRangeError
+
     alphabet: str = string.ascii_uppercase
     letters: str = alphabet[
         alphabet.index(start_letter.upper()) : alphabet.index(stop_letter.upper()) + 1
@@ -104,7 +107,12 @@ def _modify_rack_range(
             for number in range(start_number, stop_number + 1):
                 label = f"{letter}{number}"
                 results.append(modifier(label, datacenter_id, datacenter_name))
-    except (DBWriteException, RackNotEmptyError, RackDoesNotExistError):
+    except (
+        DBWriteException,
+        InvalidRangeError,
+        RackNotEmptyError,
+        RackDoesNotExistError,
+    ):
         raise
 
     return results

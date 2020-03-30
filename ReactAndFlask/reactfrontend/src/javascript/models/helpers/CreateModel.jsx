@@ -1,7 +1,5 @@
 import React from 'react';
 
-import axios from "axios";
-
 import TextField from "@material-ui/core/TextField";
 import Button from '@material-ui/core/Button';
 import Autocomplete from '@material-ui/lab/Autocomplete';
@@ -15,14 +13,10 @@ import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
 import { withStyles } from '@material-ui/core/styles';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
-import Dropzone from 'react-dropzone'
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListSubheader from '@material-ui/core/ListSubheader';
-
-import getURL from "../../helpers/functions/GetURL";
-import * as Constants from "../../Constants";
 
 function createInputs(name, label) {
     return {label, name};
@@ -70,7 +64,7 @@ class CreateModel extends React.Component {
         super(props);
 
         this.state = {
-            color: '#000',
+            color: '#A52A2A',
             showModal: false,
             showImportModal: false,
             importedFile: null,
@@ -256,7 +250,6 @@ class CreateModel extends React.Component {
                                 <CompactPicker
                                     color={this.state.color}
                                     onChange={this.updateColor}
-
                                 />
                             </Grid>
                             <Grid item xs={12}>

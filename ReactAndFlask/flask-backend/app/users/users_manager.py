@@ -4,7 +4,6 @@ import os
 import requests
 from app.constants import Constants
 from app.dal.user_table import UserTable
-from app.data_models.permission import Permission
 from app.data_models.user import User
 from app.exceptions.InvalidInputsException import InvalidInputsError
 from app.exceptions.UserExceptions import (
@@ -79,14 +78,15 @@ class UserManager:
 
     def search(self, request):
         request_data = request.get_json()
-        print("request data: ", request_data)
+        # print("request data: ", request_data)
         filters = request_data.get(Constants.FILTER_KEY)
         limit = filters.get(Constants.LIMIT_KEY)
         if limit is None:
             limit = 1000
-        print()
-        print(filters.get(Constants.PRIVILEGE_KEY).get(PermissionConstants.DATACENTERS))
-        print()
+
+        print("FILTER")
+        print(filters)
+        # print(filters.get(Constants.PRIVILEGE_KEY).get(PermissionConstants.DATACENTERS))
         users = self.USER_TABLE.search_users(
             username=filters.get(Constants.USERNAME_KEY),
             display_name=filters.get(Constants.DISPLAY_NAME_KEY),
@@ -315,15 +315,15 @@ class UserManager:
         username = request_data.get(Constants.USERNAME_KEY)
         email = request_data.get(Constants.EMAIL_KEY)
         display_name = request_data.get(Constants.DISPLAY_NAME_KEY)
-        privilege = Permission(
-            model=False,
-            asset=False,
-            datacenters=[],
-            power=False,
-            audit=True,
-            admin=False,
-        )
-        datacenters = privilege.datacenters
+        privilege = {
+            "model": False,
+            "asset": False,
+            "datacenters": [],
+            "power": False,
+            "audit": False,
+            "admin": False,
+        }
+        datacenters = privilege["datacenters"]
         password = Constants.NETID_PASSWORD.encode("utf-8")
 
         client_id = request_data.get("client_id")

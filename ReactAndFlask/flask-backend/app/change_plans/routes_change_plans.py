@@ -2,10 +2,13 @@ from typing import List
 
 from app.change_plans.change_plan_action_manager import ChangePlanActionManager
 from app.change_plans.change_plan_manager import ChangePlanManager
+from app.change_plans.work_order import WorkOrder
 from app.constants import Constants
+from app.decorators.auth import requires_auth
+from app.decorators.logs import log
 from app.exceptions.InvalidInputsException import InvalidInputsError
 from app.logging.logger import Logger
-from flask import Blueprint, request
+from flask import Blueprint, request, send_file
 
 changeplans = Blueprint(
     "changeplans", __name__, template_folder="templates", static_folder="static"
@@ -23,7 +26,7 @@ def test():
 
 
 @changeplans.route("/changeplans/createplan", methods=["POST"])
-# @requires_auth(request)
+@requires_auth(request)
 def create_Cp():
     """ Route for creating change plans """
     global CP_MANAGER
@@ -31,7 +34,8 @@ def create_Cp():
 
     try:
         cp_data = request.get_json()
-        CP_MANAGER.create_change_plan(cp_data)
+        cp_id: int = CP_MANAGER.create_change_plan(cp_data)
+        returnJSON = addCpToJSON(returnJSON, cp_id)
         return addMessageToJSON(returnJSON, "success")
     except InvalidInputsError as e:
         print(e.message)
@@ -39,7 +43,7 @@ def create_Cp():
 
 
 @changeplans.route("/changeplans/deleteplan", methods=["POST"])
-# @requires_auth(request)
+@requires_auth(request)
 def delete_cp():
     """ Route for deleting change plans """
     global CP_MANAGER
@@ -54,7 +58,7 @@ def delete_cp():
 
 
 @changeplans.route("/changeplans/editplan", methods=["POST"])
-# @requires_auth(request)
+@requires_auth(request)
 def edit_cp():
     """ Route for editing change plans """
     global CP_MANAGER
@@ -69,8 +73,8 @@ def edit_cp():
 
 
 @changeplans.route("/changeplans/execute", methods=["POST"])
-# @requires_auth(request)
-# @log(request, Logger.CHANGEPLAN, Logger.ACTIONS.CHANGEPLAN.EXECUTE)
+@requires_auth(request)
+@log(request, Logger.CHANGEPLAN, Logger.ACTIONS.CHANGEPLAN.EXECUTE)
 def execute():
     """ Route for executing a change plans """
     global CP_MANAGER
@@ -80,6 +84,24 @@ def execute():
         cp_data = request.get_json()
         CP_MANAGER.execute_cp(cp_data)
         return addMessageToJSON(returnJSON, "success")
+    except InvalidInputsError as e:
+        return addMessageToJSON(returnJSON, e.message)
+
+
+@changeplans.route("/changeplans/validateplan", methods=["POST"])
+# @requires_auth(request)
+# @log(request, Logger.CHANGEPLAN, Logger.ACTIONS.CHANGEPLAN.EXECUTE)
+def validate_cp():
+    """ Route for executing a change plans """
+    global CP_ACTION_MANAGER
+    returnJSON = createJSON()
+
+    try:
+        cp_data = request.get_json()
+        cp_id = cp_data.get(Constants.CHANGE_PLAN_ID_KEY)
+        val_result = CP_ACTION_MANAGER.validate_all_cp_actions(cp_id)
+        returnJSON["conflicts"] = val_result
+        return returnJSON
     except InvalidInputsError as e:
         return addMessageToJSON(returnJSON, e.message)
 
@@ -188,6 +210,25 @@ def get_cp_actions():
         return addMessageToJSON(returnJSON, e.message)
 
 
+@changeplans.route("/changeplans/workorder", methods=["POST"])
+# @requires_auth(request)
+def get_work_order():
+    """ Route to get barcode labels for assets"""
+    returnJSON = createJSON()
+    try:
+        cp_data = request.get_json()
+        cp_id = cp_data.get(Constants.CHANGE_PLAN_ID_KEY)
+        WorkOrder().generate_order(cp_id)
+        return send_file(
+            filename_or_fp="static/work_order.pdf",
+            mimetype="application/pdf",
+            as_attachment=True,
+        )
+        # return addMessageToJSON(returnJSON, "success")
+    except InvalidInputsError as e:
+        return addMessageToJSON(returnJSON, e.message)
+
+
 def createJSON() -> dict:
     return {"metadata": "none"}
 
@@ -199,6 +240,11 @@ def addMessageToJSON(json, message) -> dict:
 
 def addCpsTOJSON(json, cpArr: List[str]) -> dict:
     json["change_plans"] = cpArr
+    return json
+
+
+def addCpToJSON(json, cp) -> dict:
+    json["change_plan"] = cp
     return json
 
 

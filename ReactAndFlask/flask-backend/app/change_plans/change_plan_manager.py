@@ -1,6 +1,8 @@
 import datetime
 from typing import Any, Dict, List
 
+from app.change_plans.change_plan_action_manager import ChangePlanActionManager
+from app.change_plans.change_plan_validator import ChangePlanValidator
 from app.constants import Constants
 from app.dal.change_plan_action_table import ChangePlanActionTable
 from app.dal.change_plan_table import ChangePlanTable
@@ -17,11 +19,12 @@ class ChangePlanManager:
         self.cp_action_table = ChangePlanActionTable()
         self.instance_manager = InstanceManager()
         self.decommission_manager = DecommissionManager()
+        self.validator = ChangePlanValidator()
 
-    def create_change_plan(self, cp_data):
+    def create_change_plan(self, cp_data) -> int:
         try:
             new_change_plan = self.make_cp(cp_data)
-            self.cp_table.add_change_plan(new_change_plan)
+            return self.cp_table.add_change_plan(new_change_plan)
         except InvalidInputsError as e:
             print(e.message)
             raise InvalidInputsError(e.message)
@@ -104,6 +107,15 @@ class ChangePlanManager:
                 ChangePlanAction
             ] = self.cp_action_table.get_actions_by_change_plan_id(identifier)
 
+            # Validate Change Plan
+            val_actions = ChangePlanActionManager().get_change_plan_actions(identifier)
+            for cp_action in val_actions:
+                val_result = self.validator.validate_action(cp_action, val_actions)
+                if val_result != Constants.API_SUCCESS:
+                    conflict = f"Change plan cannot be executed due to conflict in step {cp_action.step}. "
+                    conflict += val_result
+                    raise InvalidInputsError(conflict)
+
             # Execute actions in change plan
             for cp_action in change_plan_actions:
                 self._execute_action(cp_action, owner)
@@ -146,6 +158,7 @@ class ChangePlanManager:
     def _execute_action(self, cp_action: ChangePlanAction, owner: str):
         asset_data = cp_action.new_record
         asset_data[Constants.IS_CHANGE_PLAN_KEY] = True
+        asset_data[Constants.USERNAME_KEY] = owner
         if cp_action.action == Constants.CREATE_KEY:
             self.instance_manager.create_instance(asset_data)
         elif cp_action.action == Constants.UPDATE_KEY:
@@ -158,6 +171,7 @@ class ChangePlanManager:
             decom_data[Constants.IS_CHANGE_PLAN_KEY] = True
             decom_data[Constants.ASSET_NUMBER_KEY] = cp_action.original_asset_number
             decom_data[Constants.DECOM_USER_KEY] = owner
+            decom_data[Constants.USERNAME_KEY] = owner
             self.decommission_manager.decommission_asset(decom_data)
 
     def check_null(self, val):

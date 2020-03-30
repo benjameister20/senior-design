@@ -81,7 +81,7 @@ export default class ModelsView extends React.Component {
                 'vendor':'',
                 'model_number':'',
                 'height':'',
-                'display_color':'',
+                'display_color':'#A52A2A',
                 'ethernet_ports':'',
                 'power_ports':'',
                 'cpu':'',
@@ -554,14 +554,10 @@ export default class ModelsView extends React.Component {
                         />
                     </Grid>
                     <Grid item xs={12} sm={6} md={4} lg={3}>
-                        {(this.props.privilege.admin || this.props.privilege.model) ?
-                        (<div>
-
                         <ExportModel
                             downloadTable={this.downloadTable}
                             showAll={this.searchAll}
                         />
-
                         <CSVLink
                             data={this.state.csvData}
                             filename={modelDownloadFileName}
@@ -569,8 +565,6 @@ export default class ModelsView extends React.Component {
                             ref={(r) => this.csvLink = r}
                             target="_blank"
                         />
-                        </div>):null
-                        }
                     </Grid>
                     <Grid item xs={12}>
                         <ModelsTable

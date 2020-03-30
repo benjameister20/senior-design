@@ -11,7 +11,7 @@ class ChangePlanEntry(db.Model):
     owner = db.Column(db.String(128))
     name = db.Column(db.String(128))
     executed = db.Column(db.Boolean)
-    timestamp = db.Column(db.Date, nullable=True)
+    timestamp = db.Column(db.String(120), nullable=True)
 
     def __init__(self, change_plan: ChangePlan):
         self.owner = change_plan.owner
@@ -56,7 +56,7 @@ class ChangePlanTable:
 
         return [entry.make_change_plan() for entry in change_plan_entries]
 
-    def add_change_plan(self, change_plan: ChangePlan) -> None:
+    def add_change_plan(self, change_plan: ChangePlan) -> int:
         """ Adds a change plan to the database """
         change_plan_entry: ChangePlanEntry = ChangePlanEntry(change_plan=change_plan)
         print("owner", change_plan_entry.owner)
@@ -70,6 +70,8 @@ class ChangePlanTable:
         except Exception as e:
             print(f"Failed to add change plan {change_plan.name}")
             raise DBWriteException
+
+        return change_plan_entry.identifier
 
     def edit_change_plan(self, change_plan: ChangePlan) -> None:
         """ Updates the information for a given change plan"""

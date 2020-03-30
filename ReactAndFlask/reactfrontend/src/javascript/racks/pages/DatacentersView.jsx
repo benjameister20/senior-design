@@ -224,13 +224,14 @@ class DatacenterView extends React.Component {
                             </Typography>
                         </Grid>
                         <CreateDatacenter
-                            disabled={this.props.disabled}
+                            disabled={!(this.props.privilege.admin || this.props.privilege.asset)}
                             search={this.getDatacenters}
                             selectedDatacenter={this.state.selectedDatacenter}
                             dc={this.state.fullDatacenter}
                             selectDatacenter={this.updateDatacenter}
                             datacenterList={this.state.datacentersList}
                         />
+
                         {this.state.loadingDCList ?
                             <div className={classes.progress}><CircularProgress /></div> :
 
@@ -243,7 +244,7 @@ class DatacenterView extends React.Component {
                                     editDatacenter={this.openEditDatacenter}
                                     selectedDatacenter={this.state.selectedDatacenter}
                                     updateRacks={this.updateRacks}
-                                    disabled={this.props.disabled}
+                                    privilege={this.props.privilege}
                                     dc={this.state.fullDatacenter}
                                 />
                             </Grid>}
@@ -276,7 +277,6 @@ class DatacenterView extends React.Component {
                     >
                         <Grid item xs={12}>
                             <RacksView
-                                disabled={this.props.disabled}
                                 datacenter={this.state.selectedDatacenter}
                                 racks={this.state.racks}
                             />

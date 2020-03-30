@@ -88,7 +88,6 @@ class DetailModel extends React.Component {
     }
 
     closeModal = () => {
-
     }
 
     render() {

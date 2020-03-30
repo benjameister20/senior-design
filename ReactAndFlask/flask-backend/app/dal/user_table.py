@@ -109,7 +109,7 @@ class UserTable:
     def add_user(self, user: User) -> None:
         """ Adds a user to the database """
         user_entry: UserEntry = UserEntry(user=user)
-
+        print(user)
         try:
             db.session.add(user_entry)
             db.session.commit()

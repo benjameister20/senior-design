@@ -7,7 +7,7 @@ from app.dal.instance_table import RackDoesNotExistError
 from app.dal.rack_table import RackTable
 from app.data_models.permission import Permission
 from app.data_models.rack import Rack
-from app.decorators.auth import requires_auth, requires_permission
+from app.decorators.auth import PermissionActions, requires_auth, requires_permission
 from app.decorators.logs import log
 from app.logging.logger import Logger
 from app.main.types import JSON
@@ -141,6 +141,7 @@ def get_rack_details():
     Permission(
         model=False, asset=False, datacenters=[], power=False, audit=False, admin=True
     ),
+    PermissionActions.NO_DATACENTER,
 )
 @log(request, LOGGER.RACKS, LOGGER.ACTIONS.RACKS.DELETE)
 def delete_racks():
@@ -187,6 +188,7 @@ def delete_racks():
 #     Permission(
 #         model=False, asset=False, datacenters=[], power=False, audit=False, admin=True
 #     ),
+#     PermissionActions.NO_DATACENTER
 # )
 def next_pdu_port():
     """ Returns first available PDU port for a given rack"""

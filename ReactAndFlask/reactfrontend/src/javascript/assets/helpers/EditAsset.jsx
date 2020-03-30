@@ -590,7 +590,31 @@ class EditAsset extends React.Component {
     }
 
     decommissionAsset = () => {
-        axios.post(getURL(Constants.DECOMMISSIONS_MAIN_PATH, AssetCommand.DECOMMISSION),
+        if (this.props.changePlanActive) {
+            var json = this.createJSON();
+            console.log(json);
+            var changePlanJSON = {
+                "change_plan_id": this.props.changePlanID,
+                "step": this.props.changePlanStep,
+                "action": "decommission",
+                "asset_numberOriginal": this.props.defaultValues.asset_number,
+                "new_record": json
+            };
+            var url = getURL(AssetConstants.CHANGE_PLAN_PATH, AssetCommand.CHANGE_PLAN_CREATE_ACTION);
+            axios.post(
+                url,
+                changePlanJSON
+            ).then(
+                response => {
+                    if (response.data.message === AssetConstants.SUCCESS_TOKEN) {
+                        this.props.incrementChangePlanStep();
+                        this.setState({ statusOpen: true, statusMessage: "Successfully saved decommission", statusSeverity: AssetConstants.SUCCESS_TOKEN });
+                    } else {
+                        this.setState({ statusOpen: true, statusMessage: response.data.message, statusSeverity: AssetConstants.ERROR_TOKEN });
+                    }
+                });
+        } else {
+            axios.post(getURL(Constants.DECOMMISSIONS_MAIN_PATH, AssetCommand.DECOMMISSION),
             {
                 "asset_number": this.props.defaultValues.asset_number,
                 "datacenter_name": this.props.defaultValues.datacenter_name,
@@ -606,6 +630,8 @@ class EditAsset extends React.Component {
                 }
             }
         )
+        }
+
     }
 
     openConfirmationBox = () => {
@@ -797,7 +823,8 @@ class EditAsset extends React.Component {
 
                                 {this.displayNetworks() ?
                                     <Grid item xs={12}>
-                                        {this.state.networkList[this.getModel()].map(networkPort => (
+                                        { this.state.networkList[this.getModel()].length === Object.keys(this.state.network_connections).length ?
+                                        this.state.networkList[this.getModel()].map(networkPort => (
                                             <Grid container spacing={3}>
                                                 <Grid item xs={2}>
                                                     <Typography>{networkPort + ": "}</Typography>
@@ -877,7 +904,7 @@ class EditAsset extends React.Component {
                                                     </Tooltip>
                                                 </Grid>
                                             </Grid>
-                                        ))}
+                                        )) : null }
                                     </Grid> : null}
 
                                 {(
@@ -970,13 +997,14 @@ class EditAsset extends React.Component {
                                     </Grid>}
                                 {this.props.disabled ? null :
                                     <Grid item xs={3}>
+                                        { this.props.changePlanActive ? null :
                                         <Button
                                             variant="contained"
                                             color="secondary"
                                             onClick={() => this.openConfirmationBox()}
                                         >
-                                            {this.props.changePlanActive ? "Delete in Change Plan" : "Delete"}
-                                        </Button>
+                                            Delete
+                                        </Button>}
                                     </Grid>}
                                 {this.props.disabled ? null :
                                     <Grid item xs={6}>

@@ -9,9 +9,9 @@ import ErrorBoundray from '../../errors/ErrorBoundry';
 import { AssetCommand } from '../../assets/enums/AssetCommands.ts';
 
 // Material UI Core
-import { Grid, Paper, Typography, Button, withStyles} from '@material-ui/core';
+import { Grid, Paper, Typography, Button, withStyles } from '@material-ui/core';
 import { Modal, Fade, Backdrop, TextField, Chip, IconButton } from '@material-ui/core';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from '@material-ui/core';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@material-ui/core';
 import { ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails } from '@material-ui/core';
 
 // Icons
@@ -29,26 +29,26 @@ const changePlanPath = "changeplans/";
 // CSS styles
 const useStyles = theme => ({
     root: {
-      flexGrow: 1,
+        flexGrow: 1,
     },
     modal: {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         width: "100%",
-      },
-      grid: {
-          backgroundColor: theme.palette.background.paper,
-          boxShadow: theme.shadows[5],
-          padding: theme.spacing(2, 4, 3),
-          width: "50%"
-      },
-      progress: {
+    },
+    grid: {
+        backgroundColor: theme.palette.background.paper,
+        boxShadow: theme.shadows[5],
+        padding: theme.spacing(2, 4, 3),
+        width: "50%"
+    },
+    progress: {
         display: 'flex',
         '& > * + *': {
-          marginLeft: theme.spacing(2),
+            marginLeft: theme.spacing(2),
         },
-      },
+    },
 });
 
 // A view to display a user's change plans
@@ -119,28 +119,28 @@ class ChangePlansView extends React.Component {
     fetchAllChangePlans = () => {
         axios.post(
             getURL(changePlanPath, AssetCommand.CHANGE_PLAN_GET_PLANS), {
-                'owner': this.props.username,
-            }).then(response => {
-                var change_plans = response.data.change_plans;
-                if (change_plans !== null) {
-                    this.setState({ changePlans: change_plans });
+            'owner': this.props.username,
+        }).then(response => {
+            var change_plans = response.data.change_plans;
+            if (change_plans !== null) {
+                this.setState({ changePlans: change_plans });
 
-                    // For each change plan, grab details/actions
-                    change_plans.forEach(plan => {
-                        axios.post(
-                            getURL(changePlanPath, AssetCommand.CHANGE_PLAN_GET_ACTIONS), {
-                                'change_plan_id': plan.identifier,
-                                'owner': this.props.username,
-                            }).then(response => {
-                                var details = this.state.changePlanDetails;
-                                console.log(response.data.change_plan_actions);
-                                details[plan.identifier] = response.data.change_plan_actions;
+                // For each change plan, grab details/actions
+                change_plans.forEach(plan => {
+                    axios.post(
+                        getURL(changePlanPath, AssetCommand.CHANGE_PLAN_GET_ACTIONS), {
+                        'change_plan_id': plan.identifier,
+                        'owner': this.props.username,
+                    }).then(response => {
+                        var details = this.state.changePlanDetails;
+                        console.log(response.data.change_plan_actions);
+                        details[plan.identifier] = response.data.change_plan_actions;
 
-                                this.setState({ changePlanDetails: details });
-                            });
+                        this.setState({ changePlanDetails: details });
                     });
-                }
+                });
             }
+        }
         );
     }
 
@@ -165,19 +165,19 @@ class ChangePlansView extends React.Component {
 
         axios.post(
             getURL(changePlanPath, AssetCommand.CHANGE_PLAN_EDIT), {
-                'change_plan_id': this.state.planId,
-                'name': this.state.planName,
-                'owner': this.props.username,
-            }).then(response => {
-                this.setState({ planId: null, planName: "" });
-                this.fetchAllChangePlans();
+            'change_plan_id': this.state.planId,
+            'name': this.state.planName,
+            'owner': this.props.username,
+        }).then(response => {
+            this.setState({ planId: null, planName: "" });
+            this.fetchAllChangePlans();
 
-                if (response.data.message === "success") {
-                    this.setState({ statusOpen: true, statusMessage: "Success", statusSeverity: "success" });
-                } else {
-                    this.setState({ statusOpen: true, statusMessage: response.data.message, statusSeverity: "error" });
-                }
+            if (response.data.message === "success") {
+                this.setState({ statusOpen: true, statusMessage: "Success", statusSeverity: "success" });
+            } else {
+                this.setState({ statusOpen: true, statusMessage: response.data.message, statusSeverity: "error" });
             }
+        }
         );
     }
 
@@ -207,18 +207,18 @@ class ChangePlansView extends React.Component {
 
         axios.post(
             getURL(changePlanPath, AssetCommand.CHANGE_PLAN_EXECUTE), {
-                'change_plan_id': this.state.executeId,
-                'owner': this.props.username,
-            }).then(response => {
-                this.setState({ executeId: null });
-                this.fetchAllChangePlans();
+            'change_plan_id': this.state.executeId,
+            'owner': this.props.username,
+        }).then(response => {
+            this.setState({ executeId: null });
+            this.fetchAllChangePlans();
 
-                if (response.data.message === "success") {
-                    this.setState({ statusOpen: true, statusMessage: "Success", statusSeverity: "success" });
-                } else {
-                    this.setState({ statusOpen: true, statusMessage: response.data.message, statusSeverity: "error" });
-                }
+            if (response.data.message === "success") {
+                this.setState({ statusOpen: true, statusMessage: "Success", statusSeverity: "success" });
+            } else {
+                this.setState({ statusOpen: true, statusMessage: response.data.message, statusSeverity: "error" });
             }
+        }
         );
     }
 
@@ -238,18 +238,18 @@ class ChangePlansView extends React.Component {
 
         axios.post(
             getURL(changePlanPath, AssetCommand.CHANGE_PLAN_DELETE), {
-                'change_plan_id': this.state.deleteId,
-                'owner': this.props.username,
-            }).then(response => {
-                this.setState({ deleteId: null });
-                this.fetchAllChangePlans();
+            'change_plan_id': this.state.deleteId,
+            'owner': this.props.username,
+        }).then(response => {
+            this.setState({ deleteId: null });
+            this.fetchAllChangePlans();
 
-                if (response.data.message === "success") {
-                    this.setState({ statusOpen: true, statusMessage: "Success", statusSeverity: "success" });
-                } else {
-                    this.setState({ statusOpen: true, statusMessage: response.data.message, statusSeverity: "error" });
-                }
+            if (response.data.message === "success") {
+                this.setState({ statusOpen: true, statusMessage: "Success", statusSeverity: "success" });
+            } else {
+                this.setState({ statusOpen: true, statusMessage: response.data.message, statusSeverity: "error" });
             }
+        }
         );
     }
 
@@ -289,16 +289,16 @@ class ChangePlansView extends React.Component {
     validate = (identifier) => {
         axios.post(
             getURL(changePlanPath, "validateplan/"), {
-                'change_plan_id': identifier,
-            }).then(response => {
-                console.log(response);
-                var conflicts = response.data.conflicts;
-                if (Object.keys(conflicts).length === 0) {
-                    this.setState({ statusOpen: true, statusMessage: "Success", statusSeverity: "success" });
-                } else {
-                    this.setState({ statusOpen: true, statusMessage: response.data.conflicts[Object.keys(conflicts)[0]], statusSeverity: "error" });
-                }
+            'change_plan_id': identifier,
+        }).then(response => {
+            console.log(response);
+            var conflicts = response.data.conflicts;
+            if (Object.keys(conflicts).length === 0) {
+                this.setState({ statusOpen: true, statusMessage: "Success", statusSeverity: "success" });
+            } else {
+                this.setState({ statusOpen: true, statusMessage: response.data.conflicts[Object.keys(conflicts)[0]], statusSeverity: "error" });
             }
+        }
         );
     }
 
@@ -306,16 +306,16 @@ class ChangePlansView extends React.Component {
     deleteAction = (identifier, step) => {
         axios.post(
             getURL(changePlanPath, AssetCommand.CHANGE_PLAN_DELETE_ACTION), {
-                'change_plan_id': identifier,
-                'step': step,
-            }).then(response => {
-                this.fetchAllChangePlans();
-                if (response.data.message === "success") {
-                    this.setState({ statusOpen: true, statusMessage: "Success", statusSeverity: "success" });
-                } else {
-                    this.setState({ statusOpen: true, statusMessage: response.data.message, statusSeverity: "error" });
-                }
+            'change_plan_id': identifier,
+            'step': step,
+        }).then(response => {
+            this.fetchAllChangePlans();
+            if (response.data.message === "success") {
+                this.setState({ statusOpen: true, statusMessage: "Success", statusSeverity: "success" });
+            } else {
+                this.setState({ statusOpen: true, statusMessage: response.data.message, statusSeverity: "error" });
             }
+        }
         );
     }
 
@@ -342,415 +342,436 @@ class ChangePlansView extends React.Component {
         this.setState({ statusOpen: false });
     }
 
+    generateWorkOrder = (event, id) => {
+        axios.post(getURL(changePlanPath, "workorder/"), { "change_plan_id": id }).then(response => {
+            try {
+                var blob = new Blob([response.data], { type: "application/pdf" });
+                var link = document.createElement('a');
+                link.href = window.URL.createObjectURL(blob);
+                link.download = "WorkOrder_" + new Date() + ".pdf";
+                link.click();
+            } catch { }
+        })
+
+    }
+
     render() {
         const { classes } = this.props;
 
         return (
             <div>
                 <ErrorBoundray >
-                <StatusDisplay
-                    open={this.state.statusOpen}
-                    severity={this.state.statusSeverity}
-                    closeStatus={this.closeShowStatus}
-                    message={this.state.statusMessage}
-                />
-                <Grid
-                    container
-                    spacing={5}
-                    direction="row"
-                    justify="center"
-                    alignItems="center"
-                    style={{margin: "0px", maxWidth: "95vw"}}
-                >
-                    <Grid item xs={12}>
-                        <Typography variant="h4">
-                            Change Plans
+                    <StatusDisplay
+                        open={this.state.statusOpen}
+                        severity={this.state.statusSeverity}
+                        closeStatus={this.closeShowStatus}
+                        message={this.state.statusMessage}
+                    />
+                    <Grid
+                        container
+                        spacing={5}
+                        direction="row"
+                        justify="center"
+                        alignItems="center"
+                        style={{ margin: "0px", maxWidth: "95vw" }}
+                    >
+                        <Grid item xs={12}>
+                            <Typography variant="h4">
+                                Change Plans
                         </Typography>
-                    </Grid>
-                    <Grid item xs={5}></Grid>
-                    <Grid item xs={2}>
-                        <Typography>
-                            { this.state.changePlans.length > 0 ? "Saved change plans" : "You have no change plans! Create one in the Asset tab."}
-                        </Typography>
-                    </Grid>
-                    <Grid item xs={5}></Grid>
-                    <Grid item xs={2}></Grid>
-                    <Grid item xs={8}>
-                        { this.state.changePlans.map(plan => {
-                            const executed = plan.executed === "True";
-                            const details = this.state.changePlanDetails[plan.identifier];
-                            var step = 1;
-                            if (details !== undefined) {
-                                details.forEach(s => {
-                                    step = Math.max(step, s.step);
-                                });
+                        </Grid>
+                        <Grid item xs={5}></Grid>
+                        <Grid item xs={2}>
+                            <Typography>
+                                {this.state.changePlans.length > 0 ? "Saved change plans" : "You have no change plans! Create one in the Asset tab."}
+                            </Typography>
+                        </Grid>
+                        <Grid item xs={5}></Grid>
+                        <Grid item xs={2}></Grid>
+                        <Grid item xs={8}>
+                            {this.state.changePlans.map(plan => {
+                                const executed = plan.executed === "True";
+                                const details = this.state.changePlanDetails[plan.identifier];
+                                var step = 1;
+                                if (details !== undefined) {
+                                    details.forEach(s => {
+                                        step = Math.max(step, s.step);
+                                    });
 
-                                step = step + 1;
-                            }
+                                    step = step + 1;
+                                }
 
-                            return (<ExpansionPanel key={plan.identifier}>
-                                <ExpansionPanelSummary
-                                    expandIcon={<ExpandMoreIcon />}
-                                >
-                                    <Typography>{plan.name}</Typography>
-                                    { executed ? <Chip size="small" icon={<DoneIcon />} color="primary" label={"Executed at " + plan.timestamp} style={{
-                                        marginLeft: "15px"
-                                    }} /> : null }
-                                </ExpansionPanelSummary>
-                                <ExpansionPanelDetails>
-                                <Grid
-                                    container
-                                    spacing={3}
-                                    direction="row"
-                                    justify="center"
-                                    alignItems="center"
-                                    style={{margin: "0px", maxWidth: "95vw"}}
-                                >
-                                    <Grid item xs={3}></Grid>
-                                    <Grid item xs={3}>
-                                        { !executed ?
-                                    <Button
-                                        variant="contained"
-                                        color="primary"
-                                        style={{width: "100%"}}
-                                        startIcon={<ReplayIcon />}
-                                        onClick={() => { this.openRenameDialog(plan.identifier) }}
+                                return (<ExpansionPanel key={plan.identifier}>
+                                    <ExpansionPanelSummary
+                                        expandIcon={<ExpandMoreIcon />}
                                     >
-                                        Rename
-                                    </Button> : null }
-                                    </Grid>
-                                    <Grid item xs={3}>
-                                    { !executed ? <Button
-                                        variant="contained"
-                                        color="default"
-                                        style={{width: "100%"}}
-                                        startIcon={<EditIcon />}
-                                        onClick={() => { this.openDescriptionModal(plan.identifier, step, plan.name) }}
-                                    >
-                                        Edit
-                                    </Button> : null }
-                                    </Grid>
-                                    <Grid item xs={3}></Grid>
-                                <Grid item xs={12}>
-                                { this.state.changePlanDetails[plan.identifier] !== undefined ?
-                                    this.state.changePlanDetails[plan.identifier].map(detail => {
-                                        var diff = detail.diff;
-
-                                        if (Object.keys(diff).length == 0) {
-                                            return null;
-                                        }
-
-                                        var isCreate = detail.action === "create" || detail.action === "decommission";
-                                        return (<div><TableContainer component={Paper}>
-                                                    <Typography style={{margin: "10px"}}>
-                                                    { detail.action.charAt(0).toUpperCase() + detail.action.slice(1) } Asset Number: {
-                                                        detail.new_record.asset_numberOriginal === undefined ?
-                                                        detail.new_record.asset_number : detail.new_record.asset_numberOriginal
-                                                    }
-                                                    { (!executed && detail.action !== "collateral") ?
-                                                    <IconButton
-                                                        style={{
-                                                            marginLeft: "20px",
-                                                        }}
-                                                        onClick={() => { this.deleteAction(plan.identifier, detail.step) }}
+                                        <Typography>{plan.name}</Typography>
+                                        {executed ? <Chip size="small" icon={<DoneIcon />} color="primary" label={"Executed at " + plan.timestamp} style={{
+                                            marginLeft: "15px"
+                                        }} /> : null}
+                                    </ExpansionPanelSummary>
+                                    <ExpansionPanelDetails>
+                                        <Grid
+                                            container
+                                            spacing={3}
+                                            direction="row"
+                                            justify="center"
+                                            alignItems="center"
+                                            style={{ margin: "0px", maxWidth: "95vw" }}
+                                        >
+                                            <Grid item xs={3}>
+                                                <Button
+                                                    variant="contained"
+                                                    color={"primary"}
+                                                    style={{ width: "100%" }}
+                                                    onClick={(event) => this.generateWorkOrder(event, plan.identifier)}
+                                                >
+                                                    Generate work order
+                                                </Button>
+                                            </Grid>
+                                            <Grid item xs={3}>
+                                                {!executed ?
+                                                    <Button
+                                                        variant="contained"
+                                                        color="primary"
+                                                        style={{ width: "100%" }}
+                                                        startIcon={<ReplayIcon />}
+                                                        onClick={() => { this.openRenameDialog(plan.identifier) }}
                                                     >
-                                                        <DeleteIcon />
-                                                    </IconButton> : null }
+                                                        Rename
+                                    </Button> : null}
+                                            </Grid>
+                                            <Grid item xs={3}>
+                                                {!executed ? <Button
+                                                    variant="contained"
+                                                    color="default"
+                                                    style={{ width: "100%" }}
+                                                    startIcon={<EditIcon />}
+                                                    onClick={() => { this.openDescriptionModal(plan.identifier, step, plan.name) }}
+                                                >
+                                                    Edit
+                                    </Button> : null}
+                                            </Grid>
+                                            <Grid item xs={12}>
+                                                {this.state.changePlanDetails[plan.identifier] !== undefined ?
+                                                    this.state.changePlanDetails[plan.identifier].map(detail => {
+                                                        var diff = detail.diff;
 
-                                                    </Typography>
-
-                                                    <Table>
-                                                        <TableHead>
-                                                            <TableRow >
-                                                                <TableCell>Field</TableCell>
-                                                                { isCreate ? <TableCell>Value</TableCell> : <TableCell>Current</TableCell>}
-                                                                { isCreate ? null : <TableCell>New</TableCell> }
-                                                            </TableRow>
-                                                        </TableHead>
-                                                        <TableBody>
-                                                        {Object.keys(diff).map(key => {
-                                                            if (key === "tags") {
-                                                                return null;
-                                                            }
-
-                                                            return isCreate ?
-                                                                (
-                                                                    <TableRow>
-                                                                        <TableCell>{this.lookup(key)}</TableCell>
-                                                                        <TableCell>
-                                                                            { (key !== "power_connections") ? (key === "network_connections" ? Object.keys(diff[key]).length : diff[key]) : diff[key].length }
-                                                                        </TableCell>
-                                                                    </TableRow>
-                                                                ) :
-                                                                (
-                                                                    <TableRow>
-                                                                        <TableCell>{this.lookup(key)}</TableCell>
-                                                                        <TableCell>{ key !== "network_connections" ? diff[key][0] : this.reducePorts(diff[key][0])}</TableCell>
-                                                                        <TableCell>{ key !== "network_connections" ? diff[key][1] : this.reducePorts(diff[key][1])}</TableCell>
-                                                                    </TableRow>
-                                                                )
+                                                        if (Object.keys(diff).length == 0) {
+                                                            return null;
                                                         }
-                                                        )}
-                                                        </TableBody>
-                                                    </Table>
-                                                </TableContainer><br /></div>);
-                                    })
-                                    : "This change plan has made no changes!" }
-                                </Grid>
-                                <Grid item xs={3}>
-                                    { !executed ? <Button
-                                        variant="contained"
-                                        color="default"
-                                        style={{width: "100%"}}
-                                        startIcon={<CheckIcon />}
-                                        onClick={() => { this.validate(plan.identifier) }}
-                                    >
-                                        Validate
-                                    </Button> : null }
-                                    </Grid>
-                                <Grid item xs={3}>
-                                    { !executed ? <Button
-                                        variant="contained"
-                                        color="primary"
-                                        style={{width: "100%"}}
-                                        startIcon={<PlayArrowIcon />}
-                                        onClick={() => { this.openExecuteDialog(plan.identifier) }}
-                                    >
-                                        Execute
-                                    </Button> : null }
-                                    </Grid>
-                                    <Grid item xs={3}>
-                                    { !executed ? <Button
-                                        variant="contained"
-                                        color="secondary"
-                                        style={{width: "100%"}}
-                                        startIcon={<DeleteIcon />}
-                                        onClick={() => { this.openDeleteDialog(plan.identifier) }}
-                                    >
-                                        Delete
-                                    </Button> : null }
-                                </Grid>
-                                </Grid>
 
-                                </ExpansionPanelDetails>
-                            </ExpansionPanel>);
-                        })
-                        }
+                                                        var isCreate = detail.action === "create" || detail.action === "decommission";
+                                                        return (<div><TableContainer component={Paper}>
+                                                            <Typography style={{ margin: "10px" }}>
+                                                                {detail.action.charAt(0).toUpperCase() + detail.action.slice(1)} Asset Number: {
+                                                                    detail.new_record.asset_numberOriginal === undefined ?
+                                                                        detail.new_record.asset_number : detail.new_record.asset_numberOriginal
+                                                                }
+                                                                {(!executed && detail.action !== "collateral") ?
+                                                                    <IconButton
+                                                                        style={{
+                                                                            marginLeft: "20px",
+                                                                        }}
+                                                                        onClick={() => { this.deleteAction(plan.identifier, detail.step) }}
+                                                                    >
+                                                                        <DeleteIcon />
+                                                                    </IconButton> : null}
+
+                                                            </Typography>
+
+                                                            <Table>
+                                                                <TableHead>
+                                                                    <TableRow >
+                                                                        <TableCell>Field</TableCell>
+                                                                        {isCreate ? <TableCell>Value</TableCell> : <TableCell>Current</TableCell>}
+                                                                        {isCreate ? null : <TableCell>New</TableCell>}
+                                                                    </TableRow>
+                                                                </TableHead>
+                                                                <TableBody>
+                                                                    {Object.keys(diff).map(key => {
+                                                                        if (key === "tags") {
+                                                                            return null;
+                                                                        }
+
+                                                                        return isCreate ?
+                                                                            (
+                                                                                <TableRow>
+                                                                                    <TableCell>{this.lookup(key)}</TableCell>
+                                                                                    <TableCell>
+                                                                                        {(key !== "power_connections") ? (key === "network_connections" ? Object.keys(diff[key]).length : diff[key]) : diff[key].length}
+                                                                                    </TableCell>
+                                                                                </TableRow>
+                                                                            ) :
+                                                                            (
+                                                                                <TableRow>
+                                                                                    <TableCell>{this.lookup(key)}</TableCell>
+                                                                                    <TableCell>{key !== "network_connections" ? diff[key][0] : this.reducePorts(diff[key][0])}</TableCell>
+                                                                                    <TableCell>{key !== "network_connections" ? diff[key][1] : this.reducePorts(diff[key][1])}</TableCell>
+                                                                                </TableRow>
+                                                                            )
+                                                                    }
+                                                                    )}
+                                                                </TableBody>
+                                                            </Table>
+                                                        </TableContainer><br /></div>);
+                                                    })
+                                                    : "This change plan has made no changes!"}
+                                            </Grid>
+                                            <Grid item xs={3}>
+                                                {!executed ? <Button
+                                                    variant="contained"
+                                                    color="default"
+                                                    style={{ width: "100%" }}
+                                                    startIcon={<CheckIcon />}
+                                                    onClick={() => { this.validate(plan.identifier) }}
+                                                >
+                                                    Validate
+                                    </Button> : null}
+                                            </Grid>
+                                            <Grid item xs={3}>
+                                                {!executed ? <Button
+                                                    variant="contained"
+                                                    color="primary"
+                                                    style={{ width: "100%" }}
+                                                    startIcon={<PlayArrowIcon />}
+                                                    onClick={() => { this.openExecuteDialog(plan.identifier) }}
+                                                >
+                                                    Execute
+                                    </Button> : null}
+                                            </Grid>
+                                            <Grid item xs={3}>
+                                                {!executed ? <Button
+                                                    variant="contained"
+                                                    color="secondary"
+                                                    style={{ width: "100%" }}
+                                                    startIcon={<DeleteIcon />}
+                                                    onClick={() => { this.openDeleteDialog(plan.identifier) }}
+                                                >
+                                                    Delete
+                                    </Button> : null}
+                                            </Grid>
+                                        </Grid>
+
+                                    </ExpansionPanelDetails>
+                                </ExpansionPanel>);
+                            })
+                            }
+                        </Grid>
+                        <Grid item xs={2}></Grid>
                     </Grid>
-                    <Grid item xs={2}></Grid>
-                </Grid>
 
 
-                <Modal
-                    aria-labelledby="transition-modal-title"
-                    aria-describedby="transition-modal-description"
-                    className={classes.modal}
-                    open={this.state.renameDialog}
-                    onClose={this.closeRenameDialog}
-                    closeAfterTransition
-                >
-                <Fade in={this.state.renameDialog}>
-                    <Backdrop
+                    <Modal
+                        aria-labelledby="transition-modal-title"
+                        aria-describedby="transition-modal-description"
+                        className={classes.modal}
                         open={this.state.renameDialog}
+                        onClose={this.closeRenameDialog}
+                        closeAfterTransition
                     >
-                    <div className={classes.grid}>
-                        <Grid
-                            container
-                            spacing={1}
-                            direction="row"
-                            justify="flex-start"
-                            alignItems="center"
-                        >
-                            <Grid item xs={3}>
-                                <Typography>
-                                    New plan name:
+                        <Fade in={this.state.renameDialog}>
+                            <Backdrop
+                                open={this.state.renameDialog}
+                            >
+                                <div className={classes.grid}>
+                                    <Grid
+                                        container
+                                        spacing={1}
+                                        direction="row"
+                                        justify="flex-start"
+                                        alignItems="center"
+                                    >
+                                        <Grid item xs={3}>
+                                            <Typography>
+                                                New plan name:
                                 </Typography>
-                            </Grid>
-                            <Grid item xs={9}>
-                                <TextField type="text" id="change-plan-name" variant="outlined" label="Change Plan Name" name="change-plan-name" onChange={this.updatePlanName} style={{ width: "100%" }} />
-                            </Grid>
-                            <Grid item xs={6}>
-                                <Button
-                                    variant="contained"
-                                    color="primary"
-                                    onClick={this.renameChangePlan}
-                                    style={{width: "100%"}}
-                                >
-                                    Save
+                                        </Grid>
+                                        <Grid item xs={9}>
+                                            <TextField type="text" id="change-plan-name" variant="outlined" label="Change Plan Name" name="change-plan-name" onChange={this.updatePlanName} style={{ width: "100%" }} />
+                                        </Grid>
+                                        <Grid item xs={6}>
+                                            <Button
+                                                variant="contained"
+                                                color="primary"
+                                                onClick={this.renameChangePlan}
+                                                style={{ width: "100%" }}
+                                            >
+                                                Save
                                 </Button>
-                            </Grid>
-                            <Grid item xs={6}>
-                                <Button
-                                    variant="contained"
-                                    color="secondary"
-                                    onClick={this.closeRenameDialog}
-                                    style={{width: "100%"}}
-                                >
-                                    Cancel
+                                        </Grid>
+                                        <Grid item xs={6}>
+                                            <Button
+                                                variant="contained"
+                                                color="secondary"
+                                                onClick={this.closeRenameDialog}
+                                                style={{ width: "100%" }}
+                                            >
+                                                Cancel
                                 </Button>
-                            </Grid>
+                                        </Grid>
 
-                        </Grid>
-                        </div>
-                </Backdrop>
-                </Fade>
-            </Modal>
+                                    </Grid>
+                                </div>
+                            </Backdrop>
+                        </Fade>
+                    </Modal>
 
-            <Modal
-                    aria-labelledby="transition-modal-title"
-                    aria-describedby="transition-modal-description"
-                    className={classes.modal}
-                    open={this.state.executeDialog}
-                    onClose={this.closeExecuteDialog}
-                    closeAfterTransition
-                >
-                <Fade in={this.state.executeDialog}>
-                    <Backdrop
+                    <Modal
+                        aria-labelledby="transition-modal-title"
+                        aria-describedby="transition-modal-description"
+                        className={classes.modal}
                         open={this.state.executeDialog}
+                        onClose={this.closeExecuteDialog}
+                        closeAfterTransition
                     >
-                    <div className={classes.grid}>
-                        <Grid
-                            container
-                            spacing={1}
-                            direction="row"
-                            justify="flex-start"
-                            alignItems="center"
-                        >
-                            <Grid item xs={3}>
-                                <Typography>
-                                    Are you sure you want to execute this change plan?
+                        <Fade in={this.state.executeDialog}>
+                            <Backdrop
+                                open={this.state.executeDialog}
+                            >
+                                <div className={classes.grid}>
+                                    <Grid
+                                        container
+                                        spacing={1}
+                                        direction="row"
+                                        justify="flex-start"
+                                        alignItems="center"
+                                    >
+                                        <Grid item xs={3}>
+                                            <Typography>
+                                                Are you sure you want to execute this change plan?
                                 </Typography>
-                            </Grid>
-                            <Grid item xs={9}></Grid>
-                            <Grid item xs={6}>
-                                <Button
-                                    variant="contained"
-                                    color="primary"
-                                    onClick={this.executeChangePlan}
-                                    style={{width: "100%"}}
-                                >
-                                    Yes
+                                        </Grid>
+                                        <Grid item xs={9}></Grid>
+                                        <Grid item xs={6}>
+                                            <Button
+                                                variant="contained"
+                                                color="primary"
+                                                onClick={this.executeChangePlan}
+                                                style={{ width: "100%" }}
+                                            >
+                                                Yes
                                 </Button>
-                            </Grid>
-                            <Grid item xs={6}>
-                                <Button
-                                    variant="contained"
-                                    color="secondary"
-                                    onClick={this.closeExecuteDialog}
-                                    style={{width: "100%"}}
-                                >
-                                    Cancel
+                                        </Grid>
+                                        <Grid item xs={6}>
+                                            <Button
+                                                variant="contained"
+                                                color="secondary"
+                                                onClick={this.closeExecuteDialog}
+                                                style={{ width: "100%" }}
+                                            >
+                                                Cancel
                                 </Button>
-                            </Grid>
+                                        </Grid>
 
-                        </Grid>
-                        </div>
-                </Backdrop>
-                </Fade>
-            </Modal>
+                                    </Grid>
+                                </div>
+                            </Backdrop>
+                        </Fade>
+                    </Modal>
 
 
-            <Modal
-                    aria-labelledby="transition-modal-title"
-                    aria-describedby="transition-modal-description"
-                    className={classes.modal}
-                    open={this.state.deleteDialog}
-                    onClose={this.closeDeleteDialog}
-                    closeAfterTransition
-                >
-                <Fade in={this.state.deleteDialog}>
-                    <Backdrop
+                    <Modal
+                        aria-labelledby="transition-modal-title"
+                        aria-describedby="transition-modal-description"
+                        className={classes.modal}
                         open={this.state.deleteDialog}
+                        onClose={this.closeDeleteDialog}
+                        closeAfterTransition
                     >
-                    <div className={classes.grid}>
-                        <Grid
-                            container
-                            spacing={1}
-                            direction="row"
-                            justify="flex-start"
-                            alignItems="center"
-                        >
-                            <Grid item xs={3}>
-                                <Typography>
-                                    Are you sure you want to delete this change plan?
+                        <Fade in={this.state.deleteDialog}>
+                            <Backdrop
+                                open={this.state.deleteDialog}
+                            >
+                                <div className={classes.grid}>
+                                    <Grid
+                                        container
+                                        spacing={1}
+                                        direction="row"
+                                        justify="flex-start"
+                                        alignItems="center"
+                                    >
+                                        <Grid item xs={3}>
+                                            <Typography>
+                                                Are you sure you want to delete this change plan?
                                 </Typography>
-                            </Grid>
-                            <Grid item xs={9}></Grid>
-                            <Grid item xs={6}>
-                                <Button
-                                    variant="contained"
-                                    color="primary"
-                                    onClick={this.deleteChangePlan}
-                                    style={{width: "100%"}}
-                                >
-                                    Yes
+                                        </Grid>
+                                        <Grid item xs={9}></Grid>
+                                        <Grid item xs={6}>
+                                            <Button
+                                                variant="contained"
+                                                color="primary"
+                                                onClick={this.deleteChangePlan}
+                                                style={{ width: "100%" }}
+                                            >
+                                                Yes
                                 </Button>
-                            </Grid>
-                            <Grid item xs={6}>
-                                <Button
-                                    variant="contained"
-                                    color="secondary"
-                                    onClick={this.closeDeleteDialog}
-                                    style={{width: "100%"}}
-                                >
-                                    Cancel
+                                        </Grid>
+                                        <Grid item xs={6}>
+                                            <Button
+                                                variant="contained"
+                                                color="secondary"
+                                                onClick={this.closeDeleteDialog}
+                                                style={{ width: "100%" }}
+                                            >
+                                                Cancel
                                 </Button>
-                            </Grid>
+                                        </Grid>
 
-                        </Grid>
-                        </div>
-                </Backdrop>
-                </Fade>
-            </Modal>
+                                    </Grid>
+                                </div>
+                            </Backdrop>
+                        </Fade>
+                    </Modal>
 
-            <Modal
-                aria-labelledby="transition-modal-title"
-                aria-describedby="transition-modal-description"
-                className={classes.modal}
-                open={this.state.changeDescriptionModal}
-                onClose={this.closeDescriptionModal}
-                closeAfterTransition
-            >
-                <Fade in={this.state.changeDescriptionModal}>
-                    <Backdrop
+                    <Modal
+                        aria-labelledby="transition-modal-title"
+                        aria-describedby="transition-modal-description"
+                        className={classes.modal}
                         open={this.state.changeDescriptionModal}
+                        onClose={this.closeDescriptionModal}
+                        closeAfterTransition
                     >
-                    <div className={classes.grid}>
-                        <Grid
-                            container
-                            spacing={1}
-                            direction="row"
-                            justify="flex-start"
-                            alignItems="center"
-                        >
-                            <Grid item xs={3}>
-                            </Grid>
-                            <Grid item xs={6}>
-                                <Typography>
-                                    You are now in change plan mode. All changes made will be logged to the change plan and will not actually be made in the system. Use the icon in the bottom right corner to exit change plan mode!
+                        <Fade in={this.state.changeDescriptionModal}>
+                            <Backdrop
+                                open={this.state.changeDescriptionModal}
+                            >
+                                <div className={classes.grid}>
+                                    <Grid
+                                        container
+                                        spacing={1}
+                                        direction="row"
+                                        justify="flex-start"
+                                        alignItems="center"
+                                    >
+                                        <Grid item xs={3}>
+                                        </Grid>
+                                        <Grid item xs={6}>
+                                            <Typography>
+                                                You are now in change plan mode. All changes made will be logged to the change plan and will not actually be made in the system. Use the icon in the bottom right corner to exit change plan mode!
                                 </Typography>
-                            </Grid>
-                            <Grid item xs={3}>
-                            </Grid>
-                            <Grid item xs={3}>
-                            </Grid>
-                            <Grid item xs={6}>
-                                <Button
-                                    variant="contained"
-                                    color="primary"
-                                    onClick={this.startEditing}
-                                    style={{width: "100%"}}
-                                >
-                                    Ok
+                                        </Grid>
+                                        <Grid item xs={3}>
+                                        </Grid>
+                                        <Grid item xs={3}>
+                                        </Grid>
+                                        <Grid item xs={6}>
+                                            <Button
+                                                variant="contained"
+                                                color="primary"
+                                                onClick={this.startEditing}
+                                                style={{ width: "100%" }}
+                                            >
+                                                Ok
                                 </Button>
-                            </Grid>
-                            <Grid item xs={3}>
-                            </Grid>
-                        </Grid>
-                        </div>
-                </Backdrop>
-                </Fade>
-            </Modal>
+                                        </Grid>
+                                        <Grid item xs={3}>
+                                        </Grid>
+                                    </Grid>
+                                </div>
+                            </Backdrop>
+                        </Fade>
+                    </Modal>
 
 
                 </ErrorBoundray>

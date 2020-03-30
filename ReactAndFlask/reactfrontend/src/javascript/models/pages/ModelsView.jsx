@@ -81,7 +81,7 @@ export default class ModelsView extends React.Component {
                 'vendor':'',
                 'model_number':'',
                 'height':'',
-                'display_color':'',
+                'display_color':'#A52A2A',
                 'ethernet_ports':'',
                 'power_ports':'',
                 'cpu':'',

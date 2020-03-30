@@ -64,7 +64,7 @@ class CreateModel extends React.Component {
         super(props);
 
         this.state = {
-            color: '#000',
+            color: '#A52A2A',
             showModal: false,
             showImportModal: false,
             importedFile: null,
@@ -250,7 +250,6 @@ class CreateModel extends React.Component {
                                 <CompactPicker
                                     color={this.state.color}
                                     onChange={this.updateColor}
-
                                 />
                             </Grid>
                             <Grid item xs={12}>

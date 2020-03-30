@@ -80,7 +80,7 @@ export default class Filters extends React.Component {
     render() {
         return (
         <Card elevation={3} padding>
-            <Typography variant="h6">Create</Typography>
+            <Typography variant="h6">Search</Typography>
             <Grid
                 container
                 spacing={1}

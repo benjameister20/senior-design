@@ -166,6 +166,26 @@ class ChangePlanValidator:
         if common_val_result != Constants.API_SUCCESS:
             return common_val_result
 
+        if prev_update_in_plan is not None:
+            prev_connections = prev_update_in_plan.new_record.get(
+                Constants.NETWORK_CONNECTIONS_KEY
+            )
+        else:
+            prev_instance = self.instance_table.get_instance_by_asset_number(
+                cp_action.original_asset_number
+            )
+            prev_connections = prev_instance.network_connections
+
+        connection_validation_result = self._validate_connections_edit(
+            instance.network_connections,
+            instance.hostname,
+            cp_action,
+            all_cp_actions,
+            prev_connections,
+        )
+        if connection_validation_result != Constants.API_SUCCESS:
+            return connection_validation_result
+
         return Constants.API_SUCCESS
 
     def _decom_action_validate(self, cp_action):
@@ -183,6 +203,7 @@ class ChangePlanValidator:
         if (
             prev_update_in_plan is not None
             and prev_update_in_plan.action != Constants.COLLATERAL_KEY
+            and prev_update_in_plan.step != cp_action.step
         ):
             return f"This asset is already being modified in step {prev_update_in_plan.step}. Please update your desired information there."
 
@@ -381,6 +402,94 @@ class ChangePlanValidator:
 
             if (connection_hostname == "" or connection_hostname is None) and (
                 connection_port == "" or connection_port is None
+            ):
+                continue
+
+            if not (connection_hostname != "" and connection_port != ""):
+                result += "Connections require both a hostname and connection port."
+
+            other_instance = None
+            for prev_action in all_cp_actions:
+                if prev_action.step >= cp_action.step:
+                    continue
+
+                if (
+                    prev_action.new_record[Constants.HOSTNAME_KEY]
+                    == connection_hostname
+                ):
+                    other_instance = self.instance_manager.make_instance(
+                        prev_action.new_record
+                    )
+            if other_instance is None:
+                other_instance = self.instance_table.get_instance_by_hostname(
+                    connection_hostname
+                )
+                if other_instance is None:
+                    result += f"The asset with hostname {connection_hostname} does not exist. Connections must be between assets with existing hostnames. \n"
+                    continue
+
+            if connection_port in other_instance.network_connections:
+                if (
+                    other_instance.network_connections[connection_port][
+                        "connection_port"
+                    ]
+                    != my_port
+                ) and (
+                    other_instance.network_connections[connection_port][
+                        "connection_port"
+                    ]
+                    != ""
+                ):
+                    result += f"The port {connection_port} on asset with hostname {connection_hostname} is connected to another asset. \n"
+                    continue
+                if (
+                    other_instance.network_connections[connection_port][
+                        "connection_hostname"
+                    ]
+                    != hostname
+                ) and (
+                    other_instance.network_connections[connection_port][
+                        "connection_hostname"
+                    ]
+                    != ""
+                ):
+                    result += f"The port {connection_port} on asset with hostname {connection_hostname} is already connected to another asset."
+
+        if result == "":
+            return Constants.API_SUCCESS
+        else:
+            return result
+
+    def _validate_connections_edit(
+        self, network_connections, hostname, cp_action, all_cp_actions, prev_connections
+    ):
+        result = ""
+        new_connections = {}
+        for my_port in network_connections:
+            mac_adress = network_connections[my_port][Constants.MAC_ADDRESS_KEY]
+            connection_hostname = network_connections[my_port]["connection_hostname"]
+            connection_port = network_connections[my_port]["connection_port"]
+
+            if connection_hostname in new_connections.keys():
+                if new_connections[connection_hostname] == connection_port:
+                    result += "Cannot make two network connections to the same port."
+            elif connection_hostname != "" and connection_port != "":
+                new_connections[connection_hostname] = connection_port
+
+            mac_pattern = re.compile(
+                "[a-f0-9]{2}:[a-f0-9]{2}:[a-f0-9]{2}:[a-f0-9]{2}:[a-f0-9]{2}:[a-f0-9]{2}"
+            )
+            if mac_adress != "" and mac_pattern.fullmatch(mac_adress.lower()) is None:
+                result += f"Invalid MAC address for port {my_port}. MAC addresses must be 6 byte, colon separated hexidecimal strings (i.e. a1:b2:c3:d4:e5:f6). \n"
+
+            if (connection_hostname == "" or connection_hostname is None) and (
+                connection_port == "" or connection_port is None
+            ):
+                continue
+
+            if (
+                connection_hostname == prev_connections[my_port]["connection_hostname"]
+                and connection_port == prev_connections[my_port]["connection_port"]
             ):
                 continue
 

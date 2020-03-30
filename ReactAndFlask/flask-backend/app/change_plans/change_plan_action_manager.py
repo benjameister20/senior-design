@@ -105,7 +105,12 @@ class ChangePlanActionManager:
                 ChangePlanAction
             ] = self.cp_action_table.get_actions_by_change_plan_id(cp_id)
             for cp_action in change_plan_actions:
-                if cp_action.action == Constants.CREATE_KEY:
+                if (
+                    cp_action.action == Constants.CREATE_KEY
+                    or cp_action.action == Constants.DECOMMISSION_KEY
+                ):
+                    if cp_action.action == Constants.DECOMMISSION_KEY:
+                        del cp_action.new_record["asset_numberOriginal"]
                     cp_action.diff = cp_action.new_record
                     continue
                 prev_record = self.get_prev_record(cp_action)

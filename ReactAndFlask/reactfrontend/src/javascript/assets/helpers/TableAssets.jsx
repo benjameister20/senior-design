@@ -230,7 +230,7 @@ class TableAsset extends React.Component {
 
 	closeDetailedView = () => {
 		this.setState({ showDetailedView: false });
-		window.location.reload();
+		this.fetchAllAssets();
 	}
 
 	closeShowStatus = () => {

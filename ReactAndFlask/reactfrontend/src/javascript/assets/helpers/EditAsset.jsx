@@ -518,7 +518,6 @@ class EditAsset extends React.Component {
 
     closeModal = () => {
         this.props.fetchAllAssets();
-        //window.location.reload();
     }
 
     statusClose = () => {
@@ -581,7 +580,7 @@ class EditAsset extends React.Component {
                 response => {
                     if (response.data.message === "success") {
                         this.props.close();
-                        window.location.reload();
+                        this.props.fetchAllAssets();
                     } else {
                         this.setState({ statusOpen: true, statusMessage: response.data.message, statusSeverity: AssetConstants.ERROR_TOKEN });
                     }
@@ -624,7 +623,7 @@ class EditAsset extends React.Component {
             response => {
                 if (response.data.message === "success") {
                     this.props.close();
-                    window.location.reload();
+                    this.props.fetchAllAssets();
                 } else {
                     this.setState({ statusOpen: true, statusMessage: response.data.message, statusSeverity: AssetConstants.ERROR_TOKEN });
                 }

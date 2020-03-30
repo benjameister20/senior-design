@@ -548,7 +548,7 @@ class TableAsset extends React.Component {
 						privilege={this.props.privilege}
 						changePlanActive={this.props.changePlanActive}
 						changePlanID={this.props.changePlanID}
-						disabled={ (!(this.props.privilege.admin || this.props.privilege.asset || this.props.privilege.datacenters.includes(this.state.detailAsset.datacenter_name)) || this.state.displayDec) && (this.props.username !== this.state.rowOwner) }
+						disabled={ (!(this.props.privilege.admin || this.props.privilege.asset || this.props.privilege.datacenters.includes(this.state.detailAsset.datacenter_name)) || this.state.displayDec) }
 						privilege={this.props.privilege}
 						username={this.props.username}
 					/> : null}

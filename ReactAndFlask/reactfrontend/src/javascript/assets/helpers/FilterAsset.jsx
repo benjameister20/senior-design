@@ -15,7 +15,6 @@ class FilterAsset extends React.Component {
             endingLetter: "Z",
             startingNum: 1,
             endingNum: 1000,
-            showDecommissioned: false,
             startDate: "",
             endDate: "",
             user: "",
@@ -70,8 +69,8 @@ class FilterAsset extends React.Component {
     search = () => {
         var items = [];
         try {
-            console.log(this.state.showDecommissioned);
-            if (this.state.showDecommissioned) {
+            console.log(this.props.showDecommissioned);
+            if (this.props.showDecommissioned) {
                 this.props.decAssets.map(asset => {
                     var startDate = new Date(this.state.startDate === "" || parseInt(this.state.startDate) < 2000 ? "01/01/2001" : this.state.startDate + " 23:59:59");
                     var endDate = new Date(this.state.endDate === "" || parseInt(this.state.endDate) < 2000 ? "12/31/2025" : this.state.endDate + " 23:59:59");
@@ -111,7 +110,7 @@ class FilterAsset extends React.Component {
 
     switchToDecommissioned = (event) => {
         console.log(event.target.checked);
-        this.setState({ showDecommissioned: event.target.checked }, () => this.search());
+        //this.setState({ showDecommissioned: event.target.checked }, () => this.search());
         this.props.switchToDec(event.target.checked);
     }
 
@@ -210,17 +209,17 @@ class FilterAsset extends React.Component {
                             <FormControlLabel
                                 control={
                                     <Switch
-                                        checked={this.state.showDecommissioned}
+                                        checked={this.props.showDecommissioned}
                                         onChange={event => { this.switchToDecommissioned(event) }}
                                         value="checkedB"
                                         color="primary"
                                     />
                                 }
                                 labelPlacement="top"
-                                label={this.state.showDecommissioned ? "Decommissioned Assets" : "Active Assets"}
+                                label={this.props.showDecommissioned ? "Decommissioned Assets" : "Active Assets"}
                             />
                         </Grid>
-                        {this.state.showDecommissioned ? <Grid item xs={12} sm={6} md={4} lg={3}>
+                        {this.props.showDecommissioned ? <Grid item xs={12} sm={6} md={4} lg={3}>
                             <TextField
                                 id="user"
                                 label="User"
@@ -229,7 +228,7 @@ class FilterAsset extends React.Component {
                                 style={{ width: "100%" }}
                             />
                         </Grid> : null}
-                        {this.state.showDecommissioned ? <Grid item xs={12} sm={6} md={4} lg={3}>
+                        {this.props.showDecommissioned ? <Grid item xs={12} sm={6} md={4} lg={3}>
                             <TextField
                                 id="start-date"
                                 label="Start Date"
@@ -240,7 +239,7 @@ class FilterAsset extends React.Component {
                                 }}
                             />
                         </Grid> : null}
-                        {this.state.showDecommissioned ? <Grid item xs={12} sm={6} md={4} lg={3}>
+                        {this.props.showDecommissioned ? <Grid item xs={12} sm={6} md={4} lg={3}>
                             <TextField
                                 id="end-date"
                                 label="End Date"

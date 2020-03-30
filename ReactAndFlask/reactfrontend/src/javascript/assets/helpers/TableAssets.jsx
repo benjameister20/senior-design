@@ -153,6 +153,8 @@ class TableAsset extends React.Component {
 
 			rowOwner: "",
 		};
+
+		this.filter = React.createRef();
 	}
 
 	componentDidMount() {
@@ -228,6 +230,7 @@ class TableAsset extends React.Component {
 
 	closeDetailedView = () => {
 		this.setState({ showDetailedView: false });
+		window.location.reload();
 	}
 
 	closeShowStatus = () => {
@@ -366,7 +369,7 @@ class TableAsset extends React.Component {
 	}
 
 	switchToDec = (switchBool) => {
-		this.setState({ displayDec: switchBool });
+		this.setState({ displayDec: switchBool }, () => this.filter.current.search());
 	}
 
 	render() {
@@ -407,6 +410,8 @@ class TableAsset extends React.Component {
 							allAssets={this.state.allAssets}
 							decAssets={this.state.decAssets}
 							switchToDec={this.switchToDec}
+							showDecommissioned={this.state.displayDec}
+							ref={this.filter}
 						/>
 					</Grid>
 					<Grid item xs={12} sm={6} md={4} lg={3}>
@@ -565,7 +570,7 @@ class TableAsset extends React.Component {
 						username={this.props.username}
 						fetchAllAssets={this.fetchAllAssets}
 						changePlanName={this.props.changePlanName}
-						isDecommissioned={this.state.displayDec}
+						showDecommissioned={this.state.displayDec}
 					/> : null}
 				<SpeedDial
 					ariaLabel="SpeedDial openIcon example"

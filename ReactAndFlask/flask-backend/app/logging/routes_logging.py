@@ -1,5 +1,5 @@
 from app.data_models.permission import Permission
-from app.decorators.auth import requires_permission
+from app.decorators.auth import PermissionActions, requires_permission
 from app.logging.logger import Logger
 from flask import Blueprint, request
 
@@ -25,6 +25,7 @@ def test():
     Permission(
         model=False, asset=False, datacenters=[], power=False, audit=True, admin=False
     ),
+    PermissionActions.NO_DATACENTER,
 )
 def get_logs():
     response = {}

@@ -126,6 +126,8 @@ class DetailAsset extends React.Component {
                                     vals={this.state.networkNodes}
                                     host={this.props.asset.hostname}
                                     assetNum={this.props.asset.asset_number}
+                                    isDecommissioned={this.props.isDecommissioned}
+                                    decomAsset={this.props.asset}
                                 />
                     </ExpansionPanelDetails>
                 </ExpansionPanel>:null}

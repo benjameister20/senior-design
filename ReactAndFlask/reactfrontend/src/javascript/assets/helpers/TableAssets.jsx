@@ -163,17 +163,63 @@ class TableAsset extends React.Component {
 
 	// Fetch all assets for the table
 	fetchAllAssets = () => {
-		axios.post(
-			getURL(Constants.ASSETS_MAIN_PATH, AssetCommand.search), emptySearch).then(
-				response => {
-					var items = [];
+		console.log(this.props.changePlanActive);
+		if (this.props.changePlanActive) {
+			axios.post(
+				getURL(Constants.ASSETS_MAIN_PATH, AssetCommand.search), emptySearch).then(
+					response => {
+						var items = [];
+						var instances = response.data.instances;
+						console.log(instances);
 
-					response.data.instances.map(asset => {
-						items.push(createData(asset.model, asset.hostname, asset.datacenter_name, asset.rack + " U" + asset.rack_position, asset.owner, asset.asset_number));
+						axios.post(
+                            getURL("changeplans/", AssetCommand.CHANGE_PLAN_GET_ACTIONS), {
+                                'change_plan_id': this.props.changePlanID,
+                                'owner': this.props.username,
+                            }).then(response => {
+                                var actions = response.data.change_plan_actions;
+								console.log(actions);
+
+								var assetNums = [];
+								actions.forEach(action => {
+									var assetNum = action.asset_numberOriginal;
+									assetNums.push(assetNum);
+								});
+
+								console.log(assetNums);
+
+								var newInstances = instances.filter(instance => {
+									return !assetNums.includes(instance.asset_number);
+								});
+
+								console.log(newInstances);
+
+								actions.forEach(action => {
+									if (action.action !== "decommission") {
+										newInstances.push(action.new_record);
+									}
+								});
+
+								newInstances.map(asset => {
+									items.push(createData(asset.model, asset.hostname, asset.datacenter_name, asset.rack + " U" + asset.rack_position, asset.owner, asset.asset_number));
+								});
+								this.setState({ allAssets: newInstances, tableItems: items });
+                            });
 					});
-					this.setState({ allAssets: response.data.instances, tableItems: items });
-				});
-		this.getDecommissionedAssets();
+			this.getDecommissionedAssets();
+		} else {
+			axios.post(
+				getURL(Constants.ASSETS_MAIN_PATH, AssetCommand.search), emptySearch).then(
+					response => {
+						var items = [];
+
+						response.data.instances.map(asset => {
+							items.push(createData(asset.model, asset.hostname, asset.datacenter_name, asset.rack + " U" + asset.rack_position, asset.owner, asset.asset_number));
+						});
+						this.setState({ allAssets: response.data.instances, tableItems: items });
+					});
+			this.getDecommissionedAssets();
+		}
 	}
 
 	deleteAsset = () => {
@@ -366,6 +412,7 @@ class TableAsset extends React.Component {
 
 	exitChangePlan = () => {
 		this.props.updateChangePlan(false, null, null, "");
+		this.fetchAllAssets();
 	}
 
 	switchToDec = (switchBool) => {

@@ -231,6 +231,7 @@ class DatacenterView extends React.Component {
                             selectDatacenter={this.updateDatacenter}
                             datacenterList={this.state.datacentersList}
                         />
+
                         {this.state.loadingDCList ?
                             <div className={classes.progress}><CircularProgress /></div> :
 

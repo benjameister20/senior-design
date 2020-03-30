@@ -21,6 +21,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import ReplayIcon from '@material-ui/icons/Replay';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import DoneIcon from '@material-ui/icons/Done';
+import CheckIcon from '@material-ui/icons/Check';
 
 // Path prefix for change plan routes
 const changePlanPath = "changeplans/";
@@ -57,7 +58,7 @@ class ChangePlansView extends React.Component {
 
         this.state = {
             // Status snackbar
-            showStatus: false,
+            statusOpen: false,
             statusMessage: '',
             statusSeverity: '',
 
@@ -99,6 +100,9 @@ class ChangePlansView extends React.Component {
 
             // Name of plan to edit
             editName: "",
+
+            // Conflicts
+            conflicts: null,
         };
 
         // Axios network request headers
@@ -167,6 +171,12 @@ class ChangePlansView extends React.Component {
             }).then(response => {
                 this.setState({ planId: null, planName: "" });
                 this.fetchAllChangePlans();
+
+                if (response.data.message === "success") {
+                    this.setState({ statusOpen: true, statusMessage: "Success", statusSeverity: "success" });
+                } else {
+                    this.setState({ statusOpen: true, statusMessage: response.data.message, statusSeverity: "error" });
+                }
             }
         );
     }
@@ -202,6 +212,12 @@ class ChangePlansView extends React.Component {
             }).then(response => {
                 this.setState({ executeId: null });
                 this.fetchAllChangePlans();
+
+                if (response.data.message === "success") {
+                    this.setState({ statusOpen: true, statusMessage: "Success", statusSeverity: "success" });
+                } else {
+                    this.setState({ statusOpen: true, statusMessage: response.data.message, statusSeverity: "error" });
+                }
             }
         );
     }
@@ -227,6 +243,12 @@ class ChangePlansView extends React.Component {
             }).then(response => {
                 this.setState({ deleteId: null });
                 this.fetchAllChangePlans();
+
+                if (response.data.message === "success") {
+                    this.setState({ statusOpen: true, statusMessage: "Success", statusSeverity: "success" });
+                } else {
+                    this.setState({ statusOpen: true, statusMessage: response.data.message, statusSeverity: "error" });
+                }
             }
         );
     }
@@ -263,6 +285,23 @@ class ChangePlansView extends React.Component {
         return result;
     }
 
+    // Validate a change plan for conflicts
+    validate = (identifier) => {
+        axios.post(
+            getURL(changePlanPath, "validateplan/"), {
+                'change_plan_id': identifier,
+            }).then(response => {
+                console.log(response);
+                var conflicts = response.data.conflicts;
+                if (Object.keys(conflicts).length === 0) {
+                    this.setState({ statusOpen: true, statusMessage: "Success", statusSeverity: "success" });
+                } else {
+                    this.setState({ statusOpen: true, statusMessage: response.data.conflicts[Object.keys(conflicts)[0]], statusSeverity: "error" });
+                }
+            }
+        );
+    }
+
     // Delete a change plan action
     deleteAction = (identifier, step) => {
         axios.post(
@@ -271,6 +310,11 @@ class ChangePlansView extends React.Component {
                 'step': step,
             }).then(response => {
                 this.fetchAllChangePlans();
+                if (response.data.message === "success") {
+                    this.setState({ statusOpen: true, statusMessage: "Success", statusSeverity: "success" });
+                } else {
+                    this.setState({ statusOpen: true, statusMessage: response.data.message, statusSeverity: "error" });
+                }
             }
         );
     }
@@ -293,6 +337,11 @@ class ChangePlansView extends React.Component {
         }[key];
     }
 
+    // Close snackbar
+    closeShowStatus = () => {
+        this.setState({ statusOpen: false });
+    }
+
     render() {
         const { classes } = this.props;
 
@@ -300,7 +349,7 @@ class ChangePlansView extends React.Component {
             <div>
                 <ErrorBoundray >
                 <StatusDisplay
-                    open={this.state.showStatus}
+                    open={this.state.statusOpen}
                     severity={this.state.statusSeverity}
                     closeStatus={this.closeShowStatus}
                     message={this.state.statusMessage}
@@ -335,6 +384,8 @@ class ChangePlansView extends React.Component {
                                 details.forEach(s => {
                                     step = Math.max(step, s.step);
                                 });
+
+                                step = step + 1;
                             }
 
                             return (<ExpansionPanel key={plan.identifier}>
@@ -396,6 +447,7 @@ class ChangePlansView extends React.Component {
                                                         detail.new_record.asset_numberOriginal === undefined ?
                                                         detail.new_record.asset_number : detail.new_record.asset_numberOriginal
                                                     }
+                                                    { !executed ?
                                                     <IconButton
                                                         style={{
                                                             marginLeft: "20px",
@@ -403,7 +455,7 @@ class ChangePlansView extends React.Component {
                                                         onClick={() => { this.deleteAction(plan.identifier, detail.step) }}
                                                     >
                                                         <DeleteIcon />
-                                                    </IconButton>
+                                                    </IconButton> : null }
 
                                                     </Typography>
 
@@ -445,6 +497,17 @@ class ChangePlansView extends React.Component {
                                     })
                                     : "This change plan has made no changes!" }
                                 </Grid>
+                                <Grid item xs={3}>
+                                    { !executed ? <Button
+                                        variant="contained"
+                                        color="default"
+                                        style={{width: "100%"}}
+                                        startIcon={<CheckIcon />}
+                                        onClick={() => { this.validate(plan.identifier) }}
+                                    >
+                                        Validate
+                                    </Button> : null }
+                                    </Grid>
                                 <Grid item xs={3}>
                                     { !executed ? <Button
                                         variant="contained"

@@ -225,12 +225,12 @@ class CreateAsset extends React.Component {
                     "display_name": "",
                     "email": "",
                     "privilege": {
-                        "model": true,
-                        "asset": true,
-                        "datacenters": ["*"],
-                        "power": true,
-                        "audit": true,
-                        "admin": true
+                        "model": false,
+                        "asset": false,
+                        "datacenters": [],
+                        "power": false,
+                        "audit": false,
+                        "admin": false,
                     }
                 }
             }).then(
@@ -248,11 +248,17 @@ class CreateAsset extends React.Component {
                 var datacenters = [];
                 response.data.datacenters.map(datacenter => {
                     if (this.props.privilege.datacenters.length > 0) {
-                        if (this.props.privilege.datacenters[0] === "*" || this.props.privilege.datacenters.includes(datacenter.abbreviation) || this.props.privilege.asset) {
+                        if (this.props.privilege.datacenters[0] === "*" || this.props.privilege.datacenters.includes(datacenter.name)) {
                             datacenters.push(datacenter.name);
                         }
+                    } else if (this.props.privilege.asset || this.props.privilege.admin) {
+                        datacenters.push(datacenter.name);
                     }
                 });
+                console.log("datacenters");
+                console.log(response.data.datacenters);
+                console.log(datacenters);
+                console.log(this.props.privilege);
                 this.setState({ loadingDatacenters: false, datacenterList: datacenters })
             });
     }

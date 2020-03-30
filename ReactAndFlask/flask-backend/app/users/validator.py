@@ -153,7 +153,7 @@ class Validator:
     def validate_datacenters(self, datacenters):
         for datacenter in datacenters:
             if datacenter != "*":
-                dc = DC_TABLE.get_datacenter_by_abbreviation(datacenter)
+                dc = DC_TABLE.get_datacenter_by_name(datacenter)
                 if dc is None:
                     raise InvalidDatacenterError(
                         f"Datacenter {datacenter} does not exist"

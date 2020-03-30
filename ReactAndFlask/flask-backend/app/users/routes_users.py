@@ -26,17 +26,12 @@ def test():
 
 @users.route("/users/search", methods=["POST"])
 @requires_auth(request)
-@requires_permission(
-    request,
-    Permission(
-        model=False, asset=False, datacenters=[], power=False, audit=False, admin=True
-    ),
-    PermissionActions.NO_DATACENTER,
-)
 def search():
     response = {}
     try:
         json_list = USER_MANAGER.search(request)
+        print(request)
+        print(json_list)
     except UserException as e:
         return add_message_to_JSON(response, e.message)
 

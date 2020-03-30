@@ -43,7 +43,7 @@ export default class CreateModal extends React.Component {
 
     resetCreate = (success) => {
         if (success) {
-            this.setState({username: "", display_name: "", password: "", email: "",});
+
         }
     }
 

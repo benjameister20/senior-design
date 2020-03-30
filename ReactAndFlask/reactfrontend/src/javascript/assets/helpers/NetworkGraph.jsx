@@ -29,7 +29,7 @@ import * as Constants from "../../Constants";
 // }
 
 function getGraph(primaryHosts, host) {
-    if (host==="") {
+    if (host === "") {
         return {};
     }
 
@@ -38,9 +38,9 @@ function getGraph(primaryHosts, host) {
 
     var nodes = [];
     nodes.push({
-        id:hostID,
-        label:"" + host,
-        color:"#F5F5DC"
+        id: hostID,
+        label: "" + host,
+        color: "#F5F5DC"
     });
 
     hostnameMapping[host] = hostID;
@@ -52,18 +52,18 @@ function getGraph(primaryHosts, host) {
         console.log("nodes and edges");
         console.log(primaryHosts);
         Object.entries(primaryHosts).map(([primaryHost, secondaryHosts]) => {
-            if (primaryHost !== "message" && primaryHost !=="" && primaryHost!=="metadata") {
+            if (primaryHost !== "message" && primaryHost !== "" && primaryHost !== "metadata") {
                 if (hostnameMapping[primaryHost] !== undefined) {
-                    edges.push({ from: hostID, to:hostnameMapping[primaryHost] });
-                    edges.push({ from: hostnameMapping[primaryHost], to:hostID });
+                    edges.push({ from: hostID, to: hostnameMapping[primaryHost] });
+                    edges.push({ from: hostnameMapping[primaryHost], to: hostID });
                 } else {
                     nodes.push({
-                        id:primaryHostID,
-                        label:"" + primaryHost,
-                        color:"#F0FFFF"
+                        id: primaryHostID,
+                        label: "" + primaryHost,
+                        color: "#F0FFFF"
                     });
                     edges.push({ from: hostID, to: primaryHostID });
-                    edges.push({ from: primaryHostID, to:hostID });
+                    edges.push({ from: primaryHostID, to: hostID });
                     hostnameMapping[primaryHost] = primaryHostID;
                 }
                 console.log("nodes and edges");
@@ -76,9 +76,9 @@ function getGraph(primaryHosts, host) {
                                 edges.push({ to: primaryHostID, from: hostnameMapping[secondaryHost] });
                             } else {
                                 nodes.push({
-                                    id:secondaryHostID,
-                                    label:"" + secondaryHost,
-                                    color:"#7FFFD4"
+                                    id: secondaryHostID,
+                                    label: "" + secondaryHost,
+                                    color: "#7FFFD4"
                                 });
                                 edges.push({ from: primaryHostID, to: secondaryHostID });
                                 edges.push({ to: primaryHostID, from: secondaryHostID });
@@ -99,12 +99,12 @@ function getGraph(primaryHosts, host) {
         console.log("nodes and edges");
         console.log(nodes);
         console.log(edges);
-        return { nodes:nodes, edges:edges };
+        return { nodes: nodes, edges: edges };
 
     } catch (Exception) {
         console.log("in here")
         console.log(Exception);
-        return { nodes:[], edges:[] }
+        return { nodes: [], edges: [] }
     }
 }
 
@@ -114,9 +114,9 @@ class NetworkGraph extends React.Component {
         super(props);
 
         this.state = {
-            graph:{
-                nodes:[],
-                edges:[],
+            graph: {
+                nodes: [],
+                edges: [],
             },
         };
     }
@@ -124,45 +124,56 @@ class NetworkGraph extends React.Component {
     componentDidMount() {
         axios.post(
             getURL(Constants.ASSETS_MAIN_PATH, AssetCommand.GET_NETWORK_NEIGHBORHOOD), {
-                "asset_number":this.props.assetNum,
-            }).then(response => {
-                console.log(response);
-                this.setState({ graph:getGraph(response.data, this.props.host) });
+            "asset_number": this.props.assetNum,
+        }).then(response => {
+            this.setState({ graph: getGraph(response.data, this.props.host) });
         });
     }
 
     render() {
-          const options = {
+        const options = {
             layout: {
-              hierarchical: false
+                hierarchical: false
             },
             edges: {
-              color: "#000000"
+                color: "#000000"
             },
             height: "500px",
-            interaction:{
-                dragNodes:false,
+            interaction: {
+                dragNodes: false,
                 dragView: false,
             }
-          };
+        };
 
-          const events = {
-            select: function(event) {
-              var { nodes, edges } = event;
+        const events = {
+            select: function (event) {
+                var { nodes, edges } = event;
             }
-          };
+        };
 
         return (
             <span>
-                {this.state.graph.edges.length===0 ? <Typography>This asset is not currently connected to any other assets</Typography>:
-                <Graph
-                    graph={this.state.graph}
-                    options={options}
-                    events={events}
-                    getNetwork={network => {
-                        //  if you want access to vis.js network api you can set the state in a parent component using this property
-                    }}
-                />}
+                {this.props.isDecommissioned ?
+                    <Graph
+                        graph={getGraph(this.props.decomAsset.network_neighborhood, this.props.host)}
+                        options={options}
+                        events={events}
+                        getNetwork={network => {
+                            //  if you want access to vis.js network api you can set the state in a parent component using this property
+                        }}
+                    />
+                    :
+                    this.state.graph.edges.length === 0 ?
+                        <Typography>This asset is not currently connected to any other assets</Typography> :
+                        <Graph
+                            graph={this.state.graph}
+                            options={options}
+                            events={events}
+                            getNetwork={network => {
+                                //  if you want access to vis.js network api you can set the state in a parent component using this property
+                            }}
+                        />
+                }
             </span>
         );
     }

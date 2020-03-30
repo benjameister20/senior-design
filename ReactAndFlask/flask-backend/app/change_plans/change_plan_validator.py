@@ -225,11 +225,19 @@ class ChangePlanValidator:
         instance_bottom: int,
         instance_top: int,
     ):
+        print("CALLED")
+        print("ALL ACTIONS", all_cp_actions)
         for prev_action in all_cp_actions:
+            print("ENTERED")
+            print(prev_action.step)
+            print(cp_action.step)
             if prev_action.step >= cp_action.step:
                 continue
 
+            print("VAL VS ACTION")
+            print("PREV ACTION", prev_action.action)
             if prev_action.action != Constants.CREATE_KEY:
+                print("VAL ADDED")
                 self.cp_asset_set.add(prev_action.original_asset_number)
             if prev_action.action == Constants.DECOMMISSION_KEY:
                 self.decom_asset_set.add(prev_action.original_asset_number)
@@ -240,6 +248,7 @@ class ChangePlanValidator:
                 and prev_action.action != Constants.DECOMMISSION_KEY
             ):
                 return f"Asset numbers must be unique. An asset with asset number {instance.asset_number} already exists."
+
             if (
                 prev_action.new_record.get(Constants.ASSET_NUMBER_KEY)
                 == new_asset_number
@@ -322,6 +331,10 @@ class ChangePlanValidator:
                 instance.hostname
             )
 
+            print("DUPLICATE NUM", duplicate_hostname.asset_number)
+            print("CP ASSET SET")
+            for val in self.cp_asset_set:
+                print(val)
             if (
                 duplicate_hostname is not None
                 and not duplicate_hostname.asset_number in self.cp_asset_set

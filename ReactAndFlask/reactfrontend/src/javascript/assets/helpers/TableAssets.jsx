@@ -151,7 +151,7 @@ class TableAsset extends React.Component {
 			speedDialOpen: false,
 			displayDec: false,
 
-			rowOwner:"",
+			rowOwner: "",
 		};
 	}
 
@@ -249,7 +249,7 @@ class TableAsset extends React.Component {
 				Object.assign(dAsset, currAsset);
 			}
 		})
-		this.setState({ detailAsset: dAsset, showDetailedView: true, rowOwner:asset.owner });
+		this.setState({ detailAsset: dAsset, showDetailedView: true, rowOwner: asset.owner });
 	}
 
 	updateItems = (assets) => {
@@ -330,24 +330,26 @@ class TableAsset extends React.Component {
 	}
 
 	addCheckedItem = (event, assetNum) => {
-		if (event.target.getAttribute("class") !== "MuiButton-label") {
-			const selectedIndex = this.state.selectedItems.indexOf(assetNum);
-			let newSelected = [];
+		if (!this.state.displayDec) {
+			if (event.target.getAttribute("class") !== "MuiButton-label") {
+				const selectedIndex = this.state.selectedItems.indexOf(assetNum);
+				let newSelected = [];
 
-			if (selectedIndex === -1) {
-				newSelected = newSelected.concat(this.state.selectedItems, assetNum);
-			} else if (selectedIndex === 0) {
-				newSelected = newSelected.concat(this.state.selectedItems.slice(1));
-			} else if (selectedIndex === this.state.selectedItems.length - 1) {
-				newSelected = newSelected.concat(this.state.selectedItems.slice(0, -1));
-			} else if (selectedIndex > 0) {
-				newSelected = newSelected.concat(
-					this.state.selectedItems.slice(0, selectedIndex),
-					this.state.selectedItems.slice(selectedIndex + 1),
-				);
+				if (selectedIndex === -1) {
+					newSelected = newSelected.concat(this.state.selectedItems, assetNum);
+				} else if (selectedIndex === 0) {
+					newSelected = newSelected.concat(this.state.selectedItems.slice(1));
+				} else if (selectedIndex === this.state.selectedItems.length - 1) {
+					newSelected = newSelected.concat(this.state.selectedItems.slice(0, -1));
+				} else if (selectedIndex > 0) {
+					newSelected = newSelected.concat(
+						this.state.selectedItems.slice(0, selectedIndex),
+						this.state.selectedItems.slice(selectedIndex + 1),
+					);
+				}
+				console.log(newSelected);
+				this.setState({ selectedItems: newSelected });
 			}
-			console.log(newSelected);
-			this.setState({ selectedItems: newSelected });
 		}
 	}
 
@@ -381,7 +383,7 @@ class TableAsset extends React.Component {
 						{this.props.changePlanActive ?
 							<Alert severity="info">
 								<AlertTitle>Change Plan Mode</AlertTitle>
-						<Typography>Current plan: { this.props.changePlanName }</Typography>
+								<Typography>Current plan: {this.props.changePlanName}</Typography>
 						You are currently in change plan mode! Changes made are being logged in the plan and not actually made in the system.
 					</Alert> : null}
 					</Grid>
@@ -445,18 +447,19 @@ class TableAsset extends React.Component {
 						}}>
 							<TableHead>
 								<TableRow className={classes.styledTableRow}>
-									<TableCell padding="checkbox">
-										<Tooltip title="Select All">
-											<IconButton aria-label="select-all" onClick={() => this.onSelectAllClick()}>
-												<CheckIcon />
-											</IconButton>
-										</Tooltip>
-										<Tooltip title="Deselect All">
-											<IconButton aria-label="deselect-all" onClick={() => this.deselectAllClick()}>
-												<ClearIcon />
-											</IconButton>
-										</Tooltip>
-									</TableCell>
+									{this.state.displayDec ? null :
+										<TableCell padding="checkbox">
+											<Tooltip title="Select All">
+												<IconButton aria-label="select-all" onClick={() => this.onSelectAllClick()}>
+													<CheckIcon />
+												</IconButton>
+											</Tooltip>
+											<Tooltip title="Deselect All">
+												<IconButton aria-label="deselect-all" onClick={() => this.deselectAllClick()}>
+													<ClearIcon />
+												</IconButton>
+											</Tooltip>
+										</TableCell>}
 									{headCells.map(headCell => (
 										<TableCell
 											className={classes.tableCellHead}
@@ -517,12 +520,12 @@ class TableAsset extends React.Component {
 												key={row.assetNum}
 												role="checkbox"
 											>
-												<TableCell padding="checkbox">
+												{this.state.displayDec ? null : <TableCell padding="checkbox">
 													<Checkbox
 														checked={this.state.selectedItems.indexOf(row.asset_number) !== -1}
 														inputProps={{ 'aria-labelledby': labelId }}
 													/>
-												</TableCell>
+												</TableCell>}
 												<TableCell component="th" id={labelId} scope="row">{row.datacenter_name}</TableCell>
 												<TableCell align="left">{row.hostname}</TableCell>
 												<TableCell align="left">{row.model}</TableCell>
@@ -558,7 +561,7 @@ class TableAsset extends React.Component {
 						changePlanID={this.props.changePlanID}
 						changePlanStep={this.props.changePlanStep}
 						incrementChangePlanStep={this.props.incrementChangePlanStep}
-						disabled={ (!(this.props.privilege.admin || this.props.privilege.asset || this.props.privilege.datacenters.includes(this.state.detailAsset.datacenter_name)) || this.state.displayDec) }
+						disabled={(!(this.props.privilege.admin || this.props.privilege.asset || this.props.privilege.datacenters.includes(this.state.detailAsset.datacenter_name)) || this.state.displayDec)}
 						username={this.props.username}
 						fetchAllAssets={this.fetchAllAssets}
 						changePlanName={this.props.changePlanName}

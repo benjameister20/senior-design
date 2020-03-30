@@ -3,6 +3,8 @@ from typing import List
 from app.change_plans.change_plan_action_manager import ChangePlanActionManager
 from app.change_plans.change_plan_manager import ChangePlanManager
 from app.constants import Constants
+from app.decorators.auth import requires_auth
+from app.decorators.logs import log
 from app.exceptions.InvalidInputsException import InvalidInputsError
 from app.logging.logger import Logger
 from flask import Blueprint, request
@@ -23,7 +25,7 @@ def test():
 
 
 @changeplans.route("/changeplans/createplan", methods=["POST"])
-# @requires_auth(request)
+@requires_auth(request)
 def create_Cp():
     """ Route for creating change plans """
     global CP_MANAGER
@@ -40,7 +42,7 @@ def create_Cp():
 
 
 @changeplans.route("/changeplans/deleteplan", methods=["POST"])
-# @requires_auth(request)
+@requires_auth(request)
 def delete_cp():
     """ Route for deleting change plans """
     global CP_MANAGER
@@ -55,7 +57,7 @@ def delete_cp():
 
 
 @changeplans.route("/changeplans/editplan", methods=["POST"])
-# @requires_auth(request)
+@requires_auth(request)
 def edit_cp():
     """ Route for editing change plans """
     global CP_MANAGER
@@ -70,8 +72,8 @@ def edit_cp():
 
 
 @changeplans.route("/changeplans/execute", methods=["POST"])
-# @requires_auth(request)
-# @log(request, Logger.CHANGEPLAN, Logger.ACTIONS.CHANGEPLAN.EXECUTE)
+@requires_auth(request)
+@log(request, Logger.CHANGEPLAN, Logger.ACTIONS.CHANGEPLAN.EXECUTE)
 def execute():
     """ Route for executing a change plans """
     global CP_MANAGER
@@ -81,6 +83,24 @@ def execute():
         cp_data = request.get_json()
         CP_MANAGER.execute_cp(cp_data)
         return addMessageToJSON(returnJSON, "success")
+    except InvalidInputsError as e:
+        return addMessageToJSON(returnJSON, e.message)
+
+
+@changeplans.route("/changeplans/validateplan", methods=["POST"])
+# @requires_auth(request)
+# @log(request, Logger.CHANGEPLAN, Logger.ACTIONS.CHANGEPLAN.EXECUTE)
+def validate_cp():
+    """ Route for executing a change plans """
+    global CP_ACTION_MANAGER
+    returnJSON = createJSON()
+
+    try:
+        cp_data = request.get_json()
+        cp_id = cp_data.get(Constants.CHANGE_PLAN_ID_KEY)
+        val_result = CP_ACTION_MANAGER.validate_all_cp_actions(cp_id)
+        returnJSON["conflicts"] = val_result
+        return returnJSON
     except InvalidInputsError as e:
         return addMessageToJSON(returnJSON, e.message)
 

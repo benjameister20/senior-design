@@ -51,7 +51,7 @@ export default function ShowDatacenters(props) {
                 <Grid container spacing={3}>
                 <Grid item xs={3}>
                     <Paper elevation={3}>
-                    {props.disabled ? null :
+                    {!(props.privilege.admin || props.privilege.asset) ? null :
                     <Grid
                         container
                         spacing={2}
@@ -137,7 +137,7 @@ export default function ShowDatacenters(props) {
                         <Grid item xs={6}>
                             <TextField id="standard-basic" variant="outlined" label="End Rack (e.g. B10)" name="rack2" onChange={updateEnd}/>
                         </Grid></Grid> }
-                        {props.disabled ? null :
+                        {!(props.privilege.admin || props.privilege.asset || props.privilege.datacenters.includes(props.selectedDatacenter)) ? null :
                         <Grid item xs={6}>
                             <Button
                                 variant="contained"
@@ -147,17 +147,7 @@ export default function ShowDatacenters(props) {
                                 Create
                             </Button>
                         </Grid>}
-                        {/* <Grid item xs={4}>
-                            <Button
-                                variant="contained"
-                                color="primary"
-                                style={{ width: "100%" }}
-                                onClick={viewRacks}
-                            >
-                                View
-                            </Button>
-                        </Grid> */}
-                        {props.disabled ? null :
+                        {!(props.privilege.admin || props.privilege.asset || props.privilege.datacenters.includes(props.selectedDatacenter)) ? null :
                         <Grid item xs={6}>
                             <Button
                                 variant="contained"

@@ -111,7 +111,6 @@ class ChangePlanManager:
             val_actions = ChangePlanActionManager().get_change_plan_actions(identifier)
             for cp_action in val_actions:
                 val_result = self.validator.validate_action(cp_action, val_actions)
-                print(val_result)
                 if val_result != Constants.API_SUCCESS:
                     conflict = f"Change plan cannot be executed due to conflict in step {cp_action.step}. "
                     conflict += val_result

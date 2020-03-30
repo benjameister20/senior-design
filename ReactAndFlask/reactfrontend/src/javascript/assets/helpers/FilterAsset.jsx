@@ -1,29 +1,7 @@
+import { FormControl, FormControlLabel, FormHelperText, Grid, MenuItem, Paper, Select, Switch, TextField, Typography } from '@material-ui/core/';
 import React from 'react';
-
-import axios from 'axios';
-
-import {
-    Grid,
-    FormHelperText,
-    FormControl,
-    Select,
-    MenuItem,
-    TextField,
-    Paper,
-    Typography,
-    Button,
-    FormControlLabel,
-    Switch,
-} from '@material-ui/core/';
-import DateFnsUtils from '@date-io/date-fns';
-import {
-    MuiPickersUtilsProvider,
-    KeyboardTimePicker,
-    KeyboardDatePicker,
-} from '@material-ui/pickers';
-
-
 import * as Constants from '../../Constants';
+
 
 class FilterAsset extends React.Component {
     constructor(props) {
@@ -37,7 +15,6 @@ class FilterAsset extends React.Component {
             endingLetter: "Z",
             startingNum: 1,
             endingNum: 1000,
-            showDecommissioned: false,
             startDate: "",
             endDate: "",
             user: "",
@@ -92,14 +69,11 @@ class FilterAsset extends React.Component {
     search = () => {
         var items = [];
         try {
-            console.log(this.state.showDecommissioned);
-            if (this.state.showDecommissioned) {
+            console.log(this.props.showDecommissioned);
+            if (this.props.showDecommissioned) {
                 this.props.decAssets.map(asset => {
-                    console.log(this.state.startDate);
-                    console.log(this.state.endDate);
-                    console.log(asset.timestamp);
-                    var startDate = new Date(this.state.startDate==="" ? "01/01/2001" : this.state.startDate);
-                    var endDate = new Date(this.state.endDate==="" ? "12/31/2025" : this.state.startDate);
+                    var startDate = new Date(this.state.startDate === "" || parseInt(this.state.startDate) < 2000 ? "01/01/2001" : this.state.startDate + " 23:59:59");
+                    var endDate = new Date(this.state.endDate === "" || parseInt(this.state.endDate) < 2000 ? "12/31/2025" : this.state.endDate + " 23:59:59");
                     var decDate = new Date(asset.timestamp);
                     if (
                         (asset.datacenter_name.includes(this.state.datacenter) || asset.abbreviation.includes(this.state.datacenter))
@@ -107,7 +81,7 @@ class FilterAsset extends React.Component {
                         && asset.hostname.includes(this.state.hostname)
                         && asset.rack >= this.state.startingLetter + "" + this.state.startingNum
                         && asset.rack <= this.state.endingLetter + "" + this.state.endingNum
-                        && asset.owner.includes(this.state.user)
+                        && asset.decommission_user.includes(this.state.user)
                         && decDate >= startDate
                         && decDate <= endDate
                     ) {
@@ -136,7 +110,7 @@ class FilterAsset extends React.Component {
 
     switchToDecommissioned = (event) => {
         console.log(event.target.checked);
-        this.setState({ showDecommissioned: event.target.checked }, () => this.search());
+        //this.setState({ showDecommissioned: event.target.checked }, () => this.search());
         this.props.switchToDec(event.target.checked);
     }
 
@@ -235,17 +209,17 @@ class FilterAsset extends React.Component {
                             <FormControlLabel
                                 control={
                                     <Switch
-                                        checked={this.state.showDecommissioned}
+                                        checked={this.props.showDecommissioned}
                                         onChange={event => { this.switchToDecommissioned(event) }}
                                         value="checkedB"
                                         color="primary"
                                     />
                                 }
                                 labelPlacement="top"
-                                label={this.state.showDecommissioned ? "Decommissioned Assets" : "Active Assets" }
+                                label={this.props.showDecommissioned ? "Decommissioned Assets" : "Active Assets"}
                             />
                         </Grid>
-                        {this.state.showDecommissioned ? <Grid item xs={12} sm={6} md={4} lg={3}>
+                        {this.props.showDecommissioned ? <Grid item xs={12} sm={6} md={4} lg={3}>
                             <TextField
                                 id="user"
                                 label="User"
@@ -254,7 +228,7 @@ class FilterAsset extends React.Component {
                                 style={{ width: "100%" }}
                             />
                         </Grid> : null}
-                        {this.state.showDecommissioned ? <Grid item xs={12} sm={6} md={4} lg={3}>
+                        {this.props.showDecommissioned ? <Grid item xs={12} sm={6} md={4} lg={3}>
                             <TextField
                                 id="start-date"
                                 label="Start Date"
@@ -265,7 +239,7 @@ class FilterAsset extends React.Component {
                                 }}
                             />
                         </Grid> : null}
-                        {this.state.showDecommissioned ? <Grid item xs={12} sm={6} md={4} lg={3}>
+                        {this.props.showDecommissioned ? <Grid item xs={12} sm={6} md={4} lg={3}>
                             <TextField
                                 id="end-date"
                                 label="End Date"

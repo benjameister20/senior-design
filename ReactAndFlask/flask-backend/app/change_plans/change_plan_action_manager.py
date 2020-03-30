@@ -99,6 +99,19 @@ class ChangePlanActionManager:
                 "An error occurred when attempting to edit the change plan action."
             )
 
+    def validate_all_cp_actions(self, cp_id):
+        all_cp_actions = self.get_change_plan_actions(cp_id)
+        result = {}
+        for cp_action in all_cp_actions:
+            validaiton_result = self.validator.validate_action(
+                cp_action, all_cp_actions
+            )
+            if validaiton_result != Constants.API_SUCCESS:
+                msg = f"Conflict in Step {cp_action.step}: " + validaiton_result
+                result[cp_action.step] = msg
+
+        return result
+
     def get_change_plan_actions(self, cp_id) -> List[ChangePlanAction]:
         try:
             change_plan_actions: List[

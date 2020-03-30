@@ -270,12 +270,12 @@ class EditAsset extends React.Component {
                 "display_name": "",
                 "email": "",
                 "privilege": {
-                    "model": true,
-                    "asset": true,
-                    "datacenters": ["*"],
-                    "power": true,
-                    "audit": true,
-                    "admin": true
+                    "model": false,
+                    "asset": false,
+                    "datacenters": [],
+                    "power": false,
+                    "audit": false,
+                    "admin": false
                 }
             }
         }).then(
@@ -647,6 +647,8 @@ class EditAsset extends React.Component {
 
         return (
             <span>
+
+                {this.props.isDecommissioned ? "This asset was decommissioned by " + this.props.defaultValues.decommission_user + " on " + this.props.defaultValues.timestamp : ""}
                 {(
                     (this.state.loadingDatacenters
                         || this.state.loadingModels
@@ -667,7 +669,7 @@ class EditAsset extends React.Component {
                                                 name={this.state.inputs.model.name}
                                                 variant="outlined"
                                                 fullWidth
-                                                value={this.state.model}
+                                                value={this.props.isDecommissioned ? this.props.defaultValues.vendor + " " + this.props.defaultValues.model_number : this.state.model}
                                                 disabled
                                             /> :
                                             <Autocomplete

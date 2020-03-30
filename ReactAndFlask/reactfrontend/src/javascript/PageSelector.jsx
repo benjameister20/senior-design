@@ -6,6 +6,7 @@ import Login from "./Login";
 import TabViewer from "./Tabs";
 import getURL from './helpers/functions/GetURL';
 import * as Constants from "./Constants";
+import ErrorBoundary from "./errors/ErrorBoundry";
 
 const storedToken = 'token';
 const storedPrivilege = 'privilege';
@@ -102,20 +103,22 @@ export default class PageSelector extends React.Component {
 		console.log(privilege);
 
 		return (
-			<div>
-				{this.state.loggedIn ?
-					<TabViewer
-						token={this.state.token}
-						username={this.state.username}
-						privilege={privilege}
-						logout={this.logout}
-					/> :
-					<Login
-						loginFunc={this.login}
-						shib={this.props.redirected}
-						loginFuncOAuth={this.loginWithOAuth}
-					/>}
-			</div>
+			<ErrorBoundary>
+				<div>
+					{this.state.loggedIn ?
+						<TabViewer
+							token={this.state.token}
+							username={this.state.username}
+							privilege={privilege}
+							logout={this.logout}
+						/> :
+						<Login
+							loginFunc={this.login}
+							shib={this.props.redirected}
+							loginFuncOAuth={this.loginWithOAuth}
+						/>}
+				</div>
+			</ErrorBoundary>
 		);
 	}
 

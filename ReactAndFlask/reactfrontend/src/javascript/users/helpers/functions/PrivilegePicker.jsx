@@ -23,16 +23,16 @@ export default function PrivilegePicker(props) {
 	var defaultDCs = [];
 
 	if(props.defaultPrivileges !== undefined) {
-		if (props.defaultPrivileges.Model) {
+		if (props.defaultPrivileges.model) {
 			defaultPrivs.push(generalPrivileges[0]);
 		}
-		if (props.defaultPrivileges.Asset) {
+		if (props.defaultPrivileges.asset) {
 			defaultPrivs.push(generalPrivileges[1]);
 		}
-		if (props.defaultPrivileges.Audit) {
+		if (props.defaultPrivileges.audit) {
 			defaultPrivs.push(generalPrivileges[2]);
 		}
-		if (props.defaultPrivileges.Power) {
+		if (props.defaultPrivileges.power) {
 			defaultPrivs.push(generalPrivileges[3]);
 		}
 		if (props.defaultPrivileges.admin) {
@@ -41,6 +41,9 @@ export default function PrivilegePicker(props) {
 
 		defaultDCs = props.defaultPrivileges.datacenters
 	}
+
+	console.log("default privileges");
+	console.log(props.defaultPrivileges);
 
 	return (
 		<span>

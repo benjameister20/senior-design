@@ -55,9 +55,17 @@ class TabViewer extends React.Component {
             anchorEl: null,
             isMenuOpen:false,
 
-            // Change plan
+            // If change plan mode is on
             changePlanActive: false,
+
+            // Unique id of current change plan
             changePlanID: null,
+
+            // Current step in change plan
+            changePlanStep: null,
+
+            // Name of current change plan
+            changePlanName: "",
         };
         this.handleChange = this.handleChange.bind(this);
 
@@ -90,8 +98,18 @@ class TabViewer extends React.Component {
         this.setState({ anchorEl: null, isMenuOpen:false });
     }
 
-    updateChangePlan = (status, id) => {
-        this.setState({ changePlanActive: status, changePlanID: id });
+    updateChangePlan = (status, id, step, name) => {
+        this.setState({ changePlanActive: status, changePlanID: id,  changePlanStep: step, changePlanName: name });
+
+        if (status === false) {
+            this.setState({ changePlanStep: null, changePlanName: "" });
+        }
+    }
+
+    incrementChangePlanStep = () => {
+        const currentStep = this.state.changePlanStep;
+
+        this.setState({ changePlanStep: currentStep + 1 });
     }
 
     render() {
@@ -168,6 +186,9 @@ class TabViewer extends React.Component {
                         changePlanActive={this.state.changePlanActive}
                         updateChangePlan={this.updateChangePlan}
                         changePlanID ={this.state.changePlanID}
+                        changePlanStep={this.state.changePlanStep}
+                        incrementChangePlanStep={this.incrementChangePlanStep}
+                        changePlanName={this.state.changePlanName}
                     />
                 </Container>
             </Typography>}

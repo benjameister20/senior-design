@@ -17,6 +17,8 @@ class StatsManager:
         self.space_by_vendor = {}
         self.space_by_model = {}
         self.space_by_owner = {}
+
+        self.rack_count = {}
         self.rack_height = 42
 
     def create_report(self, dc_name):
@@ -45,7 +47,9 @@ class StatsManager:
         for key in self.space_by_rack:
             total_space_used += self.space_by_rack[key]
             self.space_by_rack[key] = round(
-                (self.space_by_rack[key] / self.rack_height) * 100, 2
+                (self.space_by_rack[key] / (self.rack_count[key] * self.rack_height))
+                * 100,
+                2,
             )
 
         all_space = num_racks * self.rack_height
@@ -100,7 +104,12 @@ class StatsManager:
             else:
                 self.space_by_owner[owner] = model.height
 
-        self.space_by_rack[rack_label] = rack_space_used
+        if rack_label in self.rack_count:
+            self.space_by_rack[rack_label] += rack_space_used
+            self.rack_count[rack_label] += 1
+        else:
+            self.space_by_rack[rack_label] = rack_space_used
+            self.rack_count[rack_label] = 1
 
     def divide_dict_by_space(self, dictionary, total_space_used):
         for key in dictionary:
@@ -113,5 +122,6 @@ class StatsManager:
         self.space_by_vendor = {}
         self.space_by_model = {}
         self.space_by_owner = {}
+        self.rack_count = {}
 
         return

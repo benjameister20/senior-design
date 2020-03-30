@@ -439,7 +439,7 @@ class ChangePlansView extends React.Component {
                                                         onClick={() => { this.openRenameDialog(plan.identifier) }}
                                                     >
                                                         Rename
-                                    </Button> : null}
+                                                    </Button> : null}
                                             </Grid>
                                             <Grid item xs={3}>
                                                 {!executed ? <Button
@@ -450,7 +450,7 @@ class ChangePlansView extends React.Component {
                                                     onClick={() => { this.openDescriptionModal(plan.identifier, step, plan.name) }}
                                                 >
                                                     Edit
-                                    </Button> : null}
+                                                </Button> : null}
                                             </Grid>
                                             <Grid item xs={12}>
                                                 {this.state.changePlanDetails[plan.identifier] !== undefined ?
@@ -527,7 +527,7 @@ class ChangePlansView extends React.Component {
                                                     onClick={() => { this.validate(plan.identifier) }}
                                                 >
                                                     Validate
-                                    </Button> : null}
+                                                </Button> : null}
                                             </Grid>
                                             <Grid item xs={3}>
                                                 {!executed ? <Button
@@ -538,7 +538,7 @@ class ChangePlansView extends React.Component {
                                                     onClick={() => { this.openExecuteDialog(plan.identifier) }}
                                                 >
                                                     Execute
-                                    </Button> : null}
+                                                </Button> : null}
                                             </Grid>
                                             <Grid item xs={3}>
                                                 {!executed ? <Button
@@ -549,7 +549,7 @@ class ChangePlansView extends React.Component {
                                                     onClick={() => { this.openDeleteDialog(plan.identifier) }}
                                                 >
                                                     Delete
-                                    </Button> : null}
+                                                </Button> : null}
                                             </Grid>
                                         </Grid>
 

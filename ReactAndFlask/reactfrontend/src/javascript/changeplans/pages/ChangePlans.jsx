@@ -447,7 +447,7 @@ class ChangePlansView extends React.Component {
                                                         detail.new_record.asset_numberOriginal === undefined ?
                                                         detail.new_record.asset_number : detail.new_record.asset_numberOriginal
                                                     }
-                                                    { !executed ?
+                                                    { (!executed && detail.action !== "collateral") ?
                                                     <IconButton
                                                         style={{
                                                             marginLeft: "20px",

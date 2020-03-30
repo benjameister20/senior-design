@@ -303,10 +303,15 @@ class ChangePlanValidator:
                 old_pow_connections = prev_action.old_record.get(
                     Constants.POWER_CONNECTIONS_KEY
                 )
-                old_pow_connections = set(old_pow_connections)
-                old_pow_intersection = pow_connections.intersection(old_pow_connections)
-                if len(old_pow_intersection) > 0:
+                if old_pow_connections is None:
                     self.no_pow_conflict = True
+                else:
+                    old_pow_connections = set(old_pow_connections)
+                    old_pow_intersection = pow_connections.intersection(
+                        old_pow_connections
+                    )
+                    if len(old_pow_intersection) > 0:
+                        self.no_pow_conflict = True
 
         return Constants.API_SUCCESS
 

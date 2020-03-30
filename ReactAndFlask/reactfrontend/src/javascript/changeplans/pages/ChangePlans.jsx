@@ -343,7 +343,7 @@ class ChangePlansView extends React.Component {
     }
 
     generateWorkOrder = (event, id) => {
-        axios.post(getURL(changePlanPath, "workorder/"), { "change_plan_id": id }).then(response => {
+        axios.post(getURL(changePlanPath, "workorder/"), { "change_plan_id": id }, { responseType: 'arraybuffer' }).then(response => {
             try {
                 var blob = new Blob([response.data], { type: "application/pdf" });
                 var link = document.createElement('a');

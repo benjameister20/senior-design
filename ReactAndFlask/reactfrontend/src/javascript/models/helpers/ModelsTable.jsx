@@ -172,6 +172,12 @@ class ModelsTable extends React.Component {
         this.closeDeleteModal();
     }
 
+    edit = (event) => {
+        event.preventDefault();
+        this.props.editModel(this.state.originalVendor, this.state.originalModelNumber, this.state.originalHeight, this.state.detailedValues, this.state.networkPorts);
+        this.closeDetailedView();
+    }
+
     clickInfo = (event, ports) => {
             this.setState({ popoverAnchor: event.target, networkPorts: ports });
     }
@@ -376,6 +382,9 @@ class ModelsTable extends React.Component {
                                 {this.state.detailViewLoading ? (
                                     <CircularProgress />
                                 ) : (
+                                    <form
+                                        onSubmit={(event) => this.edit(event)}
+                                    >
                                     <Grid
                                         container
                                         spacing={1}
@@ -401,6 +410,7 @@ class ModelsTable extends React.Component {
                                                     <TextField
                                                         {...params}
                                                         label={inputs.vendor.label}
+                                                        required={true}
                                                         name={inputs.vendor.name}
                                                         onChange={this.updateModelEdited}
                                                         onBlur={this.updateModelEdited}
@@ -586,7 +596,7 @@ class ModelsTable extends React.Component {
                                             <Button
                                                 variant="contained"
                                                 color="primary"
-                                                onClick={this.save}
+                                                type="submit"
                                                 style={{ width: "100%" }}
                                             >
                                                 Save
@@ -603,6 +613,7 @@ class ModelsTable extends React.Component {
                                             </Button>
                                         </Grid>
                                     </Grid>
+                                    </form>
                                 )}
                             </div>
                         </Backdrop>

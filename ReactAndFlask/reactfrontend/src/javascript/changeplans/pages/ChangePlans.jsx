@@ -10,7 +10,7 @@ import { AssetCommand } from '../../assets/enums/AssetCommands.ts';
 
 // Material UI Core
 import { Grid, Paper, Typography, Button, withStyles} from '@material-ui/core';
-import { Modal, Fade, Backdrop, TextField, Chip } from '@material-ui/core';
+import { Modal, Fade, Backdrop, TextField, Chip, IconButton } from '@material-ui/core';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from '@material-ui/core';
 import { ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails } from '@material-ui/core';
 
@@ -233,12 +233,46 @@ class ChangePlansView extends React.Component {
 
     // Open the description modal
     openDescriptionModal = (identifier, currentStep, name) => {
+        console.log(currentStep);
         this.setState({ editId: identifier, editStep: currentStep, editName: name, changeDescriptionModal: true });
     }
 
     // Close the description modal
     closeDescriptionModal = () => {
         this.setState({ changeDescriptionModal: false });
+    }
+
+    // Concatenate network port summaries
+    reducePorts = (portList) => {
+        var result = ""
+
+        portList.forEach(port => {
+            if (port.connection_hostname.length > 0) {
+                result += "Host: " + port.connection_hostname + " ";
+            }
+
+            if (port.connection_port.length > 0) {
+                result += "Port: " + port.connection_port + " ";
+            }
+
+            if (port.mac_address.length > 0) {
+                result += "Mac: " + port.mac_address + " ";
+            }
+        });
+
+        return result;
+    }
+
+    // Delete a change plan action
+    deleteAction = (identifier, step) => {
+        axios.post(
+            getURL(changePlanPath, AssetCommand.CHANGE_PLAN_DELETE_ACTION), {
+                'change_plan_id': identifier,
+                'step': step,
+            }).then(response => {
+                this.fetchAllChangePlans();
+            }
+        );
     }
 
     // Convert keys from backend to user friendly display names
@@ -295,7 +329,7 @@ class ChangePlansView extends React.Component {
                     <Grid item xs={8}>
                         { this.state.changePlans.map(plan => {
                             const executed = plan.executed === "True";
-                            const details = this.state.changePlanDetails[plan.identifer];
+                            const details = this.state.changePlanDetails[plan.identifier];
                             var step = 1;
                             if (details !== undefined) {
                                 details.forEach(s => {
@@ -350,13 +384,29 @@ class ChangePlansView extends React.Component {
                                 { this.state.changePlanDetails[plan.identifier] !== undefined ?
                                     this.state.changePlanDetails[plan.identifier].map(detail => {
                                         var diff = detail.diff;
-                                        var isCreate = detail.action === "create";
+
+                                        if (Object.keys(diff).length == 0) {
+                                            return null;
+                                        }
+
+                                        var isCreate = detail.action === "create" || detail.action === "decommission";
                                         return (<div><TableContainer component={Paper}>
                                                     <Typography style={{margin: "10px"}}>
                                                     { detail.action.charAt(0).toUpperCase() + detail.action.slice(1) } Asset Number: {
                                                         detail.new_record.asset_numberOriginal === undefined ?
                                                         detail.new_record.asset_number : detail.new_record.asset_numberOriginal
-                                                    }</Typography>
+                                                    }
+                                                    <IconButton
+                                                        style={{
+                                                            marginLeft: "20px",
+                                                        }}
+                                                        onClick={() => { this.deleteAction(plan.identifier, detail.step) }}
+                                                    >
+                                                        <DeleteIcon />
+                                                    </IconButton>
+
+                                                    </Typography>
+
                                                     <Table>
                                                         <TableHead>
                                                             <TableRow >
@@ -376,15 +426,15 @@ class ChangePlansView extends React.Component {
                                                                     <TableRow>
                                                                         <TableCell>{this.lookup(key)}</TableCell>
                                                                         <TableCell>
-                                                                            { (key !== "power_connections" && key !== "network_connections") ? diff[key] : "" }
+                                                                            { (key !== "power_connections") ? (key === "network_connections" ? Object.keys(diff[key]).length : diff[key]) : diff[key].length }
                                                                         </TableCell>
                                                                     </TableRow>
                                                                 ) :
                                                                 (
                                                                     <TableRow>
                                                                         <TableCell>{this.lookup(key)}</TableCell>
-                                                                        <TableCell>{diff[key][0]}</TableCell>
-                                                                        <TableCell>{diff[key][1]}</TableCell>
+                                                                        <TableCell>{ key !== "network_connections" ? diff[key][0] : this.reducePorts(diff[key][0])}</TableCell>
+                                                                        <TableCell>{ key !== "network_connections" ? diff[key][1] : this.reducePorts(diff[key][1])}</TableCell>
                                                                     </TableRow>
                                                                 )
                                                         }

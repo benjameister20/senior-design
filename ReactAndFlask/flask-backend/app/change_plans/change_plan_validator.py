@@ -203,6 +203,7 @@ class ChangePlanValidator:
         if (
             prev_update_in_plan is not None
             and prev_update_in_plan.action != Constants.COLLATERAL_KEY
+            and prev_update_in_plan.step != cp_action.step
         ):
             return f"This asset is already being modified in step {prev_update_in_plan.step}. Please update your desired information there."
 

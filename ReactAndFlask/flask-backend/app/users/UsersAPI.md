@@ -1,5 +1,5 @@
 
-# routes_uesrs.py
+# routes_users.py
 -----------------------------
 ```language=python
 def test()
@@ -43,21 +43,42 @@ def search():
             "password":"PASSWORD",
             "email":"EMAIL",
             "display_name":"DISPLAY_NAME",
-            "privilege": "PRIVILEGE"
+            "privilege": {
+                "Model": bool,
+                "Asset": bool,
+                "Datacenters": List[str],
+                "Power": bool,
+                "Audit": bool,
+                "Admin": bool
+            }
         },
         {
             "username":"USERNAME",
             "password":"PASSWORD",
             "email":"EMAIL",
             "display_name":"DISPLAY_NAME",
-            "privilege": "PRIVILEGE"
+            "privilege": {
+                "Model": bool,
+                "Asset": bool,
+                "Datacenters": List[str],
+                "Power": bool,
+                "Audit": bool,
+                "Admin": bool
+            }
         },
         {
             "username":"USERNAME",
             "password":"PASSWORD",
             "email":"EMAIL",
             "display_name":"DISPLAY_NAME",
-            "privilege": "PRIVILEGE"
+            "privilege": {
+                "Model": bool,
+                "Asset": bool,
+                "Datacenters": List[str],
+                "Power": bool,
+                "Audit": bool,
+                "Admin": bool
+            }
         }
     ]
 }
@@ -76,7 +97,14 @@ def create():
     "password":"PASSWORD",
     "email":"EMAIL",
     "display_name":"DISPLAY_NAME",
-    "privilege": "PRIVILEGE"
+    ""privilege": {
+        "Model": bool,
+        "Asset": bool,
+        "Datacenters": List[str],
+        "Power": bool,
+        "Audit": bool,
+        "Admin": bool
+    }
 }
 ```
 - Returns:
@@ -118,7 +146,14 @@ def edit():
     "username": "USERNAME",
     "display_name":"DISPLAY_NAME",
     "email":"EMAIL",
-    "privilege":"PRIVILEGE",
+    "privilege": {
+        "Model": bool,
+        "Asset": bool,
+        "Datacenters": List[str],
+        "Power": bool,
+        "Audit": bool,
+        "Admin": bool
+    },
     "password":"PASSWORD",
 
 }
@@ -149,7 +184,14 @@ def authenticate():
 {
     "message":"success"||"ERROR_MESSAGE",
     "token":"TOKEN",
-    "privilege":"PRIVILEGE"
+    "privilege": {
+        "Model": bool,
+        "Asset": bool,
+        "Datacenters": List[str],
+        "Power": bool,
+        "Audit": bool,
+        "Admin": bool
+    }
 }
 ```
 -----------------------------
@@ -187,7 +229,14 @@ def detail_view()
             "username": "USERNAME",
             "display_name":"DISPLAY_NAME",
             "email":"EMAIL",
-            "privilege":"PRIVILEGE",
+            "privilege": {
+                "Model": bool,
+                "Asset": bool,
+                "Datacenters": List[str],
+                "Power": bool,
+                "Audit": bool,
+                "Admin": bool
+            }
             "password":"PASSWORD",
         }
 }

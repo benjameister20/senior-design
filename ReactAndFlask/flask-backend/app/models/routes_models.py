@@ -2,7 +2,8 @@ import json
 from typing import List
 
 from app.constants import Constants
-from app.decorators.auth import requires_auth, requires_role
+from app.data_models.permission import Permission
+from app.decorators.auth import PermissionActions, requires_auth, requires_permission
 from app.decorators.logs import log
 from app.exceptions.InvalidInputsException import InvalidInputsError
 from app.logging.logger import Logger
@@ -25,7 +26,13 @@ def test():
 
 @models.route("/models/create", methods=["POST"])
 @requires_auth(request)
-@requires_role(request, "admin")
+@requires_permission(
+    request,
+    Permission(
+        model=True, asset=False, datacenters=[], power=False, audit=False, admin=False
+    ),
+    PermissionActions.NO_DATACENTER,
+)
 @log(request, LOGGER.MODELS, LOGGER.ACTIONS.MODELS.CREATE)
 def create():
     """ Route for creating models """
@@ -44,7 +51,13 @@ def create():
 
 @models.route("/models/delete", methods=["POST"])
 @requires_auth(request)
-@requires_role(request, "admin")
+@requires_permission(
+    request,
+    Permission(
+        model=True, asset=False, datacenters=[], power=False, audit=False, admin=False
+    ),
+    PermissionActions.NO_DATACENTER,
+)
 @log(request, LOGGER.MODELS, LOGGER.ACTIONS.MODELS.DELETE)
 def delete():
     """ Route for deleting models """
@@ -96,7 +109,13 @@ def search():
 
 @models.route("/models/edit", methods=["POST"])
 @requires_auth(request)
-@requires_role(request, "admin")
+@requires_permission(
+    request,
+    Permission(
+        model=True, asset=False, datacenters=[], power=False, audit=False, admin=False
+    ),
+    PermissionActions.NO_DATACENTER,
+)
 @log(request, LOGGER.MODELS, LOGGER.ACTIONS.MODELS.EDIT)
 def edit():
     """ Route for editing models """

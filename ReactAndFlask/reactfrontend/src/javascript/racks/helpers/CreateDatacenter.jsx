@@ -20,7 +20,7 @@ import getURL from "../../helpers/functions/GetURL";
 
 const useStyles = theme => ({
     root: {
-      width: '100%',
+        width: '100%',
     },
     modal: {
         display: 'flex',
@@ -33,25 +33,25 @@ const useStyles = theme => ({
         boxShadow: theme.shadows[5],
         padding: theme.spacing(2, 4, 3),
     },
-  });
+});
 
 class CreateDatacenter extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            showCreate:false,
-            datacenterName:"",
-            datacenterAbbreviation:"",
-            showStatus:false,
-            statusSeverity:"",
-            statusMessage:"",
+            showCreate: false,
+            datacenterName: "",
+            datacenterAbbreviation: "",
+            showStatus: false,
+            statusSeverity: "",
+            statusMessage: "",
         };
     }
 
     generateCreateJSON = () => {
         return {
-            "abbreviation" : this.state.datacenterAbbreviation,
+            "abbreviation": this.state.datacenterAbbreviation,
             "datacenter_name": this.state.datacenterName
         }
     }
@@ -59,22 +59,22 @@ class CreateDatacenter extends React.Component {
     createDatacenter = () => {
         axios.post(
             getURL(Constants.DATACENTERS_MAIN_PATH, DatacenterCommand.CREATE), this.generateCreateJSON()).then(
-            response => {
-                console.log(response);
-                if (response.data.message === "success") {
-                    this.setState({
-                        showCreate: false,
-                        datacenterName:"",
-                        datacenterAbbreviation:"",
-                    }, () => this.props.search());
-                } else {
-                    this.setState({
-                        showStatus:true,
-                        statusSeverity:"error",
-                        statusMessage:response.data.message,
-                    })
-                }
-            });
+                response => {
+                    console.log(response);
+                    if (response.data.message === "success") {
+                        this.setState({
+                            showCreate: false,
+                            datacenterName: "",
+                            datacenterAbbreviation: "",
+                        }, () => this.props.search());
+                    } else {
+                        this.setState({
+                            showStatus: true,
+                            statusSeverity: "error",
+                            statusMessage: response.data.message,
+                        })
+                    }
+                });
     }
 
     updateDatacenterName = (event) => {
@@ -87,7 +87,7 @@ class CreateDatacenter extends React.Component {
 
     getAbbreviation = (val) => {
         if (val.length > 6) {
-            return val.substring(0,7);
+            return val.substring(0, 7);
         }
 
         return val;
@@ -100,13 +100,13 @@ class CreateDatacenter extends React.Component {
     closeCreate = () => {
         this.setState({
             showCreate: false,
-            datacenterName:"",
-            datacenterAbbreviation:"",
-         });
+            datacenterName: "",
+            datacenterAbbreviation: "",
+        });
     }
 
     closeStatus = () => {
-        this.setState({ showStatus: false, statusSeverity:"", statusMessage:"", });
+        this.setState({ showStatus: false, statusSeverity: "", statusMessage: "", });
     }
 
     render() {
@@ -115,96 +115,96 @@ class CreateDatacenter extends React.Component {
         return (
             <React.Fragment>
                 <Grid item xs={3}>
-                <InputLabel id="datacenter-select-label">Select Datacenter</InputLabel>
-            <Select
-                name='datacenter_name'
-                id="datacenter-select"
-                value={this.props.dc}
-                onChange={this.props.selectDatacenter}
-                style={{ width: "100%" }}
-            >
-                {this.props.datacenterList.map(value => {
-                    return (<MenuItem value={value}>{value["name"]}</MenuItem>);
-                })}
-            </Select>
+                    {this.props.datacenterList.length > 0 ? <InputLabel id="datacenter-select-label">Select Datacenter</InputLabel> : null}
+                    {this.props.datacenterList.length > 0 ? <Select
+                        name='datacenter_name'
+                        id="datacenter-select"
+                        value={this.props.dc}
+                        onChange={this.props.selectDatacenter}
+                        style={{ width: "100%" }}
+                    >
+                        {this.props.datacenterList.map(value => {
+                            return (<MenuItem value={value}>{value["name"]}</MenuItem>);
+                        })}
+                    </Select> : null }
                 </Grid>
                 {this.props.disabled ? null :
-                <Grid item xs={3}>
-                <Button
-                variant="contained"
-                color="primary"
-                onClick={() => {this.showCreate()} }
-            >
-                Create New Datacenter
+                    <Grid item xs={3}>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={() => { this.showCreate() }}
+                        >
+                            Create New Datacenter
             </Button>
-                </Grid>}
+                    </Grid>}
 
 
-            <Modal
-                aria-labelledby="transition-modal-title"
-                aria-describedby="transition-modal-description"
-                className={classes.modal}
-                open={this.state.showCreate}
-                onClose={this.closeCreate}
-                closeAfterTransition
-                BackdropComponent={Backdrop}
-                scroll="body"
-                BackdropProps={{
-                    timeout: 500,
-                }}
-            >
-                <Fade in={this.state.showCreate}>
-                    <div className={classes.paper}>
-                        <Grid container spacing={3}>
-                            <Grid item xs={2}>
-                                <Typography>Datcenter Name:</Typography>
-                            </Grid>
-                            <Grid item xs={9}>
-                                <TextField
-                                    id="input-rack"
-                                    variant="outlined"
-                                    label={"datacenter-name"}
-                                    name={"datacenter-name"}
-                                    onChange={this.updateDatacenterName}
-                                    required
-                                    fullWidth
-                                />
-                            </Grid>
-                            <Grid item xs={2}>
-                                <Typography>Datcenter Abbreviation:</Typography>
-                            </Grid>
-                            <Grid item xs={9}>
-                                <Tooltip placement="top" title={"Max 6 characters"}>
+                <Modal
+                    aria-labelledby="transition-modal-title"
+                    aria-describedby="transition-modal-description"
+                    className={classes.modal}
+                    open={this.state.showCreate}
+                    onClose={this.closeCreate}
+                    closeAfterTransition
+                    BackdropComponent={Backdrop}
+                    scroll="body"
+                    BackdropProps={{
+                        timeout: 500,
+                    }}
+                >
+                    <Fade in={this.state.showCreate}>
+                        <div className={classes.paper}>
+                            <Grid container spacing={3}>
+                                <Grid item xs={2}>
+                                    <Typography>Datcenter Name:</Typography>
+                                </Grid>
+                                <Grid item xs={9}>
                                     <TextField
                                         id="input-rack"
                                         variant="outlined"
-                                        label={"datacenter-abbreviation"}
-                                        name={"datacenter-abbreviation"}
-                                        onChange={this.updateDatacenterAbbrevation}
-                                        value={this.state.datacenterAbbreviation}
+                                        label={"datacenter-name"}
+                                        name={"datacenter-name"}
+                                        onChange={this.updateDatacenterName}
                                         required
                                         fullWidth
                                     />
-                                </Tooltip>
-                            </Grid>
-                            <Grid item xs={12}>
-                            <Button
-                                variant="contained"
-                                color="primary"
-                                type="submit"
-                                disabled={!(this.state.datacenterAbbreviation && this.state.datacenterName)}
-                                onClick={() => { this.createDatacenter() }}
-                            >
-                                Create Datacenter
+                                </Grid>
+                                <Grid item xs={2}>
+                                    <Typography>Datcenter Abbreviation:</Typography>
+                                </Grid>
+                                <Grid item xs={9}>
+                                    <Tooltip placement="top" title={"Max 6 characters"}>
+                                        <TextField
+                                            id="input-rack"
+                                            variant="outlined"
+                                            label={"datacenter-abbreviation"}
+                                            name={"datacenter-abbreviation"}
+                                            onChange={this.updateDatacenterAbbrevation}
+                                            value={this.state.datacenterAbbreviation}
+                                            required
+                                            fullWidth
+                                        />
+                                    </Tooltip>
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <Button
+                                        variant="contained"
+                                        color="primary"
+                                        type="submit"
+                                        disabled={!(this.state.datacenterAbbreviation && this.state.datacenterName)}
+                                        onClick={() => { this.createDatacenter() }}
+                                    >
+                                        Create Datacenter
                             </Button>
+                                </Grid>
+                                <Grid item xs={12}>
+                                    {this.state.showStatus ? <Alert severity="error" onClose={() => { this.closeStatus() }}>{this.state.statusMessage}</Alert> : null}
+                                </Grid>
                             </Grid>
-                            <Grid item xs={12}>
-                                {this.state.showStatus ? <Alert severity="error" onClose={() => { this.closeStatus() }}>{this.state.statusMessage}</Alert> : null}
-                            </Grid>
-                        </Grid>
-                    </div>
-                </Fade>
-            </Modal>
+                        </div>
+                    </Fade>
+                </Modal>
             </React.Fragment>
         );
     }

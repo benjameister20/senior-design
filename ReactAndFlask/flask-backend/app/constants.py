@@ -7,8 +7,10 @@ class Constants:
     FILTER_KEY = "filter"
     LIMIT_KEY = "limit"
     LABEL_KEY = "label"
+    NAME_KEY = "name"
 
     DATACENTER_KEY = "datacenter_id"
+    NETWORK_NEIGHBORHOOD_KEY = "network_neighborhood"
 
     # User Keys
     ORIGINAL_USERNAME_KEY = "username_original"
@@ -19,6 +21,9 @@ class Constants:
     PRIVILEGE_KEY = "privilege"
     NETID_PASSWORD = "netid"
     TOKEN_KEY = "token"
+    PERMISSION_KEY = "permission"
+    PERMISSIONS_KEY = "permissions"
+    PERMISSIONS_DC_KEY = "datacenters"
 
     # Model Keys
     VENDOR_KEY = "vendor"
@@ -83,3 +88,37 @@ class Constants:
     CSV_SRC_MAC = "src_mac"
     CSV_DEST_HOST = "dest_hostname"
     CSV_DEST_PORT = "dest_port"
+
+    # Decommission Constants
+    DECOM_USER_KEY = "decommission_user"
+    TIMESTAMP_KEY = "timestamp"
+    START_DATE_KEY = "start_date"
+    END_DATE_KEY = "end_date"
+
+    # Change Plan
+    EXECUTED_KEY = "executed"
+    IDENTIFIER_KEY = "identifier"
+    CHANGE_PLAN_ID_KEY = "change_plan_id"
+    STEP_KEY = "step"
+    ORIGINAL_STEP_KEY = "stepOriginal"
+    OLD_RECORD_KEY = "old_record"
+    NEW_RECORD_KEY = "new_record"
+    DIFF_KEY = "diff"
+    IS_CHANGE_PLAN_KEY = "is_change_plan"
+
+    ACTION_KEY = "action"
+    CREATE_KEY = "create"
+    DECOMMISSION_KEY = "decommission"
+    UPDATE_KEY = "update"
+    COLLATERAL_KEY = "collateral"
+
+    # BACKUPS
+    ADMIN_EMAIL = "hyposoft1@gmail.com"
+    # ADMIN_EMAIL = "cfg11@duke.edu"
+    EMAIL_SUBJECT = "System Backup"
+    EMAIL_MESSAGE = "A system backup has been initiated by your backup server."
+    BACKUPS_DB = "d28l05824mjrs1"
+    BACKUPS_HOST = "ec2-184-72-235-159.compute-1.amazonaws.com"
+    BACKUPS_PORT = "5432"
+    BACKUPS_USER = "jypkfovvccdrut"
+    BACKUPS_PASS = "e98f55a65df17ec6ad5fb5662c9fd5d6df6b080256d03c44c16f508c30612da7"

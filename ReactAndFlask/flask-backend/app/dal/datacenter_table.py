@@ -31,6 +31,22 @@ class DatacenterTable:
 
         return datacenter.make_datacenter()
 
+    def get_datacenter_by_name(self, name: str):
+        datacenter: DatacenterEntry = DatacenterEntry.query.filter_by(name=name).first()
+        if datacenter is None:
+            return None
+
+        return datacenter.make_datacenter()
+
+    def get_datacenter_by_abbreviation(self, abbreviation: str):
+        datacenter: DatacenterEntry = DatacenterEntry.query.filter_by(
+            abbreviation=abbreviation
+        ).first()
+        if datacenter is None:
+            return None
+
+        return datacenter.make_datacenter()
+
     def get_datacenter_name_by_id(self, identifier: int):
         datacenter: DatacenterEntry = DatacenterEntry.query.filter_by(
             identifier=identifier
@@ -53,12 +69,10 @@ class DatacenterTable:
             db.session.add(datacenter_entry)
             db.session.commit()
         except IntegrityError:
-            print(f"Unable to add duplicate datacenter {datacenter_entry.name}")
             raise DBWriteException(
                 f"Unable to add duplicate rack {datacenter_entry.name}"
             )
         except:
-            print(f"Failed to add datacenter {datacenter_entry.name}")
             raise DBWriteException
 
     def edit_datacenter(self, datacenter: Datacenter, original_name: str) -> None:
@@ -93,7 +107,6 @@ class DatacenterTable:
             abbreviation=abbreviation
         ).first()
         if datacenter is None:
-            print("no dc found")
             return None
 
         return datacenter.identifier

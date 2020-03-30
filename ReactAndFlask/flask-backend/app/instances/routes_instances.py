@@ -1,13 +1,16 @@
 import json
 from typing import List
 
-from app.decorators.auth import requires_auth, requires_role
+from app.constants import Constants
+from app.data_models.permission import Permission
+from app.decorators.auth import PermissionActions, requires_auth, requires_permission
 from app.decorators.logs import log
 from app.exceptions.InvalidInputsException import InvalidInputsError
 from app.instances.asset_num_generator import AssetNumGenerator
+from app.instances.barcode_generator import BarcodeGenerator
 from app.instances.instance_manager import InstanceManager
 from app.logging.logger import Logger
-from flask import Blueprint, request
+from flask import Blueprint, request, send_file
 
 instances = Blueprint(
     "instances", __name__, template_folder="templates", static_folder="static"
@@ -33,8 +36,6 @@ def search():
     global instancesArr
     returnJSON = createJSON()
 
-    print(json.dumps(request.json, indent=4))
-    print("")
     filter = request.json.get("filter")
     if filter is None:
         return addMessageToJSON(returnJSON, "Please include a filter")
@@ -69,7 +70,6 @@ def search():
                 )
             ),
         )
-        print(json.dumps(returnJSON, indent=4))
         return returnJSON
     except InvalidInputsError as e:
         print(e.message)
@@ -78,7 +78,13 @@ def search():
 
 @instances.route("/instances/create", methods=["POST"])
 @requires_auth(request)
-@requires_role(request, "admin")
+@requires_permission(
+    request,
+    Permission(
+        model=False, asset=True, datacenters=[], power=False, audit=False, admin=False
+    ),
+    PermissionActions.ASSET_CREATE,
+)
 @log(request, LOGGER.INSTANCES, LOGGER.ACTIONS.INSTANCES.CREATE)
 def create():
     """ Route for creating instances """
@@ -105,7 +111,13 @@ def create():
 
 @instances.route("/instances/delete", methods=["POST"])
 @requires_auth(request)
-@requires_role(request, "admin")
+@requires_permission(
+    request,
+    Permission(
+        model=False, asset=True, datacenters=[], power=False, audit=False, admin=False
+    ),
+    PermissionActions.ASSET_DELETE,
+)
 @log(request, LOGGER.INSTANCES, LOGGER.ACTIONS.INSTANCES.DELETE)
 def delete():
     """ Route for deleting instances """
@@ -123,7 +135,13 @@ def delete():
 
 @instances.route("/instances/edit", methods=["POST"])
 @requires_auth(request)
-@requires_role(request, "admin")
+@requires_permission(
+    request,
+    Permission(
+        model=False, asset=True, datacenters=[], power=False, audit=False, admin=False
+    ),
+    PermissionActions.ASSET_EDIT,
+)
 @log(request, LOGGER.INSTANCES, LOGGER.ACTIONS.INSTANCES.EDIT)
 def edit():
     """ Route for editing instances """
@@ -153,6 +171,8 @@ def detail_view():
 
     try:
         instance_data = request.get_json()
+        print("DETAIL VIEW JSON")
+        print(instance_data)
         instance = INSTANCE_MANAGER.detail_view(instance_data)
         if instance is None:
             return addMessageToJSON(returnJSON, "Cannot view instance of type None")
@@ -186,7 +206,12 @@ def assisted_model_input():
 
 @instances.route("/instances/nextAssetNumber", methods=["GET"])
 @requires_auth(request)
-@requires_role(request, "admin")
+# @requires_permission(
+#     request,
+#     Permission(
+#         model=False, asset=True, datacenters=[], power=False, audit=False, admin=False
+#     ),
+# )
 def get_next_asset_number():
     """ Route to get next valid asset number"""
     global INSTANCE_MANAGER
@@ -215,8 +240,29 @@ def get_network_neighborhood():
 
     try:
         asset_data = request.get_json()
-        returnJSON = INSTANCE_MANAGER.get_network_neighborhood(asset_data)
-        return addMessageToJSON(returnJSON, "success")
+        returnJSON = INSTANCE_MANAGER.get_network_neighborhood(
+            asset_data[Constants.ASSET_NUMBER_KEY]
+        )
+        return addMessageToJSON(returnJSON, Constants.API_SUCCESS)
+    except InvalidInputsError as e:
+        return addMessageToJSON(returnJSON, e.message)
+
+
+@instances.route("/instances/labelgen", methods=["POST"])
+@requires_auth(request)
+def get_barcode_labels():
+    """ Route to get barcode labels for assets"""
+    returnJSON = createJSON()
+    try:
+        asset_data = request.get_json()
+        print(asset_data)
+        BarcodeGenerator().create_barcode_labels(asset_data)
+        return send_file(
+            filename_or_fp="static/asset_labels.pdf",
+            mimetype="application/pdf",
+            as_attachment=True,
+        )
+        # return addMessageToJSON(returnJSON, "success")
     except InvalidInputsError as e:
         return addMessageToJSON(returnJSON, e.message)
 

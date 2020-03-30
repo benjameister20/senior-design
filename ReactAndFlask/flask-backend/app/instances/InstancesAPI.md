@@ -252,3 +252,20 @@ def assisted_model_input()
 }
 ```
 -----------------------------
+```language=python
+def get_barcode_labels()
+```
+- REST Type: 'post'
+- Authentication Required: yes
+- Roled required: none
+- Endpoint: /instances/labelgen
+- Arguments:
+```language=json
+{
+    "asset_number": [ASSET NUMBER LIST],
+}
+```
+- Returns:
+    PDF file of barcodes
+```
+-----------------------------

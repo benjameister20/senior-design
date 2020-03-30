@@ -1,4 +1,5 @@
-from app.decorators.auth import requires_auth, requires_role
+from app.data_models.permission import Permission
+from app.decorators.auth import PermissionActions, requires_auth, requires_permission
 from app.decorators.logs import log
 from app.exceptions.UserExceptions import UserException
 from app.logging.logger import Logger
@@ -25,11 +26,12 @@ def test():
 
 @users.route("/users/search", methods=["POST"])
 @requires_auth(request)
-@requires_role(request, "admin")
 def search():
     response = {}
     try:
         json_list = USER_MANAGER.search(request)
+        print(request)
+        print(json_list)
     except UserException as e:
         return add_message_to_JSON(response, e.message)
 
@@ -38,7 +40,13 @@ def search():
 
 @users.route("/users/create", methods=["POST"])
 @requires_auth(request)
-@requires_role(request, "admin")
+@requires_permission(
+    request,
+    Permission(
+        model=False, asset=False, datacenters=[], power=False, audit=False, admin=True
+    ),
+    PermissionActions.NO_DATACENTER,
+)
 @log(request, LOGGER.USERS, LOGGER.ACTIONS.USERS.CREATE)
 def create():
     # TESTED AND FUNCTIONAL
@@ -76,7 +84,13 @@ def create():
 
 @users.route("/users/delete", methods=["POST"])
 @requires_auth(request)
-@requires_role(request, "admin")
+@requires_permission(
+    request,
+    Permission(
+        model=False, asset=False, datacenters=[], power=False, audit=False, admin=True
+    ),
+    PermissionActions.NO_DATACENTER,
+)
 @log(request, LOGGER.USERS, LOGGER.ACTIONS.USERS.DELETE)
 def delete():
     # TESTED AND FUNCTIONAL
@@ -97,11 +111,18 @@ def delete():
 
 @users.route("/users/edit", methods=["POST"])
 @requires_auth(request)
-@requires_role(request, "admin")
+@requires_permission(
+    request,
+    Permission(
+        model=False, asset=False, datacenters=[], power=False, audit=False, admin=True
+    ),
+    PermissionActions.NO_DATACENTER,
+)
 @log(request, LOGGER.USERS, LOGGER.ACTIONS.USERS.EDIT)
 def edit():
 
     response = {}
+    print(request.get_json())
     try:
         response = USER_MANAGER.edit(request)
     except UserException as e:
@@ -154,7 +175,13 @@ def logout():
 
 @users.route("/users/detailView", methods=["POST"])
 @requires_auth(request)
-@requires_role(request, "admin")
+@requires_permission(
+    request,
+    Permission(
+        model=False, asset=False, datacenters=[], power=False, audit=False, admin=True
+    ),
+    PermissionActions.NO_DATACENTER,
+)
 def detail_view():
 
     response = {}

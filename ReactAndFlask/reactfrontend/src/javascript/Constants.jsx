@@ -24,6 +24,8 @@ export const USERS_MAIN_PATH = "users/";
 export const RACKS_MAIN_PATH = "racks/";
 export const DATACENTERS_MAIN_PATH = "datacenters/";
 export const LOGS_MAIN_PATH = "logs/"
+export const PERMISSIONS_MAIN_PATH = "permissions/";
+export const DECOMMISSIONS_MAIN_PATH = "decommissions/";
 
 export const CLIENT_ID = "ParselTonguesUserAuth";
 export const CLIENT_SECRET = "LpUwB*eiK4Iw#1gaCu5jYp1u5uRF3ERsdmuNUGoKYNzn7rHm7b";

@@ -218,7 +218,22 @@ class CreateAsset extends React.Component {
 
     getOwnerList = () => {
         axios.post(
-            getURL(Constants.USERS_MAIN_PATH, searchPath), emptySearch).then(
+            getURL(Constants.USERS_MAIN_PATH, searchPath), {
+                "filter":
+                {
+                    "username": "",
+                    "display_name": "",
+                    "email": "",
+                    "privilege": {
+                        "model": false,
+                        "asset": false,
+                        "datacenters": [],
+                        "power": false,
+                        "audit": false,
+                        "admin": false,
+                    }
+                }
+            }).then(
             response => {
                 var users = [];
                 response.data.users.map(user => users.push(user.username + "/" + user.display_name));
@@ -231,7 +246,19 @@ class CreateAsset extends React.Component {
             getURL(Constants.DATACENTERS_MAIN_PATH, "all/")).then(
             response => {
                 var datacenters = [];
-                response.data.datacenters.map(datacenter => datacenters.push(datacenter.name));
+                response.data.datacenters.map(datacenter => {
+                    if (this.props.privilege.datacenters.length > 0) {
+                        if (this.props.privilege.datacenters[0] === "*" || this.props.privilege.datacenters.includes(datacenter.name)) {
+                            datacenters.push(datacenter.name);
+                        }
+                    } else if (this.props.privilege.asset || this.props.privilege.admin) {
+                        datacenters.push(datacenter.name);
+                    }
+                });
+                console.log("datacenters");
+                console.log(response.data.datacenters);
+                console.log(datacenters);
+                console.log(this.props.privilege);
                 this.setState({ loadingDatacenters: false, datacenterList: datacenters })
             });
     }
@@ -261,7 +288,6 @@ class CreateAsset extends React.Component {
 
     validJSON = (json) => {
         var valid = (json.model !== ""
-        && json.owner !== ""
         && json.datacenter_name !== ""
         && json.rack !== ""
         && json.rack_position !== -1
@@ -278,13 +304,25 @@ class CreateAsset extends React.Component {
     createAsset = (event) => {
         event.preventDefault();
         var json = this.createJSON();
+        console.log(this.props.changePlanStep);
+        var changePlanJSON = {
+            "change_plan_id": this.props.changePlanID,
+            "step": this.props.changePlanStep,
+            "action": "create",
+            "asset_numberOriginal": "",
+            "new_record": json
+        };
+        var url = this.props.changePlanActive ? getURL(AssetConstants.CHANGE_PLAN_PATH, AssetCommand.CHANGE_PLAN_CREATE_ACTION) : getURL(AssetConstants.ASSETS_MAIN_PATH, AssetCommand.create);
+
         if (this.validJSON(json)) {
             axios.post(
-                getURL(AssetConstants.ASSETS_MAIN_PATH, AssetCommand.create),
-                json).then(
+                url,
+                this.props.changePlanActive ? changePlanJSON : json
+            ).then(
                     response => {
                     console.log(response);
                     if (response.data.message === AssetConstants.SUCCESS_TOKEN) {
+                        this.props.incrementChangePlanStep();
                         this.props.showStatus(true, "success", "Successfully created asset");
                         this.closeModal();
                     } else {
@@ -292,7 +330,6 @@ class CreateAsset extends React.Component {
                     }
                 });
         }
-
     }
 
     updateModel = (event) => {
@@ -301,14 +338,16 @@ class CreateAsset extends React.Component {
         if (model !== "") {
             var ports = this.state.networkList[model];
             var networkConns = {};
-            ports.map(port => {
-                var defaultNetworkPort = {
-                    "mac_address":"",
-                    "connection_hostname":"",
-                    "connection_port":"",
-                }
-                networkConns[port] = defaultNetworkPort;
-            });
+            if (ports !== null) {
+                ports.map(port => {
+                    var defaultNetworkPort = {
+                        "mac_address":"",
+                        "connection_hostname":"",
+                        "connection_port":"",
+                    }
+                    networkConns[port] = defaultNetworkPort;
+                });
+            }
         } else {
             var networkConns = {};
         }
@@ -482,43 +521,8 @@ class CreateAsset extends React.Component {
     }
 
     closeModal = () => {
-        this.getLists();
-        this.props.getAssetList();
-        this.setState({
-            loadingAssetNumber:true,
-            loadingModels:true,
-            modelList:[],
-            networkList:null,
-            powerPortList:null,
-            loadingOwners:true,
-            ownerList:[],
-            loadingDatacenters:true,
-            datacenterList:[],
-            loadingHostnames:true,
-            assetNumList:[],
-            assetNumToModelList:null,
-            model:"",
-            hostname:"",
-            rack:"",
-            rackU:-1,
-            owner:"",
-            comment:"",
-            datacenter_name:"",
-            tags:[],
-            network_connections:null,
-            power_connections:null,
-            asset_number:100000,
-            selectedConnection:null,
-            statusOpen: false,
-            statusMessage: "",
-            statusSeverity:"",
-            showModal:false,
-            powerPortState:null,
-            leftRight:null,
-            availableConnections:false,
-            portOptions:[],
-            canSubmit:false,
-        }, () => { this.props.close(); });
+        this.props.fetchAllAssets();
+        this.props.close();
     }
 
     statusClose = () => {
@@ -592,7 +596,6 @@ class CreateAsset extends React.Component {
                                     onBlur={this.updateOwner}
                                     variant="outlined"
                                     fullWidth
-                                    required
                                 />
                                 )}
                             />
@@ -694,7 +697,6 @@ class CreateAsset extends React.Component {
                                         name={this.state.inputs.macAddress.name}
                                         onChange={(event) => {this.changeNetworkMacAddress(event, networkPort)}}
                                         fullWidth
-                                        disabled={this.state.hostname===""}
                                         value={ (this.state.network_connections !== null && this.state.network_connections[networkPort]!==undefined) ? this.state.network_connections[networkPort].mac_address : "" }
                                     />
                                 </Tooltip>
@@ -813,17 +815,20 @@ class CreateAsset extends React.Component {
                             />
                     </Grid>
                     <Grid item xs={6} />
-                    <Grid item xs={1}>
+                    <Grid item xs={3}>
                         <Button
                             variant="contained"
-                            color="primary"
                             type="submit"
                             disabled={!this.state.canSubmit}
+                            color={this.props.changePlanActive ? "" : "primary"}
+                            style={{
+                                backgroundColor: this.props.changePlanActive ? "#64b5f6" : ""
+                            }}
                         >
-                            Create
+                            { this.props.changePlanActive ? "Create in Change Plan" : "Create" }
                         </Button>
                     </Grid>
-                    <Grid item xs={9}>
+                    <Grid item xs={3}>
                         <Button
                             variant="contained"
                             color="primary"

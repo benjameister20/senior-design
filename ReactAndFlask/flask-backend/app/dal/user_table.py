@@ -2,7 +2,11 @@ from typing import List, Optional
 
 from app.dal.database import db
 from app.data_models.user import User
-from sqlalchemy import and_
+from app.main.types import JSON
+from app.permissions.permissions_constants import PermissionConstants
+from sqlalchemy import and_, any_
+from sqlalchemy.dialects import postgresql as pg
+from sqlalchemy.types import Boolean, Text
 
 
 class UserEntry(db.Model):
@@ -12,7 +16,8 @@ class UserEntry(db.Model):
     password_hash = db.Column(db.Binary(512))
     display_name = db.Column(db.String(80))
     email = db.Column(db.String(80))
-    privilege = db.Column(db.String(80))
+    privilege = db.Column(pg.JSON, nullable=True)
+    datacenters = db.Column(pg.ARRAY(Text), nullable=True)
 
     def __init__(self, user: User):
         self.username = user.username
@@ -20,15 +25,17 @@ class UserEntry(db.Model):
         self.display_name = user.display_name
         self.email = user.email
         self.privilege = user.privilege
+        self.datacenters = user.datacenters
 
 
 class UserTable:
     def get_user(self, username: str) -> Optional[User]:
         """ Get the user for the given username """
-        # print(username)
         user: UserEntry = UserEntry.query.filter_by(username=username).first()
         if user is None:
             return None
+
+        print(user)
 
         return User(
             username=user.username,
@@ -36,6 +43,7 @@ class UserTable:
             email=user.email,
             password=user.password_hash,
             privilege=user.privilege,
+            datacenters=user.datacenters,
         )
 
     def search_users(
@@ -43,7 +51,8 @@ class UserTable:
         username: Optional[str],
         display_name: Optional[str],
         email: Optional[str],
-        privilege: Optional[str],
+        privilege: Optional[JSON],
+        datacenters: Optional[List[str]],
         limit: int,
     ) -> List[User]:
         """ Get a list of all users matching the given criteria """
@@ -54,13 +63,22 @@ class UserTable:
             criteria.append(UserEntry.display_name == display_name)
         if email is not None and email != "":
             criteria.append(UserEntry.email == email)
-        if privilege is not None and privilege != "":
-            criteria.append(UserEntry.privilege == privilege)
+        if privilege is not None:
+            for key in privilege:
+                if privilege[key] and key != PermissionConstants.DATACENTERS:
+                    criteria.append(
+                        UserEntry.privilege[key].astext.cast(Boolean) == privilege[key]
+                    )
+        if datacenters is not None:
+            for center in datacenters:
+                print(center)
+                # criteria.append(UserEntry.datacenters.any([f"{{{center}}}"]))
+                # criteria.append(UserEntry.datacenters.all(center))
+                criteria.append(center == any_(UserEntry.datacenters))
 
         filtered_users: List[UserEntry] = UserEntry.query.filter(and_(*criteria)).limit(
             limit
         )
-
         return [
             User(
                 username=user.username,
@@ -68,6 +86,7 @@ class UserTable:
                 email=user.email,
                 password=user.password_hash,
                 privilege=user.privilege,
+                datacenters=user.datacenters,
             )
             for user in filtered_users
         ]
@@ -84,12 +103,13 @@ class UserTable:
             email=user.email,
             password=user.password_hash,
             privilege=user.privilege,
+            datacenters=user.datacenters,
         )
 
     def add_user(self, user: User) -> None:
         """ Adds a user to the database """
         user_entry: UserEntry = UserEntry(user=user)
-
+        print(user)
         try:
             db.session.add(user_entry)
             db.session.commit()
@@ -126,6 +146,7 @@ class UserTable:
                 email=entry.email,
                 password=entry.password_hash,
                 privilege=entry.privilege,
+                datacenters=entry.datacenters,
             )
             for entry in all_users
         ]

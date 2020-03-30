@@ -1,8 +1,9 @@
 from typing import List
 
 from app.constants import Constants
+from app.data_models.permission import Permission
 from app.datacenters.datacenter_manager import DatacenterManager
-from app.decorators.auth import requires_auth, requires_role
+from app.decorators.auth import PermissionActions, requires_auth, requires_permission
 from app.decorators.logs import log
 from app.exceptions.InvalidInputsException import InvalidInputsError
 from app.logging.logger import Logger
@@ -43,11 +44,16 @@ def list_all():
 
 @datacenters.route("/datacenters/create/", methods=["POST"])
 @requires_auth(request)
-@requires_role(request, "admin")
+@requires_permission(
+    request,
+    Permission(
+        model=False, asset=True, datacenters=[], power=False, audit=False, admin=True
+    ),
+    PermissionActions.NO_DATACENTER,
+)
 @log(request, LOGGER.DATACENTERS, LOGGER.ACTIONS.DATACENTERS.CREATE)
 def create():
     """ Route for creating datacenters"""
-    print("CREATE ROUTE")
 
     global DATACENTER_MANAGER
     returnJSON = createJSON()
@@ -56,7 +62,6 @@ def create():
         dc_data = request.get_json()
         error = DATACENTER_MANAGER.create_datacenter(dc_data)
         if error is not None:
-            print(error.message)
             return addMessageToJSON(returnJSON, error.message)
         return addMessageToJSON(returnJSON, Constants.API_SUCCESS)
     except InvalidInputsError as e:
@@ -65,7 +70,13 @@ def create():
 
 @datacenters.route("/datacenters/edit/", methods=["POST"])
 @requires_auth(request)
-@requires_role(request, "admin")
+@requires_permission(
+    request,
+    Permission(
+        model=False, asset=True, datacenters=[], power=False, audit=False, admin=True
+    ),
+    PermissionActions.NO_DATACENTER,
+)
 @log(request, LOGGER.DATACENTERS, LOGGER.ACTIONS.DATACENTERS.EDIT)
 def edit():
     """ Route for creating datacenters """
@@ -76,7 +87,6 @@ def edit():
         dc_data = request.get_json()
         error = DATACENTER_MANAGER.edit_datacenter(dc_data)
         if error is not None:
-            print(error.message)
             return addMessageToJSON(returnJSON, error.message)
         return addMessageToJSON(returnJSON, Constants.API_SUCCESS)
     except InvalidInputsError as e:
@@ -85,7 +95,13 @@ def edit():
 
 @datacenters.route("/datacenters/delete/", methods=["POST"])
 @requires_auth(request)
-@requires_role(request, "admin")
+@requires_permission(
+    request,
+    Permission(
+        model=False, asset=True, datacenters=[], power=False, audit=False, admin=True
+    ),
+    PermissionActions.NO_DATACENTER,
+)
 @log(request, LOGGER.DATACENTERS, LOGGER.ACTIONS.DATACENTERS.DELETE)
 def delete():
     """ Route for deleting datacenters """
@@ -96,7 +112,6 @@ def delete():
         dc_data = request.get_json()
         error = DATACENTER_MANAGER.delete_datacenter(dc_data)
         if error is not None:
-            print(error.message)
             return addMessageToJSON(returnJSON, error.message)
         return addMessageToJSON(returnJSON, Constants.API_SUCCESS)
     except InvalidInputsError as e:

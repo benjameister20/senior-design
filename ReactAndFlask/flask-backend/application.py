@@ -1,13 +1,16 @@
 from http import HTTPStatus
 
+from app.backups.routes_backups import backups
+from app.change_plans.routes_change_plans import changeplans
 from app.dal.database import db
 from app.dal.routes import database
-from app.data_models.user import User
 from app.datacenters.routes_datacenters import datacenters
+from app.decommissions.routes_decommissions import decommissions
 from app.import_export.routes import import_export
 from app.instances.routes_instances import instances
 from app.logging.routes_logging import logs
 from app.models.routes_models import models
+from app.permissions.routes_permissions import permissions
 from app.racks.racks_routes import racks
 from app.stats.routes_stats import stats
 from app.users.authentication import AuthManager
@@ -23,7 +26,6 @@ AUTH_MANAGER = AuthManager()
 
 class FlaskApp(Flask):
     def make_response(self, rv):
-        print(rv)
         if isinstance(rv, dict):
             rv = jsonify(rv)
         elif (
@@ -35,8 +37,6 @@ class FlaskApp(Flask):
             rv = jsonify(rv[0]), rv[1]
         elif isinstance(rv, HTTPStatus):
             rv = jsonify({"status": rv}), rv
-
-        # print(rv)
         return super().make_response(rv)
 
 
@@ -47,7 +47,7 @@ heroku = Heroku(app=application)
 
 @application.route("/")
 def index():
-    user = User(username="", display_name="", email="", password="", privilege="")
+    # user = User(username="", display_name="", email="", password="", privilege="")
     return render_template("index.html")
 
 
@@ -69,6 +69,10 @@ def _register_routes() -> None:
     application.register_blueprint(import_export)
     application.register_blueprint(logs)
     application.register_blueprint(datacenters)
+    application.register_blueprint(decommissions)
+    application.register_blueprint(changeplans)
+    application.register_blueprint(backups)
+    application.register_blueprint(permissions)
 
 
 def init() -> None:

@@ -1,9 +1,11 @@
 import re
 
 from app.constants import Constants
+from app.dal.datacenter_table import DatacenterTable
 from app.dal.user_table import UserTable
 from app.data_models.user import User
 from app.exceptions.UserExceptions import (
+    InvalidDatacenterError,
     InvalidEmailError,
     InvalidPasswordError,
     InvalidPrivilegeError,
@@ -12,8 +14,11 @@ from app.exceptions.UserExceptions import (
     UserException,
     UsernameTakenError,
 )
+from app.main.types import JSON
+from app.permissions.permissions_constants import PermissionConstants
 
 USER_TABLE = UserTable()
+DC_TABLE = DatacenterTable()
 
 
 class Validator:
@@ -127,21 +132,42 @@ class Validator:
 
         return user
 
-    def validate_privilege(self, privilege: str, username: str) -> bool:
+    def validate_privilege(self, privilege: JSON, username: str) -> bool:
 
-        if not (privilege == "admin" or privilege == "user"):
-            raise InvalidPrivilegeError("Privilege levels are 'admin' and 'user'")
+        # VALUE IN JSON COULD BE A STRING NOT A BOOL
+        if username == "admin" and privilege[PermissionConstants.ADMIN] != True:
+            raise InvalidPrivilegeError(
+                "Cannot revoke admin permission from admin user"
+            )
 
-        if username == "admin" and privilege != "admin":
-            raise InvalidPrivilegeError("Cannot edit admin privilege")
+        for key in privilege:
+            if key != PermissionConstants.DATACENTERS:
+                if type(privilege[key]) is not bool:
+                    raise TypeError(f"{key} must be of type bool.")
+            else:
+                if not isinstance(privilege[key], list):
+                    raise TypeError(f"{key} must be of type dict.")
 
         return True
+
+    def validate_datacenters(self, datacenters):
+        for datacenter in datacenters:
+            if datacenter != "*":
+                dc = DC_TABLE.get_datacenter_by_name(datacenter)
+                if dc is None:
+                    raise InvalidDatacenterError(
+                        f"Datacenter {datacenter} does not exist"
+                    )
 
     def validate_create_user(self, user: User):
         self.validate_email(user.email)
         self.validate_password(user.password)
         self.validate_privilege(user.privilege, user.username)
+        print("validated username and privilege")
         self.validate_new_username(user.username)
+        print("validated username")
+        if not (user.datacenters is None):
+            self.validate_datacenters(user.datacenters)
 
         return True
 
@@ -157,14 +183,17 @@ class Validator:
         if not (user.email == old_user.email):
             self.validate_email(user.email)
 
-        if user.password is not None:
-            self.validate_password(user.password)
+        # if user.password is not None:
+        #     self.validate_password(user.password)
 
         if not (user.privilege == old_user.privilege):
             self.validate_privilege(user.privilege, user.username)
 
         if not (original_username == user.username):
             self.validate_new_username(user.username)
+
+        if not (set(user.datacenters) == set(old_user.datacenters)):
+            self.validate_datacenters(user.datacenters)
 
         user.password = old_user.password
 

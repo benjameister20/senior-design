@@ -43,12 +43,23 @@ class DataCenterActions:
     EDIT = "EDIT"
 
 
+class DecommissionActions:
+    DECOMMISSION = "DECOMMISSION"
+    SEARCH = "SEARCH"
+
+
+class ChangeplanActions:
+    EXECUTE = "EXECUTE"
+
+
 class Actions:
     USERS = UserActions()
     MODELS = ModelActions()
     INSTANCES = InstanceActions()
     RACKS = RackActions()
     DATACENTERS = DataCenterActions()
+    DECOMMISSIONS = DecommissionActions()
+    CHANGEPLAN = ChangeplanActions()
 
 
 class Logger:
@@ -58,6 +69,8 @@ class Logger:
     RACKS = "racks"
     USERS = "users"
     DATACENTERS = "datacenters"
+    DECOMMISSIONS = "decommissions"
+    CHANGEPLAN = "changeplan"
     ACTIONS = Actions()
 
     def __init__(self):
@@ -79,7 +92,7 @@ class Logger:
 
         return log_message
 
-    def __log_user_request(self, action, request):
+    def __log_user_request(self, action, request, username):
 
         if action == Logger.ACTIONS.USERS.CREATE:
             log_message = f"""CREATE User (Username: {request.get(Constants.USERNAME_KEY)}, Email: {request.get(Constants.EMAIL_KEY)}, Display Name: {request.get(Constants.DISPLAY_NAME_KEY)}, Privilege: {request.get(Constants.PRIVILEGE_KEY)})"""
@@ -99,9 +112,7 @@ class Logger:
             # log_syntax = "AUTHENTICATE user (<<username>>)"
 
         if action == Logger.ACTIONS.USERS.LOGOUT:
-            log_message = (
-                f"""LOGOUT User (Username: {request.get(Constants.USERNAME_KEY)})"""
-            )
+            log_message = f"""LOGOUT User (Username: {username})"""
             # log_syntax = "LOGOUT user (<<username>>)"
 
         if action == Logger.ACTIONS.USERS.OAUTH:
@@ -166,6 +177,38 @@ class Logger:
             log_message = f"""EDIT Datacenter (Name: {request.get(Constants.NAME_ORIG_KEY)}) to (Name: {request.get(Constants.DC_NAME_KEY)}, Abbreviation: {request.get(Constants.DC_ABRV_KEY)})"""
 
         return log_message
+
+    def __log_decommission_request(self, action, request):
+        if action == Logger.ACTIONS.DECOMMISSIONS.DECOMMISSION:
+            log_message = f"""DECOMMISSION Asset (Asset Number: {request.get(Constants.ASSET_NUMBER_KEY)})"""
+
+        return log_message
+
+    def __log_changeplan_request(self, action, request):
+        if action == Logger.ACTIONS.CHANGEPLAN.EXECUTE:
+            log_message = f"""EXECUTE Changeplan (Changeplan ID: {request.get(Constants.CHANGE_PLAN_ID_KEY)})"""
+
+        return log_message
+
+    def log_changeplan_action(self, request, resource, action):
+
+        if request.get(Constants.IS_CHANGE_PLAN_KEY) is None:
+            return None
+
+        if action == Logger.ACTIONS.INSTANCES.CREATE:
+            log_message = f"""CREATE Asset (Asset Number: {request.get(Constants.ASSET_NUMBER_KEY)}, Model Name: {request.get(Constants.MODEL_KEY)}>>, Datacenter Name: {request.get(Constants.DC_NAME_KEY)}, Hostname: {request.get(Constants.HOSTNAME_KEY)}, Rack: {request.get(Constants.RACK_KEY)}, Rack Position: {request.get(Constants.RACK_POSITION_KEY)}, Owner: {request.get(Constants.OWNER_KEY)}, Comment: {request.get(Constants.COMMENT_KEY)}, Network Connections: {json.dumps(request.get(Constants.NETWORK_CONNECTIONS_KEY))}, Power Connections: {json.dumps(request.get(Constants.POWER_CONNECTIONS_KEY))})"""
+
+        if action == Logger.ACTIONS.INSTANCES.EDIT:
+            log_message = f"""EDIT Asset (Asset Number: {request.get(Constants.ASSET_NUMBER_ORIG_KEY)}) becomes (Asset Number: {request.get(Constants.ASSET_NUMBER_KEY)}, Model Name: {request.get(Constants.MODEL_KEY)}>>, Datacenter Name: {request.get(Constants.DC_NAME_KEY)}, Hostname: {request.get(Constants.HOSTNAME_KEY)}, Rack: {request.get(Constants.RACK_KEY)}, Rack Position: {request.get(Constants.RACK_POSITION_KEY)}, Owner: {request.get(Constants.OWNER_KEY)}, Comment: {request.get(Constants.COMMENT_KEY)}, Network Connections: {json.dumps(request.get(Constants.NETWORK_CONNECTIONS_KEY))}, Power Connections: {json.dumps(request.get(Constants.POWER_CONNECTIONS_KEY))})"""
+
+        if action == Logger.ACTIONS.DECOMMISSIONS.DECOMMISSION:
+            log_message = f"""DECOMMISSION Asset (Asset Number: {request.get(Constants.ASSET_NUMBER_KEY)})"""
+
+        username = request.get(Constants.USERNAME_KEY)
+
+        self.__create_log_entry_request(
+            request, resource, log_message, username, action
+        )
 
     def __create_log_entry_request(
         self, request, resource, log_message, username, action
@@ -236,7 +279,7 @@ class Logger:
         # print("username")
 
         if resource == Logger.USERS:
-            log_message = self.__log_user_request(action, request)
+            log_message = self.__log_user_request(action, request, username)
         if resource == Logger.MODELS:
             log_message = self.__log_model_request(action, request)
         if resource == Logger.INSTANCES:
@@ -245,6 +288,10 @@ class Logger:
             log_message = self.__log_rack_request(action, request)
         if resource == Logger.DATACENTERS:
             log_message = self.__log_datacenter_request(action, request)
+        if resource == Logger.DECOMMISSIONS:
+            log_message = self.__log_decommission_request(action, request)
+        if resource == Logger.CHANGEPLAN:
+            log_message = self.__log_changeplan_request(action, request)
 
         self.__create_log_entry_request(
             request, resource, log_message, username, action

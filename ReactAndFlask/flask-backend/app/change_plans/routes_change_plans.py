@@ -100,6 +100,8 @@ def get_cps():
             addMessageToJSON(returnJSON, "success"),
             list(map(lambda x: x.make_json(), cp_list)),
         )
+        print("YAY")
+        print(returnJSON)
         return returnJSON
     except InvalidInputsError as e:
         return addMessageToJSON(returnJSON, e.message)

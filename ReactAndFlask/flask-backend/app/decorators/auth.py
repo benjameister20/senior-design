@@ -185,28 +185,28 @@ def requires_permission(request, permission, action):
             if not user_permissions[PermissionConstants.ADMIN]:
                 # check bool permissions are satisfied
                 permission_json = permission.make_json()
+                has_permission = False
                 for key in permission_json:
-                    if (
-                        permission_json[key] is True
-                        and user_permissions[key] is not True
-                        and key != PermissionConstants.ASSET
-                    ):
-                        return {
-                            Constants.MESSAGE_KEY: f"User {username} does not have {key} permission"
-                        }
+                    if permission_json[key] is True and user_permissions[key] is True:
+                        has_permission = True
 
                 # check datacenter permission satistifed
                 if (
                     action != PermissionActions.NO_DATACENTER
                     and not user_permissions[PermissionConstants.ASSET]
                 ):
-                    has_permission = DatacenterPermissionChecker().check_permission(
+                    has_permission_dc = DatacenterPermissionChecker().check_permission(
                         request, user, action
                     )
-                    if not has_permission:
+                    if not has_permission_dc:
                         return {
                             Constants.MESSAGE_KEY: f"User {username} does not have access to the required datacenter(s)"
                         }
+
+                if not (has_permission or has_permission_dc):
+                    return {
+                        Constants.MESSAGE_KEY: f"User {username} does not have {key} permission"
+                    }
 
             return f(*args, **kwargs)
 

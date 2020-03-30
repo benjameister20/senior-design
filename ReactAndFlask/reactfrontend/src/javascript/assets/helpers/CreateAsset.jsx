@@ -309,7 +309,7 @@ class CreateAsset extends React.Component {
             "change_plan_id": this.props.changePlanID,
             "step": this.props.changePlanStep,
             "action": "create",
-            "asset_numberOriginal": this.state.asset_number,
+            "asset_numberOriginal": "",
             "new_record": json
         };
         var url = this.props.changePlanActive ? getURL(AssetConstants.CHANGE_PLAN_PATH, AssetCommand.CHANGE_PLAN_CREATE_ACTION) : getURL(AssetConstants.ASSETS_MAIN_PATH, AssetCommand.create);

@@ -47,7 +47,7 @@ def list_all():
 @requires_permission(
     request,
     Permission(
-        model=False, asset=False, datacenters=[], power=False, audit=False, admin=True
+        model=False, asset=True, datacenters=[], power=False, audit=False, admin=True
     ),
     PermissionActions.NO_DATACENTER,
 )
@@ -73,7 +73,7 @@ def create():
 @requires_permission(
     request,
     Permission(
-        model=False, asset=False, datacenters=[], power=False, audit=False, admin=True
+        model=False, asset=True, datacenters=[], power=False, audit=False, admin=True
     ),
     PermissionActions.NO_DATACENTER,
 )
@@ -98,7 +98,7 @@ def edit():
 @requires_permission(
     request,
     Permission(
-        model=False, asset=False, datacenters=[], power=False, audit=False, admin=True
+        model=False, asset=True, datacenters=[], power=False, audit=False, admin=True
     ),
     PermissionActions.NO_DATACENTER,
 )

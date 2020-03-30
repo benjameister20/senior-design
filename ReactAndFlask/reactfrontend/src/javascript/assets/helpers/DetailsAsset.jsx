@@ -108,6 +108,7 @@ class DetailAsset extends React.Component {
                             incrementChangePlanStep={this.props.incrementChangePlanStep}
                             username={this.props.username}
                             fetchAllAssets={this.props.fetchAllAssets}
+                            isDecommissioned={this.props.isDecommissioned}
                         />
                     </ExpansionPanelDetails>
                 </ExpansionPanel>

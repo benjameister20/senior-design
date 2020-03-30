@@ -37,15 +37,18 @@ class DatacenterPermissionChecker:
         pass
 
     def __get_dc_name_from_asset_num(self, asset_number):
+        print("asset number = ", asset_number)
         instance = InstanceTable().get_instance_by_asset_number(asset_number)
         datacenter_id = instance.datacenter_id
         datacenter_name = DatacenterTable().get_datacenter(datacenter_id)
+        print("Datacenter name = ", datacenter_name.name)
+        return datacenter_name.name
 
-        return datacenter_name
-
-    def __get_required_datacenters_from_request(self, request, action):
+    def __get_required_datacenters_from_request(self, requestObj, action):
         required_datacenters: List[str] = []
 
+        request = requestObj.get_json()
+        print(request)
         # use action to parse required datacenters from request
         if action == PermissionActions.CHANGEPLAN_CREATE:
             required_datacenters.append(
@@ -65,7 +68,7 @@ class DatacenterPermissionChecker:
         if action == PermissionActions.CHANGEPLAN_DECOMMISSION:
             required_datacenters.append(
                 self.__get_dc_name_from_asset_num(
-                    request.get(Constants.ASSET_NUMBER_ORIG_KEY)
+                    request.get(Constants.ASSET_NUMBER_KEY)
                 )
             )
 
@@ -83,16 +86,19 @@ class DatacenterPermissionChecker:
             )
 
         if action == PermissionActions.ASSET_DELETE:
+            print(request)
+            print(Constants.ASSET_NUMBER_KEY)
+            print(request.get(Constants.ASSET_NUMBER_KEY))
             required_datacenters.append(
                 self.__get_dc_name_from_asset_num(
-                    request.get(Constants.ASSET_NUMBER_ORIG_KEY)
+                    request.get(Constants.ASSET_NUMBER_KEY)
                 )
             )
 
         if action == PermissionActions.ASSET_DECOMMISSION:
             required_datacenters.append(
                 self.__get_dc_name_from_asset_num(
-                    request.get(Constants.ASSET_NUMBER_ORIG_KEY)
+                    request.get(Constants.ASSET_NUMBER_KEY)
                 )
             )
 
@@ -103,7 +109,9 @@ class DatacenterPermissionChecker:
             request, action
         )
         allowed_datacenters = user.datacenters
-
+        print("user's datacenters")
+        print(required_datacenters)
+        print(allowed_datacenters)
         for datacenter in required_datacenters:
             if datacenter not in allowed_datacenters:
                 return False
@@ -182,20 +190,23 @@ def requires_permission(request, permission, action):
                     if permission_json[key] is True and user_permissions[key] is True:
                         has_permission = True
 
-                if not has_permission:
-                    return {
-                        Constants.MESSAGE_KEY: f"User {username} does not have {key} permission"
-                    }
-
                 # check datacenter permission satistifed
-                if action != PermissionActions.NO_DATACENTER:
-                    has_permission = DatacenterPermissionChecker().check_permission(
+                if (
+                    action != PermissionActions.NO_DATACENTER
+                    and not user_permissions[PermissionConstants.ASSET]
+                ):
+                    has_permission_dc = DatacenterPermissionChecker().check_permission(
                         request, user, action
                     )
-                    if not has_permission:
+                    if not has_permission_dc:
                         return {
                             Constants.MESSAGE_KEY: f"User {username} does not have access to the required datacenter(s)"
                         }
+
+                if not (has_permission or has_permission_dc):
+                    return {
+                        Constants.MESSAGE_KEY: f"User {username} does not have {key} permission"
+                    }
 
             return f(*args, **kwargs)
 

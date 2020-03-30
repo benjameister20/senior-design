@@ -15,7 +15,7 @@ class PermissionsManager:
         except:
             raise DBWriteException("Could not get datacenters")
 
-        datacenters_list = [dc.abbreviation for dc in datacenters]
+        datacenters_list = [dc.name for dc in datacenters]
 
         return {
             Constants.PERMISSIONS_KEY: [

@@ -101,7 +101,7 @@ class DatacenterView extends React.Component {
                     this.setState({
                         showConfirmationBox: false,
                         showStatus: true,
-                        statusMessage: "Successfully deleted datacenter",
+                        statusMessage: "Successfully deleted site",
                         statusSeverity: "success",
                     });
                     this.getDatacenters();
@@ -220,7 +220,7 @@ class DatacenterView extends React.Component {
                     >
                         <Grid item xs={12}>
                             <Typography variant="h4">
-                                Datacenters
+                                Sites
                             </Typography>
                         </Grid>
                         <CreateDatacenter

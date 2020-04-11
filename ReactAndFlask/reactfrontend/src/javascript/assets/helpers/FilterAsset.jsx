@@ -1,4 +1,16 @@
-import { FormControl, FormControlLabel, FormHelperText, Grid, MenuItem, Paper, Select, Switch, TextField, Typography } from '@material-ui/core/';
+import {
+    FormControl,
+    FormControlLabel,
+    FormHelperText,
+    Grid,
+    MenuItem,
+    Paper,
+    Select,
+    Switch,
+    TextField,
+    Typography,
+    InputLabel,
+} from '@material-ui/core/';
 import React from 'react';
 import * as Constants from '../../Constants';
 
@@ -70,7 +82,7 @@ class FilterAsset extends React.Component {
         var items = [];
         try {
             console.log(this.props.showDecommissioned);
-            if (this.props.showDecommissioned) {
+            if (this.props.assetType === "decommissioned") {
                 this.props.decAssets.map(asset => {
                     var startDate = new Date(this.state.startDate === "" || parseInt(this.state.startDate) < 2000 ? "01/01/2001" : this.state.startDate + " 23:59:59");
                     var endDate = new Date(this.state.endDate === "" || parseInt(this.state.endDate) < 2000 ? "12/31/2025" : this.state.endDate + " 23:59:59");
@@ -88,7 +100,7 @@ class FilterAsset extends React.Component {
                         items.push(asset);
                     }
                 });
-            } else {
+            } else if (this.props.assetType == "active") {
                 this.props.allAssets.map(asset => {
                     if (
                         (asset.datacenter_name.includes(this.state.datacenter) || asset.abbreviation.includes(this.state.datacenter))
@@ -100,7 +112,20 @@ class FilterAsset extends React.Component {
                         items.push(asset);
                     }
                 });
+            } else if (this.props.assetType == "offline") {
+                this.props.offlineAssets.map(asset => {
+                    if (
+                        (asset.datacenter_name.includes(this.state.datacenter) || asset.abbreviation.includes(this.state.datacenter))
+                        && asset.model.includes(this.state.model)
+                        && asset.hostname.includes(this.state.hostname)
+                        && asset.rack >= this.state.startingLetter + "" + this.state.startingNum
+                        && asset.rack <= this.state.endingLetter + "" + this.state.endingNum
+                    ) {
+                        items.push(asset);
+                    }
+                });
             }
+
             this.props.updateItems(items);
         } catch {
             this.props.updateItems([]);
@@ -108,10 +133,9 @@ class FilterAsset extends React.Component {
 
     }
 
-    switchToDecommissioned = (event) => {
-        console.log(event.target.checked);
-        //this.setState({ showDecommissioned: event.target.checked }, () => this.search());
-        this.props.switchToDec(event.target.checked);
+    switchAssetType = (event) => {
+        console.log(event.target.value);
+        this.props.switchAssetType(event.target.value);
     }
 
     render() {
@@ -131,9 +155,9 @@ class FilterAsset extends React.Component {
                         </Grid>
                         <Grid item xs={12} sm={6} md={4} lg={3}>
                             <TextField
-                                id="datacenter"
-                                label="Datacenter"
-                                name="datacenter"
+                                id="site"
+                                label="Site"
+                                name="site"
                                 onChange={(event) => { this.updateDatacenter(event) }}
                                 style={{ width: "100%" }}
                             />
@@ -157,6 +181,7 @@ class FilterAsset extends React.Component {
                             />
                         </Grid>
                         <Grid item item xs={12} sm={6} md={4} lg={3}></Grid>
+                        {this.props.assetType === "offline" ? null :
                         <Grid item xs={12} sm={6} md={4} lg={2}>
                             <FormControl>
                                 <Select
@@ -168,7 +193,8 @@ class FilterAsset extends React.Component {
                                 </Select>
                                 <FormHelperText>Starting Letter</FormHelperText>
                             </FormControl>
-                        </Grid>
+                        </Grid>}
+                        {this.props.assetType === "offline" ? null :
                         <Grid item xs={12} sm={6} md={4} lg={2}>
                             <FormControl>
                                 <Select
@@ -180,7 +206,8 @@ class FilterAsset extends React.Component {
                                 </Select>
                                 <FormHelperText>Ending Letter</FormHelperText>
                             </FormControl>
-                        </Grid>
+                        </Grid>}
+                        {this.props.assetType === "offline" ? null :
                         <Grid item xs={12} sm={6} md={4} lg={3}>
                             <FormControl>
                                 <TextField
@@ -192,7 +219,8 @@ class FilterAsset extends React.Component {
                                 />
                                 <FormHelperText>Starting Number</FormHelperText>
                             </FormControl>
-                        </Grid>
+                        </Grid>}
+                        {this.props.assetType === "offline" ? null :
                         <Grid item xs={12} sm={6} md={4} lg={3}>
                             <FormControl>
                                 <TextField
@@ -204,22 +232,22 @@ class FilterAsset extends React.Component {
                                 />
                                 <FormHelperText>Ending Number</FormHelperText>
                             </FormControl>
-                        </Grid>
+                        </Grid>}
                         <Grid item xs={2} sm={6} md={4} lg={3}>
-                            <FormControlLabel
-                                control={
-                                    <Switch
-                                        checked={this.props.showDecommissioned}
-                                        onChange={event => { this.switchToDecommissioned(event) }}
-                                        value="checkedB"
-                                        color="primary"
-                                    />
-                                }
-                                labelPlacement="top"
-                                label={this.props.showDecommissioned ? "Decommissioned Assets" : "Active Assets"}
-                            />
+                            <InputLabel id="datacenter-select-label">Asset Type</InputLabel>
+                            <Select
+                                name='asset-type'
+                                id="asset-type"
+                                value={this.props.assetType}
+                                onChange={event => this.switchAssetType(event)}
+                                style={{ width: "100%" }}
+                            >
+                                <MenuItem value={"active"}>Active</MenuItem>
+                                <MenuItem value={"decommissioned"}>Decommissioned Assets</MenuItem>
+                                <MenuItem value={"offline"}>Offline Storage</MenuItem>
+                            </Select>
                         </Grid>
-                        {this.props.showDecommissioned ? <Grid item xs={12} sm={6} md={4} lg={3}>
+                        {this.props.assetType === "decommissioned" ? <Grid item xs={12} sm={6} md={4} lg={3}>
                             <TextField
                                 id="user"
                                 label="User"
@@ -228,7 +256,7 @@ class FilterAsset extends React.Component {
                                 style={{ width: "100%" }}
                             />
                         </Grid> : null}
-                        {this.props.showDecommissioned ? <Grid item xs={12} sm={6} md={4} lg={3}>
+                        {this.props.assetType === "decommissioned" ? <Grid item xs={12} sm={6} md={4} lg={3}>
                             <TextField
                                 id="start-date"
                                 label="Start Date"
@@ -239,7 +267,7 @@ class FilterAsset extends React.Component {
                                 }}
                             />
                         </Grid> : null}
-                        {this.props.showDecommissioned ? <Grid item xs={12} sm={6} md={4} lg={3}>
+                        {this.props.assetType === "decommissioned" ? <Grid item xs={12} sm={6} md={4} lg={3}>
                             <TextField
                                 id="end-date"
                                 label="End Date"

@@ -67,6 +67,8 @@ const useStyles = theme => ({
 	},
 });
 
+const decomType = "decommissioned";
+
 const emptySearch = {
 	"filter": {
 		"vendor": null,
@@ -125,6 +127,7 @@ class TableAsset extends React.Component {
 			selectedItems: [],
 			allSelected: false,
 			decAssets: [],
+			offlineAssets:[],
 
 			detailStatusOpen: false,
 			detailStatusSeverity: '',
@@ -149,7 +152,7 @@ class TableAsset extends React.Component {
 
 			// Change plan
 			speedDialOpen: false,
-			displayDec: false,
+			assetType: "active",
 
 			rowOwner: "",
 		};
@@ -292,7 +295,14 @@ class TableAsset extends React.Component {
 		console.log("asset: ");
 		console.log(asset);
 		var dAsset = {};
-		var assets = this.state.displayDec ? this.state.decAssets : this.state.allAssets;
+		var assets = [];
+		if (this.state.assetType === "active") {
+			assets = this.state.allAssets;
+		} else if (this.state.assetType === decomType) {
+			assets = this.state.decAssets;
+		} else if (this.state.assetType === "offline") {
+			assets = this.state.offlineAssets;
+		}
 		assets.map(currAsset => {
 			if (currAsset.asset_number === asset.asset_number) {
 				Object.assign(dAsset, currAsset);
@@ -304,13 +314,17 @@ class TableAsset extends React.Component {
 	updateItems = (assets) => {
 		var items = [];
 
-		if (!this.state.displayDec) {
+		if (this.state.assetType === "active") {
 			assets.map(asset => {
 				items.push(createData(asset.model, asset.hostname, asset.datacenter_name, asset.rack + " U" + asset.rack_position, asset.owner, asset.asset_number));
 			});
-		} else {
+		} else if (this.state.assetType === decomType) {
 			assets.map(asset => {
 				items.push(createDecData(asset.vendor + " " + asset.model_number, asset.hostname, asset.datacenter_name, asset.rack + " U" + asset.rack_position, asset.owner, asset.asset_number, asset.decommission_user, asset.timestamp));
+			});
+		} else if (this.state.assetType === "offline") {
+			assets.map(asset => {
+				items.push(createData(asset.model, asset.hostname, asset.datacenter_name, asset.rack + " U" + asset.rack_position, asset.owner, asset.asset_number));
 			});
 		}
 
@@ -379,7 +393,7 @@ class TableAsset extends React.Component {
 	}
 
 	addCheckedItem = (event, assetNum) => {
-		if (!this.state.displayDec) {
+		if (!(this.state.assetType === decomType)) {
 			if (event.target.getAttribute("class") !== "MuiButton-label") {
 				const selectedIndex = this.state.selectedItems.indexOf(assetNum);
 				let newSelected = [];
@@ -415,8 +429,8 @@ class TableAsset extends React.Component {
 		this.fetchAllAssets();
 	}
 
-	switchToDec = (switchBool) => {
-		this.setState({ displayDec: switchBool }, () => this.filter.current.search());
+	switchAssetType = (assetType) => {
+		this.setState({ assetType: assetType }, () => this.filter.current.search());
 	}
 
 	render() {
@@ -456,8 +470,9 @@ class TableAsset extends React.Component {
 							getAssetList={this.getAssetList}
 							allAssets={this.state.allAssets}
 							decAssets={this.state.decAssets}
-							switchToDec={this.switchToDec}
-							showDecommissioned={this.state.displayDec}
+							offlineAssets={this.state.offlineAssets}
+							switchAssetType={this.switchAssetType}
+							assetType={this.state.assetType}
 							ref={this.filter}
 						/>
 					</Grid>
@@ -499,7 +514,7 @@ class TableAsset extends React.Component {
 						}}>
 							<TableHead>
 								<TableRow className={classes.styledTableRow}>
-									{this.state.displayDec ? null :
+									{this.state.assetType === decomType ? null :
 										<TableCell padding="checkbox">
 											<Tooltip title="Select All">
 												<IconButton aria-label="select-all" onClick={() => this.onSelectAllClick()}>
@@ -533,7 +548,7 @@ class TableAsset extends React.Component {
 											</TableSortLabel>
 										</TableCell>
 									))}
-									{this.state.displayDec ?
+									{this.state.assetType === decomType ?
 										decommissionHeadCells.map(headCell => (
 											<TableCell
 												className={classes.tableCellHead}
@@ -572,7 +587,7 @@ class TableAsset extends React.Component {
 												key={row.assetNum}
 												role="checkbox"
 											>
-												{this.state.displayDec ? null : <TableCell padding="checkbox">
+												{this.state.assetType===decomType ? null : <TableCell padding="checkbox">
 													<Checkbox
 														checked={this.state.selectedItems.indexOf(row.asset_number) !== -1}
 														inputProps={{ 'aria-labelledby': labelId }}
@@ -584,8 +599,8 @@ class TableAsset extends React.Component {
 												<TableCell align="left">{row.rack}</TableCell>
 												<TableCell align="left">{row.owner}</TableCell>
 												<TableCell align="right">{row.asset_number}</TableCell>
-												{this.state.displayDec ? <TableCell align="right">{row.decommission_user}</TableCell> : null}
-												{this.state.displayDec ? <TableCell align="right">{row.timestamp}</TableCell> : null}
+												{this.state.assetType===decomType ? <TableCell align="right">{row.decommission_user}</TableCell> : null}
+												{this.state.assetType===decomType ? <TableCell align="right">{row.timestamp}</TableCell> : null}
 												<TableCell align="center">
 													<Button
 														color="primary"
@@ -613,11 +628,11 @@ class TableAsset extends React.Component {
 						changePlanID={this.props.changePlanID}
 						changePlanStep={this.props.changePlanStep}
 						incrementChangePlanStep={this.props.incrementChangePlanStep}
-						disabled={(!(this.props.privilege.admin || this.props.privilege.asset || this.props.privilege.datacenters.includes(this.state.detailAsset.datacenter_name)) || this.state.displayDec)}
+						disabled={(!(this.props.privilege.admin || this.props.privilege.asset || this.props.privilege.datacenters.includes(this.state.detailAsset.datacenter_name)) || this.state.assetType===decomType)}
 						username={this.props.username}
 						fetchAllAssets={this.fetchAllAssets}
 						changePlanName={this.props.changePlanName}
-						showDecommissioned={this.state.displayDec}
+						showDecommissioned={this.state.assetType===decomType}
 					/> : null}
 				<SpeedDial
 					ariaLabel="SpeedDial openIcon example"

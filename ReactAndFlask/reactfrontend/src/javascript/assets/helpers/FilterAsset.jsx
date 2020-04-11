@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 import {
     FormControl,
     FormControlLabel,
@@ -13,6 +15,7 @@ import {
 } from '@material-ui/core/';
 import React from 'react';
 import * as Constants from '../../Constants';
+import getURL from '../../helpers/functions/GetURL';
 
 
 class FilterAsset extends React.Component {
@@ -30,11 +33,19 @@ class FilterAsset extends React.Component {
             startDate: "",
             endDate: "",
             user: "",
+            datacenterList:[],
         };
     }
 
     componentDidMount() {
         this.search();
+        this.getDatacenterList();
+    }
+
+    getDatacenterList = () => {
+        axios.get(
+            getURL(Constants.DATACENTERS_MAIN_PATH, "all/")).then(
+            response => { this.setState({ datacenterList: response.data.datacenters }) });
     }
 
     updateDatacenter = (event) => {
@@ -84,7 +95,7 @@ class FilterAsset extends React.Component {
             console.log(this.props.showDecommissioned);
             if (this.props.assetType === "decommissioned") {
                 this.props.decAssets.map(asset => {
-                    var startDate = new Date(this.state.startDate === "" || parseInt(this.state.startDate) < 2000 ? "01/01/2001" : this.state.startDate + " 23:59:59");
+                    var startDate = new Date(this.state.startDate === "" || parseInt(this.state.startDate) < 2000 ? "01/01/2001" : this.state.startDate + " 00:00:00");
                     var endDate = new Date(this.state.endDate === "" || parseInt(this.state.endDate) < 2000 ? "12/31/2025" : this.state.endDate + " 23:59:59");
                     var decDate = new Date(asset.timestamp);
                     if (
@@ -97,6 +108,7 @@ class FilterAsset extends React.Component {
                         && decDate >= startDate
                         && decDate <= endDate
                     ) {
+
                         items.push(asset);
                     }
                 });
@@ -109,19 +121,35 @@ class FilterAsset extends React.Component {
                         && asset.rack >= this.state.startingLetter + "" + this.state.startingNum
                         && asset.rack <= this.state.endingLetter + "" + this.state.endingNum
                     ) {
-                        items.push(asset);
+                        var offline = false;
+                        this.state.datacenterList.map(dc => {
+                            if (dc.is_offline_storage && asset.datacenter_name === dc.datacenter_name) {
+                                offline = true;
+                            }
+                        });
+                        if (!offline) {
+                            items.push(asset);
+                        }
+
                     }
                 });
-            } else if (this.props.assetType == "offline") {
-                this.props.offlineAssets.map(asset => {
+            } else if (this.props.assetType === "offline") {
+                this.props.allAssets.map(asset => {
                     if (
                         (asset.datacenter_name.includes(this.state.datacenter) || asset.abbreviation.includes(this.state.datacenter))
                         && asset.model.includes(this.state.model)
                         && asset.hostname.includes(this.state.hostname)
-                        && asset.rack >= this.state.startingLetter + "" + this.state.startingNum
-                        && asset.rack <= this.state.endingLetter + "" + this.state.endingNum
                     ) {
-                        items.push(asset);
+                        var offline = false;
+                        this.state.datacenterList.map(dc => {
+                            if (dc.is_offline_storage && asset.datacenter_name === dc.datacenter_name) {
+                                offline = true;
+                            }
+                        });
+                        if (offline) {
+                            items.push(asset);
+                        }
+
                     }
                 });
             }

@@ -299,8 +299,8 @@ class EditAsset extends React.Component {
                     var datacenters = [];
                     response.data.datacenters.map(datacenter => {
                         if (this.props.privilege.datacenters.length > 0) {
-                            if (this.props.privilege.datacenters[0] === "*" || this.props.privilege.datacenters.includes(datacenter.abbreviation) || this.props.privilege.asset) {
-                                datacenters.push(datacenter.name);
+                            if (this.props.privilege.datacenters[0] === "*" || this.props.privilege.datacenters.includes(datacenter.abbreviation) || this.props.privilege.asset || this.props.privilege.admin) {
+                                datacenters.push(datacenter);
                             }
                         }
                     });

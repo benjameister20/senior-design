@@ -143,6 +143,7 @@ class CreateAsset extends React.Component {
             owner:"",
             comment:"",
             datacenter_name:"",
+            datacenterIsOffline:false,
             tags:[],
             network_connections:null,
             power_connections:null,
@@ -249,10 +250,10 @@ class CreateAsset extends React.Component {
                 response.data.datacenters.map(datacenter => {
                     if (this.props.privilege.datacenters.length > 0) {
                         if (this.props.privilege.datacenters[0] === "*" || this.props.privilege.datacenters.includes(datacenter.name)) {
-                            datacenters.push(datacenter.name);
+                            datacenters.push(datacenter);
                         }
                     } else if (this.props.privilege.asset || this.props.privilege.admin) {
-                        datacenters.push(datacenter.name);
+                        datacenters.push(datacenter);
                     }
                 });
                 console.log("datacenters");
@@ -404,7 +405,14 @@ class CreateAsset extends React.Component {
     }
 
     updateDatacenter = (event) => {
-        this.setState({ datacenter_name: event.target.value }, () => { this.validateForm() });
+        var isOffline = false;
+
+        this.state.datacenterList.map(dc => {
+            if (dc.name === event.target.value) {
+                isOffline = dc.is_offline_storage;
+            }
+        });
+        this.setState({ datacenter_name: event.target.value, datacenterIsOffline:isOffline }, () => { this.validateForm() });
     }
 
     updateTags = (event) => {
@@ -605,7 +613,7 @@ class CreateAsset extends React.Component {
                         <Tooltip placement="top" open={this.state.inputs.datacenter.Tooltip} title={this.state.inputs.datacenter.description}>
                             <Autocomplete
                                 id="input-datacenter"
-                                options={this.state.datacenterList}
+                                options={this.state.datacenterList.map(datacenter => datacenter.name)}
                                 includeInputInList
 
                                 renderInput={params => (
@@ -613,7 +621,7 @@ class CreateAsset extends React.Component {
                                     {...params}
                                     label={this.state.inputs.datacenter.label}
                                     name={this.state.inputs.datacenter.name}
-                                    onChange={this.updateDatacenter}
+                                    onChange={ (event) => {this.updateDatacenter(event) } }
                                     onBlur={this.updateDatacenter}
                                     variant="outlined"
                                     fullWidth
@@ -623,6 +631,7 @@ class CreateAsset extends React.Component {
                             />
                         </Tooltip>
                     </Grid>
+                    {(this.state.datacenterIsOffline) ? null :
                     <Grid item xs={3}>
                         <Tooltip placement="top" open={this.state.inputs.rack.Tooltip} title={this.state.inputs.rack.description}>
                             <TextField
@@ -636,7 +645,8 @@ class CreateAsset extends React.Component {
                                 fullWidth
                             />
                         </Tooltip>
-                    </Grid>
+                    </Grid>}
+                    {(this.state.datacenterIsOffline) ? null :
                     <Grid item xs={3}>
                         <Tooltip placement="top" open={this.state.inputs.rackU.Tooltip} title={this.state.inputs.rackU.description}>
                             <TextField
@@ -651,7 +661,7 @@ class CreateAsset extends React.Component {
                                 fullWidth
                             />
                         </Tooltip>
-                    </Grid>
+                    </Grid>}
                     <Grid item xs={3}>
                         <Tooltip placement="top" open={this.state.inputs.assetNum.Tooltip} title={this.state.inputs.assetNum.description}>
                             <TextField
@@ -681,7 +691,7 @@ class CreateAsset extends React.Component {
                         </Tooltip>
                     </Grid>
 
-                    {!(this.state.networkList && this.state.networkList[this.state.model]) ? null :
+                    {!(this.state.networkList && this.state.networkList[this.state.model]) || this.state.datacenterIsOffline ? null :
                     <Grid item xs={12}>
                         {this.state.networkList[this.state.model].map(networkPort => (
                         <Grid container spacing={3}>
@@ -750,7 +760,8 @@ class CreateAsset extends React.Component {
                     {(
                         !(this.state.powerPortList
                         && this.state.powerPortList[this.state.model])
-                        ) ? null :
+                        )  || this.state.datacenterIsOffline
+                        ? null :
                     Array.from( { length: this.state.powerPortList[this.state.model] }, (_, k) => (
                     <Grid item xs={12}>
                         <Grid container spacing={3}>

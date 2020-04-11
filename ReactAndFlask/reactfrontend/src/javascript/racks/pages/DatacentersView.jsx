@@ -138,6 +138,9 @@ class DatacenterView extends React.Component {
             showStatus: false,
             statusMessage: '',
             statusSeverity: 'info',
+            isOfflineStorage:false,
+            selectedDatacenter:"",
+            fullDatacenter:"",
         });
     }
 
@@ -201,7 +204,7 @@ class DatacenterView extends React.Component {
     }
 
     updateDatacenter = (event) => {
-        this.setState({ selectedDatacenter: event.target.value.name, fullDatacenter: event.target.value }, this.getAllRacks(event.target.value.name, true));
+        this.setState({ selectedDatacenter: event.target.value.name, fullDatacenter: event.target.value, isOfflineStorage:event.target.value.is_offline_storage }, this.getAllRacks(event.target.value.name, true));
     }
 
     render() {
@@ -246,6 +249,7 @@ class DatacenterView extends React.Component {
                                     updateRacks={this.updateRacks}
                                     privilege={this.props.privilege}
                                     dc={this.state.fullDatacenter}
+                                    isOfflineStorage={this.state.isOfflineStorage}
                                 />
                             </Grid>}
                         <Grid item xs={6}>
@@ -267,6 +271,7 @@ class DatacenterView extends React.Component {
                         </Grid>
                     </Grid>
 
+                    {this.state.isOfflineStorage ? null :
                     <Grid
                         container
                         spacing={5}
@@ -281,7 +286,7 @@ class DatacenterView extends React.Component {
                                 racks={this.state.racks}
                             />
                         </Grid>
-                    </Grid>
+                    </Grid>}
                     <StatusDisplay
                         open={this.state.showStatus}
                         severity={this.state.statusSeverity}

@@ -23,6 +23,10 @@ import * as Constants from "../../Constants";
 import { DatacenterCommand } from "../enums/DatacenterCommands";
 import getURL from "../../helpers/functions/GetURL";
 
+
+const offlineStorageVal = "offlineStorage";
+const datacenterVal = "datacenter";
+
 const useStyles = theme => ({
 	root: {
 		width: '100%',
@@ -51,7 +55,7 @@ class CreateDatacenter extends React.Component {
 			showStatus: false,
 			statusSeverity: "",
 			statusMessage: "",
-			siteType:"datacenter",
+			siteType:datacenterVal,
 		};
 	}
 
@@ -59,7 +63,7 @@ class CreateDatacenter extends React.Component {
 		return {
 			"abbreviation": this.state.datacenterAbbreviation,
 			"datacenter_name": this.state.datacenterName,
-			"datacenter_type":this.state.siteType,
+			"is_offline_storage":this.state.siteType===offlineStorageVal,
 		}
 	}
 
@@ -204,12 +208,12 @@ class CreateDatacenter extends React.Component {
 											<FormControlLabel
 												control={<Radio color="primary" />}
 												label="Datacenter"
-												value="datacenter"
+												value={datacenterVal}
 											/>
 											<FormControlLabel
 												control={<Radio color="primary" />}
 												label="Offline Storage"
-												value="offline_storage"
+												value={offlineStorageVal}
 											/>
 										</RadioGroup>
 									</FormControl>

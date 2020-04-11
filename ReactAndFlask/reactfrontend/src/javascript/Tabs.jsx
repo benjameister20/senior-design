@@ -156,7 +156,7 @@ class TabViewer extends React.Component {
             >
                 <Tab value={0} style={{flexGrow: 1,}} label="Models"> </Tab>
                 <Tab value={1} style={{flexGrow: 1,}} label="Assets" ></Tab>
-                { (this.props.privilege.asset || this.props.privilege.admin) ? <Tab value={6} style={{flexGrow: 1,}} label="Change Plans" ></Tab> : null }
+                { (this.props.privilege.asset || this.props.privilege.admin || this.props.privilege.datacenters.length > 0) ? <Tab value={6} style={{flexGrow: 1,}} label="Change Plans" ></Tab> : null }
                 {(this.props.privilege.admin) ? <Tab value={2} style={{flexGrow: 1,}} label="Users"></Tab> : null}
                 {(this.props.privilege.admin || this.props.privilege.asset || this.props.privilege.datacenters.length > 0) ? <Tab value={3} style={{flexGrow: 1,}} label="Datacenters" /> : null}
                 <Tab value={4} style={{flexGrow: 1,}} label="Statistics" />

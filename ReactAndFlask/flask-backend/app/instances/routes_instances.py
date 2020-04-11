@@ -8,6 +8,7 @@ from app.decorators.logs import log
 from app.exceptions.InvalidInputsException import InvalidInputsError
 from app.instances.asset_num_generator import AssetNumGenerator
 from app.instances.barcode_generator import BarcodeGenerator
+from app.instances.bmi_manager import BMIManager
 from app.instances.instance_manager import InstanceManager
 from app.logging.logger import Logger
 from flask import Blueprint, request, send_file
@@ -19,6 +20,7 @@ instances = Blueprint(
 INSTANCE_MANAGER = InstanceManager()
 LOGGER = Logger()
 ASSETNUMGEN = AssetNumGenerator()
+BMI = BMIManager()
 
 
 @instances.route("/instances/test", methods=["GET"])
@@ -265,6 +267,60 @@ def get_barcode_labels():
         # return addMessageToJSON(returnJSON, "success")
     except InvalidInputsError as e:
         return addMessageToJSON(returnJSON, e.message)
+
+
+@instances.route("/instances/setChassisPortState", methods=["POST"])
+# @requires_auth(request)
+def set_chassis_port_state():
+    returnJSON = createJSON()
+    request_data = request.json
+    chassis = request_data.get(Constants.CHASSIS_KEY)
+    port = request_data.get(Constants.CHASSIS_PORT_KEY)
+    power_state = request_data.get(Constants.POWER_STATE_KEY)
+
+    try:
+        BMI.set_port_power_state(chassis=chassis, port=port, power_state=power_state)
+    except InvalidInputsError as e:
+        return addMessageToJSON(returnJSON, e.message)
+
+    return addMessageToJSON(returnJSON, "Success")
+
+
+@instances.route("/instances/getChassisPortState", methods=["POST"])
+# @requires_auth(request)
+def get_chassis_port_state():
+    returnJSON = createJSON()
+    request_data = request.json
+    chassis = request_data.get(Constants.CHASSIS_KEY)
+    port = request_data.get(Constants.CHASSIS_PORT_KEY)
+
+    state = None
+    try:
+        state = BMI.get_chassis_power_state_single(chassis=chassis, port=port,)
+    except InvalidInputsError as e:
+        return addMessageToJSON(returnJSON, e.message)
+
+    returnJSON[Constants.POWER_STATE_KEY] = state
+
+    return addMessageToJSON(returnJSON, "Success")
+
+
+@instances.route("/instances/getAllChassisPortStates", methods=["POST"])
+# @requires_auth(request)
+def get_all_chassis_port_states():
+    returnJSON = createJSON()
+    request_data = request.json
+    chassis = request_data.get(Constants.CHASSIS_KEY)
+
+    states = None
+    try:
+        states = BMI.get_chassis_power_states_all(chassis)
+    except InvalidInputsError as e:
+        return addMessageToJSON(returnJSON, e.message)
+
+    returnJSON[Constants.POWER_STATE_KEY] = states
+
+    return addMessageToJSON(returnJSON, "Success")
 
 
 def createJSON() -> dict:

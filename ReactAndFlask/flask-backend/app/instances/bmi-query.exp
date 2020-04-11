@@ -1,0 +1,20 @@
+#!/usr/bin/expect
+
+# Query power states of blades in a chassis
+
+# exp_internal 1
+set timeout 3
+set chassis [lindex $argv 0];
+set output [open "expect_log.log" "w"]
+
+spawn ssh -o StrictHostKeyChecking=no admin1@hyposoft-mgt.colab.duke.edu -p 2222
+expect -re "^(.*?)password:"
+send "TMP!458\r"
+expect -re "^(.*?)m "
+send "chassis $chassis\r"
+send "power\r"
+# sleep 1
+expect -re ".+states:\\r\\n(.+)\\r\\n\\u001b.+"
+# set pythonOutput $expect_out(1,string)
+puts $output $expect_out(1,string)
+close $output

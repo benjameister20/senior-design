@@ -1,20 +1,21 @@
 import React from 'react';
+import { CompactPicker } from 'react-color';
+import axios from 'axios';
+
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@material-ui/core';
 import { Paper, Popover, Typography, Modal, Backdrop, Fade } from '@material-ui/core';
+import { TextField, Button, Grid, InputLabel, Select, MenuItem, CircularProgress } from "@material-ui/core";
+import { List, ListItem, ListItemText, ListSubheader } from '@material-ui/core';
+
+import { withStyles } from '@material-ui/core/styles';
+
 import DeleteIcon from '@material-ui/icons/Delete';
 import CommentIcon from '@material-ui/icons/Comment';
 import ViewListIcon from '@material-ui/icons/ViewList';
 import EditIcon from '@material-ui/icons/Edit';
-import { withStyles } from '@material-ui/core/styles';
-import TextField from "@material-ui/core/TextField";
-import Button from '@material-ui/core/Button';
-import Grid from '@material-ui/core/Grid';
+
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import { CompactPicker } from 'react-color';
-import { List, ListItem, ListItemText, ListSubheader } from '@material-ui/core';
-import { Privilege } from '../../enums/privilegeTypes.ts'
-import axios from 'axios';
-import { CircularProgress } from '@material-ui/core';
+
 import { ModelCommand } from '../enums/ModelCommands.ts'
 import getURL from '../../helpers/functions/GetURL';
 import * as ModelConstants from "../ModelConstants";
@@ -54,6 +55,7 @@ function createInputs(name, label) {
 const inputs = {
     "vendor": createInputs('vendor', "Vendor", ),
     "modelNumber": createInputs('model_number', "Model Number"),
+    "mount_type": createInputs('mount_type', 'Mount Type'),
     "height": createInputs('height', "Height"),
     "displayColor": createInputs('display_color', "Display Color"),
     "ethernetPorts": createInputs('ethernet_ports', "Network Ports"),
@@ -85,21 +87,24 @@ class ModelsTable extends React.Component {
                 detailViewLoading: false,
 
                 detailedValues : {
-                        'vendor':'',
-                        'model_number':'',
-                        'height':'',
-                        'display_color':'',
-                        'ethernet_ports':[],
-                        'power_ports':'',
-                        'cpu':'',
-                        'memory':'',
-                        'storage':'',
-                        'comment':'',
+                        'vendor': '',
+                        'model_number': '',
+                        'mount_type': '',
+                        'height': '',
+                        'display_color': '',
+                        'ethernet_ports': [],
+                        'power_ports': '',
+                        'cpu': '',
+                        'memory': '',
+                        'storage': '',
+                        'comment': '',
                 },
 
                 originalVendor: '',
                 originalModelNumber: '',
                 originalHeight: '',
+
+                mountType: null,
         };
 
         axios.defaults.headers.common['token'] = this.props.token;
@@ -121,7 +126,8 @@ class ModelsTable extends React.Component {
             detailViewLoading: true,
             color: row["Display Color"] === null ? "#000000" : row["Display Color"],
             networkPorts: row["Network Ports"] === null ? [] : row["Network Ports"],
-            numPorts: row["Network Ports"] === null ? 0 : row["Network Ports"].length
+            numPorts: row["Network Ports"] === null ? 0 : row["Network Ports"].length,
+            mountType: row["Mount Type"],
         });
 
         this.detailViewModel(row["Vendor"], row["Model Number"]);
@@ -153,17 +159,17 @@ class ModelsTable extends React.Component {
 
     // Close the detail view of a model
     closeDetailedView = () => {
-            this.setState({ showDetailedView: false, row: null, color: "#000000", originalVendor: "", originalModelNumber: "", originalHeight: "" });
+        this.setState({ showDetailedView: false, row: null, color: "#000000", originalVendor: "", originalModelNumber: "", originalHeight: "" });
     }
 
     // Show delete model confirmation
     showDeleteModal = (row) => {
-            this.setState({ showDeleteModal: true, originalVendor: row["Vendor"], originalModelNumber: row["Model Number"] });
+        this.setState({ showDeleteModal: true, originalVendor: row["Vendor"], originalModelNumber: row["Model Number"] });
     }
 
     // Close delete model confirmation
     closeDeleteModal = () => {
-                this.setState({ showDeleteModal: false, originalVendor: "", originalModelNumber: "", originalHeight: "" });
+        this.setState({ showDeleteModal: false, originalVendor: "", originalModelNumber: "", originalHeight: "" });
     }
 
     // Delete a model
@@ -179,19 +185,19 @@ class ModelsTable extends React.Component {
     }
 
     clickInfo = (event, ports) => {
-            this.setState({ popoverAnchor: event.target, networkPorts: ports });
+        this.setState({ popoverAnchor: event.target, networkPorts: ports });
     }
 
     clickComment = (event, comment) => {
-            this.setState({ commentPopover: event.target, comment: comment });
+        this.setState({ commentPopover: event.target, comment: comment });
     }
 
     handlePopoverClose = () => {
-            this.setState({ popoverAnchor: null });
+        this.setState({ popoverAnchor: null });
     }
 
     handleCommentPopoverClose = () => {
-            this.setState({ commentPopover: null });
+        this.setState({ commentPopover: null });
     }
 
     updateNetworkPorts = (event) => {
@@ -206,24 +212,22 @@ class ModelsTable extends React.Component {
         this.updateModelEdited(event);
     }
 
-        updatePort = (port, event) => {
-                const ports = this.state.networkPorts;
-                ports[port] = event.target.value;
+    updatePort = (port, event) => {
+        const ports = this.state.networkPorts;
+        ports[port] = event.target.value;
 
-                this.setState({ networkPorts: ports });
-        }
+        this.setState({ networkPorts: ports });
+    }
 
-        save = () => {
-                this.props.editModel(this.state.originalVendor, this.state.originalModelNumber, this.state.originalHeight, this.state.detailedValues, this.state.networkPorts);
-                this.closeDetailedView();
-        }
+    save = () => {
+        this.props.editModel(this.state.originalVendor, this.state.originalModelNumber, this.state.originalHeight, this.state.detailedValues, this.state.networkPorts);
+        this.closeDetailedView();
+    }
 
-        updateModelEdited = (event) => {
-                this.state.detailedValues[event.target.name] = event.target.value;
-                this.forceUpdate()
-        }
-
-
+    updateModelEdited = (event) => {
+        this.state.detailedValues[event.target.name] = event.target.value;
+        this.forceUpdate();
+    }
 
     render() {
         const { classes } = this.props;
@@ -435,6 +439,23 @@ class ModelsTable extends React.Component {
                                             />
                                         </Grid>
                                         <Grid item xs={3}>
+                                            <InputLabel id="select-mount-type-label">Mount Type</InputLabel>
+                                            <Select
+                                                labelId="select-mount-type-label"
+                                                id="select-mount-type"
+                                                name={inputs.mount_type.name}
+                                                value={this.state.mountType}
+                                                required={true}
+                                                onChange={this.updateModelEdited}
+                                                style={{ width: "100%" }}
+                                            >
+                                                <MenuItem value="rack">Rack Mount</MenuItem>
+                                                <MenuItem value="chassis">Blade Chassis</MenuItem>
+                                                <MenuItem value="blade">Blade</MenuItem>
+                                            </Select>
+                                        </Grid>
+                                        { this.state.mountType !== "blade" ?
+                                        <Grid item xs={3}>
                                             <TextField
                                                 type="number"
                                                 id="standard-basic"
@@ -451,6 +472,8 @@ class ModelsTable extends React.Component {
                                                 style={{ width: "100%" }}
                                             />
                                         </Grid>
+                                        : null }
+                                        { this.state.mountType !== "blade" ?
                                         <Grid item xs={3}>
                                             <TextField
                                                 type="number"
@@ -469,6 +492,8 @@ class ModelsTable extends React.Component {
                                                 InputProps={{ inputProps: { min: 0 } }}
                                             />
                                         </Grid>
+                                        : null }
+                                        { this.state.mountType !== "blade" ?
                                         <Grid item xs={3}>
                                             <TextField
                                                 type="number"
@@ -485,6 +510,7 @@ class ModelsTable extends React.Component {
                                                 InputProps={{ inputProps: { min: 0 } }}
                                             />
                                         </Grid>
+                                        : null }
                                         <Grid item xs={3}>
                                             <TextField
                                                 id="standard-basic"
@@ -551,6 +577,7 @@ class ModelsTable extends React.Component {
                                                 onChange={this.updateColor}
                                             />
                                         </Grid>
+                                        { this.state.mountType !== "blade" ?
                                         <Grid item xs={12}>
                                             <List
                                                 className={classes.root}
@@ -592,6 +619,7 @@ class ModelsTable extends React.Component {
                                                 ) : null}
                                             </List>
                                         </Grid>
+                                        : null }
                                         <Grid item xs={3}>
                                             <Button
                                                 variant="contained"

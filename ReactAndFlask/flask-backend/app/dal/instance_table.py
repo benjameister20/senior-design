@@ -23,6 +23,13 @@ class InstanceEntry(db.Model):
     network_connections = db.Column(pg.JSON, nullable=True)
     power_connections = db.Column(pg.ARRAY(db.String(50)), nullable=True)
     asset_number = db.Column(db.Integer)
+    mount_type = db.Column(db.String(32))
+    display_color = db.Column(db.String(80), nullable=True)
+    cpu = db.Column(db.String(80), nullable=True)
+    memory = db.Column(db.Integer, nullable=True)
+    storage = db.Column(db.String(80), nullable=True)
+    chassis_hostname = db.Column(db.String(80), nullable=True)
+    chassis_slot = db.Column(db.Integer, nullable=True)
 
     def __init__(self, instance: Instance):
         self.model_id = instance.model_id
@@ -35,6 +42,17 @@ class InstanceEntry(db.Model):
         self.network_connections = instance.network_connections
         self.power_connections = instance.power_connections
         self.asset_number = instance.asset_number
+        self.mount_type = instance.mount_type
+
+        # Model Vals
+        self.display_color = instance.display_color
+        self.cpu = instance.cpu
+        self.memory = instance.memory
+        self.storage = instance.storage
+
+        # Chassis Reference
+        self.chassis_hostname = instance.chassis_hostname
+        self.chassis_slot = instance.chassis_slot
 
     def make_instance(self) -> Instance:
         """ Convert the database entry to an instance """
@@ -49,6 +67,13 @@ class InstanceEntry(db.Model):
             network_connections=self.network_connections,
             power_connections=self.power_connections,
             asset_number=self.asset_number,
+            mount_type=self.mount_type,
+            display_color=self.display_color,
+            cpu=self.cpu,
+            memory=self.memory,
+            storage=self.storage,
+            chassis_hostname=self.chassis_hostname,
+            chassis_slot=self.chassis_slot,
         )
 
     def make_json(self) -> JSON:
@@ -63,6 +88,13 @@ class InstanceEntry(db.Model):
             "network_connections": self.network_connections,
             "power_connections": self.power_connections,
             "asset_number": self.asset_number,
+            "mount_type": self.mount_type,
+            "display_color": self.display_color,
+            "cpu": self.cpu,
+            "memory": self.memory,
+            "storage": self.storage,
+            "chassis_hostname": self.chassis_hostname,
+            "chassis_slot": self.chassis_slot,
         }
 
 
@@ -270,3 +302,33 @@ class InstanceTable:
             return None
 
         return [entry.make_instance() for entry in filtered_instances]
+
+    def get_blades_by_chassis_hostname(self, chassis_hostname: str):
+        """ Gets list of all blades in a certain chassis """
+        blade_entries: List[InstanceEntry] = InstanceEntry.query.filter_by(
+            chassis_hostname=chassis_hostname
+        ).all()
+        if blade_entries is None or len(blade_entries) == 0:
+            return None
+
+        return [entry.make_instance() for entry in blade_entries]
+
+    def get_blade_by_chassis_and_slot(self, chassis_hostname: str, chassis_slot: int):
+        """ Returns the blade at a slot in a given chassis """
+        blade_entry: InstanceEntry = InstanceEntry.query.filter_by(
+            chassis_hostname=chassis_hostname, chassis_slot=chassis_slot,
+        ).first()
+        if blade_entry is None:
+            return None
+
+        return blade_entry.make_instance()
+
+    def get_asset_by_mount_type(self, mount_type):
+        """ Gets list of all assets with a given mount type """
+        asset_entries: List[InstanceEntry] = InstanceEntry.query.filter_by(
+            mount_type=mount_type
+        ).all()
+        if asset_entries is None or len(asset_entries) == 0:
+            return None
+
+        return [entry.make_instance() for entry in asset_entries]

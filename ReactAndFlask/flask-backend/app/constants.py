@@ -37,6 +37,16 @@ class Constants:
     MEMORY_KEY = "memory"
     STORAGE_KEY = "storage"
 
+    ORIG_DISPLAY_COLOR_KEY = "display_colorOriginal"
+    ORIG_CPU_KEY = "cpuOriginal"
+    ORIG_MEMORY_KEY = "memoryOriginal"
+    ORIG_STORAGE_KEY = "storageOriginal"
+
+    MOUNT_TYPE_KEY = "mount_type"
+    BLADE_KEY = "blade"
+    CHASIS_KEY = "chassis"
+    RACKMOUNT_KEY = "rackmount"
+
     # Model CSV Keys
     CSV_ETHERNET_PORT_KEY = "network_ports"
     CSV_NETWORK_PORT_1 = "network_port_name_1"
@@ -60,6 +70,8 @@ class Constants:
     NETWORK_CONNECTIONS_KEY = "network_connections"
     POWER_CONNECTIONS_KEY = "power_connections"
     ASSET_NUMBER_KEY = "asset_number"
+    CHASSIS_HOSTNAME_KEY = "chassis_hostname"
+    CHASSIS_SLOT_KEY = "chassis_slot"
 
     ASSET_NUMBER_ORIG_KEY = "asset_numberOriginal"
 

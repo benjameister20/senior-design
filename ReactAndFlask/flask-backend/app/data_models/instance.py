@@ -73,6 +73,13 @@ class Instance:
         network_connections: Optional[Dict[str, Any]],
         power_connections: Optional[List[str]],
         asset_number: int,
+        mount_type: str,
+        display_color: Optional[str],
+        cpu: Optional[str],
+        memory: Optional[int],
+        storage: Optional[str],
+        chassis_hostname: Optional[str],
+        chassis_slot: Optional[int],
     ) -> None:
         self.model_id: int = model_id
         self.hostname: Optional[str] = hostname
@@ -84,6 +91,17 @@ class Instance:
         self.network_connections: Optional[Dict[str, Any]] = network_connections
         self.power_connections: Optional[List[str]] = power_connections
         self.asset_number: int = asset_number
+        self.mount_type: str = mount_type
+
+        # Model Vals
+        self.display_color: Optional[str] = display_color
+        self.cpu: Optional[str] = cpu
+        self.memory: Optional[int] = memory
+        self.storage: Optional[str] = storage
+
+        # Chassis References
+        self.chassis_hostname: Optional[str] = chassis_hostname
+        self.chassis_slot: Optional[int] = chassis_slot
 
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, Instance):
@@ -127,6 +145,13 @@ class Instance:
             Constants.NETWORK_CONNECTIONS_KEY: self.network_connections,
             Constants.POWER_CONNECTIONS_KEY: self.power_connections,
             Constants.ASSET_NUMBER_KEY: self.asset_number,
+            Constants.MOUNT_TYPE_KEY: self.mount_type,
+            Constants.DISPLAY_COLOR_KEY: self.display_color,
+            Constants.CPU_KEY: self.cpu,
+            Constants.MEMORY_KEY: self.memory,
+            Constants.STORAGE_KEY: self.storage,
+            Constants.CHASSIS_HOSTNAME_KEY: self.chassis_hostname,
+            Constants.CHASSIS_SLOT_KEY: self.chassis_slot,
         }
 
     def make_json_with_model_and_datacenter(self, model, datacenter):
@@ -143,6 +168,17 @@ class Instance:
             Constants.NETWORK_CONNECTIONS_KEY: self.network_connections,
             Constants.POWER_CONNECTIONS_KEY: self.power_connections,
             Constants.ASSET_NUMBER_KEY: self.asset_number,
+            Constants.MOUNT_TYPE_KEY: self.mount_type,
+            Constants.DISPLAY_COLOR_KEY: self.display_color,
+            Constants.ORIG_DISPLAY_COLOR_KEY: model.display_color,
+            Constants.CPU_KEY: self.cpu,
+            Constants.ORIG_CPU_KEY: model.cpu,
+            Constants.MEMORY_KEY: self.memory,
+            Constants.ORIG_MEMORY_KEY: model.memory,
+            Constants.STORAGE_KEY: self.storage,
+            Constants.ORIG_STORAGE_KEY: model.storage,
+            Constants.CHASSIS_HOSTNAME_KEY: self.chassis_hostname,
+            Constants.CHASSIS_SLOT_KEY: self.chassis_slot,
         }
 
     # @classmethod

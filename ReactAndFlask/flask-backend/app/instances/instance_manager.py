@@ -180,8 +180,7 @@ class InstanceManager:
             raise InvalidInputsError(
                 "An error occurred while trying to filter by datacenter name. Please input a different model name"
             )
-        # print("DCID")
-        # print(dc_id)
+
         hostname = filter.get(Constants.HOSTNAME_KEY)
         rack_label = filter.get(Constants.RACK_KEY)
         rack_position = filter.get(Constants.RACK_POSITION_KEY)
@@ -218,51 +217,58 @@ class InstanceManager:
             )
 
     def make_instance(self, instance_data):
-        print("instance data")
-        print(instance_data)
         model_name = self.check_null(instance_data[Constants.MODEL_KEY])
         model_id = self.get_model_id_from_name(model_name)
+        model = self.get_model_from_id(model_id)
 
-        print("1")
+        mount_type = model.mount_type
+
         datacenter_name = self.check_null(instance_data[Constants.DC_NAME_KEY])
-        print("2")
         datacenter_id = self.get_datacenter_id_from_name(datacenter_name)
-        print("3")
         try:
             hostname = self.check_null(instance_data[Constants.HOSTNAME_KEY])
-            print("4")
             rack = self.check_null(instance_data[Constants.RACK_KEY].upper())
-            print("5")
             rack_position = self.check_null(instance_data[Constants.RACK_POSITION_KEY])
-            print("6")
             owner = self.check_null(instance_data[Constants.OWNER_KEY])
-            print("7")
             comment = self.check_null(instance_data[Constants.COMMENT_KEY])
             network_connections = self.check_null(
                 instance_data[Constants.NETWORK_CONNECTIONS_KEY]
             )
-            print("10")
             power_connections = self.check_null(
                 instance_data[Constants.POWER_CONNECTIONS_KEY]
             )
-            print("11")
             asset_number = self.check_null(instance_data[Constants.ASSET_NUMBER_KEY])
         except:
             raise InvalidInputsError(
                 "Could not read data fields correctly. Client-server error occurred."
             )
-        print("12")
-        if rack == "":
-            return InvalidInputsError("Must provide a rack location")
-        print("13")
-        if rack_position == "":
-            return InvalidInputsError("Must provide a rack location")
-        print("14")
+
+        display_color = self.asset_or_model_val(
+            instance_data.get(Constants.DISPLAY_COLOR_KEY), model.display_color
+        )
+        cpu = self.asset_or_model_val(instance_data.get(Constants.CPU_KEY), model.cpu)
+        self.asset_or_model_val(instance_data.get(Constants.CPU_KEY), model.cpu)
+        memory = self.asset_or_model_val(
+            instance_data.get(Constants.MEMORY_KEY), model.memory
+        )
+        storage = self.asset_or_model_val(
+            instance_data.get(Constants.STORAGE_KEY), model.storage
+        )
+
+        if mount_type == Constants.BLADE_KEY:
+            chassis_hostname = instance_data.get(Constants.CHASSIS_HOSTNAME_KEY)
+            chassis_slot = instance_data.get(Constants.CHASSIS_SLOT_KEY)
+        else:
+            chassis_hostname = ""
+            chassis_slot = -1
+
+        # if rack == "":
+        #     return InvalidInputsError("Must provide a rack location")
+        # if rack_position == "":
+        #     return InvalidInputsError("Must provide a rack location")
         if asset_number == "":
             return InvalidInputsError("Must provide an asset number")
 
-        print(network_connections)
-        print(type(network_connections))
         print("about to make instance")
         return Instance(
             model_id,
@@ -275,13 +281,18 @@ class InstanceManager:
             network_connections,
             power_connections,
             asset_number,
+            mount_type,
+            display_color,
+            cpu,
+            memory,
+            storage,
+            chassis_hostname,
+            chassis_slot,
         )
 
     def get_model_id_from_name(self, model_name):
         try:
             model_list = self.model_table.get_all_models()
-            print("MODEL_LIST")
-            print(model_list)
             for model in model_list:
                 if model.vendor + " " + model.model_number == model_name:
                     print("FOUND MATCH")
@@ -289,12 +300,8 @@ class InstanceManager:
                         model.vendor, model.model_number
                     )
                     if model_id is None:
-                        print("MODEL_ID = -1")
-                        # raise InvalidInputsError("Invalid model name.")
                         model_id = -1
 
-                    print("MODEL_ID")
-                    print(model_id)
                     return model_id
             return -1
         except:
@@ -438,32 +445,76 @@ class InstanceManager:
             raise InvalidInputsError("No asset number found in the request.")
 
         asset = self.table.get_instance_by_asset_number(asset_number)
-        if asset_number is None or asset_number == "":
+        if asset is None:
             raise InvalidInputsError("The asset requested could not be found.")
 
         connections_dict = {}
-        for port in asset.network_connections:
-            hostname = asset.network_connections[port]["connection_hostname"]
-            if hostname is None or hostname == "":
-                continue
-            connected_asset = self.table.get_instance_by_hostname(hostname)
+
+        if asset.mount_type == Constants.CHASIS_KEY:
+            blade_list = self.table.get_blades_by_chassis_hostname(asset.hostname)
+            for blade in blade_list:
+                connections_dict[blade.hostname] = []
+
+        is_blade = asset.mount_type == Constants.BLADE_KEY
+        if is_blade:
+            connected_asset = self.table.get_instance_by_hostname(
+                asset.chassis_hostname
+            )
             if connected_asset is None:
                 raise InvalidInputsError(
-                    f"Connection to asset with hostname {hostname} was not found."
+                    f"Connection to asset with hostname {asset.chassis_hostname} was not found."
                 )
-            two_deep_list = []
-            for port2 in connected_asset.network_connections:
-                host2 = connected_asset.network_connections[port2][
-                    "connection_hostname"
-                ]
-                two_deep_list.append(host2)
-
-            connections_dict[hostname] = two_deep_list
+            two_deep_list = self.make_two_deep_list(connected_asset)
+            connections_dict[connected_asset.hostname] = two_deep_list
+        else:
+            for port in asset.network_connections:
+                hostname = asset.network_connections[port]["connection_hostname"]
+                if hostname is None or hostname == "":
+                    continue
+                connected_asset = self.table.get_instance_by_hostname(hostname)
+                if connected_asset is None:
+                    raise InvalidInputsError(
+                        f"Connection to asset with hostname {hostname} was not found."
+                    )
+                two_deep_list = self.make_two_deep_list(connected_asset)
+                connections_dict[hostname] = two_deep_list
 
         return connections_dict
+
+    def make_two_deep_list(self, connected_asset):
+        two_deep_list = []
+        if connected_asset.mount_type == Constants.CHASIS_KEY:
+            blade_list = self.table.get_blades_by_chassis_hostname(
+                connected_asset.hostname
+            )
+            for blade in blade_list:
+                two_deep_list.append(blade.hostname)
+
+        for port2 in connected_asset.network_connections:
+            host2 = connected_asset.network_connections[port2]["connection_hostname"]
+            two_deep_list.append(host2)
+
+        return two_deep_list
+
+    def get_all_chassis(self):
+        try:
+            chassis_list = self.table.get_asset_by_mount_type(Constants.CHASIS_KEY)
+            if chassis_list is None:
+                chassis_list = []
+            return chassis_list
+        except:
+            raise InvalidInputsError(
+                "An error occurred while trying to retrieve blade chassis."
+            )
 
     def check_null(self, val):
         if val is None:
             return ""
         else:
             return val
+
+    def asset_or_model_val(self, instance_val, model_val):
+        if self.check_null(instance_val) != "":
+            return instance_val
+        else:
+            return model_val

@@ -13,7 +13,7 @@ class ModelEntry(db.Model):
     identifier = db.Column(db.Integer, primary_key=True, unique=True)
     vendor = db.Column(db.String(80))
     model_number = db.Column(db.String(80))
-    height = db.Column(db.Integer)
+    height = db.Column(db.Integer, nullable=True)
     display_color = db.Column(db.String(80), nullable=True)
     ethernet_ports = db.Column(pg.ARRAY(db.String(80)), nullable=True)
     power_ports = db.Column(db.Integer, nullable=True)
@@ -21,6 +21,7 @@ class ModelEntry(db.Model):
     memory = db.Column(db.Integer, nullable=True)
     storage = db.Column(db.String(80), nullable=True)
     comment = db.Column(db.String(80), nullable=True)
+    mount_type = db.Column(db.String(32))
 
     def __init__(self, model: Model):
         self.vendor = model.vendor
@@ -33,6 +34,7 @@ class ModelEntry(db.Model):
         self.memory = model.memory
         self.storage = model.storage
         self.comment = model.comment
+        self.mount_type = model.mount_type
 
     def make_json(self) -> JSON:
         return {
@@ -46,6 +48,7 @@ class ModelEntry(db.Model):
             "memory": self.memory,
             "storage": self.storage,
             "comment": self.comment,
+            "mount_type": self.mount_type,
         }
 
     def make_model(self) -> Model:
@@ -60,6 +63,7 @@ class ModelEntry(db.Model):
             storage=self.storage,
             comment=self.comment,
             display_color=self.display_color,
+            mount_type=self.mount_type,
         )
 
 

@@ -72,36 +72,38 @@ class ModelManager:
             )
 
     def edit_model(self, model_data):
-        # try:
-        updated_model = self.make_model(model_data)
-        original_vendor = self.check_null(model_data.get(Constants.VENDOR_ORIG_KEY))
-        original_model_number = self.check_null(
-            model_data.get(Constants.MODEL_NUMBER_ORIG_KEY)
-        )
-        original_height = self.check_null(model_data.get(Constants.HEIGHT_ORIG_KEY))
+        try:
+            updated_model = self.make_model(model_data)
+            original_vendor = self.check_null(model_data.get(Constants.VENDOR_ORIG_KEY))
+            original_model_number = self.check_null(
+                model_data.get(Constants.MODEL_NUMBER_ORIG_KEY)
+            )
+            original_height = self.check_null(model_data.get(Constants.HEIGHT_ORIG_KEY))
 
-        model_id = self.table.get_model_id_by_vendor_number(
-            original_vendor, original_model_number
-        )
-        if original_height != updated_model.height:
-            if model_id is None:
-                return InvalidInputsError("Model not found")
-            deployed_instances = self.instance_table.get_instances_by_model_id(model_id)
-            if deployed_instances is not None:
-                return InvalidInputsError(
-                    "Cannot edit height while instances are deployed"
+            model_id = self.table.get_model_id_by_vendor_number(
+                original_vendor, original_model_number
+            )
+            if original_height != updated_model.height:
+                if model_id is None:
+                    return InvalidInputsError("Model not found")
+                deployed_instances = self.instance_table.get_instances_by_model_id(
+                    model_id
                 )
-        edit_validation_result = self.validate.edit_model_validation(
-            self.make_model(model_data), original_vendor, original_model_number
-        )
-        if edit_validation_result == Constants.API_SUCCESS:
-            self.table.edit_model(model_id, updated_model)
-        else:
-            return InvalidInputsError(edit_validation_result)
-        # except:
-        #     raise InvalidInputsError(
-        #         "A failure occured while trying to edit the model."
-        #     )
+                if deployed_instances is not None:
+                    return InvalidInputsError(
+                        "Cannot edit height while instances are deployed"
+                    )
+            edit_validation_result = self.validate.edit_model_validation(
+                self.make_model(model_data), original_vendor, original_model_number
+            )
+            if edit_validation_result == Constants.API_SUCCESS:
+                self.table.edit_model(model_id, updated_model)
+            else:
+                return InvalidInputsError(edit_validation_result)
+        except:
+            raise InvalidInputsError(
+                "A failure occured while trying to edit the model."
+            )
 
     def get_models(self, filter, limit: int):
         vendor = filter.get(Constants.VENDOR_KEY)
@@ -122,9 +124,6 @@ class ModelManager:
     def get_distinct_vendors_with_prefix(self, prefix_json):
         try:
             return_list = []
-            # prefix = prefix_json.get("input")
-            # if prefix is None:
-            #     prefix = ""
 
             vendor_list = self.table.get_distinct_vendors()
             for vendor in vendor_list:

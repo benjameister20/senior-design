@@ -267,6 +267,33 @@ def get_barcode_labels():
         return addMessageToJSON(returnJSON, e.message)
 
 
+@instances.route("/instances/getchassis", methods=["GET"])
+@requires_auth(request)
+def get_all_chassis():
+    """ Route for getting all blade chassis in the system """
+    global INSTANCE_MANAGER
+    global instancesArr
+    returnJSON = createJSON()
+
+    try:
+        chassis_list = INSTANCE_MANAGER.get_all_chassis()
+        returnJSON = addInstancesTOJSON(
+            addMessageToJSON(returnJSON, "success"),
+            list(
+                map(
+                    lambda x: x.make_json_with_model_and_datacenter(
+                        INSTANCE_MANAGER.get_model_from_id(x.model_id),
+                        INSTANCE_MANAGER.get_dc_from_id(x.datacenter_id),
+                    ),
+                    chassis_list,
+                )
+            ),
+        )
+        return returnJSON
+    except InvalidInputsError as e:
+        return addMessageToJSON(returnJSON, e.message)
+
+
 def createJSON() -> dict:
     return {"metadata": "none"}
 

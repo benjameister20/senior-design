@@ -271,7 +271,7 @@ class FilterAsset extends React.Component {
                                 style={{ width: "100%" }}
                             >
                                 <MenuItem value={"active"}>Active</MenuItem>
-                                <MenuItem value={"decommissioned"}>Decommissioned Assets</MenuItem>
+                                <MenuItem value={"decommissioned"}>Decommissioned</MenuItem>
                                 <MenuItem value={"offline"}>Offline Storage</MenuItem>
                             </Select>
                         </Grid>

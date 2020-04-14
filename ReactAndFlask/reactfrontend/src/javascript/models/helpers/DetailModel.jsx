@@ -1,16 +1,10 @@
 import React from 'react';
-import TextField from "@material-ui/core/TextField";
-import Button from '@material-ui/core/Button';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import Typography from '@material-ui/core/Typography';
-import Autocomplete from '@material-ui/lab/Autocomplete';
 import { CompactPicker } from 'react-color';
-import Grid from '@material-ui/core/Grid';
-import Modal from '@material-ui/core/Modal';
-import Backdrop from '@material-ui/core/Backdrop';
-import Fade from '@material-ui/core/Fade';
+
+import { TextField, Button, CircularProgress, Typography, Grid, Modal, Backdrop, Fade } from "@material-ui/core";
 import { withStyles } from '@material-ui/core/styles';
 
+import Autocomplete from '@material-ui/lab/Autocomplete';
 
 function createInputs(name, label) {
     return {label, name};
@@ -19,6 +13,7 @@ function createInputs(name, label) {
 const inputs = {
     "vendor": createInputs('vendor', "Vendor", ),
     "modelNumber": createInputs('model_number', "Model Number"),
+    "mount_type": createInputs('mount_type', "Mount Type"),
     "height": createInputs('height', "Height"),
     "displayColor": createInputs('display_color', "Display Color"),
     "ethernetPorts": createInputs('ethernet_ports', "Network Ports"),
@@ -60,8 +55,10 @@ class DetailModel extends React.Component {
         super(props);
 
         this.state = {
-            showConfirmationBox:false,
-            color:null,
+            showConfirmationBox: false,
+            color: null,
+
+            mountType: null,
         };
 
         this.closeModal = this.closeModal.bind(this);
@@ -85,9 +82,6 @@ class DetailModel extends React.Component {
     updateColor = (color) => {
         this.setState({ color: color });
         this.props.updateModelColorDetails(color.hex);
-    }
-
-    closeModal = () => {
     }
 
     render() {
@@ -133,23 +127,40 @@ class DetailModel extends React.Component {
                             disabled={this.props.disabled}
                             defaultValue={this.props.defaultValues[inputs.modelNumber.name]}
                         />
+                        <InputLabel id="select-mount-type-label">Mount Type</InputLabel>
+                        <Select
+                            labelId="select-mount-type-label"
+                            id="select-mount-type"
+                            value={this.state.mountType}
+                            required={true}
+                            onChange={this.updateMountType}
+                            style={{ width: "100%" }}
+                        >
+                            <MenuItem value="rackmount">Rack Mount</MenuItem>
+                            <MenuItem value="chassis">Blade Chassis</MenuItem>
+                            <MenuItem value="blade">Blade</MenuItem>
+                        </Select>
+                        { this.state.mountType !== "blade" ?
                         <TextField id="standard-basic" variant="outlined"
                             label={inputs.height.label} name={inputs.height.name}
                             onChange={this.props.updateModelCreator}
                             disabled={this.props.disabled}
                             defaultValue={this.props.defaultValues[inputs.height.name]}
                         />
+                        : null }
                         <CompactPicker
                             color={this.state.color !== null ? this.state.color : "#000000"}
                             onChange={this.updateColor}
 
                         />
+                        { this.state.mountType !== "blade" ?
                         <TextField id="standard-basic" variant="outlined"
                             label={inputs.powerPorts.label} name={inputs.powerPorts.name}
                             onChange={this.props.updateModelCreator}
                             disabled={this.props.disabled}
                             defaultValue={this.props.defaultValues[inputs.powerPorts.name]}
                         />
+                        : null }
                         <TextField id="standard-basic" variant="outlined"
                             label={inputs.cpu.label} name={inputs.cpu.name}
                             onChange={this.props.updateModelCreator}
@@ -238,14 +249,35 @@ class DetailModel extends React.Component {
                             <TextField id="standard-basic" variant="outlined" label={inputs.modelNumber.label} name={inputs.modelNumber.name} onChange={this.props.updateModelCreator}/>
                         </Grid>
                         <Grid item xs={3}>
+                            <InputLabel id="select-mount-type-label">Mount Type</InputLabel>
+                            <Select
+                                labelId="select-mount-type-label"
+                                id="select-mount-type"
+                                value={this.state.mountType}
+                                required={true}
+                                onChange={this.updateMountType}
+                                style={{ width: "100%" }}
+                            >
+                                <MenuItem value="rackmount">Rack Mount</MenuItem>
+                                <MenuItem value="chassis">Blade Chassis</MenuItem>
+                                <MenuItem value="blade">Blade</MenuItem>
+                            </Select>
+                        </Grid>
+                        { this.state.mountType !== "blade" ?
+                        <Grid item xs={3}>
                             <TextField id="standard-basic" variant="outlined" label={inputs.height.label} name={inputs.height.name} onChange={this.props.updateModelCreator}/>
                         </Grid>
+                        : null }
+                        { this.state.mountType !== "blade" ?
                         <Grid item xs={3}>
                             <TextField id="standard-basic" variant="outlined" label={inputs.ethernetPorts.label} name={inputs.ethernetPorts.name} onChange={this.props.updateModelCreator}/>
                         </Grid>
+                        : null }
+                        { this.state.mountType !== "blade" ?
                         <Grid item xs={3}>
                             <TextField id="standard-basic" variant="outlined" label={inputs.powerPorts.label} name={inputs.powerPorts.name} onChange={this.props.updateModelCreator}/>
                         </Grid>
+                        : null }
                         <Grid item xs={3}>
                         <TextField id="standard-basic" variant="outlined" label={inputs.cpu.label} name={inputs.cpu.name} onChange={this.props.updateModelCreator}/>
                         </Grid>
@@ -258,13 +290,11 @@ class DetailModel extends React.Component {
                         <Grid item xs={3}>
                         <TextField id="standard-basic" variant="outlined" label={inputs.comments.label} name={inputs.comments.name} onChange={this.props.updateModelCreator}/>
                         </Grid>
-
                         <Grid item xs={6}>
                             <Typography>Display Color</Typography>
                             <CompactPicker
                                 color={this.state.color}
                                 onChange={this.updateColor}
-
                             />
                         </Grid>
                         <Grid item xs={3}>

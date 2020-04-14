@@ -270,7 +270,7 @@ def get_barcode_labels():
 
 
 @instances.route("/instances/setChassisPortState", methods=["POST"])
-# @requires_auth(request)
+@requires_auth(request)
 def set_chassis_port_state():
     returnJSON = createJSON()
     request_data = request.json
@@ -287,7 +287,7 @@ def set_chassis_port_state():
 
 
 @instances.route("/instances/getChassisPortState", methods=["POST"])
-# @requires_auth(request)
+@requires_auth(request)
 def get_chassis_port_state():
     returnJSON = createJSON()
     request_data = request.json
@@ -306,7 +306,7 @@ def get_chassis_port_state():
 
 
 @instances.route("/instances/getAllChassisPortStates", methods=["POST"])
-# @requires_auth(request)
+@requires_auth(request)
 def get_all_chassis_port_states():
     returnJSON = createJSON()
     request_data = request.json
@@ -321,6 +321,33 @@ def get_all_chassis_port_states():
     returnJSON[Constants.POWER_STATE_KEY] = states
 
     return addMessageToJSON(returnJSON, "Success")
+
+
+# # DO THIS IF TREVOR ONLY HAS ASSET NUMBER IN DETAIL VIEW OF BLADES
+# @instances.route("/instances/setBladePortPowerState", methods=["POST"])
+# # @requires_auth(request)
+# def set_blade_port_power_state():
+#     returnJSON = createJSON()
+#     request_data = request.json
+#     state = request_data.get(Constants.POWER_STATE_KEY)
+#     asset_number = request_data.get(Constants.ASSET_NUMBER_KEY)
+#
+#     try:
+#         blade = InstanceTable().get_instance_by_asset_number(asset_number)
+#     except Exception as e:
+#         return addMessageToJSON(returnJSON, str(e))
+#
+#     #need syntax for this part
+#     chassis = blade.chassis
+#     port = blade.location_in_chassis
+#
+#     BMI.set_port_power_state(
+#         chassis=chassis,
+#         port=port,
+#         power_state=state
+#     )
+#
+#     return addMessageToJSON(returnJSON, "Success")
 
 
 def createJSON() -> dict:

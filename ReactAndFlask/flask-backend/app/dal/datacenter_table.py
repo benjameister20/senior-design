@@ -11,14 +11,20 @@ class DatacenterEntry(db.Model):
     identifier = db.Column(db.Integer, primary_key=True, unique=True)
     abbreviation = db.Column(db.String(10), unique=True)
     name = db.Column(db.String(128), unique=True)
+    is_offline_storage = db.Column(db.Boolean)
 
     def __init__(self, datacenter: Datacenter):
         self.abbreviation = datacenter.abbreviation
         self.name = datacenter.name
+        self.is_offline_storage = datacenter.is_offline_storage
 
     def make_datacenter(self) -> Datacenter:
         """ Convert the database entry to a datacenter """
-        return Datacenter(abbreviation=self.abbreviation, name=self.name)
+        return Datacenter(
+            abbreviation=self.abbreviation,
+            name=self.name,
+            is_offline_storage=self.is_offline_storage,
+        )
 
 
 class DatacenterTable:
@@ -55,6 +61,16 @@ class DatacenterTable:
             return None
 
         return datacenter.make_datacenter().name
+
+    def get_offline_datacenters(self):
+        datacenters: List[DatacenterEntry] = DatacenterEntry.query.filter_by(
+            is_offline_storage=True
+        ).all()
+
+        if datacenters is None or len(datacenters) == 0:
+            return None
+
+        return [datacenter.make_datacenter() for datacenter in datacenters]
 
     def get_all_datacenters(self):
         all_datacnters: List[DatacenterEntry] = DatacenterEntry.query.all()

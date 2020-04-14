@@ -1,13 +1,13 @@
-Date : 2020-03-29 22:15:04
+Date : 2020-04-14 13:05:08
 Directory : c:\Users\benro\Documents\workspaces\senior-design
-Total : 215 files,  19290 codes, 1087 comments, 3070 blanks, all 23447 lines
+Total : 216 files,  19785 codes, 979 comments, 3126 blanks, all 23890 lines
 
 Languages
 +------------------+------------+------------+------------+------------+------------+
 | language         | files      | code       | comment    | blank      | total      |
 +------------------+------------+------------+------------+------------+------------+
-| JavaScript React |         67 |      9,536 |        273 |      1,114 |     10,923 |
-| Python           |         88 |      6,973 |        739 |      1,736 |      9,448 |
+| JavaScript React |         67 |      9,838 |        155 |      1,138 |     11,131 |
+| Python           |         89 |      7,166 |        749 |      1,768 |      9,683 |
 | Markdown         |         13 |      1,655 |          0 |        105 |      1,760 |
 | JSON             |          6 |        436 |          0 |          6 |        442 |
 | pip requirements |          2 |        144 |          8 |          3 |        155 |
@@ -26,13 +26,13 @@ Directories
 +----------------------------------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
 | path                                                                                                                                         | files      | code       | comment    | blank      | total      |
 +----------------------------------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
-| .                                                                                                                                            |        215 |     19,290 |      1,087 |      3,070 |     23,447 |
+| .                                                                                                                                            |        216 |     19,785 |        979 |      3,126 |     23,890 |
 | .circleci                                                                                                                                    |          1 |         18 |          0 |          4 |         22 |
-| ReactAndFlask                                                                                                                                |        205 |     18,974 |      1,079 |      3,036 |     23,089 |
-| ReactAndFlask\flask-backend                                                                                                                  |        110 |      8,883 |        746 |      1,823 |     11,452 |
-| ReactAndFlask\flask-backend\app                                                                                                              |         94 |      8,584 |        713 |      1,700 |     10,997 |
+| ReactAndFlask                                                                                                                                |        206 |     19,469 |        971 |      3,092 |     23,532 |
+| ReactAndFlask\flask-backend                                                                                                                  |        111 |      9,076 |        756 |      1,855 |     11,687 |
+| ReactAndFlask\flask-backend\app                                                                                                              |         95 |      8,777 |        723 |      1,732 |     11,232 |
 | ReactAndFlask\flask-backend\app\backups                                                                                                      |          8 |        307 |         48 |        113 |        468 |
-| ReactAndFlask\flask-backend\app\change_plans                                                                                                 |          5 |      1,300 |         41 |        187 |      1,528 |
+| ReactAndFlask\flask-backend\app\change_plans                                                                                                 |          6 |      1,493 |         44 |        219 |      1,756 |
 | ReactAndFlask\flask-backend\app\dal                                                                                                          |         12 |      1,130 |         68 |        257 |      1,455 |
 | ReactAndFlask\flask-backend\app\dal\exceptions                                                                                               |          1 |          3 |          0 |          1 |          4 |
 | ReactAndFlask\flask-backend\app\data_models                                                                                                  |         10 |        564 |        152 |        123 |        839 |
@@ -55,18 +55,18 @@ Directories
 | ReactAndFlask\flask-backend\static\css                                                                                                       |          1 |          1 |          1 |          1 |          3 |
 | ReactAndFlask\flask-backend\static\js                                                                                                        |          3 |          3 |          4 |          3 |         10 |
 | ReactAndFlask\flask-backend\templates                                                                                                        |          1 |          1 |          0 |          1 |          2 |
-| ReactAndFlask\reactfrontend                                                                                                                  |         95 |     10,091 |        333 |      1,213 |     11,637 |
+| ReactAndFlask\reactfrontend                                                                                                                  |         95 |     10,393 |        215 |      1,237 |     11,845 |
 | ReactAndFlask\reactfrontend\public                                                                                                           |          2 |         45 |         23 |          5 |         73 |
-| ReactAndFlask\reactfrontend\src                                                                                                              |         90 |      9,879 |        310 |      1,174 |     11,363 |
-| ReactAndFlask\reactfrontend\src\javascript                                                                                                   |         81 |      9,690 |        304 |      1,143 |     11,137 |
-| ReactAndFlask\reactfrontend\src\javascript\assets                                                                                            |         18 |      3,614 |         64 |        406 |      4,084 |
+| ReactAndFlask\reactfrontend\src                                                                                                              |         90 |     10,181 |        192 |      1,198 |     11,571 |
+| ReactAndFlask\reactfrontend\src\javascript                                                                                                   |         81 |      9,992 |        186 |      1,167 |     11,345 |
+| ReactAndFlask\reactfrontend\src\javascript\assets                                                                                            |         18 |      3,767 |         63 |        425 |      4,255 |
 | ReactAndFlask\reactfrontend\src\javascript\assets\enums                                                                                      |          2 |         43 |          0 |          2 |         45 |
-| ReactAndFlask\reactfrontend\src\javascript\assets\helpers                                                                                    |         13 |      3,508 |         64 |        390 |      3,962 |
+| ReactAndFlask\reactfrontend\src\javascript\assets\helpers                                                                                    |         13 |      3,661 |         63 |        409 |      4,133 |
 | ReactAndFlask\reactfrontend\src\javascript\assets\helpers\functions                                                                          |          3 |         56 |         23 |         23 |        102 |
 | ReactAndFlask\reactfrontend\src\javascript\assets\pages                                                                                      |          1 |         52 |          0 |          6 |         58 |
 | ReactAndFlask\reactfrontend\src\javascript\assets\stylesheets                                                                                |          1 |          5 |          0 |          2 |          7 |
-| ReactAndFlask\reactfrontend\src\javascript\changeplans                                                                                       |          1 |        550 |         39 |         61 |        650 |
-| ReactAndFlask\reactfrontend\src\javascript\changeplans\pages                                                                                 |          1 |        550 |         39 |         61 |        650 |
+| ReactAndFlask\reactfrontend\src\javascript\changeplans                                                                                       |          1 |        660 |         44 |         80 |        784 |
+| ReactAndFlask\reactfrontend\src\javascript\changeplans\pages                                                                                 |          1 |        660 |         44 |         80 |        784 |
 | ReactAndFlask\reactfrontend\src\javascript\enums                                                                                             |          1 |          4 |          0 |          1 |          5 |
 | ReactAndFlask\reactfrontend\src\javascript\errors                                                                                            |          1 |         18 |          4 |          6 |         28 |
 | ReactAndFlask\reactfrontend\src\javascript\helpers                                                                                           |         12 |        246 |          1 |         46 |        293 |
@@ -74,24 +74,24 @@ Directories
 | ReactAndFlask\reactfrontend\src\javascript\logs                                                                                              |          2 |        193 |          0 |         27 |        220 |
 | ReactAndFlask\reactfrontend\src\javascript\logs\enums                                                                                        |          1 |          4 |          0 |          1 |          5 |
 | ReactAndFlask\reactfrontend\src\javascript\logs\pages                                                                                        |          1 |        189 |          0 |         26 |        215 |
-| ReactAndFlask\reactfrontend\src\javascript\models                                                                                            |         11 |      2,014 |        135 |        205 |      2,354 |
+| ReactAndFlask\reactfrontend\src\javascript\models                                                                                            |         11 |      2,022 |         13 |        185 |      2,220 |
 | ReactAndFlask\reactfrontend\src\javascript\models\enums                                                                                      |          2 |         23 |          0 |          2 |         25 |
-| ReactAndFlask\reactfrontend\src\javascript\models\helpers                                                                                    |          6 |      1,470 |        128 |        132 |      1,730 |
+| ReactAndFlask\reactfrontend\src\javascript\models\helpers                                                                                    |          6 |      1,478 |          6 |        112 |      1,596 |
 | ReactAndFlask\reactfrontend\src\javascript\models\pages                                                                                      |          1 |        520 |          7 |         66 |        593 |
 | ReactAndFlask\reactfrontend\src\javascript\models\stylesheets                                                                                |          1 |          0 |          0 |          1 |          1 |
-| ReactAndFlask\reactfrontend\src\javascript\racks                                                                                             |         11 |      1,091 |          3 |        151 |      1,245 |
+| ReactAndFlask\reactfrontend\src\javascript\racks                                                                                             |         11 |      1,125 |          3 |        155 |      1,283 |
 | ReactAndFlask\reactfrontend\src\javascript\racks\enums                                                                                       |          2 |         12 |          0 |          2 |         14 |
-| ReactAndFlask\reactfrontend\src\javascript\racks\helpers                                                                                     |          4 |        609 |          0 |         69 |        678 |
-| ReactAndFlask\reactfrontend\src\javascript\racks\helpers\functions                                                                           |          1 |        156 |          0 |         19 |        175 |
-| ReactAndFlask\reactfrontend\src\javascript\racks\pages                                                                                       |          3 |        436 |          3 |         71 |        510 |
+| ReactAndFlask\reactfrontend\src\javascript\racks\helpers                                                                                     |          4 |        638 |          0 |         72 |        710 |
+| ReactAndFlask\reactfrontend\src\javascript\racks\helpers\functions                                                                           |          1 |        157 |          0 |         19 |        176 |
+| ReactAndFlask\reactfrontend\src\javascript\racks\pages                                                                                       |          3 |        441 |          3 |         72 |        516 |
 | ReactAndFlask\reactfrontend\src\javascript\racks\stylesheets                                                                                 |          1 |         33 |          0 |          6 |         39 |
 | ReactAndFlask\reactfrontend\src\javascript\statistics                                                                                        |          2 |        200 |          0 |         17 |        217 |
 | ReactAndFlask\reactfrontend\src\javascript\statistics\enums                                                                                  |          1 |          4 |          0 |          1 |          5 |
 | ReactAndFlask\reactfrontend\src\javascript\statistics\pages                                                                                  |          1 |        196 |          0 |         16 |        212 |
-| ReactAndFlask\reactfrontend\src\javascript\users                                                                                             |         15 |      1,013 |          1 |        113 |      1,127 |
+| ReactAndFlask\reactfrontend\src\javascript\users                                                                                             |         15 |      1,007 |          1 |        115 |      1,123 |
 | ReactAndFlask\reactfrontend\src\javascript\users\enums                                                                                       |          3 |         18 |          0 |          3 |         21 |
-| ReactAndFlask\reactfrontend\src\javascript\users\helpers                                                                                     |         10 |        725 |          0 |         76 |        801 |
-| ReactAndFlask\reactfrontend\src\javascript\users\helpers\functions                                                                           |          5 |        109 |          0 |         16 |        125 |
+| ReactAndFlask\reactfrontend\src\javascript\users\helpers                                                                                     |         10 |        719 |          0 |         78 |        797 |
+| ReactAndFlask\reactfrontend\src\javascript\users\helpers\functions                                                                           |          5 |        111 |          0 |         17 |        128 |
 | ReactAndFlask\reactfrontend\src\javascript\users\pages                                                                                       |          1 |        261 |          1 |         27 |        289 |
 | ReactAndFlask\reactfrontend\src\stylesheets                                                                                                  |          4 |         94 |          1 |         22 |        117 |
 | ReactAndFlask\reactfrontend\src\tests                                                                                                        |          3 |         90 |          4 |          6 |        100 |
@@ -119,11 +119,12 @@ Files
 | c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\backups\routes_backups.py                                  | Python           |         76 |          3 |         26 |        105 |
 | c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\backups\test.py                                            | Python           |         20 |          8 |          6 |         34 |
 | c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\change_plans\ChangePlanAPI.md                              | Markdown         |        338 |          0 |          9 |        347 |
-| c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\change_plans\change_plan_action_manager.py                 | Python           |        281 |          1 |         43 |        325 |
-| c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\change_plans\change_plan_manager.py                        | Python           |        158 |          3 |         22 |        183 |
-| c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\change_plans\change_plan_validator.py                      | Python           |        387 |          4 |         66 |        457 |
-| c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\change_plans\routes_change_plans.py                        | Python           |        136 |         33 |         47 |        216 |
-| c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\constants.py                                               | Python           |         95 |         11 |         19 |        125 |
+| c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\change_plans\change_plan_action_manager.py                 | Python           |        308 |          1 |         48 |        357 |
+| c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\change_plans\change_plan_manager.py                        | Python           |        157 |          3 |         22 |        182 |
+| c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\change_plans\change_plan_validator.py                      | Python           |        479 |          4 |         78 |        561 |
+| c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\change_plans\routes_change_plans.py                        | Python           |        168 |         34 |         52 |        254 |
+| c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\change_plans\work_order.py                                 | Python           |         43 |          2 |         10 |         55 |
+| c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\constants.py                                               | Python           |         95 |         18 |         19 |        132 |
 | c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\dal\__init__.py                                            | Python           |          0 |          0 |          1 |          1 |
 | c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\dal\change_plan_action_table.py                            | Python           |        162 |          9 |         33 |        204 |
 | c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\dal\change_plan_table.py                                   | Python           |         75 |          4 |         22 |        101 |
@@ -213,8 +214,8 @@ Files
 | c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\scripts\user_setup.py                                          | Python           |         81 |          5 |         32 |        118 |
 | c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\settings.py                                                    | Python           |          4 |          0 |          5 |          9 |
 | c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\static\css\main.e5ee5f62.chunk.css                             | CSS              |          1 |          1 |          1 |          3 |
-| c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\static\js\2.c3336a9e.chunk.js                                  | JavaScript       |          1 |          2 |          1 |          4 |
-| c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\static\js\main.6038b271.chunk.js                               | JavaScript       |          1 |          1 |          1 |          3 |
+| c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\static\js\2.cdab1af6.chunk.js                                  | JavaScript       |          1 |          2 |          1 |          4 |
+| c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\static\js\main.33df8d9d.chunk.js                               | JavaScript       |          1 |          1 |          1 |          3 |
 | c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\static\js\runtime-main.b7b6d3d5.js                             | JavaScript       |          1 |          1 |          1 |          3 |
 | c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\templates\index.html                                           | HTML             |          1 |          0 |          1 |          2 |
 | c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\README.md                                                      | Markdown         |         37 |          0 |         32 |         69 |
@@ -225,28 +226,28 @@ Files
 | c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\Constants.jsx                                   | JavaScript React |         38 |          3 |         11 |         52 |
 | c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\JSONKeys.jsx                                    | JavaScript React |          4 |          3 |          2 |          9 |
 | c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\Login.jsx                                       | JavaScript React |        213 |         15 |         23 |        251 |
-| c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\PageSelector.jsx                                | JavaScript React |         97 |          1 |         25 |        123 |
+| c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\PageSelector.jsx                                | JavaScript React |        100 |          1 |         25 |        126 |
 | c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\ShibLogin.jsx                                   | JavaScript React |         77 |          0 |          7 |         84 |
 | c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\Tabs.jsx                                        | JavaScript React |        224 |          4 |         29 |        257 |
 | c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\assets\AssetConstants.jsx                       | JavaScript React |          6 |          0 |          6 |         12 |
 | c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\assets\enums\AssetCommands.ts                   | TypeScript       |         27 |          0 |          1 |         28 |
 | c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\assets\enums\AssetInputs.ts                     | TypeScript       |         16 |          0 |          1 |         17 |
 | c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\assets\helpers\AddAsset.jsx                     | JavaScript React |        134 |          0 |         15 |        149 |
-| c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\assets\helpers\CreateAsset.jsx                  | JavaScript React |        774 |         10 |         82 |        866 |
+| c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\assets\helpers\CreateAsset.jsx                  | JavaScript React |        784 |         10 |         83 |        877 |
 | c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\assets\helpers\DetailsAsset.jsx                 | JavaScript React |        125 |          0 |         17 |        142 |
-| c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\assets\helpers\EditAsset.jsx                    | JavaScript React |        948 |          8 |         99 |      1,055 |
+| c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\assets\helpers\EditAsset.jsx                    | JavaScript React |        984 |          7 |        102 |      1,093 |
 | c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\assets\helpers\ExportAsset.jsx                  | JavaScript React |        262 |          0 |         22 |        284 |
-| c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\assets\helpers\FilterAsset.jsx                  | JavaScript React |        242 |          0 |         20 |        262 |
+| c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\assets\helpers\FilterAsset.jsx                  | JavaScript React |        291 |          0 |         26 |        317 |
 | c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\assets\helpers\ImpExpAsset.jsx                  | JavaScript React |        148 |          0 |         19 |        167 |
 | c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\assets\helpers\ImportAsset.jsx                  | JavaScript React |        130 |          0 |         17 |        147 |
 | c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\assets\helpers\NetworkGraph.jsx                 | JavaScript React |        141 |         21 |         24 |        186 |
-| c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\assets\helpers\TableAssets.jsx                  | JavaScript React |        548 |          2 |         52 |        602 |
+| c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\assets\helpers\TableAssets.jsx                  | JavaScript React |        606 |          2 |         61 |        669 |
 | c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\assets\helpers\functions\StringToMacAddress.jsx | JavaScript React |         38 |         10 |         12 |         60 |
 | c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\assets\helpers\functions\StringToRack.jsx       | JavaScript React |          3 |         13 |         10 |         26 |
 | c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\assets\helpers\functions\createAssetJSON.jsx    | JavaScript React |         15 |          0 |          1 |         16 |
 | c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\assets\pages\AssetsView.jsx                     | JavaScript React |         52 |          0 |          6 |         58 |
 | c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\assets\stylesheets\AssetStyles.css              | CSS              |          5 |          0 |          2 |          7 |
-| c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\changeplans\pages\ChangePlans.jsx               | JavaScript React |        550 |         39 |         61 |        650 |
+| c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\changeplans\pages\ChangePlans.jsx               | JavaScript React |        660 |         44 |         80 |        784 |
 | c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\enums\privilegeTypes.ts                         | TypeScript       |          4 |          0 |          1 |          5 |
 | c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\errors\ErrorBoundry.jsx                         | JavaScript React |         18 |          4 |          6 |         28 |
 | c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\helpers\ConfirmationBox.jsx                     | JavaScript React |         42 |          0 |          7 |         49 |
@@ -267,22 +268,22 @@ Files
 | c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\models\enums\ModelCommands.ts                   | TypeScript       |         11 |          0 |          1 |         12 |
 | c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\models\enums\ModelInputs.ts                     | TypeScript       |         12 |          0 |          1 |         13 |
 | c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\models\helpers\ButtonsModel.jsx                 | JavaScript React |         33 |          0 |          5 |         38 |
-| c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\models\helpers\CreateModel.jsx                  | JavaScript React |        345 |          0 |         27 |        372 |
-| c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\models\helpers\DetailModel.jsx                  | JavaScript React |        281 |        122 |         42 |        445 |
+| c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\models\helpers\CreateModel.jsx                  | JavaScript React |        345 |          0 |         26 |        371 |
+| c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\models\helpers\DetailModel.jsx                  | JavaScript React |        279 |          0 |         22 |        301 |
 | c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\models\helpers\ExportModel.jsx                  | JavaScript React |         67 |          0 |          4 |         71 |
 | c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\models\helpers\FilterModel.jsx                  | JavaScript React |        125 |          0 |          9 |        134 |
-| c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\models\helpers\ModelsTable.jsx                  | JavaScript React |        619 |          6 |         45 |        670 |
+| c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\models\helpers\ModelsTable.jsx                  | JavaScript React |        629 |          6 |         46 |        681 |
 | c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\models\pages\ModelsView.jsx                     | JavaScript React |        520 |          7 |         66 |        593 |
 | c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\models\stylesheets\ModelStyles.css              | CSS              |          0 |          0 |          1 |          1 |
 | c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\racks\RacksConstants.jsx                        | JavaScript React |          1 |          0 |          3 |          4 |
 | c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\racks\enums\DatacenterCommands.ts               | TypeScript       |          6 |          0 |          1 |          7 |
 | c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\racks\enums\RackCommands.ts                     | TypeScript       |          6 |          0 |          1 |          7 |
 | c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\racks\helpers\ConfirmDeleteDC.jsx               | JavaScript React |        104 |          0 |         11 |        115 |
-| c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\racks\helpers\CreateDatacenter.jsx              | JavaScript React |        192 |          0 |         22 |        214 |
+| c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\racks\helpers\CreateDatacenter.jsx              | JavaScript React |        220 |          0 |         25 |        245 |
 | c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\racks\helpers\EditDatacenter.jsx                | JavaScript React |        157 |          0 |         17 |        174 |
-| c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\racks\helpers\functions\ShowDatacenters.jsx     | JavaScript React |        156 |          0 |         19 |        175 |
+| c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\racks\helpers\functions\ShowDatacenters.jsx     | JavaScript React |        157 |          0 |         19 |        176 |
 | c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\racks\pages\DatacenterManagerView.jsx           | JavaScript React |         28 |          0 |         12 |         40 |
-| c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\racks\pages\DatacentersView.jsx                 | JavaScript React |        267 |          0 |         31 |        298 |
+| c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\racks\pages\DatacentersView.jsx                 | JavaScript React |        272 |          0 |         32 |        304 |
 | c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\racks\pages\RacksView.jsx                       | JavaScript React |        141 |          3 |         28 |        172 |
 | c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\racks\stylesheets\RackStyles.css                | CSS              |         33 |          0 |          6 |         39 |
 | c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\serviceWorker.js                                | JavaScript       |         94 |         31 |         13 |        138 |
@@ -293,7 +294,7 @@ Files
 | c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\users\enums\UserCommands.ts                     | TypeScript       |          8 |          0 |          1 |          9 |
 | c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\users\enums\UserInputs.ts                       | TypeScript       |          7 |          0 |          1 |          8 |
 | c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\users\helpers\ButtonsUser.jsx                   | JavaScript React |         33 |          0 |          5 |         38 |
-| c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\users\helpers\CreateUser.jsx                    | JavaScript React |        125 |          0 |         12 |        137 |
+| c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\users\helpers\CreateUser.jsx                    | JavaScript React |        117 |          0 |         13 |        130 |
 | c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\users\helpers\DetailUser.jsx                    | JavaScript React |        104 |          0 |          9 |        113 |
 | c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\users\helpers\FilterUser.jsx                    | JavaScript React |        125 |          0 |         12 |        137 |
 | c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\users\helpers\UsersTable.jsx                    | JavaScript React |        229 |          0 |         22 |        251 |
@@ -301,7 +302,7 @@ Files
 | c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\users\helpers\functions\MakeDeleteJSON.jsx      | JavaScript React |          6 |          0 |          2 |          8 |
 | c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\users\helpers\functions\MakeDetailViewJSON.jsx  | JavaScript React |          6 |          0 |          2 |          8 |
 | c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\users\helpers\functions\MakeEditJSON.jsx        | JavaScript React |         11 |          0 |          2 |         13 |
-| c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\users\helpers\functions\PrivilegePicker.jsx     | JavaScript React |         76 |          0 |          8 |         84 |
+| c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\users\helpers\functions\PrivilegePicker.jsx     | JavaScript React |         78 |          0 |          9 |         87 |
 | c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\users\pages\UsersView.jsx                       | JavaScript React |        261 |          1 |         27 |        289 |
 | c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\react-app-env.d.ts                                         | TypeScript       |          0 |          1 |          1 |          2 |
 | c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\stylesheets\App.css                                        | CSS              |         33 |          0 |          6 |         39 |
@@ -317,5 +318,5 @@ Files
 | c:\Users\benro\Documents\workspaces\senior-design\requirements.txt                                                                           | pip requirements |         64 |          8 |          2 |         74 |
 | c:\Users\benro\Documents\workspaces\senior-design\templates\index.html                                                                       | HTML             |          1 |          0 |          1 |          2 |
 | c:\Users\benro\Documents\workspaces\senior-design\uwsgi.ini                                                                                  | Ini              |          7 |          0 |          1 |          8 |
-| Total                                                                                                                                        |                  |     19,290 |      1,087 |      3,070 |     23,447 |
+| Total                                                                                                                                        |                  |     19,785 |        979 |      3,126 |     23,890 |
 +----------------------------------------------------------------------------------------------------------------------------------------------+------------------+------------+------------+------------+------------+

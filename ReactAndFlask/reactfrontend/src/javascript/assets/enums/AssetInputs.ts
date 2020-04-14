@@ -13,4 +13,6 @@ export enum AssetInput {
     NETWORK_CONNECTIONS = 'network_connections',
     POWER_CONNECTIONS = 'power_connections',
     ASSET_NUMBER = 'asset_number',
+    BLADE_CHASSIS = 'blade_chassis',
+    BLADE_POSITION = 'blade_position',
 }

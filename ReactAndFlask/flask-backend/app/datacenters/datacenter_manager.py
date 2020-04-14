@@ -95,17 +95,24 @@ class DatacenterManager:
         try:
             abbreviation = self.check_null(dc_data[Constants.DC_ABRV_KEY]).upper()
             name = self.check_null(dc_data[Constants.DC_NAME_KEY])
+            is_offline_storage = dc_data[Constants.DC_IS_OFFLINE_KEY]
         except:
             raise InvalidInputsError(
                 "Could not read data fields correctly. Client-server error occurred."
             )
 
         if abbreviation == "":
-            return InvalidInputsError("Must provide an abbreviation for the datacenter")
-        if name == "":
-            return InvalidInputsError("Must provide a datacenter name")
+            raise InvalidInputsError("Must provide an abbreviation for the datacenter")
 
-        return Datacenter(abbreviation, name)
+        if name == "":
+            raise InvalidInputsError("Must provide a datacenter name")
+
+        if type(is_offline_storage) != bool:
+            raise InvalidInputsError(
+                "Must provide a boolean value specifying whether or not the datacenter is an offline storage location"
+            )
+
+        return Datacenter(abbreviation, name, is_offline_storage)
 
     def check_null(self, val):
         if val is None:

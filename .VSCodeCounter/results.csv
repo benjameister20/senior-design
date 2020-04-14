@@ -1,217 +1,218 @@
-filename, language, Properties, YAML, HTML, Makefile, Markdown, pip requirements, Python, Ini, JSON, Shell Script, JavaScript React, TypeScript, CSS, JavaScript, comment, blank, total
-c:\Users\benro\Documents\workspaces\senior-design\.circleci\config.yml, YAML, 0, 18, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 22
-c:\Users\benro\Documents\workspaces\senior-design\.isort.cfg, Properties, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 7
-c:\Users\benro\Documents\workspaces\senior-design\.pre-commit-config.yaml, YAML, 0, 60, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 67
-c:\Users\benro\Documents\workspaces\senior-design\Makefile, Makefile, 0, 0, 0, 72, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 15, 87
-c:\Users\benro\Documents\workspaces\senior-design\README.md, Markdown, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\Database.md, Markdown, 0, 0, 0, 0, 43, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 31, 74
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\README.md, Markdown, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 4
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\__init__.py, Python, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\backups\__init__.py, Python, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\backups\backup_job.sh, Shell Script, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 3, 6
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\backups\backup_server.py, Python, 0, 0, 0, 0, 0, 0, 108, 0, 0, 0, 0, 0, 0, 0, 22, 41, 171
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\backups\backups_manager.py, Python, 0, 0, 0, 0, 0, 0, 64, 0, 0, 0, 0, 0, 0, 0, 7, 22, 93
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\backups\credentials.json, JSON, 0, 0, 0, 0, 0, 0, 0, 0, 14, 0, 0, 0, 0, 0, 0, 1, 15
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\backups\email_manager.py, Python, 0, 0, 0, 0, 0, 0, 22, 0, 0, 0, 0, 0, 0, 0, 8, 13, 43
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\backups\routes_backups.py, Python, 0, 0, 0, 0, 0, 0, 76, 0, 0, 0, 0, 0, 0, 0, 3, 26, 105
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\backups\test.py, Python, 0, 0, 0, 0, 0, 0, 20, 0, 0, 0, 0, 0, 0, 0, 8, 6, 34
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\change_plans\ChangePlanAPI.md, Markdown, 0, 0, 0, 0, 338, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 347
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\change_plans\change_plan_action_manager.py, Python, 0, 0, 0, 0, 0, 0, 281, 0, 0, 0, 0, 0, 0, 0, 1, 43, 325
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\change_plans\change_plan_manager.py, Python, 0, 0, 0, 0, 0, 0, 158, 0, 0, 0, 0, 0, 0, 0, 3, 22, 183
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\change_plans\change_plan_validator.py, Python, 0, 0, 0, 0, 0, 0, 387, 0, 0, 0, 0, 0, 0, 0, 4, 66, 457
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\change_plans\routes_change_plans.py, Python, 0, 0, 0, 0, 0, 0, 136, 0, 0, 0, 0, 0, 0, 0, 33, 47, 216
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\constants.py, Python, 0, 0, 0, 0, 0, 0, 95, 0, 0, 0, 0, 0, 0, 0, 11, 19, 125
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\dal\__init__.py, Python, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\dal\change_plan_action_table.py, Python, 0, 0, 0, 0, 0, 0, 162, 0, 0, 0, 0, 0, 0, 0, 9, 33, 204
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\dal\change_plan_table.py, Python, 0, 0, 0, 0, 0, 0, 75, 0, 0, 0, 0, 0, 0, 0, 4, 22, 101
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\dal\database.py, Python, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 1, 5, 11
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\dal\datacenter_table.py, Python, 0, 0, 0, 0, 0, 0, 88, 0, 0, 0, 0, 0, 0, 0, 4, 30, 122
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\dal\decommission_table.py, Python, 0, 0, 0, 0, 0, 0, 86, 0, 0, 0, 0, 0, 0, 0, 2, 14, 102
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\dal\exceptions\ChangeModelDBException.py, Python, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 1, 4
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\dal\instance_table.py, Python, 0, 0, 0, 0, 0, 0, 215, 0, 0, 0, 0, 0, 0, 0, 17, 41, 273
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\dal\model_table.py, Python, 0, 0, 0, 0, 0, 0, 165, 0, 0, 0, 0, 0, 0, 0, 8, 32, 205
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\dal\rack_table.py, Python, 0, 0, 0, 0, 0, 0, 76, 0, 0, 0, 0, 0, 0, 0, 6, 20, 102
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\dal\routes.py, Python, 0, 0, 0, 0, 0, 0, 130, 0, 0, 0, 0, 0, 0, 0, 8, 39, 177
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\dal\user_table.py, Python, 0, 0, 0, 0, 0, 0, 125, 0, 0, 0, 0, 0, 0, 0, 9, 19, 153
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\data_models\__init__.py, Python, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\data_models\change_plan.py, Python, 0, 0, 0, 0, 0, 0, 31, 0, 0, 0, 0, 0, 0, 0, 10, 8, 49
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\data_models\change_plan_action.py, Python, 0, 0, 0, 0, 0, 0, 29, 0, 0, 0, 0, 0, 0, 0, 10, 7, 46
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\data_models\datacenter.py, Python, 0, 0, 0, 0, 0, 0, 11, 0, 0, 0, 0, 0, 0, 0, 8, 5, 24
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\data_models\decommission.py, Python, 0, 0, 0, 0, 0, 0, 55, 0, 0, 0, 0, 0, 0, 0, 11, 7, 73
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\data_models\instance.py, Python, 0, 0, 0, 0, 0, 0, 126, 0, 0, 0, 0, 0, 0, 0, 71, 35, 232
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\data_models\model.py, Python, 0, 0, 0, 0, 0, 0, 203, 0, 0, 0, 0, 0, 0, 0, 18, 36, 257
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\data_models\permission.py, Python, 0, 0, 0, 0, 0, 0, 40, 0, 0, 0, 0, 0, 0, 0, 6, 8, 54
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\data_models\rack.py, Python, 0, 0, 0, 0, 0, 0, 20, 0, 0, 0, 0, 0, 0, 0, 6, 7, 33
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\data_models\user.py, Python, 0, 0, 0, 0, 0, 0, 49, 0, 0, 0, 0, 0, 0, 0, 12, 9, 70
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\datacenters\DatacenterAPI.md, Markdown, 0, 0, 0, 0, 99, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 104
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\datacenters\__init__.py, Python, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\datacenters\datacenter_manager.py, Python, 0, 0, 0, 0, 0, 0, 97, 0, 0, 0, 0, 0, 0, 0, 0, 18, 115
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\datacenters\datacenter_validator.py, Python, 0, 0, 0, 0, 0, 0, 50, 0, 0, 0, 0, 0, 0, 0, 0, 20, 70
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\datacenters\routes_datacenters.py, Python, 0, 0, 0, 0, 0, 0, 103, 0, 0, 0, 0, 0, 0, 0, 5, 25, 133
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\decommissions\DecommissionsAPI.md, Markdown, 0, 0, 0, 0, 130, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 134
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\decommissions\__init__.py, Python, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\decommissions\decommission_manager.py, Python, 0, 0, 0, 0, 0, 0, 93, 0, 0, 0, 0, 0, 0, 0, 0, 13, 106
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\decommissions\routes_decommissions.py, Python, 0, 0, 0, 0, 0, 0, 60, 0, 0, 0, 0, 0, 0, 0, 5, 19, 84
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\decorators\__init__.py, Python, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\decorators\auth.py, Python, 0, 0, 0, 0, 0, 0, 164, 0, 0, 0, 0, 0, 0, 0, 18, 34, 216
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\decorators\logs.py, Python, 0, 0, 0, 0, 0, 0, 29, 0, 0, 0, 0, 0, 0, 0, 5, 8, 42
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\exceptions\BackupExceptions.py, Python, 0, 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 0, 0, 0, 3, 9
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\exceptions\InvalidInputsException.py, Python, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 1, 4
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\exceptions\UserExceptions.py, Python, 0, 0, 0, 0, 0, 0, 36, 0, 0, 0, 0, 0, 0, 0, 0, 23, 59
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\exceptions\__init__.py, Python, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\import_export\__init__.py, Python, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\import_export\routes.py, Python, 0, 0, 0, 0, 0, 0, 346, 0, 0, 0, 0, 0, 0, 0, 63, 104, 513
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\instances\InstancesAPI.md, Markdown, 0, 0, 0, 0, 270, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 272
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\instances\__init__.py, Python, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\instances\asset_num.json, JSON, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 1, 5
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\instances\asset_num_generator.py, Python, 0, 0, 0, 0, 0, 0, 53, 0, 0, 0, 0, 0, 0, 0, 0, 16, 69
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\instances\barcode_generator.py, Python, 0, 0, 0, 0, 0, 0, 60, 0, 0, 0, 0, 0, 0, 0, 0, 16, 76
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\instances\instance_manager.py, Python, 0, 0, 0, 0, 0, 0, 402, 0, 0, 0, 0, 0, 0, 0, 4, 64, 470
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\instances\instance_validator.py, Python, 0, 0, 0, 0, 0, 0, 226, 0, 0, 0, 0, 0, 0, 0, 0, 48, 274
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\instances\routes_instances.py, Python, 0, 0, 0, 0, 0, 0, 211, 0, 0, 0, 0, 0, 0, 0, 27, 44, 282
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\logging\__init__.py, Python, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\logging\logger.py, Python, 0, 0, 0, 0, 0, 0, 209, 0, 0, 0, 0, 0, 0, 0, 27, 77, 313
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\logging\routes_logging.py, Python, 0, 0, 0, 0, 0, 0, 30, 0, 0, 0, 0, 0, 0, 0, 3, 13, 46
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\main\__init__.py, Python, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\main\types.py, Python, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 2, 6
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\models\ModelsAPI.md, Markdown, 0, 0, 0, 0, 218, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 220
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\models\__init__.py, Python, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\models\model_manager.py, Python, 0, 0, 0, 0, 0, 0, 122, 0, 0, 0, 0, 0, 0, 0, 9, 20, 151
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\models\model_validator.py, Python, 0, 0, 0, 0, 0, 0, 63, 0, 0, 0, 0, 0, 0, 0, 0, 15, 78
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\models\routes_models.py, Python, 0, 0, 0, 0, 0, 0, 139, 0, 0, 0, 0, 0, 0, 0, 6, 38, 183
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\permissions\__init__.py, Python, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\permissions\permissions_constants.py, Python, 0, 0, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 0, 1, 8
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\permissions\permissions_manager.py, Python, 0, 0, 0, 0, 0, 0, 25, 0, 0, 0, 0, 0, 0, 0, 0, 6, 31
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\permissions\routes_permissions.py, Python, 0, 0, 0, 0, 0, 0, 28, 0, 0, 0, 0, 0, 0, 0, 3, 13, 44
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\racks\RacksAPI.md, Markdown, 0, 0, 0, 0, 125, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 129
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\racks\__init__.py, Python, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\racks\diagram_manager.py, Python, 0, 0, 0, 0, 0, 0, 63, 0, 0, 0, 0, 0, 0, 0, 4, 13, 80
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\racks\rack_manager.py, Python, 0, 0, 0, 0, 0, 0, 139, 0, 0, 0, 0, 0, 0, 0, 10, 34, 183
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\racks\racks_routes.py, Python, 0, 0, 0, 0, 0, 0, 193, 0, 0, 0, 0, 0, 0, 0, 13, 41, 247
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\stats\RacksAPI.md, Markdown, 0, 0, 0, 0, 99, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 103
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\stats\StatsAPI.md, Markdown, 0, 0, 0, 0, 53, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 57
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\stats\__init__.py, Python, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\stats\routes_stats.py, Python, 0, 0, 0, 0, 0, 0, 43, 0, 0, 0, 0, 0, 0, 0, 2, 18, 63
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\stats\stats_manager.py, Python, 0, 0, 0, 0, 0, 0, 102, 0, 0, 0, 0, 0, 0, 0, 0, 26, 128
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\users\UsersAPI.md, Markdown, 0, 0, 0, 0, 240, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 245
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\users\__init__.py, Python, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\users\authentication.py, Python, 0, 0, 0, 0, 0, 0, 87, 0, 0, 0, 0, 0, 0, 0, 47, 22, 156
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\users\routes_users.py, Python, 0, 0, 0, 0, 0, 0, 125, 0, 0, 0, 0, 0, 0, 0, 35, 40, 200
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\users\token_blacklist.json, JSON, 0, 0, 0, 0, 0, 0, 0, 0, 263, 0, 0, 0, 0, 0, 0, 1, 264
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\users\users_manager.py, Python, 0, 0, 0, 0, 0, 0, 241, 0, 0, 0, 0, 0, 0, 0, 54, 74, 369
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\users\validator.py, Python, 0, 0, 0, 0, 0, 0, 128, 0, 0, 0, 0, 0, 0, 0, 53, 46, 227
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\application.py, Python, 0, 0, 0, 0, 0, 0, 73, 0, 0, 0, 0, 0, 0, 0, 15, 23, 111
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\models\modely.py, Python, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\scripts\create_db.py, Python, 0, 0, 0, 0, 0, 0, 43, 0, 0, 0, 0, 0, 0, 0, 3, 10, 56
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\scripts\create_db_local.py, Python, 0, 0, 0, 0, 0, 0, 44, 0, 0, 0, 0, 0, 0, 0, 3, 9, 56
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\scripts\model_setup.py, Python, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\scripts\setup_db.sh, Shell Script, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 2, 4
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\scripts\setup_db_local.sh, Shell Script, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 1, 2, 6
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\scripts\user_setup.py, Python, 0, 0, 0, 0, 0, 0, 81, 0, 0, 0, 0, 0, 0, 0, 5, 32, 118
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\settings.py, Python, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 5, 9
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\static\css\main.e5ee5f62.chunk.css, CSS, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 3
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\static\js\2.c3336a9e.chunk.js, JavaScript, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 1, 4
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\static\js\main.6038b271.chunk.js, JavaScript, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 3
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\static\js\runtime-main.b7b6d3d5.js, JavaScript, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 3
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\templates\index.html, HTML, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\README.md, Markdown, 0, 0, 0, 0, 37, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 32, 69
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\package.json, JSON, 0, 0, 0, 0, 0, 0, 0, 0, 105, 0, 0, 0, 0, 0, 0, 1, 106
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\public\index.html, HTML, 0, 0, 20, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 23, 4, 47
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\public\manifest.json, JSON, 0, 0, 0, 0, 0, 0, 0, 0, 25, 0, 0, 0, 0, 0, 0, 1, 26
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\index.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 2, 7
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\Constants.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 38, 0, 0, 0, 3, 11, 52
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\JSONKeys.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 3, 2, 9
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\Login.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 213, 0, 0, 0, 15, 23, 251
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\PageSelector.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 97, 0, 0, 0, 1, 25, 123
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\ShibLogin.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 77, 0, 0, 0, 0, 7, 84
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\Tabs.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 224, 0, 0, 0, 4, 29, 257
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\assets\AssetConstants.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 6, 12
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\assets\enums\AssetCommands.ts, TypeScript, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 27, 0, 0, 0, 1, 28
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\assets\enums\AssetInputs.ts, TypeScript, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 16, 0, 0, 0, 1, 17
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\assets\helpers\AddAsset.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 134, 0, 0, 0, 0, 15, 149
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\assets\helpers\CreateAsset.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 774, 0, 0, 0, 10, 82, 866
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\assets\helpers\DetailsAsset.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 125, 0, 0, 0, 0, 17, 142
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\assets\helpers\EditAsset.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 948, 0, 0, 0, 8, 99, 1055
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\assets\helpers\ExportAsset.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 262, 0, 0, 0, 0, 22, 284
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\assets\helpers\FilterAsset.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 242, 0, 0, 0, 0, 20, 262
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\assets\helpers\ImpExpAsset.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 148, 0, 0, 0, 0, 19, 167
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\assets\helpers\ImportAsset.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 130, 0, 0, 0, 0, 17, 147
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\assets\helpers\NetworkGraph.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 141, 0, 0, 0, 21, 24, 186
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\assets\helpers\TableAssets.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 548, 0, 0, 0, 2, 52, 602
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\assets\helpers\functions\StringToMacAddress.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 38, 0, 0, 0, 10, 12, 60
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\assets\helpers\functions\StringToRack.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 13, 10, 26
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\assets\helpers\functions\createAssetJSON.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 15, 0, 0, 0, 0, 1, 16
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\assets\pages\AssetsView.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 52, 0, 0, 0, 0, 6, 58
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\assets\stylesheets\AssetStyles.css, CSS, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 2, 7
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\changeplans\pages\ChangePlans.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 550, 0, 0, 0, 39, 61, 650
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\enums\privilegeTypes.ts, TypeScript, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 1, 5
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\errors\ErrorBoundry.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 18, 0, 0, 0, 4, 6, 28
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\helpers\ConfirmationBox.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 42, 0, 0, 0, 0, 7, 49
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\helpers\DisplayRack.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 31, 0, 0, 0, 0, 6, 37
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\helpers\Logout.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 1, 2, 6
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\helpers\StatusDisplay.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 35, 0, 0, 0, 0, 7, 42
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\helpers\TableView.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 42, 0, 0, 0, 0, 6, 48
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\helpers\UploadModal.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 42, 0, 0, 0, 0, 4, 46
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\helpers\functions\DescendingComparator.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 0, 0, 0, 0, 1, 10
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\helpers\functions\GetComparator.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 2, 8
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\helpers\functions\GetShibParams.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 3, 6
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\helpers\functions\GetURL.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 2, 6
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\helpers\functions\JSONtoArr.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 20, 0, 0, 0, 0, 5, 25
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\helpers\functions\StableSort.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 0, 0, 0, 0, 1, 10
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\logs\enums\LogCommands.ts, TypeScript, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 1, 5
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\logs\pages\LogsView.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 189, 0, 0, 0, 0, 26, 215
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\models\ModelConstants.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 4, 5
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\models\enums\ModelCommands.ts, TypeScript, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 11, 0, 0, 0, 1, 12
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\models\enums\ModelInputs.ts, TypeScript, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 12, 0, 0, 0, 1, 13
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\models\helpers\ButtonsModel.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 33, 0, 0, 0, 0, 5, 38
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\models\helpers\CreateModel.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 345, 0, 0, 0, 0, 27, 372
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\models\helpers\DetailModel.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 281, 0, 0, 0, 122, 42, 445
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\models\helpers\ExportModel.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 67, 0, 0, 0, 0, 4, 71
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\models\helpers\FilterModel.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 125, 0, 0, 0, 0, 9, 134
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\models\helpers\ModelsTable.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 619, 0, 0, 0, 6, 45, 670
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\models\pages\ModelsView.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 520, 0, 0, 0, 7, 66, 593
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\models\stylesheets\ModelStyles.css, CSS, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\racks\RacksConstants.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 3, 4
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\racks\enums\DatacenterCommands.ts, TypeScript, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 0, 0, 0, 1, 7
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\racks\enums\RackCommands.ts, TypeScript, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 0, 0, 0, 1, 7
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\racks\helpers\ConfirmDeleteDC.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 104, 0, 0, 0, 0, 11, 115
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\racks\helpers\CreateDatacenter.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 192, 0, 0, 0, 0, 22, 214
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\racks\helpers\EditDatacenter.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 157, 0, 0, 0, 0, 17, 174
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\racks\helpers\functions\ShowDatacenters.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 156, 0, 0, 0, 0, 19, 175
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\racks\pages\DatacenterManagerView.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 28, 0, 0, 0, 0, 12, 40
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\racks\pages\DatacentersView.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 267, 0, 0, 0, 0, 31, 298
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\racks\pages\RacksView.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 141, 0, 0, 0, 3, 28, 172
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\racks\stylesheets\RackStyles.css, CSS, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 33, 0, 0, 6, 39
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\serviceWorker.js, JavaScript, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 94, 31, 13, 138
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\statistics\enums\StatsCommands.ts, TypeScript, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 1, 5
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\statistics\pages\StatisticsView.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 196, 0, 0, 0, 0, 16, 212
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\users\UserConstants.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 0, 0, 0, 0, 7, 16
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\users\enums\PrivilegeCommands.ts, TypeScript, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 1, 4
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\users\enums\UserCommands.ts, TypeScript, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8, 0, 0, 0, 1, 9
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\users\enums\UserInputs.ts, TypeScript, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 0, 0, 0, 1, 8
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\users\helpers\ButtonsUser.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 33, 0, 0, 0, 0, 5, 38
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\users\helpers\CreateUser.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 125, 0, 0, 0, 0, 12, 137
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\users\helpers\DetailUser.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 104, 0, 0, 0, 0, 9, 113
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\users\helpers\FilterUser.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 125, 0, 0, 0, 0, 12, 137
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\users\helpers\UsersTable.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 229, 0, 0, 0, 0, 22, 251
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\users\helpers\functions\MakeCreateJSON.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 0, 0, 0, 0, 2, 12
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\users\helpers\functions\MakeDeleteJSON.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 2, 8
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\users\helpers\functions\MakeDetailViewJSON.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 2, 8
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\users\helpers\functions\MakeEditJSON.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 11, 0, 0, 0, 0, 2, 13
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\users\helpers\functions\PrivilegePicker.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 76, 0, 0, 0, 0, 8, 84
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\users\pages\UsersView.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 261, 0, 0, 0, 1, 27, 289
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\react-app-env.d.ts, TypeScript, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 2
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\stylesheets\App.css, CSS, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 33, 0, 0, 6, 39
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\stylesheets\Models.css, CSS, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\stylesheets\TabStyles.css, CSS, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 49, 0, 1, 13, 63
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\stylesheets\index.css, CSS, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 12, 0, 0, 2, 14
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\tests\App.test.js, JavaScript, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8, 0, 2, 10
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\tests\TestValues.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 81, 0, 0, 0, 0, 3, 84
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\tests\setupTests.js, JavaScript, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 4, 1, 6
-c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\tsconfig.json, JSON, 0, 0, 0, 0, 0, 0, 0, 0, 25, 0, 0, 0, 0, 0, 0, 1, 26
-c:\Users\benro\Documents\workspaces\senior-design\page.html, HTML, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 8
-c:\Users\benro\Documents\workspaces\senior-design\requirements.in, pip requirements, 0, 0, 0, 0, 0, 80, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 81
-c:\Users\benro\Documents\workspaces\senior-design\requirements.txt, pip requirements, 0, 0, 0, 0, 0, 64, 0, 0, 0, 0, 0, 0, 0, 0, 8, 2, 74
-c:\Users\benro\Documents\workspaces\senior-design\templates\index.html, HTML, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2
-c:\Users\benro\Documents\workspaces\senior-design\uwsgi.ini, Ini, 0, 0, 0, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 1, 8
-Total, -, 6, 78, 29, 72, 1655, 144, 6973, 7, 436, 7, 9536, 108, 133, 106, 1087, 3070, 23447
+"filename", "language", "YAML", "HTML", "Properties", "Makefile", "pip requirements", "Markdown", "Ini", "Python", "JSON", "Shell Script", "JavaScript React", "TypeScript", "CSS", "JavaScript", "comment", "blank", "total"
+"c:\Users\benro\Documents\workspaces\senior-design\.circleci\config.yml", "YAML", 18, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 22
+"c:\Users\benro\Documents\workspaces\senior-design\.isort.cfg", "Properties", 0, 0, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 7
+"c:\Users\benro\Documents\workspaces\senior-design\.pre-commit-config.yaml", "YAML", 60, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 67
+"c:\Users\benro\Documents\workspaces\senior-design\Makefile", "Makefile", 0, 0, 0, 72, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 15, 87
+"c:\Users\benro\Documents\workspaces\senior-design\README.md", "Markdown", 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\Database.md", "Markdown", 0, 0, 0, 0, 0, 43, 0, 0, 0, 0, 0, 0, 0, 0, 0, 31, 74
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\README.md", "Markdown", 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 4
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\__init__.py", "Python", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\backups\__init__.py", "Python", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\backups\backup_job.sh", "Shell Script", 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 3, 6
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\backups\backup_server.py", "Python", 0, 0, 0, 0, 0, 0, 0, 108, 0, 0, 0, 0, 0, 0, 22, 41, 171
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\backups\backups_manager.py", "Python", 0, 0, 0, 0, 0, 0, 0, 64, 0, 0, 0, 0, 0, 0, 7, 22, 93
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\backups\credentials.json", "JSON", 0, 0, 0, 0, 0, 0, 0, 0, 14, 0, 0, 0, 0, 0, 0, 1, 15
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\backups\email_manager.py", "Python", 0, 0, 0, 0, 0, 0, 0, 22, 0, 0, 0, 0, 0, 0, 8, 13, 43
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\backups\routes_backups.py", "Python", 0, 0, 0, 0, 0, 0, 0, 76, 0, 0, 0, 0, 0, 0, 3, 26, 105
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\backups\test.py", "Python", 0, 0, 0, 0, 0, 0, 0, 20, 0, 0, 0, 0, 0, 0, 8, 6, 34
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\change_plans\ChangePlanAPI.md", "Markdown", 0, 0, 0, 0, 0, 338, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 347
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\change_plans\change_plan_action_manager.py", "Python", 0, 0, 0, 0, 0, 0, 0, 308, 0, 0, 0, 0, 0, 0, 1, 48, 357
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\change_plans\change_plan_manager.py", "Python", 0, 0, 0, 0, 0, 0, 0, 157, 0, 0, 0, 0, 0, 0, 3, 22, 182
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\change_plans\change_plan_validator.py", "Python", 0, 0, 0, 0, 0, 0, 0, 479, 0, 0, 0, 0, 0, 0, 4, 78, 561
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\change_plans\routes_change_plans.py", "Python", 0, 0, 0, 0, 0, 0, 0, 168, 0, 0, 0, 0, 0, 0, 34, 52, 254
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\change_plans\work_order.py", "Python", 0, 0, 0, 0, 0, 0, 0, 43, 0, 0, 0, 0, 0, 0, 2, 10, 55
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\constants.py", "Python", 0, 0, 0, 0, 0, 0, 0, 95, 0, 0, 0, 0, 0, 0, 18, 19, 132
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\dal\__init__.py", "Python", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\dal\change_plan_action_table.py", "Python", 0, 0, 0, 0, 0, 0, 0, 162, 0, 0, 0, 0, 0, 0, 9, 33, 204
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\dal\change_plan_table.py", "Python", 0, 0, 0, 0, 0, 0, 0, 75, 0, 0, 0, 0, 0, 0, 4, 22, 101
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\dal\database.py", "Python", 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 1, 5, 11
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\dal\datacenter_table.py", "Python", 0, 0, 0, 0, 0, 0, 0, 88, 0, 0, 0, 0, 0, 0, 4, 30, 122
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\dal\decommission_table.py", "Python", 0, 0, 0, 0, 0, 0, 0, 86, 0, 0, 0, 0, 0, 0, 2, 14, 102
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\dal\exceptions\ChangeModelDBException.py", "Python", 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 1, 4
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\dal\instance_table.py", "Python", 0, 0, 0, 0, 0, 0, 0, 215, 0, 0, 0, 0, 0, 0, 17, 41, 273
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\dal\model_table.py", "Python", 0, 0, 0, 0, 0, 0, 0, 165, 0, 0, 0, 0, 0, 0, 8, 32, 205
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\dal\rack_table.py", "Python", 0, 0, 0, 0, 0, 0, 0, 76, 0, 0, 0, 0, 0, 0, 6, 20, 102
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\dal\routes.py", "Python", 0, 0, 0, 0, 0, 0, 0, 130, 0, 0, 0, 0, 0, 0, 8, 39, 177
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\dal\user_table.py", "Python", 0, 0, 0, 0, 0, 0, 0, 125, 0, 0, 0, 0, 0, 0, 9, 19, 153
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\data_models\__init__.py", "Python", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\data_models\change_plan.py", "Python", 0, 0, 0, 0, 0, 0, 0, 31, 0, 0, 0, 0, 0, 0, 10, 8, 49
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\data_models\change_plan_action.py", "Python", 0, 0, 0, 0, 0, 0, 0, 29, 0, 0, 0, 0, 0, 0, 10, 7, 46
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\data_models\datacenter.py", "Python", 0, 0, 0, 0, 0, 0, 0, 11, 0, 0, 0, 0, 0, 0, 8, 5, 24
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\data_models\decommission.py", "Python", 0, 0, 0, 0, 0, 0, 0, 55, 0, 0, 0, 0, 0, 0, 11, 7, 73
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\data_models\instance.py", "Python", 0, 0, 0, 0, 0, 0, 0, 126, 0, 0, 0, 0, 0, 0, 71, 35, 232
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\data_models\model.py", "Python", 0, 0, 0, 0, 0, 0, 0, 203, 0, 0, 0, 0, 0, 0, 18, 36, 257
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\data_models\permission.py", "Python", 0, 0, 0, 0, 0, 0, 0, 40, 0, 0, 0, 0, 0, 0, 6, 8, 54
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\data_models\rack.py", "Python", 0, 0, 0, 0, 0, 0, 0, 20, 0, 0, 0, 0, 0, 0, 6, 7, 33
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\data_models\user.py", "Python", 0, 0, 0, 0, 0, 0, 0, 49, 0, 0, 0, 0, 0, 0, 12, 9, 70
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\datacenters\DatacenterAPI.md", "Markdown", 0, 0, 0, 0, 0, 99, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 104
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\datacenters\__init__.py", "Python", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\datacenters\datacenter_manager.py", "Python", 0, 0, 0, 0, 0, 0, 0, 97, 0, 0, 0, 0, 0, 0, 0, 18, 115
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\datacenters\datacenter_validator.py", "Python", 0, 0, 0, 0, 0, 0, 0, 50, 0, 0, 0, 0, 0, 0, 0, 20, 70
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\datacenters\routes_datacenters.py", "Python", 0, 0, 0, 0, 0, 0, 0, 103, 0, 0, 0, 0, 0, 0, 5, 25, 133
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\decommissions\DecommissionsAPI.md", "Markdown", 0, 0, 0, 0, 0, 130, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 134
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\decommissions\__init__.py", "Python", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\decommissions\decommission_manager.py", "Python", 0, 0, 0, 0, 0, 0, 0, 93, 0, 0, 0, 0, 0, 0, 0, 13, 106
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\decommissions\routes_decommissions.py", "Python", 0, 0, 0, 0, 0, 0, 0, 60, 0, 0, 0, 0, 0, 0, 5, 19, 84
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\decorators\__init__.py", "Python", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\decorators\auth.py", "Python", 0, 0, 0, 0, 0, 0, 0, 164, 0, 0, 0, 0, 0, 0, 18, 34, 216
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\decorators\logs.py", "Python", 0, 0, 0, 0, 0, 0, 0, 29, 0, 0, 0, 0, 0, 0, 5, 8, 42
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\exceptions\BackupExceptions.py", "Python", 0, 0, 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 0, 0, 3, 9
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\exceptions\InvalidInputsException.py", "Python", 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 1, 4
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\exceptions\UserExceptions.py", "Python", 0, 0, 0, 0, 0, 0, 0, 36, 0, 0, 0, 0, 0, 0, 0, 23, 59
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\exceptions\__init__.py", "Python", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\import_export\__init__.py", "Python", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\import_export\routes.py", "Python", 0, 0, 0, 0, 0, 0, 0, 346, 0, 0, 0, 0, 0, 0, 63, 104, 513
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\instances\InstancesAPI.md", "Markdown", 0, 0, 0, 0, 0, 270, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 272
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\instances\__init__.py", "Python", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\instances\asset_num.json", "JSON", 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 1, 5
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\instances\asset_num_generator.py", "Python", 0, 0, 0, 0, 0, 0, 0, 53, 0, 0, 0, 0, 0, 0, 0, 16, 69
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\instances\barcode_generator.py", "Python", 0, 0, 0, 0, 0, 0, 0, 60, 0, 0, 0, 0, 0, 0, 0, 16, 76
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\instances\instance_manager.py", "Python", 0, 0, 0, 0, 0, 0, 0, 402, 0, 0, 0, 0, 0, 0, 4, 64, 470
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\instances\instance_validator.py", "Python", 0, 0, 0, 0, 0, 0, 0, 226, 0, 0, 0, 0, 0, 0, 0, 48, 274
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\instances\routes_instances.py", "Python", 0, 0, 0, 0, 0, 0, 0, 211, 0, 0, 0, 0, 0, 0, 27, 44, 282
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\logging\__init__.py", "Python", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\logging\logger.py", "Python", 0, 0, 0, 0, 0, 0, 0, 209, 0, 0, 0, 0, 0, 0, 27, 77, 313
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\logging\routes_logging.py", "Python", 0, 0, 0, 0, 0, 0, 0, 30, 0, 0, 0, 0, 0, 0, 3, 13, 46
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\main\__init__.py", "Python", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\main\types.py", "Python", 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 2, 6
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\models\ModelsAPI.md", "Markdown", 0, 0, 0, 0, 0, 218, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 220
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\models\__init__.py", "Python", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\models\model_manager.py", "Python", 0, 0, 0, 0, 0, 0, 0, 122, 0, 0, 0, 0, 0, 0, 9, 20, 151
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\models\model_validator.py", "Python", 0, 0, 0, 0, 0, 0, 0, 63, 0, 0, 0, 0, 0, 0, 0, 15, 78
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\models\routes_models.py", "Python", 0, 0, 0, 0, 0, 0, 0, 139, 0, 0, 0, 0, 0, 0, 6, 38, 183
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\permissions\__init__.py", "Python", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\permissions\permissions_constants.py", "Python", 0, 0, 0, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 1, 8
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\permissions\permissions_manager.py", "Python", 0, 0, 0, 0, 0, 0, 0, 25, 0, 0, 0, 0, 0, 0, 0, 6, 31
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\permissions\routes_permissions.py", "Python", 0, 0, 0, 0, 0, 0, 0, 28, 0, 0, 0, 0, 0, 0, 3, 13, 44
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\racks\RacksAPI.md", "Markdown", 0, 0, 0, 0, 0, 125, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 129
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\racks\__init__.py", "Python", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\racks\diagram_manager.py", "Python", 0, 0, 0, 0, 0, 0, 0, 63, 0, 0, 0, 0, 0, 0, 4, 13, 80
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\racks\rack_manager.py", "Python", 0, 0, 0, 0, 0, 0, 0, 139, 0, 0, 0, 0, 0, 0, 10, 34, 183
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\racks\racks_routes.py", "Python", 0, 0, 0, 0, 0, 0, 0, 193, 0, 0, 0, 0, 0, 0, 13, 41, 247
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\stats\RacksAPI.md", "Markdown", 0, 0, 0, 0, 0, 99, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 103
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\stats\StatsAPI.md", "Markdown", 0, 0, 0, 0, 0, 53, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 57
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\stats\__init__.py", "Python", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\stats\routes_stats.py", "Python", 0, 0, 0, 0, 0, 0, 0, 43, 0, 0, 0, 0, 0, 0, 2, 18, 63
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\stats\stats_manager.py", "Python", 0, 0, 0, 0, 0, 0, 0, 102, 0, 0, 0, 0, 0, 0, 0, 26, 128
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\users\UsersAPI.md", "Markdown", 0, 0, 0, 0, 0, 240, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 245
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\users\__init__.py", "Python", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\users\authentication.py", "Python", 0, 0, 0, 0, 0, 0, 0, 87, 0, 0, 0, 0, 0, 0, 47, 22, 156
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\users\routes_users.py", "Python", 0, 0, 0, 0, 0, 0, 0, 125, 0, 0, 0, 0, 0, 0, 35, 40, 200
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\users\token_blacklist.json", "JSON", 0, 0, 0, 0, 0, 0, 0, 0, 263, 0, 0, 0, 0, 0, 0, 1, 264
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\users\users_manager.py", "Python", 0, 0, 0, 0, 0, 0, 0, 241, 0, 0, 0, 0, 0, 0, 54, 74, 369
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\app\users\validator.py", "Python", 0, 0, 0, 0, 0, 0, 0, 128, 0, 0, 0, 0, 0, 0, 53, 46, 227
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\application.py", "Python", 0, 0, 0, 0, 0, 0, 0, 73, 0, 0, 0, 0, 0, 0, 15, 23, 111
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\models\modely.py", "Python", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\scripts\create_db.py", "Python", 0, 0, 0, 0, 0, 0, 0, 43, 0, 0, 0, 0, 0, 0, 3, 10, 56
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\scripts\create_db_local.py", "Python", 0, 0, 0, 0, 0, 0, 0, 44, 0, 0, 0, 0, 0, 0, 3, 9, 56
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\scripts\model_setup.py", "Python", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\scripts\setup_db.sh", "Shell Script", 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 2, 4
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\scripts\setup_db_local.sh", "Shell Script", 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 1, 2, 6
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\scripts\user_setup.py", "Python", 0, 0, 0, 0, 0, 0, 0, 81, 0, 0, 0, 0, 0, 0, 5, 32, 118
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\settings.py", "Python", 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 5, 9
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\static\css\main.e5ee5f62.chunk.css", "CSS", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 3
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\static\js\2.cdab1af6.chunk.js", "JavaScript", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 1, 4
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\static\js\main.33df8d9d.chunk.js", "JavaScript", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 3
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\static\js\runtime-main.b7b6d3d5.js", "JavaScript", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 3
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\flask-backend\templates\index.html", "HTML", 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\README.md", "Markdown", 0, 0, 0, 0, 0, 37, 0, 0, 0, 0, 0, 0, 0, 0, 0, 32, 69
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\package.json", "JSON", 0, 0, 0, 0, 0, 0, 0, 0, 105, 0, 0, 0, 0, 0, 0, 1, 106
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\public\index.html", "HTML", 0, 20, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 23, 4, 47
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\public\manifest.json", "JSON", 0, 0, 0, 0, 0, 0, 0, 0, 25, 0, 0, 0, 0, 0, 0, 1, 26
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\index.jsx", "JavaScript React", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 2, 7
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\Constants.jsx", "JavaScript React", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 38, 0, 0, 0, 3, 11, 52
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\JSONKeys.jsx", "JavaScript React", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 3, 2, 9
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\Login.jsx", "JavaScript React", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 213, 0, 0, 0, 15, 23, 251
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\PageSelector.jsx", "JavaScript React", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 100, 0, 0, 0, 1, 25, 126
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\ShibLogin.jsx", "JavaScript React", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 77, 0, 0, 0, 0, 7, 84
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\Tabs.jsx", "JavaScript React", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 224, 0, 0, 0, 4, 29, 257
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\assets\AssetConstants.jsx", "JavaScript React", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 6, 12
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\assets\enums\AssetCommands.ts", "TypeScript", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 27, 0, 0, 0, 1, 28
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\assets\enums\AssetInputs.ts", "TypeScript", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 16, 0, 0, 0, 1, 17
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\assets\helpers\AddAsset.jsx", "JavaScript React", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 134, 0, 0, 0, 0, 15, 149
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\assets\helpers\CreateAsset.jsx", "JavaScript React", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 784, 0, 0, 0, 10, 83, 877
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\assets\helpers\DetailsAsset.jsx", "JavaScript React", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 125, 0, 0, 0, 0, 17, 142
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\assets\helpers\EditAsset.jsx", "JavaScript React", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 984, 0, 0, 0, 7, 102, 1093
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\assets\helpers\ExportAsset.jsx", "JavaScript React", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 262, 0, 0, 0, 0, 22, 284
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\assets\helpers\FilterAsset.jsx", "JavaScript React", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 291, 0, 0, 0, 0, 26, 317
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\assets\helpers\ImpExpAsset.jsx", "JavaScript React", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 148, 0, 0, 0, 0, 19, 167
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\assets\helpers\ImportAsset.jsx", "JavaScript React", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 130, 0, 0, 0, 0, 17, 147
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\assets\helpers\NetworkGraph.jsx", "JavaScript React", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 141, 0, 0, 0, 21, 24, 186
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\assets\helpers\TableAssets.jsx", "JavaScript React", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 606, 0, 0, 0, 2, 61, 669
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\assets\helpers\functions\StringToMacAddress.jsx", "JavaScript React", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 38, 0, 0, 0, 10, 12, 60
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\assets\helpers\functions\StringToRack.jsx", "JavaScript React", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 13, 10, 26
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\assets\helpers\functions\createAssetJSON.jsx", "JavaScript React", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 15, 0, 0, 0, 0, 1, 16
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\assets\pages\AssetsView.jsx", "JavaScript React", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 52, 0, 0, 0, 0, 6, 58
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\assets\stylesheets\AssetStyles.css", "CSS", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 2, 7
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\changeplans\pages\ChangePlans.jsx", "JavaScript React", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 660, 0, 0, 0, 44, 80, 784
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\enums\privilegeTypes.ts", "TypeScript", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 1, 5
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\errors\ErrorBoundry.jsx", "JavaScript React", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 18, 0, 0, 0, 4, 6, 28
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\helpers\ConfirmationBox.jsx", "JavaScript React", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 42, 0, 0, 0, 0, 7, 49
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\helpers\DisplayRack.jsx", "JavaScript React", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 31, 0, 0, 0, 0, 6, 37
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\helpers\Logout.jsx", "JavaScript React", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 1, 2, 6
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\helpers\StatusDisplay.jsx", "JavaScript React", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 35, 0, 0, 0, 0, 7, 42
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\helpers\TableView.jsx", "JavaScript React", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 42, 0, 0, 0, 0, 6, 48
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\helpers\UploadModal.jsx", "JavaScript React", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 42, 0, 0, 0, 0, 4, 46
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\helpers\functions\DescendingComparator.jsx", "JavaScript React", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 0, 0, 0, 0, 1, 10
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\helpers\functions\GetComparator.jsx", "JavaScript React", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 2, 8
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\helpers\functions\GetShibParams.jsx", "JavaScript React", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 3, 6
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\helpers\functions\GetURL.jsx", "JavaScript React", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 2, 6
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\helpers\functions\JSONtoArr.jsx", "JavaScript React", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 20, 0, 0, 0, 0, 5, 25
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\helpers\functions\StableSort.jsx", "JavaScript React", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 0, 0, 0, 0, 1, 10
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\logs\enums\LogCommands.ts", "TypeScript", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 1, 5
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\logs\pages\LogsView.jsx", "JavaScript React", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 189, 0, 0, 0, 0, 26, 215
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\models\ModelConstants.jsx", "JavaScript React", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 4, 5
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\models\enums\ModelCommands.ts", "TypeScript", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 11, 0, 0, 0, 1, 12
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\models\enums\ModelInputs.ts", "TypeScript", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 12, 0, 0, 0, 1, 13
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\models\helpers\ButtonsModel.jsx", "JavaScript React", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 33, 0, 0, 0, 0, 5, 38
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\models\helpers\CreateModel.jsx", "JavaScript React", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 345, 0, 0, 0, 0, 26, 371
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\models\helpers\DetailModel.jsx", "JavaScript React", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 279, 0, 0, 0, 0, 22, 301
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\models\helpers\ExportModel.jsx", "JavaScript React", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 67, 0, 0, 0, 0, 4, 71
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\models\helpers\FilterModel.jsx", "JavaScript React", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 125, 0, 0, 0, 0, 9, 134
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\models\helpers\ModelsTable.jsx", "JavaScript React", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 629, 0, 0, 0, 6, 46, 681
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\models\pages\ModelsView.jsx", "JavaScript React", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 520, 0, 0, 0, 7, 66, 593
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\models\stylesheets\ModelStyles.css", "CSS", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\racks\RacksConstants.jsx", "JavaScript React", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 3, 4
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\racks\enums\DatacenterCommands.ts", "TypeScript", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 0, 0, 0, 1, 7
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\racks\enums\RackCommands.ts", "TypeScript", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 0, 0, 0, 1, 7
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\racks\helpers\ConfirmDeleteDC.jsx", "JavaScript React", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 104, 0, 0, 0, 0, 11, 115
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\racks\helpers\CreateDatacenter.jsx", "JavaScript React", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 220, 0, 0, 0, 0, 25, 245
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\racks\helpers\EditDatacenter.jsx", "JavaScript React", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 157, 0, 0, 0, 0, 17, 174
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\racks\helpers\functions\ShowDatacenters.jsx", "JavaScript React", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 157, 0, 0, 0, 0, 19, 176
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\racks\pages\DatacenterManagerView.jsx", "JavaScript React", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 28, 0, 0, 0, 0, 12, 40
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\racks\pages\DatacentersView.jsx", "JavaScript React", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 272, 0, 0, 0, 0, 32, 304
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\racks\pages\RacksView.jsx", "JavaScript React", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 141, 0, 0, 0, 3, 28, 172
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\racks\stylesheets\RackStyles.css", "CSS", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 33, 0, 0, 6, 39
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\serviceWorker.js", "JavaScript", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 94, 31, 13, 138
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\statistics\enums\StatsCommands.ts", "TypeScript", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 1, 5
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\statistics\pages\StatisticsView.jsx", "JavaScript React", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 196, 0, 0, 0, 0, 16, 212
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\users\UserConstants.jsx", "JavaScript React", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 0, 0, 0, 0, 7, 16
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\users\enums\PrivilegeCommands.ts", "TypeScript", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 1, 4
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\users\enums\UserCommands.ts", "TypeScript", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8, 0, 0, 0, 1, 9
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\users\enums\UserInputs.ts", "TypeScript", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 0, 0, 0, 1, 8
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\users\helpers\ButtonsUser.jsx", "JavaScript React", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 33, 0, 0, 0, 0, 5, 38
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\users\helpers\CreateUser.jsx", "JavaScript React", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 117, 0, 0, 0, 0, 13, 130
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\users\helpers\DetailUser.jsx", "JavaScript React", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 104, 0, 0, 0, 0, 9, 113
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\users\helpers\FilterUser.jsx", "JavaScript React", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 125, 0, 0, 0, 0, 12, 137
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\users\helpers\UsersTable.jsx", "JavaScript React", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 229, 0, 0, 0, 0, 22, 251
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\users\helpers\functions\MakeCreateJSON.jsx", "JavaScript React", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 0, 0, 0, 0, 2, 12
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\users\helpers\functions\MakeDeleteJSON.jsx", "JavaScript React", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 2, 8
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\users\helpers\functions\MakeDetailViewJSON.jsx", "JavaScript React", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 2, 8
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\users\helpers\functions\MakeEditJSON.jsx", "JavaScript React", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 11, 0, 0, 0, 0, 2, 13
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\users\helpers\functions\PrivilegePicker.jsx", "JavaScript React", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 78, 0, 0, 0, 0, 9, 87
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\javascript\users\pages\UsersView.jsx", "JavaScript React", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 261, 0, 0, 0, 1, 27, 289
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\react-app-env.d.ts", "TypeScript", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 2
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\stylesheets\App.css", "CSS", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 33, 0, 0, 6, 39
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\stylesheets\Models.css", "CSS", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\stylesheets\TabStyles.css", "CSS", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 49, 0, 1, 13, 63
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\stylesheets\index.css", "CSS", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 12, 0, 0, 2, 14
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\tests\App.test.js", "JavaScript", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8, 0, 2, 10
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\tests\TestValues.jsx", "JavaScript React", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 81, 0, 0, 0, 0, 3, 84
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\src\tests\setupTests.js", "JavaScript", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 4, 1, 6
+"c:\Users\benro\Documents\workspaces\senior-design\ReactAndFlask\reactfrontend\tsconfig.json", "JSON", 0, 0, 0, 0, 0, 0, 0, 0, 25, 0, 0, 0, 0, 0, 0, 1, 26
+"c:\Users\benro\Documents\workspaces\senior-design\page.html", "HTML", 0, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 8
+"c:\Users\benro\Documents\workspaces\senior-design\requirements.in", "pip requirements", 0, 0, 0, 0, 80, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 81
+"c:\Users\benro\Documents\workspaces\senior-design\requirements.txt", "pip requirements", 0, 0, 0, 0, 64, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8, 2, 74
+"c:\Users\benro\Documents\workspaces\senior-design\templates\index.html", "HTML", 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2
+"c:\Users\benro\Documents\workspaces\senior-design\uwsgi.ini", "Ini", 0, 0, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 0, 1, 8
+"Total", "-", 78, 29, 6, 72, 144, 1655, 7, 7166, 436, 7, 9838, 108, 133, 106, 979, 3126, 23890

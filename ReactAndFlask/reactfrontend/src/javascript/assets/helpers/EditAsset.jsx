@@ -1,6 +1,7 @@
 import React from 'react';
 
 import axios from 'axios';
+import { CompactPicker } from 'react-color';
 
 import { TextField, Button, Tooltip, CircularProgress, Grid } from "@material-ui/core";
 import { Autocomplete, Alert } from '@material-ui/lab';
@@ -98,7 +99,7 @@ const useStyles = theme => ({
     buttons: {
         '& > *': {
             margin: theme.spacing(1),
-          },
+        },
     }
 });
 
@@ -168,7 +169,7 @@ class EditAsset extends React.Component {
                 "rack": createInputs(AssetInput.RACK, "Rack", false, "The rack the equipment is installed in, written as a row letter and rack number, e.g. 'B12'"),
                 "rackU": createInputs(AssetInput.RACK_U, "Rack U", false, "An integer indicating the vertical location of the bottom of the equipment (e.g. '5')"),
                 "owner": createInputs(AssetInput.OWNER, "Owner", false, "A reference to an existing user on the system who owns this equipment"),
-                "comment": createInputs(AssetInput.COMMENT, "Comment", false, "Any additional information associated with this asset"),
+                "comment": createInputs(AssetInput.COMMENT, "Comments", false, "Any additional information associated with this asset"),
                 "datacenter": createInputs(AssetInput.DATACENTER, "Datacenter", false, "A reference to an existing datacenter"),
                 "macAddress": createInputs(AssetInput.MAC_ADDRESS, "Mac Address", false, "A 6-byte hexadecimal string per network port shown canonically in lower case with colon delimiters (e.g., '00:1e:c9:ac:78:aa').\nA hostname is required to enter in this value"),
                 "networkConnections": createInputs(AssetInput.NETWORK_CONNECTIONS, "Port Name", false, "For each network port, a reference to another network port on another piece of gear"),
@@ -205,7 +206,10 @@ class EditAsset extends React.Component {
                 network_connections: this.props.defaultValues.network_connections,
                 power_connections: this.getPowerPortFromProps(this.props.defaultValues.power_connections),
                 asset_number: this.props.defaultValues.asset_number,
-
+                customCPU: this.props.defaultValues.cpu,
+                customColor: this.props.defaultValues.display_color,
+                customMemory: this.props.defaultValues.memory,
+                customStorage: this.props.defaultValues.storage,
                 leftRight: this.getPowerFromProps(this.props.defaultValues.power_connections),
             });
         } else {
@@ -520,6 +524,10 @@ class EditAsset extends React.Component {
             "network_connections": ((this.state.network_connections === null) ? {} : this.state.network_connections),
             "power_connections": this.getPowerConnections(),
             'asset_number': this.state.asset_number,
+            "display_color": this.state.customColor,
+            "cpu": this.state.customCPU,
+            "memory": this.state.customMemory,
+            "storage": this.state.customStorage,
         }
     }
 
@@ -662,6 +670,25 @@ class EditAsset extends React.Component {
 
     closeConfirmationBox = () => {
         this.setState({ showConfirmationBox: false })
+    }
+
+    cancelUpgrades = () => {
+        this.setState({
+            customizeModel: false,
+            customColor: this.props.defaultValues.display_colorOriginal,
+            customCPU: this.props.defaultValues.cpuOriginal,
+            customMemory: this.props.defaultValues.memoryOriginal,
+            customStorage: this.props.defaultValues.storageOriginal
+        });
+    }
+
+    restoreDefaults = () => {
+        this.setState({
+            customColor: this.props.defaultValues.display_colorOriginal,
+            customCPU: this.props.defaultValues.cpuOriginal,
+            customMemory: this.props.defaultValues.memoryOriginal,
+            customStorage: this.props.defaultValues.storageOriginal
+        });
     }
 
     render() {
@@ -830,6 +857,46 @@ class EditAsset extends React.Component {
                                 />
                             </Tooltip>
 
+                            <div>
+                                {this.state.customizeModel ? null :
+                                    <Button
+                                        variant="contained"
+                                        color={"primary"}
+                                        onClick={() => this.setState({ customizeModel: true })}
+                                    >
+                                        {"Customize Model Hardware"}
+                                    </Button>
+                                }
+                                {this.state.customizeModel ?
+                                    <span>
+                                        <CompactPicker
+                                            color={this.state.customColor}
+                                            onChange={color => { this.setState({ customColor: color.hex }) }}
+                                        />
+                                        <TextField label={"CPU"} value={this.state.customCPU} onChange={event => { this.setState({ customCPU: event.target.value }) }} />
+                                        <TextField type="number" value={this.state.customMemory} label={"Memory"} onChange={event => { this.setState({ customMemory: event.target.value }) }} InputProps={{ inputProps: { min: 0 } }} />
+                                        <TextField label={"Storage"} value={this.state.customStorage} onChange={event => { this.setState({ customStorage: event.target.value }) }} />
+                                        <div className={classes.buttons}>
+                                            <Button
+                                                variant="contained"
+                                                color={"primary"}
+                                                onClick={() => this.restoreDefaults()}
+                                            >
+                                                Use original Model Values
+                                        </Button>
+                                            <Button
+                                                variant="contained"
+                                                color="secondary"
+                                                onClick={() => this.cancelUpgrades()}
+                                            >
+                                                Cancel Upgrades
+                                        </Button>
+                                        </div>
+                                    </span>
+                                    : null}
+                            </div>
+
+
                             {this.displayNetworks() ?
                                 <span>
                                     {this.state.networkList[this.getModel()].length === Object.keys(this.state.network_connections).length ?
@@ -952,59 +1019,59 @@ class EditAsset extends React.Component {
                                             </RadioGroup>
                                         </FormControl>
                                         {(this.state.leftRight === null) ? null : (this.state.leftRight[k] === undefined || this.state.leftRight[k] === off ? null :
-                                                <TextField
-                                                    type="number"
-                                                    value={(this.state.power_connections === null) ? 1 : (this.state.power_connections[k] === undefined ? 1 : this.state.power_connections[k])}
-                                                    InputProps={{ inputProps: { min: 1, max: 24 } }}
-                                                    onChange={(event) => { this.updatePowerPort(event, k) }}
-                                                    disabled={this.props.disabled}
-                                                />
+                                            <TextField
+                                                type="number"
+                                                value={(this.state.power_connections === null) ? 1 : (this.state.power_connections[k] === undefined ? 1 : this.state.power_connections[k])}
+                                                InputProps={{ inputProps: { min: 1, max: 24 } }}
+                                                onChange={(event) => { this.updatePowerPort(event, k) }}
+                                                disabled={this.props.disabled}
+                                            />
                                         )}
                                     </span>
                                 ))
                             }
                             <div>
-                            <TextField
-                                id="input-comment"
-                                fullWidth
-                                label={this.state.inputs.comment.label}
-                                name={this.state.inputs.comment.name}
-                                onChange={this.updateComment}
-                                multiline={true}
-                                fullWidth
-                                style={{ width: "50%" }}
-                                defaultValue={this.props.defaultValues.comment}
-                                disabled={this.props.disabled}
-                            />
+                                <TextField
+                                    id="input-comment"
+                                    fullWidth
+                                    label={this.state.inputs.comment.label}
+                                    name={this.state.inputs.comment.name}
+                                    onChange={this.updateComment}
+                                    multiline={true}
+                                    fullWidth
+                                    style={{ width: "50%" }}
+                                    defaultValue={this.props.defaultValues.comment}
+                                    disabled={this.props.disabled}
+                                />
                             </div>
                             <div className={classes.buttons}>
-                            {this.props.disabled ? null :
-                                <Button
-                                    variant="contained"
-                                    color={this.props.changePlanActive ? "" : "primary"}
-                                    type="submit"
-                                    style={{
-                                        backgroundColor: this.props.changePlanActive ? "#64b5f6" : ""
-                                    }}
-                                >
-                                    {this.props.changePlanActive ? "Save to Change Plan" : "Save"}
-                                </Button>}
-                            {this.props.disabled || this.props.changePlanActive ? null :
-                                <Button
-                                    variant="contained"
-                                    color="secondary"
-                                    onClick={() => this.openConfirmationBox()}
-                                >
-                                    Delete
+                                {this.props.disabled ? null :
+                                    <Button
+                                        variant="contained"
+                                        color={this.props.changePlanActive ? "" : "primary"}
+                                        type="submit"
+                                        style={{
+                                            backgroundColor: this.props.changePlanActive ? "#64b5f6" : ""
+                                        }}
+                                    >
+                                        {this.props.changePlanActive ? "Save to Change Plan" : "Save"}
+                                    </Button>}
+                                {this.props.disabled || this.props.changePlanActive ? null :
+                                    <Button
+                                        variant="contained"
+                                        color="secondary"
+                                        onClick={() => this.openConfirmationBox()}
+                                    >
+                                        Delete
                                         </Button>}
-                            {this.props.disabled ? null :
-                                <Button
-                                    variant="contained"
-                                    onClick={() => this.decommissionAsset()}
-                                >
-                                    {this.props.changePlanActive ? "Decommission in Change Plan" : "Decommission"}
-                                </Button>}
-                                </div>
+                                {this.props.disabled ? null :
+                                    <Button
+                                        variant="contained"
+                                        onClick={() => this.decommissionAsset()}
+                                    >
+                                        {this.props.changePlanActive ? "Decommission in Change Plan" : "Decommission"}
+                                    </Button>}
+                            </div>
                         </div></form>}
                 {this.state.statusOpen ?
                     <Alert

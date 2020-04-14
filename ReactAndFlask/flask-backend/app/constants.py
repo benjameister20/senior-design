@@ -66,6 +66,10 @@ class Constants:
     CSV_POWER_PORT_1 = "power_port_connection_1"
     CSV_POWER_PORT_2 = "power_port_connection_2"
 
+    CHASSIS_KEY = "chassis"
+    CHASSIS_PORT_KEY = "chassis_port_number"
+    POWER_STATE_KEY = "power_state"
+
     # Rack Keys
     START_LETTER_KEY = "start_letter"
     START_NUMBER_KEY = "start_number"
@@ -77,7 +81,7 @@ class Constants:
     DC_ABRV_KEY = "abbreviation"
     DC_NAME_KEY = "datacenter_name"
     DC_ID_KEY = "datacenter_id"
-
+    DC_IS_OFFLINE_KEY = "is_offline_storage"
     NAME_ORIG_KEY = "nameOriginal"
 
     CSV_DC_NAME_KEY = "datacenter"

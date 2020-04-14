@@ -64,7 +64,7 @@ class CreateModel extends React.Component {
             importedFile: null,
             networkPorts: [],
             numPorts: 0,
-            mountType: "rack",
+            mountType: "rackmount",
         };
     }
 
@@ -233,7 +233,7 @@ class CreateModel extends React.Component {
                                     onChange={this.updateMountType}
                                     style={{ width: "100%" }}
                                 >
-                                    <MenuItem value="rack">Rack Mount</MenuItem>
+                                    <MenuItem value="rackmount">Rack Mount</MenuItem>
                                     <MenuItem value="chassis">Blade Chassis</MenuItem>
                                     <MenuItem value="blade">Blade</MenuItem>
                                 </Select>

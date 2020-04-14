@@ -2,17 +2,11 @@ import React from 'react';
 
 import axios from 'axios';
 
-import TextField from "@material-ui/core/TextField";
-import Button from '@material-ui/core/Button';
+import { TextField, Button, Tooltip, MenuItem, Select, Grid } from "@material-ui/core";
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import Tooltip from '@material-ui/core/Tooltip';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import Grid from '@material-ui/core/Grid';
 import { withStyles } from '@material-ui/core/styles';
-import Radio from '@material-ui/core/Radio';
-import RadioGroup from '@material-ui/core/RadioGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormControl from '@material-ui/core/FormControl';
+import { Radio, RadioGroup, FormControl, FormControlLabel, InputLabel } from '@material-ui/core';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
@@ -102,10 +96,6 @@ const useStyles = theme => ({
       },
 });
 
-const Transition = React.forwardRef(function Transition(props, ref) {
-    return <Slide direction="up" ref={ref} {...props} />;
-  });
-
 class CreateAsset extends React.Component {
     constructor(props) {
         super(props);
@@ -133,18 +123,18 @@ class CreateAsset extends React.Component {
             assetNumList:[],
             assetNumToModelList:null,
 
-            model:"",
-            hostname:"",
-            rack:"",
-            rackU:-1,
-            owner:"",
-            comment:"",
-            datacenter_name:"",
-            datacenterIsOffline:false,
-            tags:[],
-            network_connections:null,
-            power_connections:null,
-            asset_number:100000,
+            model: "",
+            hostname: "",
+            rack: "",
+            rackU: -1,
+            owner: "",
+            comment: "",
+            datacenter_name: "",
+            datacenterIsOffline: false,
+            tags: [],
+            network_connections: null,
+            power_connections: null,
+            asset_number: 100000,
             blade_chassis: null,
             blade_position: null,
             mount_type: null,
@@ -199,6 +189,24 @@ class CreateAsset extends React.Component {
         this.getDatacenterList();
         this.getNextAssetNum();
         this.getAssetList();
+        this.getChassisList();
+    }
+
+    getChassisList = () => {
+        axios.post(
+            getURL(Constants.ASSETS_MAIN_PATH, "/getchassis")
+        ).then(
+            response => {
+                var instances = response.data.instances;
+                var instanceNames = [];
+
+                instances.map(instance => {
+                    instanceNames.push(instance.hostname);
+                });
+
+                this.setState({ chassisList: instanceNames });
+            }
+        )
     }
 
     getModelList = () => {
@@ -359,6 +367,14 @@ class CreateAsset extends React.Component {
         this.setState({ model: model, network_connections:networkConns }, () => { this.validateForm() });
     }
 
+    updateBladeChassis = (event) => {
+        this.setState({ blade_chassis: event.target.value });
+    }
+
+    updateBladePosition = (event) => {
+        this.setState({ blade_position: event.target.value });
+    }
+
     updateHostname = (event) => {
         this.setState({ hostname: event.target.value }, () => { this.validateForm() });
     }
@@ -468,10 +484,6 @@ class CreateAsset extends React.Component {
 
     updateAssetNumber = (event) => {
         this.setState({ asset_number: event.target.value }, () => { this.validateForm() });
-    }
-
-    updateBladePosition = (event) => {
-        this.setState({ blade_position: event.target.value });
     }
 
     getPowerConnections = () => {
@@ -599,10 +611,10 @@ class CreateAsset extends React.Component {
                             renderInput={params => (
                                 <TextField
                                     {...params}
-                                    label={this.state.inputs.model.label}
-                                    name={this.state.inputs.model.name}
-                                    onChange={this.updateModel}
-                                    onBlur={this.updateModel}
+                                    label={this.state.inputs.bladeChassis.label}
+                                    name={this.state.inputs.bladeChassis.name}
+                                    onChange={this.updateBladeChassis}
+                                    onBlur={this.updateBladeChassis}
                                     variant="outlined"
                                     fullWidth
                                     required

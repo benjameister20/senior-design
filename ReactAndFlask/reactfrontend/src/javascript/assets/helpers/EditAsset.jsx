@@ -858,7 +858,7 @@ class EditAsset extends React.Component {
                             </Tooltip>
 
                             <div>
-                                {this.state.customizeModel ? null :
+                                {this.state.customizeModel || this.props.disabled ? null :
                                     <Button
                                         variant="contained"
                                         color={"primary"}
@@ -867,16 +867,17 @@ class EditAsset extends React.Component {
                                         {"Customize Model Hardware"}
                                     </Button>
                                 }
-                                {this.state.customizeModel ?
+                                {this.state.customizeModel || this.props.disabled ?
                                     <span>
                                         <CompactPicker
                                             color={this.state.customColor}
                                             onChange={color => { this.setState({ customColor: color.hex }) }}
+                                            disabled={this.props.disabled}
                                         />
-                                        <TextField label={"CPU"} value={this.state.customCPU} onChange={event => { this.setState({ customCPU: event.target.value }) }} />
-                                        <TextField type="number" value={this.state.customMemory} label={"Memory"} onChange={event => { this.setState({ customMemory: event.target.value }) }} InputProps={{ inputProps: { min: 0 } }} />
-                                        <TextField label={"Storage"} value={this.state.customStorage} onChange={event => { this.setState({ customStorage: event.target.value }) }} />
-                                        <div className={classes.buttons}>
+                                        <TextField disabled={this.props.disabled} label={"CPU"} value={this.state.customCPU} onChange={event => { this.setState({ customCPU: event.target.value }) }} />
+                                        <TextField disabled={this.props.disabled} type="number" value={this.state.customMemory} label={"Memory"} onChange={event => { this.setState({ customMemory: event.target.value }) }} InputProps={{ inputProps: { min: 0 } }} />
+                                        <TextField disabled={this.props.disabled} label={"Storage"} value={this.state.customStorage} onChange={event => { this.setState({ customStorage: event.target.value }) }} />
+                                        {this.props.disabled ? null : <div className={classes.buttons}>
                                             <Button
                                                 variant="contained"
                                                 color={"primary"}
@@ -891,7 +892,7 @@ class EditAsset extends React.Component {
                                             >
                                                 Cancel Upgrades
                                         </Button>
-                                        </div>
+                                        </div>}
                                     </span>
                                     : null}
                             </div>

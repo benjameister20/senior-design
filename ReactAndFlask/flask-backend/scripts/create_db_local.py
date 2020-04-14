@@ -51,5 +51,7 @@ with application.app_context():
     )
     UserTable().add_user(user=user)
 
-    model: Model = Model(vendor="dell", model_number="1234", height=3)
+    model: Model = Model(
+        vendor="dell", model_number="1234", mount_type="rackmount", height=3
+    )
     ModelTable().add_model(model=model)

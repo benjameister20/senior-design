@@ -87,15 +87,6 @@ class DetailAsset extends React.Component {
 						You are currently in change plan mode! Changes made are being logged in the plan and not actually made in the system.
 					</Alert> : null}
 
-                <ExpansionPanel expanded={this.state.detailsExpanded} onChange={this.toggleDetails}>
-                    <ExpansionPanelSummary
-                        expandIcon={<ExpandMoreIcon />}
-                        aria-controls="panel1a-content"
-                        id="fields-header"
-                    >
-                    <Typography>Asset General Details</Typography>
-                    </ExpansionPanelSummary>
-                    <ExpansionPanelDetails>
                         <EditAsset
                             defaultValues={this.props.asset}
                             disabled={this.props.disabled}
@@ -110,8 +101,6 @@ class DetailAsset extends React.Component {
                             fetchAllAssets={this.props.fetchAllAssets}
                             isDecommissioned={this.props.isDecommissioned}
                         />
-                    </ExpansionPanelDetails>
-                </ExpansionPanel>
                 {this.props.asset.hostname !== undefined && this.props.asset.hostname !== "" ?
                 <ExpansionPanel>
                     <ExpansionPanelSummary

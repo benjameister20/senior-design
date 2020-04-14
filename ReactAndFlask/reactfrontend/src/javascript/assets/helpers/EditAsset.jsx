@@ -85,6 +85,21 @@ const useStyles = theme => ({
         marginLeft: theme.spacing(2),
         flex: 1,
     },
+    form: {
+        '& .MuiTextField-root': {
+            margin: theme.spacing(1),
+            width: '25ch',
+        },
+    },
+    div: {
+        width: "70%",
+        margin: "0 auto",
+    },
+    buttons: {
+        '& > *': {
+            margin: theme.spacing(1),
+          },
+    }
 });
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -653,7 +668,7 @@ class EditAsset extends React.Component {
         const { classes } = this.props;
 
         return (
-            <span>
+            <span className={classes.div}>
 
                 {this.props.isDecommissioned ? "This asset was decommissioned by " + this.props.defaultValues.decommission_user + " on " + this.props.defaultValues.timestamp : ""}
                 {(
@@ -665,367 +680,332 @@ class EditAsset extends React.Component {
                 ) ? <div className={classes.progress}><CircularProgress /></div> :
                     <form
                         onSubmit={(event) => { this.editAsset(event) }}
+                        className={classes.form}
                     >
                         <div className={classes.dialogDiv}>
-                            <Grid container spacing={3}>
-                                <Grid item xs={3}>
-                                    <Tooltip placement="top" open={this.state.inputs.model.Tooltip} title={this.state.inputs.model.description}>
-                                        {this.props.disabled ?
+                            <Tooltip placement="top" open={this.state.inputs.model.Tooltip} title={this.state.inputs.model.description}>
+                                {this.props.disabled ?
+                                    <TextField
+                                        label={this.state.inputs.model.label}
+                                        name={this.state.inputs.model.name}
+                                        value={this.props.isDecommissioned ? this.props.defaultValues.vendor + " " + this.props.defaultValues.model_number : this.state.model}
+                                        disabled
+                                        style={{ display: "inline-block" }}
+                                    /> :
+                                    <Autocomplete
+                                        id="select-model"
+                                        options={this.state.modelList}
+                                        includeInputInList
+                                        value={this.state.model}
+                                        style={{ display: "inline-block" }}
+                                        renderInput={params => (
                                             <TextField
+                                                {...params}
                                                 label={this.state.inputs.model.label}
                                                 name={this.state.inputs.model.name}
-                                                variant="outlined"
-                                                fullWidth
-                                                value={this.props.isDecommissioned ? this.props.defaultValues.vendor + " " + this.props.defaultValues.model_number : this.state.model}
-                                                disabled
-                                            /> :
-                                            <Autocomplete
-                                                id="select-model"
-                                                options={this.state.modelList}
-                                                includeInputInList
-                                                value={this.state.model}
-                                                renderInput={params => (
-                                                    <TextField
-                                                        {...params}
-                                                        label={this.state.inputs.model.label}
-                                                        name={this.state.inputs.model.name}
-                                                        onChange={this.updateModel}
-                                                        onBlur={this.updateModel}
-                                                        variant="outlined"
-                                                        fullWidth
-                                                        required
-                                                    />
-                                                )}
-                                            />}
-                                    </Tooltip>
-                                </Grid>
-                                <Grid item xs={3}>
-                                    <Tooltip placement="top" open={this.state.inputs.owner.Tooltip} title={this.state.inputs.owner.description}>
-                                        {this.props.disabled ?
+                                                onChange={this.updateModel}
+                                                onBlur={this.updateModel}
+                                                required
+                                            />
+                                        )}
+                                    />}
+                            </Tooltip>
+                            <Tooltip placement="top" open={this.state.inputs.owner.Tooltip} title={this.state.inputs.owner.description}>
+                                {this.props.disabled ?
+                                    <TextField
+                                        label={this.state.inputs.owner.label}
+                                        name={this.state.inputs.owner.name}
+                                        fullWidth
+                                        value={this.state.owner}
+                                        disabled
+                                        style={{ display: "inline-block" }}
+                                    /> :
+                                    <Autocomplete
+                                        id="select-owner"
+                                        options={this.state.ownerList}
+                                        includeInputInList
+                                        value={this.state.owner}
+                                        style={{ display: "inline-block" }}
+                                        renderInput={params => (
                                             <TextField
+                                                {...params}
                                                 label={this.state.inputs.owner.label}
                                                 name={this.state.inputs.owner.name}
-                                                variant="outlined"
+                                                onChange={this.updateOwner}
+                                                onBlur={this.updateOwner}
                                                 fullWidth
-                                                value={this.state.owner}
-                                                disabled
-                                            /> :
-                                            <Autocomplete
-                                                id="select-owner"
-                                                options={this.state.ownerList}
-                                                includeInputInList
-                                                value={this.state.owner}
-                                                renderInput={params => (
-                                                    <TextField
-                                                        {...params}
-                                                        label={this.state.inputs.owner.label}
-                                                        name={this.state.inputs.owner.name}
-                                                        onChange={this.updateOwner}
-                                                        onBlur={this.updateOwner}
-                                                        variant="outlined"
-                                                        fullWidth
-                                                        disabled={this.props.disabled}
-                                                    />
-                                                )}
-                                            />}
-                                    </Tooltip>
-                                </Grid>
-                                <Grid item xs={3}>
-                                    <Tooltip placement="top" open={this.state.inputs.datacenter.Tooltip} title={this.state.inputs.datacenter.description}>
-                                        {this.props.disabled ?
+                                                disabled={this.props.disabled}
+                                            />
+                                        )}
+                                    />}
+                            </Tooltip>
+                            <Tooltip placement="top" open={this.state.inputs.datacenter.Tooltip} title={this.state.inputs.datacenter.description}>
+                                {this.props.disabled ?
+                                    <TextField
+                                        label={this.state.inputs.datacenter.label}
+                                        name={this.state.inputs.datacenter.name}
+                                        fullWidth
+                                        value={this.state.datacenter_name}
+                                        disabled
+                                        style={{ display: "inline-block" }}
+                                    /> :
+                                    <Autocomplete
+                                        id="input-datacenter"
+                                        options={this.state.datacenterList.map(dc => dc.name)}
+                                        includeInputInList
+                                        value={this.state.datacenter_name}
+                                        style={{ display: "inline-block" }}
+                                        renderInput={params => (
                                             <TextField
+                                                {...params}
                                                 label={this.state.inputs.datacenter.label}
                                                 name={this.state.inputs.datacenter.name}
-                                                variant="outlined"
+                                                onChange={this.updateDatacenter}
+                                                onBlur={this.updateDatacenter}
+
                                                 fullWidth
-                                                value={this.state.datacenter_name}
-                                                disabled
-                                            /> :
-                                            <Autocomplete
-                                                id="input-datacenter"
-                                                options={this.state.datacenterList.map(dc => dc.name)}
-                                                includeInputInList
-                                                value={this.state.datacenter_name}
-                                                renderInput={params => (
+                                                required
+                                                disabled={this.props.disabled}
+
+                                            />
+                                        )}
+                                    />}
+                            </Tooltip>
+
+                            {(this.state.datacenterIsOffline) ? null :
+                                <Tooltip placement="top" open={this.state.inputs.rack.Tooltip} title={this.state.inputs.rack.description}>
+                                    <TextField
+                                        id="input-rack"
+                                        label={this.state.inputs.rack.label}
+                                        name={this.state.inputs.rack.name}
+                                        onChange={this.updateRack}
+                                        value={this.state.rack}
+                                        required
+                                        fullWidth
+                                        disabled={this.props.disabled}
+                                        defaultValue={this.props.defaultValues.rack}
+                                    />
+                                </Tooltip>}
+                            {(this.state.datacenterIsOffline) ? null :
+                                <Tooltip placement="top" open={this.state.inputs.rackU.Tooltip} title={this.state.inputs.rackU.description}>
+                                    <TextField
+                                        id="input-rackU"
+
+                                        type="number"
+                                        InputProps={{ inputProps: { min: 1, max: 42 } }}
+                                        label={this.state.inputs.rackU.label}
+                                        name={this.state.inputs.rackU.name}
+                                        onChange={this.updateRackU}
+                                        required
+                                        fullWidth
+                                        disabled={this.props.disabled}
+                                        value={this.state.rackU}
+                                    />
+                                </Tooltip>}
+                            <Tooltip placement="top" open={this.state.inputs.assetNum.Tooltip} title={this.state.inputs.assetNum.description}>
+                                <TextField
+                                    id="input-asset-number"
+
+                                    type="number"
+                                    InputProps={{ inputProps: { min: 100000, max: 999999 } }}
+                                    label={this.state.inputs.assetNum.label}
+                                    name={this.state.inputs.assetNum.name}
+                                    onChange={this.updateAssetNumber}
+                                    value={this.state.asset_number}
+                                    required
+                                    fullWidth
+                                    disabled={this.props.disabled}
+                                />
+                            </Tooltip>
+                            <Tooltip placement="top" open={this.state.inputs.hostname.Tooltip} title={this.state.inputs.hostname.description}>
+                                <TextField
+                                    id="input-hostname"
+
+                                    label={this.state.inputs.hostname.label}
+                                    name={this.state.inputs.hostname.name}
+                                    onChange={this.updateHostname}
+                                    fullWidth
+                                    disabled={this.props.disabled}
+                                    value={this.state.hostname}
+                                />
+                            </Tooltip>
+
+                            {this.displayNetworks() ?
+                                <span>
+                                    {this.state.networkList[this.getModel()].length === Object.keys(this.state.network_connections).length ?
+                                        this.state.networkList[this.getModel()].map(networkPort => (
+                                            <div>
+                                                <Typography style={{ display: "inline-block", }}>{"Network Port: " + networkPort + ": "}</Typography>
+                                                <Tooltip placement="top" open={this.state.inputs.macAddress.Tooltip} title={this.state.inputs.macAddress.description}>
                                                     <TextField
-                                                        {...params}
-                                                        label={this.state.inputs.datacenter.label}
-                                                        name={this.state.inputs.datacenter.name}
-                                                        onChange={this.updateDatacenter}
-                                                        onBlur={this.updateDatacenter}
-                                                        variant="outlined"
+                                                        id="input-mac-address"
+                                                        style={{ display: "inline-block" }}
+                                                        label={this.state.inputs.macAddress.label}
+                                                        name={this.state.inputs.macAddress.name}
+                                                        onChange={(event) => { this.changeNetworkMacAddress(event, networkPort) }}
                                                         fullWidth
-                                                        required
-                                                        disabled={this.props.disabled}
-
+                                                        value={this.getMacValue(networkPort)}
                                                     />
-                                                )}
-                                            />}
-                                    </Tooltip>
-                                </Grid>
-                                {(this.state.datacenterIsOffline) ? null :
-                                    <Grid item xs={3}>
-                                        <Tooltip placement="top" open={this.state.inputs.rack.Tooltip} title={this.state.inputs.rack.description}>
-                                            <TextField
-                                                id="input-rack"
-                                                variant="outlined"
-                                                label={this.state.inputs.rack.label}
-                                                name={this.state.inputs.rack.name}
-                                                onChange={this.updateRack}
-                                                value={this.state.rack}
-                                                required
-                                                fullWidth
-                                                disabled={this.props.disabled}
-                                                defaultValue={this.props.defaultValues.rack}
-                                            />
-                                        </Tooltip>
-                                    </Grid>}
-                                {(this.state.datacenterIsOffline) ? null :
-                                    <Grid item xs={3}>
-                                        <Tooltip placement="top" open={this.state.inputs.rackU.Tooltip} title={this.state.inputs.rackU.description}>
-                                            <TextField
-                                                id="input-rackU"
-                                                variant="outlined"
-                                                type="number"
-                                                InputProps={{ inputProps: { min: 1, max: 42 } }}
-                                                label={this.state.inputs.rackU.label}
-                                                name={this.state.inputs.rackU.name}
-                                                onChange={this.updateRackU}
-                                                required
-                                                fullWidth
-                                                disabled={this.props.disabled}
-                                                value={this.state.rackU}
-                                            />
-                                        </Tooltip>
-                                    </Grid>}
-                                <Grid item xs={3}>
-                                    <Tooltip placement="top" open={this.state.inputs.assetNum.Tooltip} title={this.state.inputs.assetNum.description}>
-                                        <TextField
-                                            id="input-asset-number"
-                                            variant="outlined"
-                                            type="number"
-                                            InputProps={{ inputProps: { min: 100000, max: 999999 } }}
-                                            label={this.state.inputs.assetNum.label}
-                                            name={this.state.inputs.assetNum.name}
-                                            onChange={this.updateAssetNumber}
-                                            value={this.state.asset_number}
-                                            required
-                                            fullWidth
-                                            disabled={this.props.disabled}
-                                        />
-                                    </Tooltip>
-                                </Grid>
-                                <Grid item xs={3}>
-                                    <Tooltip placement="top" open={this.state.inputs.hostname.Tooltip} title={this.state.inputs.hostname.description}>
-                                        <TextField
-                                            id="input-hostname"
-                                            variant="outlined"
-                                            label={this.state.inputs.hostname.label}
-                                            name={this.state.inputs.hostname.name}
-                                            onChange={this.updateHostname}
-                                            fullWidth
-                                            disabled={this.props.disabled}
-                                            value={this.state.hostname}
-                                        />
-                                    </Tooltip>
-                                </Grid>
-
-                                {this.displayNetworks() ?
-                                    <Grid item xs={12}>
-                                        {this.state.networkList[this.getModel()].length === Object.keys(this.state.network_connections).length ?
-                                            this.state.networkList[this.getModel()].map(networkPort => (
-                                                <Grid container spacing={3}>
-                                                    <Grid item xs={2}>
-                                                        <Typography>{networkPort + ": "}</Typography>
-                                                    </Grid>
-                                                    <Grid item xs={3}>
-                                                        <Tooltip placement="top" open={this.state.inputs.macAddress.Tooltip} title={this.state.inputs.macAddress.description}>
-                                                            <TextField
-                                                                id="input-mac-address"
-                                                                variant="outlined"
-                                                                label={this.state.inputs.macAddress.label}
-                                                                name={this.state.inputs.macAddress.name}
-                                                                onChange={(event) => { this.changeNetworkMacAddress(event, networkPort) }}
-                                                                fullWidth
-                                                                value={this.getMacValue(networkPort)}
-                                                            />
-                                                        </Tooltip>
-                                                    </Grid>
-                                                    <Grid item xs={3}>
-                                                        <Tooltip placement="top" open={this.state.inputs.networkConnections.Tooltip} title={this.state.inputs.networkConnections.description}>
-                                                            {this.props.disabled ?
+                                                </Tooltip>
+                                                <Tooltip placement="top" open={this.state.inputs.networkConnections.Tooltip} title={this.state.inputs.networkConnections.description}>
+                                                    {this.props.disabled ?
+                                                        <TextField
+                                                            label={"Connection Hostname"}
+                                                            name={"Connection Hostname"}
+                                                            style={{ display: "inline-block" }}
+                                                            fullWidth
+                                                            value={this.getConnectingHostname(networkPort)}
+                                                            disabled
+                                                        /> :
+                                                        <Autocomplete
+                                                            id="input-network-ports-hostname"
+                                                            options={this.state.assetNumList}
+                                                            includeInputInList
+                                                            onChange={(event, value) => { this.changeNetworkHostname(value, networkPort) }}
+                                                            required={this.getNetworkConnections()[networkPort].connection_port !== ""}
+                                                            value={this.getConnectingHostname(networkPort)}
+                                                            style={{ display: "inline-block" }}
+                                                            renderInput={params => (
                                                                 <TextField
+                                                                    {...params}
                                                                     label={"Connection Hostname"}
                                                                     name={"Connection Hostname"}
-                                                                    variant="outlined"
+
                                                                     fullWidth
-                                                                    value={this.getConnectingHostname(networkPort)}
-                                                                    disabled
-                                                                /> :
-                                                                <Autocomplete
-                                                                    id="input-network-ports-hostname"
-                                                                    options={this.state.assetNumList}
-                                                                    includeInputInList
-                                                                    onChange={(event, value) => { this.changeNetworkHostname(value, networkPort) }}
-                                                                    required={this.getNetworkConnections()[networkPort].connection_port !== ""}
-                                                                    value={this.getConnectingHostname(networkPort)}
-                                                                    renderInput={params => (
-                                                                        <TextField
-                                                                            {...params}
-                                                                            label={"Connection Hostname"}
-                                                                            name={"Connection Hostname"}
-                                                                            variant="outlined"
-                                                                            fullWidth
-                                                                        />
-                                                                    )}
-                                                                />}
-                                                        </Tooltip>
-                                                    </Grid>
-                                                    <Grid item xs={3}>
-                                                        <Tooltip placement="top" open={this.state.inputs.networkConnections.Tooltip} title={this.state.inputs.networkConnections.description}>
-                                                            {this.props.disabled ?
+                                                                />
+                                                            )}
+                                                        />}
+                                                </Tooltip>
+                                                <Tooltip placement="top" open={this.state.inputs.networkConnections.Tooltip} title={this.state.inputs.networkConnections.description}>
+                                                    {this.props.disabled ?
+                                                        <TextField
+                                                            label={"Connection Port"}
+                                                            name={"Connection Port"}
+                                                            style={{ display: "inline-block" }}
+                                                            fullWidth
+                                                            value={this.getConnectionPort(networkPort)}
+                                                            disabled
+                                                        /> :
+                                                        <Autocomplete
+                                                            id="input-network-ports-connection-port"
+                                                            options={this.state.portOptions}
+                                                            includeInputInList
+                                                            onChange={(event, value) => { this.changeNetworkPort(value, networkPort) }}
+                                                            required={this.getNetworkConnections()[networkPort].connection_hostname !== ""}
+                                                            value={this.getConnectionPort(networkPort)}
+                                                            disabled={this.connectionsDisabled()}
+                                                            style={{ display: "inline-block" }}
+                                                            renderInput={params => (
                                                                 <TextField
+                                                                    {...params}
                                                                     label={"Connection Port"}
                                                                     name={"Connection Port"}
-                                                                    variant="outlined"
+
                                                                     fullWidth
-                                                                    value={this.getConnectionPort(networkPort)}
-                                                                    disabled
-                                                                /> :
-                                                                <Autocomplete
-                                                                    id="input-network-ports-connection-port"
-                                                                    options={this.state.portOptions}
-                                                                    includeInputInList
-                                                                    onChange={(event, value) => { this.changeNetworkPort(value, networkPort) }}
-                                                                    required={this.getNetworkConnections()[networkPort].connection_hostname !== ""}
-                                                                    value={this.getConnectionPort(networkPort)}
-                                                                    disabled={this.connectionsDisabled()}
-                                                                    renderInput={params => (
-                                                                        <TextField
-                                                                            {...params}
-                                                                            label={"Connection Port"}
-                                                                            name={"Connection Port"}
-                                                                            variant="outlined"
-                                                                            fullWidth
-                                                                        />
-                                                                    )}
-                                                                />}
-                                                        </Tooltip>
-                                                    </Grid>
-                                                </Grid>
-                                            )) : null}
-                                    </Grid> : null}
+                                                                />
+                                                            )}
+                                                        />}
+                                                </Tooltip>
+                                            </div>
+                                        )) : null}
+                                </span> : null}
 
-                                {(
-                                    !(this.state.powerPortList
-                                        && this.state.powerPortList[this.state.model])
-                                    || this.state.datacenterIsOffline
-                                ) ? null :
-                                    Array.from({ length: this.state.powerPortList[this.state.model] }, (_, k) => (
-                                        <Grid item xs={12}>
-                                            <Grid container spacing={3}>
-                                                <Grid item xs={12}>
-                                                    <Typography>{"Power Port: " + k}</Typography>
-                                                </Grid>
-                                                <Grid item xs={3}>
-                                                    <FormControl component="fieldset">
-                                                        <RadioGroup
-                                                            id={"power-port-" + k}
-                                                            aria-label="position"
-                                                            name={"position" + k}
-                                                            value={(this.state.leftRight === null) ? off : (this.state.leftRight[k] === undefined ? off : this.state.leftRight[k])}
-                                                            onChange={(event) => { this.changePowerPortState(event, k) }}
-                                                            row
-                                                        >
-                                                            <FormControlLabel
-                                                                value={left}
-                                                                control={<Radio color="primary" />}
-                                                                label="Left"
-                                                                labelPlacement="bottom"
-                                                                disabled={this.props.disabled}
-                                                            />
-                                                            <FormControlLabel
-                                                                value={right}
-                                                                control={<Radio color="primary" />}
-                                                                label="Right"
-                                                                labelPlacement="bottom"
-                                                                disabled={this.props.disabled}
-                                                            />
-                                                            <FormControlLabel
-                                                                value={off}
-                                                                control={<Radio color="primary" />}
-                                                                label="No Connection"
-                                                                labelPlacement="bottom"
-                                                                disabled={this.props.disabled}
-                                                            />
-                                                        </RadioGroup>
-                                                    </FormControl>
-                                                </Grid>
-                                                {(this.state.leftRight === null) ? null : (this.state.leftRight[k] === undefined || this.state.leftRight[k] === off ? null :
-                                                    <Grid item xs={2}>
-                                                        <TextField
-                                                            type="number"
-                                                            value={(this.state.power_connections === null) ? 1 : (this.state.power_connections[k] === undefined ? 1 : this.state.power_connections[k])}
-                                                            InputProps={{ inputProps: { min: 1, max: 24 } }}
-                                                            onChange={(event) => { this.updatePowerPort(event, k) }}
-                                                            disabled={this.props.disabled}
-                                                        />
-                                                        <FormHelperText>Power Port Number</FormHelperText>
-                                                    </Grid>
-                                                )}
-                                            </Grid>
-                                        </Grid>
-                                    ))
-                                }
-                                <Grid item xs={6}>
-                                    <TextField
-                                        id="input-comment"
-                                        variant="outlined"
-                                        label={this.state.inputs.comment.label}
-                                        name={this.state.inputs.comment.name}
-                                        onChange={this.updateComment}
-                                        multiline={true}
-                                        fullWidth
-                                        defaultValue={this.props.defaultValues.comment}
-                                        disabled={this.props.disabled}
-                                    />
-                                </Grid>
-
-                                <Grid item xs={6} />
-                                {this.props.disabled ? null :
-                                    <Grid item xs={3}>
-                                        <Button
-                                            variant="contained"
-                                            color={this.props.changePlanActive ? "" : "primary"}
-                                            type="submit"
-                                            style={{
-                                                backgroundColor: this.props.changePlanActive ? "#64b5f6" : ""
-                                            }}
-                                        >
-                                            {this.props.changePlanActive ? "Save to Change Plan" : "Save"}
-                                        </Button>
-                                    </Grid>}
-                                {this.props.disabled ? null :
-                                    <Grid item xs={3}>
-                                        {this.props.changePlanActive ? null :
-                                            <Button
-                                                variant="contained"
-                                                color="secondary"
-                                                onClick={() => this.openConfirmationBox()}
+                            {(
+                                !(this.state.powerPortList
+                                    && this.state.powerPortList[this.state.model])
+                                || this.state.datacenterIsOffline
+                            ) ? null :
+                                Array.from({ length: this.state.powerPortList[this.state.model] }, (_, k) => (
+                                    <span>
+                                        <Typography>{"Power Port: " + k}</Typography>
+                                        <FormControl component="fieldset">
+                                            <RadioGroup
+                                                id={"power-port-" + k}
+                                                aria-label="position"
+                                                name={"position" + k}
+                                                style={{ display: "inline-block" }}
+                                                value={(this.state.leftRight === null) ? off : (this.state.leftRight[k] === undefined ? off : this.state.leftRight[k])}
+                                                onChange={(event) => { this.changePowerPortState(event, k) }}
+                                                row
                                             >
-                                                Delete
+                                                <FormControlLabel
+                                                    value={left}
+                                                    control={<Radio color="primary" />}
+                                                    label="Left"
+                                                    labelPlacement="bottom"
+                                                    disabled={this.props.disabled}
+                                                />
+                                                <FormControlLabel
+                                                    value={right}
+                                                    control={<Radio color="primary" />}
+                                                    label="Right"
+                                                    labelPlacement="bottom"
+                                                    disabled={this.props.disabled}
+                                                />
+                                                <FormControlLabel
+                                                    value={off}
+                                                    control={<Radio color="primary" />}
+                                                    label="No Connection"
+                                                    labelPlacement="bottom"
+                                                    disabled={this.props.disabled}
+                                                />
+                                            </RadioGroup>
+                                        </FormControl>
+                                        {(this.state.leftRight === null) ? null : (this.state.leftRight[k] === undefined || this.state.leftRight[k] === off ? null :
+                                                <TextField
+                                                    type="number"
+                                                    value={(this.state.power_connections === null) ? 1 : (this.state.power_connections[k] === undefined ? 1 : this.state.power_connections[k])}
+                                                    InputProps={{ inputProps: { min: 1, max: 24 } }}
+                                                    onChange={(event) => { this.updatePowerPort(event, k) }}
+                                                    disabled={this.props.disabled}
+                                                />
+                                        )}
+                                    </span>
+                                ))
+                            }
+                            <div>
+                            <TextField
+                                id="input-comment"
+                                fullWidth
+                                label={this.state.inputs.comment.label}
+                                name={this.state.inputs.comment.name}
+                                onChange={this.updateComment}
+                                multiline={true}
+                                fullWidth
+                                style={{ width: "50%" }}
+                                defaultValue={this.props.defaultValues.comment}
+                                disabled={this.props.disabled}
+                            />
+                            </div>
+                            <div className={classes.buttons}>
+                            {this.props.disabled ? null :
+                                <Button
+                                    variant="contained"
+                                    color={this.props.changePlanActive ? "" : "primary"}
+                                    type="submit"
+                                    style={{
+                                        backgroundColor: this.props.changePlanActive ? "#64b5f6" : ""
+                                    }}
+                                >
+                                    {this.props.changePlanActive ? "Save to Change Plan" : "Save"}
+                                </Button>}
+                            {this.props.disabled || this.props.changePlanActive ? null :
+                                <Button
+                                    variant="contained"
+                                    color="secondary"
+                                    onClick={() => this.openConfirmationBox()}
+                                >
+                                    Delete
                                         </Button>}
-                                    </Grid>}
-                                {this.props.disabled ? null :
-                                    <Grid item xs={6}>
-                                        <Button
-                                            variant="contained"
-                                            onClick={() => this.decommissionAsset()}
-                                        >
-                                            {this.props.changePlanActive ? "Decommission in Change Plan" : "Decommission"}
-                                        </Button>
-                                    </Grid>}
-                            </Grid></div></form>}
+                            {this.props.disabled ? null :
+                                <Button
+                                    variant="contained"
+                                    onClick={() => this.decommissionAsset()}
+                                >
+                                    {this.props.changePlanActive ? "Decommission in Change Plan" : "Decommission"}
+                                </Button>}
+                                </div>
+                        </div></form>}
                 {this.state.statusOpen ?
                     <Alert
                         severity={this.state.statusSeverity}

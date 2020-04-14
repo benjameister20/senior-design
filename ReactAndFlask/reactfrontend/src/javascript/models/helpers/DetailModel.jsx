@@ -58,7 +58,7 @@ class DetailModel extends React.Component {
             showConfirmationBox: false,
             color: null,
 
-            mountType: null,
+            mountType: "rackmount",
         };
 
         this.closeModal = this.closeModal.bind(this);
@@ -136,7 +136,7 @@ class DetailModel extends React.Component {
                             onChange={this.updateMountType}
                             style={{ width: "100%" }}
                         >
-                            <MenuItem value="rackmount">Rack Mount</MenuItem>
+                            <MenuItem value="rackmount">Rack Mounted</MenuItem>
                             <MenuItem value="chassis">Blade Chassis</MenuItem>
                             <MenuItem value="blade">Blade</MenuItem>
                         </Select>
@@ -258,7 +258,7 @@ class DetailModel extends React.Component {
                                 onChange={this.updateMountType}
                                 style={{ width: "100%" }}
                             >
-                                <MenuItem value="rackmount">Rack Mount</MenuItem>
+                                <MenuItem value="rackmount">Rack Mounted</MenuItem>
                                 <MenuItem value="chassis">Blade Chassis</MenuItem>
                                 <MenuItem value="blade">Blade</MenuItem>
                             </Select>

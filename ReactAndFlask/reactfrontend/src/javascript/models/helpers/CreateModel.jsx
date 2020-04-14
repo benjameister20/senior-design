@@ -233,7 +233,7 @@ class CreateModel extends React.Component {
                                     onChange={this.updateMountType}
                                     style={{ width: "100%" }}
                                 >
-                                    <MenuItem value="rackmount">Rack Mount</MenuItem>
+                                    <MenuItem value="rackmount">Rack Mounted</MenuItem>
                                     <MenuItem value="chassis">Blade Chassis</MenuItem>
                                     <MenuItem value="blade">Blade</MenuItem>
                                 </Select>

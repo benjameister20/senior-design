@@ -268,8 +268,8 @@ class EditAsset extends React.Component {
     }
 
     getChassisList = () => {
-        axios.post(
-            getURL(Constants.ASSETS_MAIN_PATH, "/getchassis")
+        axios.get(
+            getURL(Constants.ASSETS_MAIN_PATH, "getchassis")
         ).then(
             response => {
                 var instances = response.data.instances;

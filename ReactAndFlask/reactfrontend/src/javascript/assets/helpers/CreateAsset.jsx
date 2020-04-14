@@ -191,6 +191,11 @@ class CreateAsset extends React.Component {
                 "powerConnections": createInputs(AssetInput.POWER_CONNECTIONS, "Power Connections", false, "Choice of PDU port number (0 means not plugged in)"),
                 "assetNum": createInputs(AssetInput.ASSET_NUMBER, "Asset Number", false, "A six-digit serial number unique associated with an asset."),
             },
+
+            customCPU:"",
+            customColor:"",
+            customMemory:"",
+            customStorage:"",
         };
     }
 
@@ -223,7 +228,7 @@ class CreateAsset extends React.Component {
                         powerPortNames[modelKey] = parseInt(model.power_ports);
                     });
 
-                    this.setState({ loadingModels: false, modelList: modelNames, networkList: networkNames, powerPortList: powerPortNames });
+                    this.setState({ originalModels:models, loadingModels: false, modelList: modelNames, networkList: networkNames, powerPortList: powerPortNames });
                 });
     }
 
@@ -364,7 +369,7 @@ class CreateAsset extends React.Component {
         }
 
 
-        this.setState({ model: model, network_connections: networkConns }, () => { this.validateForm() });
+        this.setState({ model: model, network_connections: networkConns }, () => { this.validateForm(); this.restoreDefaults() });
     }
 
     updateHostname = (event) => {
@@ -519,6 +524,10 @@ class CreateAsset extends React.Component {
             "network_connections": (this.state.network_connections === null) ? {} : this.state.network_connections,
             "power_connections": this.getPowerConnections(),
             'asset_number': this.state.asset_number,
+            "cpu":this.state.customCPU,
+            "display_color":this.state.customColor,
+            "memory":this.state.customMemory,
+            "storage":this.state.customStorage,
         }
     }
 
@@ -557,6 +566,36 @@ class CreateAsset extends React.Component {
         } catch {
 
         }
+    }
+
+    cancelUpgrades = () => {
+        this.setState({ customizeModel: false }, () => { this.restoreDefaults() });
+    }
+
+    restoreDefaults = () => {
+        var currModel = null;
+        this.state.originalModels.map(model => {
+            if (this.state.model === model.vendor + " " + model.model_number) {
+                currModel = model;
+            }
+        });
+
+        if (currModel !== null && currModel !== undefined) {
+            this.setState({
+                customColor: currModel.display_color === null ? "#A52A2A" : currModel.display_color,
+                customCPU: currModel.cpu,
+                customMemory: currModel.memory,
+                customStorage: currModel.storage,
+            });
+        } else {
+            this.setState({
+                customColor: "#A52A2A",
+                customCPU: "",
+                customMemory: "",
+                customStorage: "",
+            });
+        }
+
     }
 
     render() {
@@ -703,7 +742,7 @@ class CreateAsset extends React.Component {
                                         <span>
                                             <CompactPicker
                                                 color={this.state.customColor}
-                                                onChange={color => { this.setState({ customColor: color.hex }) }}
+                                                onChange={color => { try { this.setState({ customColor: color.hex }) } catch { this.setState({ customColor:"#A52A2A" }) } }}
                                                 disabled={this.props.disabled}
                                             />
                                             <TextField disabled={this.props.disabled} label={"CPU"} value={this.state.customCPU} onChange={event => { this.setState({ customCPU: event.target.value }) }} />

@@ -9,8 +9,12 @@ import { withStyles } from '@material-ui/core/styles';
 import { Radio, RadioGroup, FormControl, FormControlLabel, FormHelperText } from '@material-ui/core';
 import { IconButton, Slide, InputLabel, MenuItem, Select } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
-import { Collapse, Modal, Backdrop } from '@material-ui/core';
+import { Modal, Backdrop } from '@material-ui/core';
 import Paper from '@material-ui/core/Paper';
+
+import PowerIcon from '@material-ui/icons/Power';
+import PowerOffIcon from '@material-ui/icons/PowerOff';
+import LoopIcon from '@material-ui/icons/Loop';
 
 import { AssetInput } from '../enums/AssetInputs.ts';
 import { AssetCommand } from '../enums/AssetCommands.ts'
@@ -145,7 +149,7 @@ class EditAsset extends React.Component {
             network_connections: null,
             power_connections: null,
             asset_number: -1,
-            blade_chassis: null,
+            blade_chassis: "BMI",
             blade_position: null,
             mount_type: null,
 
@@ -293,15 +297,17 @@ class EditAsset extends React.Component {
                     var modelNames = [];
                     var networkNames = {};
                     var powerPortNames = {};
+                    var mountType = {};
 
                     models.map(model => {
                         var modelKey = model.vendor + " " + model.model_number;
                         modelNames.push(modelKey);
                         networkNames[modelKey] = model.ethernet_ports;
                         powerPortNames[modelKey] = parseInt(model.power_ports);
+                        mountType[modelKey] = model.mount_type;
                     });
 
-                    this.setState({ loadingModels: false, modelList: modelNames, networkList: networkNames, powerPortList: powerPortNames });
+                    this.setState({ loadingModels: false, modelList: modelNames, networkList: networkNames, powerPortList: powerPortNames, mountTypes: mountType });
                 });
     }
 
@@ -1131,6 +1137,38 @@ class EditAsset extends React.Component {
                                         disabled={this.props.disabled}
                                     />
                                 </div>
+
+                                { this.state.blade_chassis.includes("BMI") ?
+                                <div className={classes.buttons}>
+                                    <Button
+                                        variant="contained"
+                                        startIcon={<PowerIcon />}
+                                        style={{
+                                            backgroundColor: "green",
+                                            color: "white"
+                                        }}
+                                    >
+                                        Power On
+                                    </Button>
+                                    <Button
+                                        variant="contained"
+                                        startIcon={<PowerOffIcon />}
+                                        style={{
+                                            backgroundColor: "black",
+                                            color: "white"
+                                        }}
+                                    >
+                                        Power Off
+                                    </Button>
+                                    <Button
+                                        variant="contained"
+                                        startIcon={<LoopIcon />}
+                                        color="primary"
+                                    >
+                                        Power Cycle
+                                    </Button>
+                                </div>
+                                : null }
                                 <div className={classes.buttons}>
                                     {this.props.disabled ? null :
                                         <Button

@@ -75,7 +75,7 @@ def search()
             "cpuOriginal": "CPU OF MODEL",
             "memory": MEMORY,
             "memoryOriginal": MEMORY OF MODEL,
-            "storage": "STORAGE",   
+            "storage": "STORAGE",  
             "storageOriginal": "STORAGE OF MODEL"
             "mount_type": "MOUNT TYPE (blade/chassis/rackmount)",
         },
@@ -98,8 +98,8 @@ def search()
             "cpuOriginal": "CPU OF MODEL",
             "memory": MEMORY,
             "memoryOriginal": MEMORY OF MODEL,
-            "storage": "STORAGE",   
-            "storageOriginal": "STORAGE OF MODEL"   
+            "storage": "STORAGE",  
+            "storageOriginal": "STORAGE OF MODEL"  
             "mount_type": "MOUNT TYPE (blade/chassis/rackmount)",
         },
         {
@@ -121,8 +121,8 @@ def search()
             "cpuOriginal": "CPU OF MODEL",
             "memory": MEMORY,
             "memoryOriginal": MEMORY OF MODEL,
-            "storage": "STORAGE",   
-            "storageOriginal": "STORAGE OF MODEL" 
+            "storage": "STORAGE",  
+            "storageOriginal": "STORAGE OF MODEL"
             "mount_type": "MOUNT TYPE (blade/chassis/rackmount)",
         }
     ]
@@ -168,7 +168,7 @@ def create()
     "display_color": "DISPLAY_COLOR",
     "cpu": "CPU",
     "memory": MEMORY,
-    "storage": "STORAGE", 
+    "storage": "STORAGE",
 }
 ```
 - Returns:
@@ -222,7 +222,7 @@ def edit()
     "display_color": "DISPLAY_COLOR",
     "cpu": "CPU",
     "memory": MEMORY,
-    "storage": "STORAGE", 
+    "storage": "STORAGE",
 }
 ```
 - Returns:
@@ -268,7 +268,7 @@ def detail_view()
             "cpuOriginal": "CPU OF MODEL",
             "memory": MEMORY,
             "memoryOriginal": MEMORY OF MODEL,
-            "storage": "STORAGE",   
+            "storage": "STORAGE",  
             "storageOriginal": "STORAGE OF MODEL"
             "mount_type": "MOUNT TYPE (blade/chassis/rackmount)",
         },
@@ -343,7 +343,7 @@ def get_all_chassis()
             "cpuOriginal": "CPU OF MODEL",
             "memory": MEMORY,
             "memoryOriginal": MEMORY OF MODEL,
-            "storage": "STORAGE",   
+            "storage": "STORAGE",  
             "storageOriginal": "STORAGE OF MODEL"
             "mount_type": "MOUNT TYPE (blade/chassis/rackmount)",
         },
@@ -366,8 +366,8 @@ def get_all_chassis()
             "cpuOriginal": "CPU OF MODEL",
             "memory": MEMORY,
             "memoryOriginal": MEMORY OF MODEL,
-            "storage": "STORAGE",   
-            "storageOriginal": "STORAGE OF MODEL"   
+            "storage": "STORAGE",  
+            "storageOriginal": "STORAGE OF MODEL"  
             "mount_type": "MOUNT TYPE (blade/chassis/rackmount)",
         },
         {
@@ -389,10 +389,92 @@ def get_all_chassis()
             "cpuOriginal": "CPU OF MODEL",
             "memory": MEMORY,
             "memoryOriginal": MEMORY OF MODEL,
-            "storage": "STORAGE",   
-            "storageOriginal": "STORAGE OF MODEL" 
+            "storage": "STORAGE",  
+            "storageOriginal": "STORAGE OF MODEL"
             "mount_type": "MOUNT TYPE (blade/chassis/rackmount)",
         }
     ]
+}
+```
+-----------------------------
+```language=python
+def set_chassis_port_state()
+```
+- REST Type: 'post'
+- Authentication Required: yes
+- Roled required: none
+- Endpoint: /instances/setChassisPortState
+- Arguments:
+```language=json
+{
+	"chassis": CHASSIS HOSTNAME,
+	"chassis_port_number": INT between 1-14,
+	"power_state": "on" or "off"
+}
+```
+- Returns:
+```language=json
+{
+    "message": "Success"
+}
+```
+-----------------------------
+```language=python
+def get_chassis_port_state()
+```
+- REST Type: 'get'
+- Authentication Required: yes
+- Roled required: none
+- Endpoint: /instances/getChassisPortState
+- Arguments:
+```language=json
+{
+    "chassis": CHASSIS HOSTNAME,
+    "chassis_port_number": INT between 1-14,
+}
+```
+- Returns:
+```language=json
+{
+  "message": "Success",
+  "metadata": "none",
+  "power_state": "ON" or "OFF"
+}
+```
+-----------------------------
+```language=python
+def get_all_chassis_port_states()
+```
+- REST Type: 'get'
+- Authentication Required: yes
+- Roled required: none
+- Endpoint: /instances/getAllChassisPortStates
+- Arguments:
+```language=json
+{
+    "chassis": CHASSIS HOSTNAME,
+}
+```
+- Returns:
+```language=json
+{
+  "message": "Success",
+  "metadata": "none",
+  "power_state": {
+    "1": "ON" or "OFF",
+    "10": "ON" or "OFF",
+    "11": "ON" or "OFF",
+    "12": "ON" or "OFF",
+    "13": "ON" or "OFF",
+    "14": "ON" or "OFF",
+    "2": "ON" or "OFF",
+    "3": "ON" or "OFF",
+    "4": "ON" or "OFF",
+    "5": "ON" or "OFF",
+    "6": "ON" or "OFF",
+    "7": "ON" or "OFF",
+    "8": "ON" or "OFF",
+    "9": "ON" or "OFF"
+  }
 }
 ```

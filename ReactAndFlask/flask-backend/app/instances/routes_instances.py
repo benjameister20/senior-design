@@ -286,7 +286,7 @@ def set_chassis_port_state():
     return addMessageToJSON(returnJSON, "Success")
 
 
-@instances.route("/instances/getChassisPortState", methods=["POST"])
+@instances.route("/instances/getChassisPortState", methods=["GET"])
 @requires_auth(request)
 def get_chassis_port_state():
     returnJSON = createJSON()
@@ -305,7 +305,7 @@ def get_chassis_port_state():
     return addMessageToJSON(returnJSON, "Success")
 
 
-@instances.route("/instances/getAllChassisPortStates", methods=["POST"])
+@instances.route("/instances/getAllChassisPortStates", methods=["GET"])
 @requires_auth(request)
 def get_all_chassis_port_states():
     returnJSON = createJSON()

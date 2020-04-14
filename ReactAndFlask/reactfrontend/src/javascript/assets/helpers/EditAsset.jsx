@@ -6,11 +6,10 @@ import { TextField, Button, Tooltip, CircularProgress, Grid } from "@material-ui
 import { Autocomplete, Alert } from '@material-ui/lab';
 import { withStyles } from '@material-ui/core/styles';
 import { Radio, RadioGroup, FormControl, FormControlLabel, FormHelperText } from '@material-ui/core';
-import { AppBar, Toolbar, IconButton, Slide, Dialog } from '@material-ui/core';
+import { IconButton, Slide, InputLabel, MenuItem, Select } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
-import { Collapse, Modal, Backdrop } from '@material-ui/core';
+import { Modal, Backdrop } from '@material-ui/core';
 
-import StatusDisplay from '../../helpers/StatusDisplay';
 import { AssetInput } from '../enums/AssetInputs.ts';
 import { AssetCommand } from '../enums/AssetCommands.ts'
 import getURL from '../../helpers/functions/GetURL';
@@ -129,6 +128,12 @@ class EditAsset extends React.Component {
             network_connections: null,
             power_connections: null,
             asset_number: -1,
+            blade_chassis: null,
+            blade_position: null,
+            mount_type: null,
+
+            chassisList: [],
+            mountTypes: null,
 
             selectedConnection: null,
 
@@ -159,12 +164,13 @@ class EditAsset extends React.Component {
                 "networkConnections": createInputs(AssetInput.NETWORK_CONNECTIONS, "Port Name", false, "For each network port, a reference to another network port on another piece of gear"),
                 "powerConnections": createInputs(AssetInput.POWER_CONNECTIONS, "Power Connections", false, "Choice of PDU port number (0 means not plugged in)"),
                 "assetNum": createInputs(AssetInput.ASSET_NUMBER, "Asset Number", false, "A six-digit serial number unique associated with an asset."),
+                "bladeChassis": createInputs(AssetInput.BLADE_CHASSIS, "Blade Chassis", false, "A reference to a blade chassis asset"),
+                "bladePosition": createInputs(AssetInput.BLADE_POSITION, "Blade Position", false, "An integer indicating the slot number of a blade"),
             },
         };
     }
 
     componentWillMount() {
-        console.log("comp did update");
         if ((this.props.defaultValues.model !== this.state.model
             || this.props.defaultValues.hostname !== this.state.hostname
             || this.props.defaultValues.rack !== this.state.rack
@@ -238,6 +244,24 @@ class EditAsset extends React.Component {
         this.getOwnerList();
         this.getDatacenterList();
         this.getAssetList();
+        this.getChassisList();
+    }
+
+    getChassisList = () => {
+        axios.post(
+            getURL(Constants.ASSETS_MAIN_PATH, "/getchassis")
+        ).then(
+            response => {
+                var instances = response.data.instances;
+                var instanceNames = [];
+
+                instances.map(instance => {
+                    instanceNames.push(instance.hostname);
+                });
+
+                this.setState({ chassisList: instanceNames });
+            }
+        )
     }
 
     getModelList = () => {
@@ -299,8 +323,8 @@ class EditAsset extends React.Component {
                     var datacenters = [];
                     response.data.datacenters.map(datacenter => {
                         if (this.props.privilege.datacenters.length > 0) {
-                            if (this.props.privilege.datacenters[0] === "*" || this.props.privilege.datacenters.includes(datacenter.abbreviation) || this.props.privilege.asset) {
-                                datacenters.push(datacenter.name);
+                            if (this.props.privilege.datacenters[0] === "*" || this.props.privilege.datacenters.includes(datacenter.abbreviation) || this.props.privilege.asset || this.props.privilege.admin) {
+                                datacenters.push(datacenter);
                             }
                         }
                     });
@@ -369,12 +393,22 @@ class EditAsset extends React.Component {
                     networkConns[port] = defaultNetworkPort;
                 });
             }
+
+            this.setState({ mount_type: this.state.mountTypes[model] });
         } else {
             var networkConns = {};
         }
 
 
         this.setState({ model: model, network_connections: networkConns }, () => { });
+    }
+
+    updateBladeChassis = (event) => {
+        this.setState({ blade_chassis: event.target.value });
+    }
+
+    updateBladePosition = (event) => {
+        this.setState({ blade_position: event.target.value });
     }
 
     updateHostname = (event) => {
@@ -399,7 +433,15 @@ class EditAsset extends React.Component {
     }
 
     updateDatacenter = (event) => {
-        this.setState({ datacenter_name: event.target.value }, () => { });
+        var isOffline = false;
+
+        this.state.datacenterList.map(dc => {
+            if (dc.name === event.target.value) {
+                isOffline = dc.is_offline_storage;
+            }
+        });
+
+        this.setState({ datacenter_name: event.target.value, datacenterIsOffline:isOffline }, () => { });
     }
 
     updateTags = (event) => {
@@ -497,6 +539,8 @@ class EditAsset extends React.Component {
             "network_connections": ((this.state.network_connections === null) ? {} : this.state.network_connections),
             "power_connections": this.getPowerConnections(),
             'asset_number': this.state.asset_number,
+            "blade_chassis": this.state.blade_chassis,
+            "blade_position": this.state.blade_position,
         }
     }
 
@@ -538,7 +582,7 @@ class EditAsset extends React.Component {
 
     displayNetworks = () => {
         var model = this.getModel();
-        return (this.state.networkList && this.state.networkList[model]);
+        return (this.state.networkList && this.state.networkList[model] && !this.state.datacenterIsOffline);
     }
 
     getNetworkConnections = () => {
@@ -691,6 +735,55 @@ class EditAsset extends React.Component {
                                             />}
                                     </Tooltip>
                                 </Grid>
+                                { this.state.mount_type === "blade" ?
+                                <Grid item xs={3}>
+                                    <Autocomplete
+                                        id="select-chassis"
+                                        options={this.state.chassisList}
+                                        includeInputInList
+                                        renderInput={params => (
+                                            <TextField
+                                                {...params}
+                                                label={this.state.inputs.bladeChassis.label}
+                                                name={this.state.inputs.bladeChassis.name}
+                                                onChange={this.updateBladeChassis}
+                                                onBlur={this.updateBladeChassis}
+                                                variant="outlined"
+                                                fullWidth
+                                                required
+                                            />
+                                        )}
+                                    />
+                                </Grid>
+                                : null }
+                                { this.state.mount_type === "blade" ?
+                                <Grid item xs={3}>
+                                    <InputLabel id="select-blade-position-label">Blade Position</InputLabel>
+                                    <Select
+                                        labelId="select-blade-position-label"
+                                        id="select-blade-position"
+                                        value={this.state.blade_position}
+                                        required={true}
+                                        onChange={this.updateBladePosition}
+                                        style={{ width: "100%" }}
+                                    >
+                                        <MenuItem value={1}>1</MenuItem>
+                                        <MenuItem value={2}>2</MenuItem>
+                                        <MenuItem value={3}>3</MenuItem>
+                                        <MenuItem value={4}>4</MenuItem>
+                                        <MenuItem value={5}>5</MenuItem>
+                                        <MenuItem value={6}>6</MenuItem>
+                                        <MenuItem value={7}>7</MenuItem>
+                                        <MenuItem value={8}>8</MenuItem>
+                                        <MenuItem value={9}>9</MenuItem>
+                                        <MenuItem value={10}>10</MenuItem>
+                                        <MenuItem value={11}>11</MenuItem>
+                                        <MenuItem value={12}>12</MenuItem>
+                                        <MenuItem value={13}>13</MenuItem>
+                                        <MenuItem value={14}>14</MenuItem>
+                                    </Select>
+                                </Grid>
+                                : null }
                                 <Grid item xs={3}>
                                     <Tooltip placement="top" open={this.state.inputs.owner.Tooltip} title={this.state.inputs.owner.description}>
                                         {this.props.disabled ?
@@ -735,7 +828,7 @@ class EditAsset extends React.Component {
                                             /> :
                                             <Autocomplete
                                                 id="input-datacenter"
-                                                options={this.state.datacenterList}
+                                                options={this.state.datacenterList.map(dc => dc.name)}
                                                 includeInputInList
                                                 value={this.state.datacenter_name}
                                                 renderInput={params => (
@@ -755,6 +848,7 @@ class EditAsset extends React.Component {
                                             />}
                                     </Tooltip>
                                 </Grid>
+                                {(this.state.datacenterIsOffline) ? null :
                                 <Grid item xs={3}>
                                     <Tooltip placement="top" open={this.state.inputs.rack.Tooltip} title={this.state.inputs.rack.description}>
                                         <TextField
@@ -770,7 +864,8 @@ class EditAsset extends React.Component {
                                             defaultValue={this.props.defaultValues.rack}
                                         />
                                     </Tooltip>
-                                </Grid>
+                                </Grid>}
+                                {(this.state.datacenterIsOffline) ? null :
                                 <Grid item xs={3}>
                                     <Tooltip placement="top" open={this.state.inputs.rackU.Tooltip} title={this.state.inputs.rackU.description}>
                                         <TextField
@@ -787,7 +882,7 @@ class EditAsset extends React.Component {
                                             value={this.state.rackU}
                                         />
                                     </Tooltip>
-                                </Grid>
+                                </Grid>}
                                 <Grid item xs={3}>
                                     <Tooltip placement="top" open={this.state.inputs.assetNum.Tooltip} title={this.state.inputs.assetNum.description}>
                                         <TextField
@@ -909,6 +1004,7 @@ class EditAsset extends React.Component {
                                 {(
                                     !(this.state.powerPortList
                                         && this.state.powerPortList[this.state.model])
+                                        || this.state.datacenterIsOffline
                                 ) ? null :
                                     Array.from({ length: this.state.powerPortList[this.state.model] }, (_, k) => (
                                         <Grid item xs={12}>

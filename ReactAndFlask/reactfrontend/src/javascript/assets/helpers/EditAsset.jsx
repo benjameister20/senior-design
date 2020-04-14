@@ -299,8 +299,8 @@ class EditAsset extends React.Component {
                     var datacenters = [];
                     response.data.datacenters.map(datacenter => {
                         if (this.props.privilege.datacenters.length > 0) {
-                            if (this.props.privilege.datacenters[0] === "*" || this.props.privilege.datacenters.includes(datacenter.abbreviation) || this.props.privilege.asset) {
-                                datacenters.push(datacenter.name);
+                            if (this.props.privilege.datacenters[0] === "*" || this.props.privilege.datacenters.includes(datacenter.abbreviation) || this.props.privilege.asset || this.props.privilege.admin) {
+                                datacenters.push(datacenter);
                             }
                         }
                     });
@@ -399,7 +399,15 @@ class EditAsset extends React.Component {
     }
 
     updateDatacenter = (event) => {
-        this.setState({ datacenter_name: event.target.value }, () => { });
+        var isOffline = false;
+
+        this.state.datacenterList.map(dc => {
+            if (dc.name === event.target.value) {
+                isOffline = dc.is_offline_storage;
+            }
+        });
+
+        this.setState({ datacenter_name: event.target.value, datacenterIsOffline:isOffline }, () => { });
     }
 
     updateTags = (event) => {
@@ -538,7 +546,7 @@ class EditAsset extends React.Component {
 
     displayNetworks = () => {
         var model = this.getModel();
-        return (this.state.networkList && this.state.networkList[model]);
+        return (this.state.networkList && this.state.networkList[model] && !this.state.datacenterIsOffline);
     }
 
     getNetworkConnections = () => {
@@ -735,7 +743,7 @@ class EditAsset extends React.Component {
                                             /> :
                                             <Autocomplete
                                                 id="input-datacenter"
-                                                options={this.state.datacenterList}
+                                                options={this.state.datacenterList.map(dc => dc.name)}
                                                 includeInputInList
                                                 value={this.state.datacenter_name}
                                                 renderInput={params => (
@@ -755,6 +763,7 @@ class EditAsset extends React.Component {
                                             />}
                                     </Tooltip>
                                 </Grid>
+                                {(this.state.datacenterIsOffline) ? null :
                                 <Grid item xs={3}>
                                     <Tooltip placement="top" open={this.state.inputs.rack.Tooltip} title={this.state.inputs.rack.description}>
                                         <TextField
@@ -770,7 +779,8 @@ class EditAsset extends React.Component {
                                             defaultValue={this.props.defaultValues.rack}
                                         />
                                     </Tooltip>
-                                </Grid>
+                                </Grid>}
+                                {(this.state.datacenterIsOffline) ? null :
                                 <Grid item xs={3}>
                                     <Tooltip placement="top" open={this.state.inputs.rackU.Tooltip} title={this.state.inputs.rackU.description}>
                                         <TextField
@@ -787,7 +797,7 @@ class EditAsset extends React.Component {
                                             value={this.state.rackU}
                                         />
                                     </Tooltip>
-                                </Grid>
+                                </Grid>}
                                 <Grid item xs={3}>
                                     <Tooltip placement="top" open={this.state.inputs.assetNum.Tooltip} title={this.state.inputs.assetNum.description}>
                                         <TextField
@@ -909,6 +919,7 @@ class EditAsset extends React.Component {
                                 {(
                                     !(this.state.powerPortList
                                         && this.state.powerPortList[this.state.model])
+                                        || this.state.datacenterIsOffline
                                 ) ? null :
                                     Array.from({ length: this.state.powerPortList[this.state.model] }, (_, k) => (
                                         <Grid item xs={12}>

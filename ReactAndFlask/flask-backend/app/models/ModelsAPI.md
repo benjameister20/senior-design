@@ -33,7 +33,8 @@ def create()
     "cpu": "CPU",
     "memory": "MEMORY",
     "storage": "STORAGE",
-    "comment": "COMMENT"
+    "comment": "COMMENT",
+    "mount_type": "MOUNT TYPE (blade, chassis, rackmount)"
 }
 ```
 - Returns:
@@ -153,7 +154,8 @@ def edit()
     "cpu": "CPU",
     "memory": "MEMORY",
     "storage": "STORAGE",
-    "comment": "COMMENT"
+    "comment": "COMMENT",
+    "mount_type": "MOUNT TYPE (blade, chassis, rackmount)"
 }
 ```
 - Returns:

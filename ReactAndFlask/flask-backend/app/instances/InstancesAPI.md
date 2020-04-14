@@ -69,6 +69,15 @@ def search()
             "network_connections": "NETWORK CONNECTIONS",
             "power_connections": "POWER CONNECTIONS",
             "asset_number": "ASSET NUMBER",  
+            "display_color": "DISPLAY_COLOR",
+            "display_colorOriginal": "DISPLAY COLOR OF MODEL",
+            "cpu": "CPU",
+            "cpuOriginal": "CPU OF MODEL",
+            "memory": MEMORY,
+            "memoryOriginal": MEMORY OF MODEL,
+            "storage": "STORAGE",   
+            "storageOriginal": "STORAGE OF MODEL"
+            "mount_type": "MOUNT TYPE (blade/chassis/rackmount)",
         },
         {
             "model":"MODEL",
@@ -83,6 +92,15 @@ def search()
             "network_connections": "NETWORK CONNECTIONS",
             "power_connections": "POWER CONNECTIONS",
             "asset_number": "ASSET NUMBER",  
+            "display_color": "DISPLAY_COLOR",
+            "display_colorOriginal": "DISPLAY COLOR OF MODEL",
+            "cpu": "CPU",
+            "cpuOriginal": "CPU OF MODEL",
+            "memory": MEMORY,
+            "memoryOriginal": MEMORY OF MODEL,
+            "storage": "STORAGE",   
+            "storageOriginal": "STORAGE OF MODEL"   
+            "mount_type": "MOUNT TYPE (blade/chassis/rackmount)",
         },
         {
             "model":"MODEL",
@@ -97,6 +115,15 @@ def search()
             "network_connections": "NETWORK CONNECTIONS",
             "power_connections": "POWER CONNECTIONS",
             "asset_number": "ASSET NUMBER",  
+            "display_color": "DISPLAY_COLOR",
+            "display_colorOriginal": "DISPLAY COLOR OF MODEL",
+            "cpu": "CPU",
+            "cpuOriginal": "CPU OF MODEL",
+            "memory": MEMORY,
+            "memoryOriginal": MEMORY OF MODEL,
+            "storage": "STORAGE",   
+            "storageOriginal": "STORAGE OF MODEL" 
+            "mount_type": "MOUNT TYPE (blade/chassis/rackmount)",
         }
     ]
 }
@@ -138,6 +165,10 @@ def create()
     }
     "power_connections": [ L3, R5, ... ]
     "asset_number": "ASSET NUMBER",  
+    "display_color": "DISPLAY_COLOR",
+    "cpu": "CPU",
+    "memory": MEMORY,
+    "storage": "STORAGE", 
 }
 ```
 - Returns:
@@ -188,6 +219,10 @@ def edit()
     "network_connections": "NETWORK CONNECTIONS",
     "power_connections": "POWER CONNECTIONS",
     "asset_number": "ASSET NUMBER",  
+    "display_color": "DISPLAY_COLOR",
+    "cpu": "CPU",
+    "memory": MEMORY,
+    "storage": "STORAGE", 
 }
 ```
 - Returns:
@@ -227,6 +262,15 @@ def detail_view()
             "network_connections": "NETWORK CONNECTIONS",
             "power_connections": "POWER CONNECTIONS",
             "asset_number": "ASSET NUMBER",  
+            "display_color": "DISPLAY_COLOR",
+            "display_colorOriginal": "DISPLAY COLOR OF MODEL",
+            "cpu": "CPU",
+            "cpuOriginal": "CPU OF MODEL",
+            "memory": MEMORY,
+            "memoryOriginal": MEMORY OF MODEL,
+            "storage": "STORAGE",   
+            "storageOriginal": "STORAGE OF MODEL"
+            "mount_type": "MOUNT TYPE (blade/chassis/rackmount)",
         },
     ]
 }
@@ -267,5 +311,88 @@ def get_barcode_labels()
 ```
 - Returns:
     PDF file of barcodes
-```
 -----------------------------
+```language=python
+def get_all_chassis()
+```
+- REST Type: 'get'
+- Authentication Required: yes
+- Roled required: none
+- Endpoint: /instances/getchassis
+- Arguments: None
+- Returns:
+```language=json
+{
+    "instances": [
+        {
+            "model":"MODEL",
+            "hostname":"HOSTNAME",
+            "rack":"RACK",
+            "rack_position":"RACK_U",
+            "owner":"OWNER",
+            "comment":"COMMENT"
+            "datacenter_id": "DATACENTER",
+            "tags": "TAGS",
+            "mac_address": "MAC ADDRESSES,
+            "network_connections": "NETWORK CONNECTIONS",
+            "power_connections": "POWER CONNECTIONS",
+            "asset_number": "ASSET NUMBER",  
+            "display_color": "DISPLAY_COLOR",
+            "display_colorOriginal": "DISPLAY COLOR OF MODEL",
+            "cpu": "CPU",
+            "cpuOriginal": "CPU OF MODEL",
+            "memory": MEMORY,
+            "memoryOriginal": MEMORY OF MODEL,
+            "storage": "STORAGE",   
+            "storageOriginal": "STORAGE OF MODEL"
+            "mount_type": "MOUNT TYPE (blade/chassis/rackmount)",
+        },
+        {
+            "model":"MODEL",
+            "hostname":"HOSTNAME",
+            "rack":"RACK",
+            "rack_position":"RACK_U",
+            "owner":"OWNER",
+            "comment":"COMMENT"
+            "datacenter_id": "DATACENTER",
+            "tags": "TAGS",
+            "mac_address": "MAC ADDRESSES,
+            "network_connections": "NETWORK CONNECTIONS",
+            "power_connections": "POWER CONNECTIONS",
+            "asset_number": "ASSET NUMBER",  
+            "display_color": "DISPLAY_COLOR",
+            "display_colorOriginal": "DISPLAY COLOR OF MODEL",
+            "cpu": "CPU",
+            "cpuOriginal": "CPU OF MODEL",
+            "memory": MEMORY,
+            "memoryOriginal": MEMORY OF MODEL,
+            "storage": "STORAGE",   
+            "storageOriginal": "STORAGE OF MODEL"   
+            "mount_type": "MOUNT TYPE (blade/chassis/rackmount)",
+        },
+        {
+            "model":"MODEL",
+            "hostname":"HOSTNAME",
+            "rack":"RACK",
+            "rack_position":"RACK_U",
+            "owner":"OWNER",
+            "comment":"COMMENT"
+            "datacenter_id": "DATACENTER",
+            "tags": "TAGS",
+            "mac_address": "MAC ADDRESSES,
+            "network_connections": "NETWORK CONNECTIONS",
+            "power_connections": "POWER CONNECTIONS",
+            "asset_number": "ASSET NUMBER",  
+            "display_color": "DISPLAY_COLOR",
+            "display_colorOriginal": "DISPLAY COLOR OF MODEL",
+            "cpu": "CPU",
+            "cpuOriginal": "CPU OF MODEL",
+            "memory": MEMORY,
+            "memoryOriginal": MEMORY OF MODEL,
+            "storage": "STORAGE",   
+            "storageOriginal": "STORAGE OF MODEL" 
+            "mount_type": "MOUNT TYPE (blade/chassis/rackmount)",
+        }
+    ]
+}
+```

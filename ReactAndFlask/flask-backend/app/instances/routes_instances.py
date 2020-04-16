@@ -10,6 +10,7 @@ from app.instances.asset_num_generator import AssetNumGenerator
 from app.instances.barcode_generator import BarcodeGenerator
 from app.instances.bmi_manager import BMIManager
 from app.instances.instance_manager import InstanceManager
+from app.instances.PDUNet98Pro import PDUNet98ProManager
 from app.logging.logger import Logger
 from flask import Blueprint, request, send_file
 
@@ -375,6 +376,53 @@ def get_all_chassis_port_states():
 #     )
 #
 #     return addMessageToJSON(returnJSON, "Success")
+
+
+@instances.route("/instances/getPDUPowerStates", methods=["GET"])
+@requires_auth(request)
+def get_pdu_power_states():
+    response_json = {}
+    request_data = request.json
+    rack_letter = request_data.get(Constants.PDU_RACK_LETTER)
+    rack_number = request_data.get(Constants.PDU_RACK_NUMBER)
+    rack_side = request_data.get(Constants.PDU_RACK_SIDE)
+
+    states = {}
+    try:
+        states = PDUNet98ProManager().get_pdu_power_states(
+            rack_letter=rack_letter, rack_number=rack_number, side=rack_side
+        )
+    except InvalidInputsError as e:
+        return addMessageToJSON(response_json, e.message)
+
+    response_json["states"] = states
+
+    return addMessageToJSON(response_json, "Success")
+
+
+@instances.route("/instances/setPDUPowerState", methods=["POST"])
+@requires_auth(request)
+def set_pdu_power_state():
+    response_json = {}
+    request_data = request.json
+    rack_letter = request_data.get(Constants.PDU_RACK_LETTER)
+    rack_number = request_data.get(Constants.PDU_RACK_NUMBER)
+    rack_side = request_data.get(Constants.PDU_RACK_SIDE)
+    rack_port = request_data.get(Constants.PDU_RACK_PORT)
+    rack_port_state = request_data.get(Constants.PDU_RACK_PORT_STATE)
+
+    try:
+        PDUNet98ProManager().set_pdu_power(
+            rack_letter=rack_letter,
+            rack_number=rack_number,
+            side=rack_side,
+            port=rack_port,
+            state=rack_port_state,
+        )
+    except InvalidInputsError as e:
+        return addMessageToJSON(response_json, e.message)
+
+    return addMessageToJSON(response_json, "Success")
 
 
 def createJSON() -> dict:

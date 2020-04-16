@@ -478,3 +478,75 @@ def get_all_chassis_port_states()
   }
 }
 ```
+-----------------------------
+```language=python
+def get_pdu_power_states()
+```
+- REST Type: 'get'
+- Authentication Required: yes
+- Roled required: none
+- Endpoint: /instances/getPDUPowerStates
+- Arguments:
+```language=json
+{
+    "rack_letter": CAPITAL LETTER FOR RACK A-E,
+    "rack_number": INT 1-19,
+    "rack_side": "L" or "R"
+}
+```
+- Returns:
+```language=json
+{
+  "message": "Success",
+  "states": {
+        "1": "ON" or "OFF",
+        "2": "ON" or "OFF",
+        "3": "ON" or "OFF",
+        "4": "ON" or "OFF",
+        "5": "ON" or "OFF",
+        "6": "ON" or "OFF",
+        "7": "ON" or "OFF",
+        "8": "ON" or "OFF",
+        "9": "ON" or "OFF",
+        "10": "ON" or "OFF",
+        "11": "ON" or "OFF",
+        "12": "ON" or "OFF",
+        "13": "ON" or "OFF",
+        "14": "ON" or "OFF",
+        "15": "ON" or "OFF",
+        "16": "ON" or "OFF",
+        "17": "ON" or "OFF",
+        "18": "ON" or "OFF",
+        "19": "ON" or "OFF",
+        "20": "ON" or "OFF",
+        "21": "ON" or "OFF",
+        "22": "ON" or "OFF",
+        "23": "ON" or "OFF",
+        "24": "ON" or "OFF",
+  }
+}
+```
+-----------------------------
+```language=python
+def set_pdu_power_state()
+```
+- REST Type: 'post'
+- Authentication Required: yes
+- Roled required: none
+- Endpoint: /instances/setPDUPowerState
+- Arguments:
+```language=json
+{
+    "rack_letter": CAPITAL LETTER FOR RACK A-E,
+    "rack_number": INT 1-19,
+    "rack_side": "L" or "R",
+    "rack_port": INT 1-24 ,
+    "rack_port_state": "on" or "off"
+}
+```
+- Returns:
+```language=json
+{
+  "message": "Success"
+}
+```

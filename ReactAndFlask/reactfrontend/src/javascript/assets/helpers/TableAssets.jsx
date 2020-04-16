@@ -493,7 +493,11 @@ class TableAsset extends React.Component {
 							<Typography className={classes.title} color="inherit" variant="subtitle1">
 								{this.state.selectedItems.length} {this.state.selectedItems.length === 1 ? "label" : "labels"} ready to be generated
 							</Typography>
-						) : null}
+						) :
+							<Typography className={classes.title} color="inherit" variant="subtitle1">
+								Click asset rows to prepare them for label generation
+							</Typography>
+						}
 
 
 						<Tooltip title="Generate Labels">
@@ -502,7 +506,7 @@ class TableAsset extends React.Component {
 								color="primary"
 								startIcon={<NoteAddIcon />}
 								onClick={() => this.generateLabels()}
-								disabled={this.state.selectedItems.length > 0}
+								disabled={this.state.selectedItems.length < 1}
 							>
 								Generate Labels
       							</Button>

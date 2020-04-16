@@ -637,6 +637,7 @@ class TableAsset extends React.Component {
 						fetchAllAssets={this.fetchAllAssets}
 						changePlanName={this.props.changePlanName}
 						showDecommissioned={this.state.assetType === decomType}
+						showStatus={this.showStatusBar}
 					/> : null}
 				<SpeedDial
 					ariaLabel="SpeedDial openIcon example"

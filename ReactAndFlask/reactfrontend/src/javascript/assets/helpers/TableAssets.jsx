@@ -103,8 +103,8 @@ function createDecData(model, hostname, datacenter_name, rack, owner, asset_numb
 }
 
 const headCells = [
-	{ id: 'datacenter_name', numeric: false, label: "Datacenter", align: "left" },
 	{ id: 'hostname', numeric: false, label: "Hostname", align: "left" },
+	{ id: 'datacenter_name', numeric: false, label: "Datacenter", align: "left" },
 	{ id: 'model', numeric: false, label: "Model", align: "left" },
 	{ id: 'rack', numeric: false, label: "Rack", align: "left" },
 	{ id: 'owner', numeric: false, label: "Owner", align: "left" },
@@ -593,8 +593,8 @@ class TableAsset extends React.Component {
 														inputProps={{ 'aria-labelledby': labelId }}
 													/>
 												</TableCell>}
-												<TableCell component="th" id={labelId} scope="row">{row.datacenter_name}</TableCell>
 												<TableCell align="left">{row.hostname}</TableCell>
+												<TableCell component="th" id={labelId} scope="row">{row.datacenter_name}</TableCell>
 												<TableCell align="left">{row.model}</TableCell>
 												<TableCell align="left">{row.rack}</TableCell>
 												<TableCell align="left">{row.owner}</TableCell>

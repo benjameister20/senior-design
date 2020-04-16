@@ -39,7 +39,7 @@ class InstanceValidator:
             return self.rackmount_validation(instance, -1, model_template, dc_template)
 
     def edit_instance_validation(self, instance, original_asset_number):
-        basic_val_result = self.basic_validations(instance, -1)
+        basic_val_result = self.basic_validations(instance, original_asset_number)
         if basic_val_result != Constants.API_SUCCESS:
             return basic_val_result
 
@@ -84,6 +84,8 @@ class InstanceValidator:
 
             if duplicate_hostname is not None:
                 if duplicate_hostname.asset_number != original_asset_number:
+                    print("DUPLICATE NUMBER", duplicate_hostname.asset_number)
+                    print("ORIGINAL NUMBER", original_asset_number)
                     return f"An asset with hostname {duplicate_hostname.hostname} already exists. Please provide a unique hostname."
 
             if len(instance.hostname) > 64:

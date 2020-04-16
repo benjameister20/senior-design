@@ -78,13 +78,26 @@ class InstanceManager:
         if asset_number == "":
             raise InvalidInputsError("Must provide an asset number")
 
-        delete_power_result = self.delete_power_connections(asset_number)
+        asset = self.table.get_instance_by_asset_number(asset_number)
+        if asset is None:
+            raise InvalidInputsError(
+                "The asset you are trying to delete was not found."
+            )
+
+        if asset.mount_type == Constants.CHASIS_KEY:
+            blade_list = self.table.get_blades_by_chassis_hostname(asset.hostname)
+            if blade_list is not None:
+                raise InvalidInputsError(
+                    "A blade chassis must be empty before it can be decommissioned or deleted."
+                )
+
+        delete_power_result = self.delete_power_connections(asset)
         if delete_power_result != Constants.API_SUCCESS:
             raise InvalidInputsError(
                 "An error occurred when trying to remove power connections."
             )
 
-        delete_connection_result = self.delete_connections(asset_number)
+        delete_connection_result = self.delete_connections(asset)
         if delete_connection_result != Constants.API_SUCCESS:
             raise InvalidInputsError(delete_connection_result)
 
@@ -369,8 +382,7 @@ class InstanceManager:
 
         return Constants.API_SUCCESS
 
-    def delete_connections(self, asset_number):
-        asset = self.table.get_instance_by_asset_number(asset_number)
+    def delete_connections(self, asset):
         if asset is None:
             return "Failed to find the asset to delete"
 
@@ -418,8 +430,7 @@ class InstanceManager:
         self.rack_table.edit_rack(rack)
         return Constants.API_SUCCESS
 
-    def delete_power_connections(self, asset_number):
-        instance = self.table.get_instance_by_asset_number(asset_number)
+    def delete_power_connections(self, instance):
         if instance is None:
             return "Asset could not be found."
 

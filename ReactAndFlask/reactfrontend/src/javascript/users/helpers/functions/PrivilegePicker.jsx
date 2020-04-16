@@ -42,9 +42,6 @@ export default function PrivilegePicker(props) {
 		defaultDCs = props.defaultPrivileges.datacenters
 	}
 
-	console.log("default privileges");
-	console.log(props.defaultPrivileges);
-
 	return (
 		<span>
 			<Typography>Privileges</Typography>

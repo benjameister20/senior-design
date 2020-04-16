@@ -100,6 +100,7 @@ class DetailAsset extends React.Component {
                         username={this.props.username}
                         fetchAllAssets={this.props.fetchAllAssets}
                         isDecommissioned={this.props.isDecommissioned}
+                        showStatus={this.props.showStatus}
                     />
                     {this.props.asset.hostname !== undefined && this.props.asset.hostname !== "" ?
                         <NetworkGraph

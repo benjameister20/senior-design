@@ -97,7 +97,6 @@ export default class UsersView extends React.Component {
     }
 
     createUser = (username, password, display_name, email, privileges, completion) => {
-        console.log(makeCreateJSON(username, password, display_name, email, privileges));
         axios.post(
             getURL(Constants.USERS_MAIN_PATH, UserCommand.create),
             makeCreateJSON(username, password, display_name, email, privileges)
@@ -135,7 +134,6 @@ export default class UsersView extends React.Component {
     }
 
     searchUsers = (filters) => {
-        console.log(filters);
         axios.post(
             getURL(Constants.USERS_MAIN_PATH, UserCommand.search),
             filters,
@@ -161,7 +159,6 @@ export default class UsersView extends React.Component {
     getPrivileges = () => {
         axios.get(getURL(Constants.PERMISSIONS_MAIN_PATH, PrivilegeCommand.GET_PRIVILEGES)).then(
             response => {
-                console.log(response);
                 try {
                     this.setState({
                         allDCPrivileges: response.data.datacenters,
@@ -178,7 +175,6 @@ export default class UsersView extends React.Component {
     }
 
     setDisplayStatus = (open, message, severity) => {
-        console.log(severity);
         this.setState({ statusOpen: open, statusMessage: message, statusSeverity: severity });
     }
 
@@ -211,6 +207,8 @@ export default class UsersView extends React.Component {
     }
 
     processResponse = (response, successMessage, failureMessage) => {
+        console.log("message:");
+        console.log(response.data.message);
         if (response.data.message === UserConstants.USER_SUCCESS_TOKEN) {
             this.setDisplayStatus(true, successMessage, UserConstants.USER_SUCCESS_TOKEN);
             this.searchUsers(blankSearch);

@@ -92,19 +92,18 @@ class FilterAsset extends React.Component {
     search = () => {
         var items = [];
         try {
-            console.log(this.props.showDecommissioned);
             if (this.props.assetType === "decommissioned") {
                 this.props.decAssets.map(asset => {
                     var startDate = new Date(this.state.startDate === "" || parseInt(this.state.startDate) < 2000 ? "01/01/2001" : this.state.startDate + " 00:00:00");
                     var endDate = new Date(this.state.endDate === "" || parseInt(this.state.endDate) < 2000 ? "12/31/2025" : this.state.endDate + " 23:59:59");
                     var decDate = new Date(asset.timestamp);
                     if (
-                        (asset.datacenter_name.includes(this.state.datacenter) || asset.abbreviation.includes(this.state.datacenter))
-                        && (asset.vendor + asset.model_number).includes(this.state.model)
-                        && asset.hostname.includes(this.state.hostname)
+                        (asset.datacenter_name.toLowerCase().includes(this.state.datacenter.toLowerCase()) || asset.abbreviation.toLowerCase().includes(this.state.datacenter.toLowerCase()))
+                        && (asset.vendor + asset.model_number).toLowerCase().includes(this.state.model.toLowerCase())
+                        && asset.hostname.toLowerCase().includes(this.state.hostname.toLowerCase())
                         && asset.rack >= this.state.startingLetter + "" + this.state.startingNum
                         && asset.rack <= this.state.endingLetter + "" + this.state.endingNum
-                        && asset.decommission_user.includes(this.state.user)
+                        && asset.decommission_user.toLowerCase().includes(this.state.user.toLowerCase())
                         && decDate >= startDate
                         && decDate <= endDate
                     ) {
@@ -115,9 +114,9 @@ class FilterAsset extends React.Component {
             } else if (this.props.assetType == "active") {
                 this.props.allAssets.map(asset => {
                     if (
-                        (asset.datacenter_name.includes(this.state.datacenter) || asset.abbreviation.includes(this.state.datacenter))
-                        && asset.model.includes(this.state.model)
-                        && asset.hostname.includes(this.state.hostname)
+                        (asset.datacenter_name.toLowerCase().includes(this.state.datacenter.toLowerCase()) || asset.abbreviation.toLowerCase().includes(this.state.datacenter.toLowerCase()))
+                        && asset.model.toLowerCase().includes(this.state.model.toLowerCase())
+                        && asset.hostname.toLowerCase().includes(this.state.hostname.toLowerCase())
                         && asset.rack >= this.state.startingLetter + "" + this.state.startingNum
                         && asset.rack <= this.state.endingLetter + "" + this.state.endingNum
                     ) {
@@ -136,9 +135,9 @@ class FilterAsset extends React.Component {
             } else if (this.props.assetType === "offline") {
                 this.props.allAssets.map(asset => {
                     if (
-                        (asset.datacenter_name.includes(this.state.datacenter) || asset.abbreviation.includes(this.state.datacenter))
-                        && asset.model.includes(this.state.model)
-                        && asset.hostname.includes(this.state.hostname)
+                        (asset.datacenter_name.toLowerCase().includes(this.state.datacenter.toLowerCase()) || asset.abbreviation.toLowerCase().includes(this.state.datacenter.toLowerCase()))
+                        && asset.model.toLowerCase().includes(this.state.model.toLowerCase())
+                        && asset.hostname.toLowerCase().includes(this.state.hostname.toLowerCase())
                     ) {
                         var offline = false;
                         this.state.datacenterList.map(dc => {

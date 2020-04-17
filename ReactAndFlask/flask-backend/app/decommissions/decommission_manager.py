@@ -40,11 +40,11 @@ class DecommissionManager:
             )
 
             try:
-                self.decommission_table.add_decommission(decommission)
                 asset_data = {
                     Constants.ASSET_NUMBER_KEY: asset_number,
                 }
                 self.instance_manager.delete_instance(asset_data)
+                self.decommission_table.add_decommission(decommission)
             except:
                 raise InvalidInputsError(
                     "An error occurred when attempting to decommission the asset."

@@ -656,6 +656,7 @@ class EditAsset extends React.Component {
                     if (response.data.message === "success") {
                         this.props.close();
                         this.props.fetchAllAssets();
+                        this.props.showStatus(true, "success", "Successfully deleted asset");
                     } else {
                         this.setState({ statusOpen: true, statusMessage: response.data.message, statusSeverity: AssetConstants.ERROR_TOKEN });
                     }
@@ -682,7 +683,7 @@ class EditAsset extends React.Component {
                 response => {
                     if (response.data.message === AssetConstants.SUCCESS_TOKEN) {
                         this.props.incrementChangePlanStep();
-                        this.setState({ statusOpen: true, statusMessage: "Successfully saved decommission", statusSeverity: AssetConstants.SUCCESS_TOKEN });
+                        this.props.showStatus(true, "success", "Successfully decommissioned asset");
                     } else {
                         this.setState({ statusOpen: true, statusMessage: response.data.message, statusSeverity: AssetConstants.ERROR_TOKEN });
                     }
@@ -699,6 +700,7 @@ class EditAsset extends React.Component {
                     if (response.data.message === "success") {
                         this.props.close();
                         this.props.fetchAllAssets();
+                        this.props.showStatus(true, "success", "Successfully decommissioned asset");
                     } else {
                         this.setState({ statusOpen: true, statusMessage: response.data.message, statusSeverity: AssetConstants.ERROR_TOKEN });
                     }

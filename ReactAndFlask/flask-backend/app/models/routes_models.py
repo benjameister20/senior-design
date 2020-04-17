@@ -42,6 +42,8 @@ def create():
 
     try:
         model_data = request.get_json()
+        print("MODEL DATA REQUEST")
+        print(model_data)
         MODEL_MANAGER.create_model(model_data)
 
         return addMessageToJSON(returnJSON, Constants.API_SUCCESS)

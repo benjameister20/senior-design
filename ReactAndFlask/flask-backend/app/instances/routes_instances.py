@@ -379,7 +379,7 @@ def get_all_chassis_port_states():
 
 
 @instances.route("/instances/getPDUPowerStates", methods=["GET"])
-@requires_auth(request)
+# @requires_auth(request)
 def get_pdu_power_states():
     response_json = {}
     request_data = request.json
@@ -401,7 +401,7 @@ def get_pdu_power_states():
 
 
 @instances.route("/instances/setPDUPowerState", methods=["POST"])
-@requires_auth(request)
+# @requires_auth(request)
 def set_pdu_power_state():
     response_json = {}
     request_data = request.json

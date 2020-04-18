@@ -149,7 +149,7 @@ class EditAsset extends React.Component {
             network_connections: null,
             power_connections: null,
             asset_number: -1,
-            blade_chassis: "BMI",
+            blade_chassis: "",
             blade_position: null,
             mount_type: null,
 

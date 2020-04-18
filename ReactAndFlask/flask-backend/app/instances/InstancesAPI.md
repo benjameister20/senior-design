@@ -78,6 +78,8 @@ def search()
             "storage": "STORAGE",  
             "storageOriginal": "STORAGE OF MODEL"
             "mount_type": "MOUNT TYPE (blade/chassis/rackmount)",
+	    "chassis_hostname": "CHASSIS HOSTNAME",
+	    "chassis_slot": BLADE POSITION IN CHASSIS
         },
         {
             "model":"MODEL",
@@ -101,6 +103,8 @@ def search()
             "storage": "STORAGE",  
             "storageOriginal": "STORAGE OF MODEL"  
             "mount_type": "MOUNT TYPE (blade/chassis/rackmount)",
+	    "chassis_hostname": "CHASSIS HOSTNAME",
+	    "chassis_slot": BLADE POSITION IN CHASSIS	    
         },
         {
             "model":"MODEL",
@@ -124,6 +128,8 @@ def search()
             "storage": "STORAGE",  
             "storageOriginal": "STORAGE OF MODEL"
             "mount_type": "MOUNT TYPE (blade/chassis/rackmount)",
+	    "chassis_hostname": "CHASSIS HOSTNAME",
+	    "chassis_slot": BLADE POSITION IN CHASSIS	
         }
     ]
 }
@@ -145,7 +151,6 @@ def create()
     "owner":"OWNER",
     "comment":"COMMENT"
     "datacenter_name": "DATACENTER",
-    "tags": "TAGS",
     "network_connections": {
         PORT_NAME_1: {
             "mac_address":MAC_ADDRESS,
@@ -169,6 +174,8 @@ def create()
     "cpu": "CPU",
     "memory": MEMORY,
     "storage": "STORAGE",
+    "chassis_hostname": "CHASSIS HOSTNAME",
+    "chassis_slot": BLADE POSITION IN CHASSIS    
 }
 ```
 - Returns:
@@ -223,6 +230,8 @@ def edit()
     "cpu": "CPU",
     "memory": MEMORY,
     "storage": "STORAGE",
+    "chassis_hostname": "CHASSIS HOSTNAME",
+    "chassis_slot": BLADE POSITION IN CHASSIS        
 }
 ```
 - Returns:
@@ -271,6 +280,8 @@ def detail_view()
             "storage": "STORAGE",  
             "storageOriginal": "STORAGE OF MODEL"
             "mount_type": "MOUNT TYPE (blade/chassis/rackmount)",
+	    "chassis_hostname": "CHASSIS HOSTNAME",
+	    "chassis_slot": BLADE POSITION IN CHASSIS    	    
         },
     ]
 }
@@ -346,6 +357,8 @@ def get_all_chassis()
             "storage": "STORAGE",  
             "storageOriginal": "STORAGE OF MODEL"
             "mount_type": "MOUNT TYPE (blade/chassis/rackmount)",
+	    "chassis_hostname": "CHASSIS HOSTNAME",
+	    "chassis_slot": BLADE POSITION IN CHASSIS    
         },
         {
             "model":"MODEL",
@@ -369,6 +382,8 @@ def get_all_chassis()
             "storage": "STORAGE",  
             "storageOriginal": "STORAGE OF MODEL"  
             "mount_type": "MOUNT TYPE (blade/chassis/rackmount)",
+	    "chassis_hostname": "CHASSIS HOSTNAME",
+	    "chassis_slot": BLADE POSITION IN CHASSIS    
         },
         {
             "model":"MODEL",
@@ -392,6 +407,8 @@ def get_all_chassis()
             "storage": "STORAGE",  
             "storageOriginal": "STORAGE OF MODEL"
             "mount_type": "MOUNT TYPE (blade/chassis/rackmount)",
+	    "chassis_hostname": "CHASSIS HOSTNAME",
+	    "chassis_slot": BLADE POSITION IN CHASSIS    
         }
     ]
 }

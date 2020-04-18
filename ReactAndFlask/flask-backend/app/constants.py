@@ -81,6 +81,12 @@ class Constants:
     CHASSIS_KEY = "chassis"
     CHASSIS_PORT_KEY = "chassis_port_number"
     POWER_STATE_KEY = "power_state"
+    CSV_CHASSIS_NUMBER = "chassis_number"
+    CSV_CHASSIS_SLOT = "slot_number"
+    CSV_CUSTOM_DISPLAY_COLOR = "custom_display_color"
+    CSV_CUSTOM_CPU = "custom_cpu"
+    CSV_CUSTOM_MEMORY = "custom_memory"
+    CSV_CUSTOM_STORAGE = "custom_storage"
 
     PDU_NET_PRO_HOST = "http://hyposoft-mgt.colab.duke.edu"
     PDU_NET_PRO_PORT = "8000"
@@ -105,6 +111,7 @@ class Constants:
     NAME_ORIG_KEY = "nameOriginal"
 
     CSV_DC_NAME_KEY = "datacenter"
+    CSV_OFFLINE_SITE_KEY = "offline_site"
 
     # Connection CSV KEYS
     CSV_SRC_HOST = "src_hostname"

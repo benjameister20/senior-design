@@ -118,7 +118,7 @@ class DatacenterTable:
 
         return datacenter.identifier
 
-    def get_datacenter_id_by_abbreviation(self, abbreviation: str) -> Optional[int]:
+    def get_datacenter_id_by_abbreviation(self, abbreviation: str):
         datacenter: DatacenterEntry = DatacenterEntry.query.filter_by(
             abbreviation=abbreviation
         ).first()

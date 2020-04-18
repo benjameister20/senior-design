@@ -71,7 +71,7 @@ class DatacenterDoesNotExistError(Exception):
     """
 
     def __init__(self, name: str):
-        self.message: str = f"Datacenter {name} does not exist."
+        self.message: str = f"Site {name} does not exist."
 
 
 def _get_csv():
@@ -102,10 +102,12 @@ def _make_network_connections(model: Model):
 
 
 def _make_instance_from_csv(csv_row: Dict[str, Any]) -> Instance:
+    # print(csv_row)
     for key in csv_row.keys():
         if csv_row[key] == "None":
             csv_row[key] = ""
 
+    # Parse Power Connections
     power_connections = []
     if csv_row[Constants.CSV_POWER_PORT_1] != "":
         power_connections.append(csv_row[Constants.CSV_POWER_PORT_1])
@@ -113,20 +115,39 @@ def _make_instance_from_csv(csv_row: Dict[str, Any]) -> Instance:
     if csv_row[Constants.CSV_POWER_PORT_2] != "":
         power_connections.append(csv_row[Constants.CSV_POWER_PORT_2])
 
-    print("POWER CONNECTIS")
-    print(power_connections)
+    # Parse Mount Type + Location (Datacenter, Offline site, or Chassis)
+    rack_label = ""
+    rack_position = -1
+    datacenter_id = -1
+    print(f"DATACENTER = {csv_row[Constants.CSV_DC_NAME_KEY]}")
+    print(csv_row)
+    if csv_row[Constants.CSV_DC_NAME_KEY] != "":
+        datacenter_id = DCTABLE.get_datacenter_id_by_abbreviation(
+            csv_row[Constants.CSV_DC_NAME_KEY]
+        )
+        if datacenter_id is None:
+            print("didn't find it")
+            raise DatacenterDoesNotExistError(csv_row[Constants.CSV_DC_NAME_KEY])
+        rack_label = csv_row[Constants.RACK_KEY]
+        rack_position = csv_row[Constants.RACK_POSITION_KEY]
+    elif csv_row[Constants.CSV_OFFLINE_SITE_KEY] != "":
+        datacenter_id = DCTABLE.get_datacenter_id_by_abbreviation(
+            csv_row[Constants.CSV_OFFLINE_SITE_KEY]
+        )
+        if datacenter_id is None:
+            raise DatacenterDoesNotExistError(csv_row[Constants.CSV_DC_NAME_KEY])
 
-    print("Datacenter name")
-    print(csv_row[Constants.CSV_DC_NAME_KEY])
-    print("START")
-    datacenter_id = DCTABLE.get_datacenter_id_by_abbreviation(
-        csv_row[Constants.CSV_DC_NAME_KEY]
-    )
-    print("FINISHED")
-    print(datacenter_id)
-    if datacenter_id is None:
-        raise DatacenterDoesNotExistError(csv_row[Constants.CSV_DC_NAME_KEY])
+    chassis_hostname = ""
+    chassis_slot = -1
+    # if not (csv_row[Constants.CSV_CHASSIS_NUMBER] == ""):  # Indicates asset is a blade
+    #     chassis_number = csv_row[Constants.CSV_CHASSIS_NUMBER]
+    #     print(f"CHASSIS NUMBER: {chassis_number}")
+    #     chassis = InstanceTable().get_instance_by_asset_number(chassis_number)
+    #     if chassis is not None:
+    #         chassis_hostname = chassis.hostname
+    #         chassis_slot = csv_row[Constants.CSV_CHASSIS_SLOT]
 
+    # Parse model information
     model_id = MODELTABLE.get_model_id_by_vendor_number(
         csv_row[Constants.VENDOR_KEY], csv_row[Constants.MODEL_NUMBER_KEY]
     )
@@ -140,17 +161,14 @@ def _make_instance_from_csv(csv_row: Dict[str, Any]) -> Instance:
         raise ModelDoesNotExistError(
             csv_row[Constants.VENDOR_KEY], csv_row[Constants.MODEL_NUMBER_KEY]
         )
+    mount_type = model.mount_type
     network_connections = _make_network_connections(model)
-
-    # asset_number = 567890
-    # if csv_row[Constants.ASSET_NUMBER_KEY] == "":
-    #     asset_number = ASSETNUMGEN.get_next_asset_number()
 
     return Instance(
         model_id=model_id,
         hostname=csv_row[Constants.HOSTNAME_KEY],
-        rack_label=csv_row[Constants.RACK_KEY],
-        rack_position=csv_row[Constants.RACK_POSITION_KEY],
+        rack_label=rack_label,
+        rack_position=rack_position,
         owner=csv_row[Constants.OWNER_KEY],
         comment=csv_row[Constants.COMMENT_KEY],
         datacenter_id=datacenter_id,
@@ -159,6 +177,13 @@ def _make_instance_from_csv(csv_row: Dict[str, Any]) -> Instance:
         asset_number=csv_row[Constants.ASSET_NUMBER_KEY]
         if csv_row[Constants.ASSET_NUMBER_KEY] != ""
         else ASSETNUMGEN.get_next_asset_number(),
+        mount_type=mount_type,
+        display_color=csv_row[Constants.CSV_CUSTOM_DISPLAY_COLOR],
+        cpu=csv_row[Constants.CSV_CUSTOM_CPU],
+        memory=csv_row[Constants.CSV_CUSTOM_MEMORY],
+        storage=csv_row[Constants.CSV_CUSTOM_STORAGE],
+        chassis_hostname=chassis_hostname,
+        chassis_slot=chassis_slot,
     )
 
 
@@ -188,6 +213,9 @@ def _parse_model_csv(csv_input) -> Tuple[int, int, int]:
             model: Model = Model.from_csv(csv_row=values)
         except KeyError:
             raise InvalidFormatError(message="Columns are missing.")
+
+        if model.mount_type == Constants.BLADE_KEY:
+            model.height = 1
 
         validation: str = model_validator.create_model_validation(model=model)
         if (
@@ -255,24 +283,51 @@ def _parse_instance_csv(csv_input) -> Tuple[int, int, int]:
             print(str(e))
             raise InvalidFormatError(message="Columns are missing.")
 
+        # print("")
+        # print(instance)
+        # print("ADJUSTING FOR CHASSIS")
+        # print("")
+        #  Set chassis hostname and slot within an instance if it is a blade
+        if values[Constants.CSV_CHASSIS_NUMBER] != "":  # Indicates asset is a blade
+            chassis_number = values[Constants.CSV_CHASSIS_NUMBER]
+            # print(f"CHASSIS NUMBER: {chassis_number}")
+            chassis = InstanceTable().get_instance_by_asset_number(chassis_number)
+            if chassis is not None:  # Chassis already existed
+                instance.chassis_hostname = chassis.hostname
+                instance.chassis_slot = int(values[Constants.CSV_CHASSIS_SLOT])
+                instance.datacenter_id = chassis.datacenter_id
+            else:  # Chassis is either being created in this import or doesn't exist
+                found = False
+                for inst in instances:
+                    # print(inst)
+                    if inst.asset_number == chassis_number:
+                        instance.chassis_hostname = inst.hostname
+                        instance.chassis_slot = int(values[Constants.CSV_CHASSIS_SLOT])
+                        instance.datacenter_id = inst.datacenter_id
+                        found = True
+                if not found:
+                    raise InstanceDoesNotExistError(
+                        f"Chassis {chassis_number} does not exist"
+                    )
+
         # validation: str = instance_validator.edit_instance_validation(
         #     instance=instance,
         #     original_asset_number=instance.asset_number
         # )
         # print(validation)
-        dc_id = DCTABLE.get_datacenter_id_by_abbreviation(
-            values[Constants.CSV_DC_NAME_KEY]
-        )
-        if dc_id is None:
-            raise DatacenterDoesNotExistError(values[Constants.CSV_DC_NAME_KEY])
+        # dc_id = DCTABLE.get_datacenter_id_by_abbreviation(
+        #     values[Constants.CSV_DC_NAME_KEY]
+        # )
+        # if dc_id is None:
+        #     raise DatacenterDoesNotExistError(values[Constants.CSV_DC_NAME_KEY])
 
-        existing_instance = instance_table.get_instance_by_rack_location(
-            values[Constants.RACK_KEY], values[Constants.RACK_POSITION_KEY], dc_id
+        existing_instance = instance_table.get_instance_by_asset_number(
+            instance.asset_number
         )
 
         if existing_instance is None:
             validation: str = instance_validator.create_instance_validation(
-                instance=instance
+                instance=instance, queue=instances
             )
             if (
                 validation != "success"
@@ -283,17 +338,23 @@ def _parse_instance_csv(csv_input) -> Tuple[int, int, int]:
 
         instances.append(instance)
 
+    print("\n\n\n")
+    print(instances)
+    print("\n\n\n")
+
+    print("ADDING TO DB")
     added, updated, ignored = 0, 0, 0
     for instance in instances:
+        print(instance)
         # Write to database
-        try:
-            add, update, ignore = instance_table.add_or_update(instance=instance)
-            added += add
-            updated += update
-            ignored += ignore
-        except (RackDoesNotExistError, DBWriteException):
-            print("I BROKE HERE")
-            raise
+        # try:
+        add, update, ignore = instance_table.add_or_update(instance=instance)
+        added += add
+        updated += update
+        ignored += ignore
+        # except (RackDoesNotExistError, DBWriteException):
+        #     print("I BROKE HERE")
+        #     raise
 
     return added, updated, ignored
 
@@ -410,7 +471,6 @@ def import_models_csv():
     except TooFewInputsError as e:
         return {"message": f"Too few inputs in CSV line {e.message}"}
     except DBWriteException:
-        raise
         return {"message": "Error writing to database."}
 
     return {
@@ -434,10 +494,12 @@ def import_instances_csv():
         return {"message": f"Too few inputs in CSV line {e.message}"}
     except (RackDoesNotExistError, ModelDoesNotExistError, InvalidFormatError) as e:
         return {"message": f"{e.message}"}
-    except DBWriteException:
-        return {"message": "Error writing to database."}
+    # except DBWriteException:
+    #     return {"message": "Error writing to database."}
     except DatacenterDoesNotExistError as e:
         return {"message": f"The datacenter {e.message} does not exist"}
+    except InstanceDoesNotExistError as e:
+        return {"message": e.message}
 
     return {
         "message": "success",

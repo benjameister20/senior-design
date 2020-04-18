@@ -23,3 +23,6 @@ class Datacenter:
             "name": self.name,
             Constants.DC_IS_OFFLINE_KEY: self.is_offline_storage,
         }
+
+    def __str__(self):
+        return f"Name: {self.name}\nAbbrev: {self.abbreviation}\nOffline: {self.is_offline_storage}"

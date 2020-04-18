@@ -1,6 +1,8 @@
 from typing import List, Optional, Tuple
 
-from app.dal.database import DBWriteException, db
+from app.constants import Constants
+from app.dal.database import db
+from app.dal.datacenter_table import DatacenterTable
 from app.dal.exceptions.ChangeModelDBException import ChangeModelDBException
 from app.dal.rack_table import RackEntry
 from app.data_models.instance import Instance
@@ -175,6 +177,8 @@ class InstanceTable:
     def add_or_update(self, instance: Instance) -> Tuple[int, int, int]:
         """" Adds a model or updates it if it already exists """
         instance_entry: InstanceEntry = InstanceEntry(instance=instance)
+        site = DatacenterTable().get_datacenter(instance.datacenter_id)
+        print(site)
 
         try:
             result: InstanceEntry = InstanceEntry.query.filter_by(
@@ -199,7 +203,11 @@ class InstanceTable:
                 rack_result: RackEntry = RackEntry.query.filter_by(
                     label=instance.rack_label, datacenter_id=instance.datacenter_id
                 ).first()
-                if rack_result is not None:
+                if (
+                    rack_result is not None
+                    or site.is_offline_storage
+                    or instance.mount_type == Constants.BLADE_KEY
+                ):
                     db.session.add(instance_entry)
                 else:
                     raise RackDoesNotExistError(rack_label=instance.rack_label)
@@ -209,10 +217,10 @@ class InstanceTable:
             return int(add), int(update), int(ignore)
         except RackDoesNotExistError:
             raise
-        except:
-            raise DBWriteException(
-                message=f"Failed to udpate asset {instance.rack_label} {instance.rack_position}"
-            )
+        # except:
+        #     raise DBWriteException(
+        #         message=f"Failed to udpate asset {instance.rack_label} {instance.rack_position}"
+        #     )
 
     def delete_instance(self, instance: Instance) -> None:
         """ Removes an instance from the database """

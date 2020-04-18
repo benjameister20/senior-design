@@ -127,6 +127,8 @@ def get_rack_details():
             datacenter_name=datacenter_name,
         )
 
+        return {"racks": racks}
+
         pdf_file: str = DiagramManager().generate_diagram(rack_details=racks)
         return {Constants.MESSAGE_KEY: "success", "link": pdf_file}
     except KeyError:

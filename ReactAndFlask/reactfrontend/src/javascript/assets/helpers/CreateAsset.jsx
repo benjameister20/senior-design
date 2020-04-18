@@ -229,8 +229,8 @@ class CreateAsset extends React.Component {
     }
 
     getChassisList = () => {
-        axios.post(
-            getURL(Constants.ASSETS_MAIN_PATH, "/getchassis")
+        axios.get(
+            getURL(Constants.ASSETS_MAIN_PATH, "getchassis")
         ).then(
             response => {
                 var instances = response.data.instances;
@@ -656,6 +656,7 @@ class CreateAsset extends React.Component {
                                         options={this.state.modelList}
                                         includeInputInList
                                         style={{ display: "inline-block" }}
+                                        onSelect={this.updateModel}
                                         renderInput={params => (
                                             <TextField
                                                 {...params}
@@ -663,8 +664,6 @@ class CreateAsset extends React.Component {
                                                 name={this.state.inputs.model.name}
                                                 onChange={this.updateModel}
                                                 onBlur={this.updateModel}
-
-
                                                 required
                                             />
                                         )}

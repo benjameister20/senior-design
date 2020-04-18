@@ -64,7 +64,13 @@ const inputs = {
     "memory": createInputs('memory', "Memory"),
     "storage": createInputs('storage', "Storage"),
     "comment": createInputs('comment', "Comment"),
-}
+};
+
+const mountTypeLookup = {
+    "rackmount": "Rack Mounted",
+    "chassis": "Blade Chassis",
+    "blade": "Blade",
+};
 
 class ModelsTable extends React.Component {
     constructor(props) {
@@ -87,17 +93,17 @@ class ModelsTable extends React.Component {
                 detailViewLoading: false,
 
                 detailedValues : {
-                        'vendor': '',
-                        'model_number': '',
-                        'mount_type': '',
-                        'height': '',
-                        'display_color': '',
-                        'ethernet_ports': [],
-                        'power_ports': '',
-                        'cpu': '',
-                        'memory': '',
-                        'storage': '',
-                        'comment': '',
+                    'vendor': '',
+                    'model_number': '',
+                    'mount_type': '',
+                    'height': '',
+                    'display_color': '',
+                    'ethernet_ports': [],
+                    'power_ports': '',
+                    'cpu': '',
+                    'memory': '',
+                    'storage': '',
+                    'comment': '',
                 },
 
                 originalVendor: '',
@@ -303,6 +309,14 @@ class ModelsTable extends React.Component {
                                             ) : (
                                                 <TableCell scope="row" align="center"></TableCell>
                                             );
+                                        }
+
+                                        if (key == "Mount Type") {
+                                            return (
+                                            <TableCell scope="row" align="center">
+                                                {mountTypeLookup[row[key]]}
+                                            </TableCell>
+                                        );
                                         }
 
                                         return (

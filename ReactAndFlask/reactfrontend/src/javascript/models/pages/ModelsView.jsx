@@ -168,15 +168,15 @@ export default class ModelsView extends React.Component {
         this.getVendorList();
     }
 
-    createModel = (networkPorts) => {
+    createModel = (networkPorts, mountType, color) => {
         axios.post(
             getURL(modelsMainPath, ModelCommand.create),
             {
                 'vendor': this.state.createdModel[ModelInput.Vendor],
                 'model_number': this.state.createdModel[ModelInput.model_number],
-                'mount_type': this.state.createdModel[ModelInput.mount_type],
+                'mount_type': mountType,
                 'height': this.state.createdModel[ModelInput.Height],
-                'display_color': this.state.createdModel[ModelInput.display_color],
+                'display_color': color,
                 'ethernet_ports': this.state.createdModel[ModelInput.ethernet_ports],
                 'power_ports': this.state.createdModel[ModelInput.power_ports],
                 'cpu': this.state.createdModel[ModelInput.CPU],

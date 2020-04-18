@@ -98,9 +98,9 @@ def create():
 
     try:
         instance_data = request.get_json()
+        print("REQUEST DATA")
+        print(instance_data)
         error = INSTANCE_MANAGER.create_instance(instance_data)
-        print("ERROR")
-        print(type(error))
         if error is not None:
             print(error)
             print("YEEHAW")

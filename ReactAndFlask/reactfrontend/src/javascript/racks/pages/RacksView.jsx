@@ -125,6 +125,13 @@ class RacksView extends React.Component {
         this.setState({ showConfirmationBox: false });
     }
 
+    sortRacks = (rack1, rack2) => {
+      var num1 = parseInt(rack1.substr(1));
+      var num2 = parseInt(rack2.substr(1));
+
+      return num1 > num2;
+    }
+
     render() {
         const { classes } = this.props;
         return (
@@ -151,7 +158,7 @@ class RacksView extends React.Component {
                         >
                             {Object.keys(this.props.racks).sort().map(key => {
                                 return (<StyledTreeItem nodeId={key} label={key}>
-                                        {this.props.racks[key].map(value => {
+                                        {this.props.racks[key].sort(this.sortRacks).map(value => {
                                             return (<StyledTreeItem nodeId={value} label={value} />);
                                         })}
                                     </StyledTreeItem>);

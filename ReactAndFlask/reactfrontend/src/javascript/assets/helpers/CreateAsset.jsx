@@ -656,6 +656,7 @@ class CreateAsset extends React.Component {
                                         options={this.state.modelList}
                                         includeInputInList
                                         style={{ display: "inline-block" }}
+                                        onSelect={this.updateModel}
                                         renderInput={params => (
                                             <TextField
                                                 {...params}
@@ -663,8 +664,6 @@ class CreateAsset extends React.Component {
                                                 name={this.state.inputs.model.name}
                                                 onChange={this.updateModel}
                                                 onBlur={this.updateModel}
-
-
                                                 required
                                             />
                                         )}
@@ -672,6 +671,7 @@ class CreateAsset extends React.Component {
                                 </Tooltip>
 
                                 {this.state.mount_type === "blade" ?
+                                    <div>
                                     <Autocomplete
                                         id="select-chassis"
                                         options={this.state.chassisList}
@@ -685,22 +685,18 @@ class CreateAsset extends React.Component {
                                                 onChange={this.updateBladeChassis}
                                                 onBlur={this.updateBladeChassis}
                                                 variant="outlined"
-                                                fullWidth
                                                 required
                                             />
                                         )}
                                     />
-                                    : null}
-                                {this.state.mount_type === "blade" ?
-                                    <span>
-                                        <InputLabel id="select-blade-position-label">Blade Position</InputLabel>
+                                    <InputLabel id="select-blade-position-label">Blade Position</InputLabel>
                                         <Select
                                             labelId="select-blade-position-label"
                                             id="select-blade-position"
                                             value={this.state.blade_position}
                                             required={true}
                                             onChange={this.updateBladePosition}
-                                            style={{ width: "100%" }}
+                                            style={{ display: "inline-block", width: "20%" }}
                                         >
                                             <MenuItem value={1}>1</MenuItem>
                                             <MenuItem value={2}>2</MenuItem>
@@ -717,7 +713,8 @@ class CreateAsset extends React.Component {
                                             <MenuItem value={13}>13</MenuItem>
                                             <MenuItem value={14}>14</MenuItem>
                                         </Select>
-                                    </span> : null}
+                                    </div>
+                                    : null}
 
                                 <Tooltip placement="top" open={this.state.inputs.owner.Tooltip} title={this.state.inputs.owner.description}>
                                     <Autocomplete
@@ -732,8 +729,6 @@ class CreateAsset extends React.Component {
                                                 name={this.state.inputs.owner.name}
                                                 onChange={this.updateOwner}
                                                 onBlur={this.updateOwner}
-
-
                                             />
                                         )}
                                     />

@@ -53,12 +53,14 @@ const useStyles = theme => ({
       },
 });
 
+const blackColor = {'hsl': {'h': 0, 's': 0, 'l': 0, 'a': 1}, 'hex': '#000000', 'rgb': {'r': 0, 'g': 0, 'b': 0, 'a': 1}, 'hsv': {'h': 0, 's': 0, 'v': 0, 'a': 1}, 'oldHue': 0};
+
 class CreateModel extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            color: '#A52A2A',
+            color: blackColor,
             showModal: false,
             showImportModal: false,
             importedFile: null,
@@ -91,8 +93,9 @@ class CreateModel extends React.Component {
 
     create = (event) => {
         event.preventDefault();
-        this.props.createModel(this.state.networkPorts);
+        this.props.createModel(this.state.networkPorts, this.state.mountType, this.state.color.hex);
         this.closeModal();
+        this.updateColor(blackColor);
     }
 
     uploadFile = () => {
@@ -102,7 +105,6 @@ class CreateModel extends React.Component {
     }
 
     chooseFile = (event) => {
-        console.log(event);
         this.setState({ importedFile: event.target.files[0] })
     }
 

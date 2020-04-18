@@ -130,6 +130,12 @@ class InstanceManager:
             if original_asset_number is None:
                 raise InvalidInputsError("Unable to find the asset to edit.")
 
+            original_asset = self.table.get_instance_by_asset_number(
+                original_asset_number
+            )
+            if original_asset is None:
+                raise InvalidInputsError("Could not find asset to update.")
+
             new_instance = self.make_instance(instance_data)
             if type(new_instance) is InvalidInputsError:
                 return new_instance
@@ -169,6 +175,17 @@ class InstanceManager:
             raise InvalidInputsError(edit_connection_result)
 
         self.table.edit_instance(new_instance, original_asset_number)
+
+        if (
+            new_instance.mount_type == Constants.CHASIS_KEY
+            and original_asset.hostname != new_instance.hostname
+        ):
+            blade_list = self.table.get_blades_by_chassis_hostname(
+                original_asset.hostname
+            )
+            for blade in blade_list:
+                blade.chassis_hostname = new_instance.hostname
+                self.table.edit_instance(blade, blade.asset_number)
 
     def get_instances(self, filter, dc_name, limit: int):
         model_name = filter.get(Constants.MODEL_KEY)

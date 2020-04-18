@@ -198,7 +198,7 @@ class UserManager:
 
         self.USER_TABLE.delete_user(user)
 
-        return self.__add_message_to_JSON(response, "Successfully deleted user")
+        return self.__add_message_to_JSON(response, "success")
 
     def edit(self, request):
 

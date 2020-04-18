@@ -103,8 +103,8 @@ function createDecData(model, hostname, datacenter_name, rack, owner, asset_numb
 }
 
 const headCells = [
-	{ id: 'datacenter_name', numeric: false, label: "Datacenter", align: "left" },
 	{ id: 'hostname', numeric: false, label: "Hostname", align: "left" },
+	{ id: 'datacenter_name', numeric: false, label: "Datacenter", align: "left" },
 	{ id: 'model', numeric: false, label: "Model", align: "left" },
 	{ id: 'rack', numeric: false, label: "Rack", align: "left" },
 	{ id: 'owner', numeric: false, label: "Owner", align: "left" },
@@ -127,7 +127,7 @@ class TableAsset extends React.Component {
 			selectedItems: [],
 			allSelected: false,
 			decAssets: [],
-			offlineAssets:[],
+			offlineAssets: [],
 
 			detailStatusOpen: false,
 			detailStatusSeverity: '',
@@ -176,38 +176,38 @@ class TableAsset extends React.Component {
 						console.log(instances);
 
 						axios.post(
-                            getURL("changeplans/", AssetCommand.CHANGE_PLAN_GET_ACTIONS), {
-                                'change_plan_id': this.props.changePlanID,
-                                'owner': this.props.username,
-                            }).then(response => {
-                                var actions = response.data.change_plan_actions;
-								console.log(actions);
+							getURL("changeplans/", AssetCommand.CHANGE_PLAN_GET_ACTIONS), {
+							'change_plan_id': this.props.changePlanID,
+							'owner': this.props.username,
+						}).then(response => {
+							var actions = response.data.change_plan_actions;
+							console.log(actions);
 
-								var assetNums = [];
-								actions.forEach(action => {
-									var assetNum = action.asset_numberOriginal;
-									assetNums.push(assetNum);
-								});
+							var assetNums = [];
+							actions.forEach(action => {
+								var assetNum = action.asset_numberOriginal;
+								assetNums.push(assetNum);
+							});
 
-								console.log(assetNums);
+							console.log(assetNums);
 
-								var newInstances = instances.filter(instance => {
-									return !assetNums.includes(instance.asset_number);
-								});
+							var newInstances = instances.filter(instance => {
+								return !assetNums.includes(instance.asset_number);
+							});
 
-								console.log(newInstances);
+							console.log(newInstances);
 
-								actions.forEach(action => {
-									if (action.action !== "decommission") {
-										newInstances.push(action.new_record);
-									}
-								});
+							actions.forEach(action => {
+								if (action.action !== "decommission") {
+									newInstances.push(action.new_record);
+								}
+							});
 
-								newInstances.map(asset => {
-									items.push(createData(asset.model, asset.hostname, asset.datacenter_name, asset.rack + " U" + asset.rack_position, asset.owner, asset.asset_number));
-								});
-								this.setState({ allAssets: newInstances, tableItems: items });
-                            });
+							newInstances.map(asset => {
+								items.push(createData(asset.model, asset.hostname, asset.datacenter_name, asset.rack + " U" + asset.rack_position, asset.owner, asset.asset_number));
+							});
+							this.setState({ allAssets: newInstances, tableItems: items });
+						});
 					});
 			this.getDecommissionedAssets();
 		} else {
@@ -493,20 +493,24 @@ class TableAsset extends React.Component {
 							<Typography className={classes.title} color="inherit" variant="subtitle1">
 								{this.state.selectedItems.length} {this.state.selectedItems.length === 1 ? "label" : "labels"} ready to be generated
 							</Typography>
-						) : null}
+						) :
+							<Typography className={classes.title} color="inherit" variant="subtitle1">
+								Click asset rows to prepare them for label generation
+							</Typography>
+						}
 
-						{this.state.selectedItems.length > 0 ? (
-							<Tooltip title="Generate Labels">
-								<Button
-									variant="contained"
-									color="primary"
-									startIcon={<NoteAddIcon />}
-									onClick={() => this.generateLabels()}
-								>
-									Generate Labels
+
+						<Tooltip title="Generate Labels">
+							<Button
+								variant="contained"
+								color="primary"
+								startIcon={<NoteAddIcon />}
+								onClick={() => this.generateLabels()}
+								disabled={this.state.selectedItems.length < 1}
+							>
+								Generate Labels
       							</Button>
-							</Tooltip>
-						) : null}
+						</Tooltip>
 					</Toolbar>
 					<TableContainer component={Paper}>
 						<Table className={classes.table} aria-label="customized table" style={{
@@ -587,20 +591,20 @@ class TableAsset extends React.Component {
 												key={row.assetNum}
 												role="checkbox"
 											>
-												{this.state.assetType===decomType ? null : <TableCell padding="checkbox">
+												{this.state.assetType === decomType ? null : <TableCell padding="checkbox">
 													<Checkbox
 														checked={this.state.selectedItems.indexOf(row.asset_number) !== -1}
 														inputProps={{ 'aria-labelledby': labelId }}
 													/>
 												</TableCell>}
-												<TableCell component="th" id={labelId} scope="row">{row.datacenter_name}</TableCell>
 												<TableCell align="left">{row.hostname}</TableCell>
+												<TableCell component="th" id={labelId} scope="row">{row.datacenter_name}</TableCell>
 												<TableCell align="left">{row.model}</TableCell>
 												<TableCell align="left">{row.rack}</TableCell>
 												<TableCell align="left">{row.owner}</TableCell>
 												<TableCell align="right">{row.asset_number}</TableCell>
-												{this.state.assetType===decomType ? <TableCell align="right">{row.decommission_user}</TableCell> : null}
-												{this.state.assetType===decomType ? <TableCell align="right">{row.timestamp}</TableCell> : null}
+												{this.state.assetType === decomType ? <TableCell align="right">{row.decommission_user}</TableCell> : null}
+												{this.state.assetType === decomType ? <TableCell align="right">{row.timestamp}</TableCell> : null}
 												<TableCell align="center">
 													<Button
 														color="primary"
@@ -628,11 +632,12 @@ class TableAsset extends React.Component {
 						changePlanID={this.props.changePlanID}
 						changePlanStep={this.props.changePlanStep}
 						incrementChangePlanStep={this.props.incrementChangePlanStep}
-						disabled={(!(this.props.privilege.admin || this.props.privilege.asset || this.props.privilege.datacenters.includes(this.state.detailAsset.datacenter_name)) || this.state.assetType===decomType)}
+						disabled={(!(this.props.privilege.admin || this.props.privilege.asset || this.props.privilege.datacenters.includes(this.state.detailAsset.datacenter_name)) || this.state.assetType === decomType)}
 						username={this.props.username}
 						fetchAllAssets={this.fetchAllAssets}
 						changePlanName={this.props.changePlanName}
-						showDecommissioned={this.state.assetType===decomType}
+						showDecommissioned={this.state.assetType === decomType}
+						showStatus={this.showStatusBar}
 					/> : null}
 				<SpeedDial
 					ariaLabel="SpeedDial openIcon example"

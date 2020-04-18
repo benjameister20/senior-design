@@ -15,6 +15,7 @@ import ShowDatacenters from "../helpers/functions/ShowDatacenters";
 import RacksView from './RacksView';
 import { RackCommand } from "../enums/RackCommands.ts";
 import StatusDisplay from '../../helpers/StatusDisplay';
+import RackDiagrams from "../helpers/RackDiagrams";
 
 
 const racksMainPath = 'racks/';
@@ -284,6 +285,9 @@ class DatacenterView extends React.Component {
                             <RacksView
                                 datacenter={this.state.selectedDatacenter}
                                 racks={this.state.racks}
+                            />
+                            <RackDiagrams
+                                datacenter_name={this.state.selectedDatacenter}
                             />
                         </Grid>
                     </Grid>}

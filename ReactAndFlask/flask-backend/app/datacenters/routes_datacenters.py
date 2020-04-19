@@ -87,7 +87,7 @@ def edit():
         dc_data = request.get_json()
         error = DATACENTER_MANAGER.edit_datacenter(dc_data)
         if error is not None:
-            return addMessageToJSON(returnJSON, error.message)
+            return addMessageToJSON(returnJSON, error)
         return addMessageToJSON(returnJSON, Constants.API_SUCCESS)
     except InvalidInputsError as e:
         return addMessageToJSON(returnJSON, e.message)

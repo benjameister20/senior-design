@@ -2,7 +2,7 @@ import React from "react";
 import Graph from "react-graph-vis";
 import axios from "axios";
 
-import { Typography } from '@material-ui/core';
+import { Typography, Paper } from '@material-ui/core';
 
 import { AssetCommand } from "../enums/AssetCommands.ts";
 import getURL from "../../helpers/functions/GetURL"
@@ -28,6 +28,14 @@ import * as Constants from "../../Constants";
 //      "host3": ["host5", "host7", "host9", "host11"]
 // }
 
+const useStyles = theme => ({
+
+    div: {
+        width: "70%",
+        margin: "0 auto",
+    },
+});
+
 function getGraph(primaryHosts, host) {
     if (host === "") {
         return {};
@@ -49,6 +57,8 @@ function getGraph(primaryHosts, host) {
     var primaryHostID = 1;
 
     try {
+        console.log("nodes and edges");
+        console.log(primaryHosts);
         Object.entries(primaryHosts).map(([primaryHost, secondaryHosts]) => {
             if (primaryHost !== "message" && primaryHost !== "" && primaryHost !== "metadata") {
                 if (hostnameMapping[primaryHost] !== undefined) {
@@ -64,6 +74,7 @@ function getGraph(primaryHosts, host) {
                     edges.push({ from: primaryHostID, to: hostID });
                     hostnameMapping[primaryHost] = primaryHostID;
                 }
+                console.log("nodes and edges");
                 var secondaryHostID = primaryHostID + 1;
                 try {
                     secondaryHosts.map(secondaryHost => {
@@ -88,13 +99,19 @@ function getGraph(primaryHosts, host) {
 
                 }
 
+                console.log("nodes and edges");
                 primaryHostID = secondaryHostID + 1;
             }
         });
 
+        console.log("nodes and edges");
+        console.log(nodes);
+        console.log(edges);
         return { nodes: nodes, edges: edges };
 
     } catch (Exception) {
+        console.log("in here")
+        console.log(Exception);
         return { nodes: [], edges: [] }
     }
 }
@@ -144,27 +161,34 @@ class NetworkGraph extends React.Component {
 
         return (
             <span>
-                {this.props.isDecommissioned ?
-                    <Graph
-                        graph={getGraph(this.props.decomAsset.network_neighborhood, this.props.host)}
-                        options={options}
-                        events={events}
-                        getNetwork={network => {
-                            //  if you want access to vis.js network api you can set the state in a parent component using this property
-                        }}
-                    />
-                    :
-                    this.state.graph.edges.length === 0 ?
-                        <Typography>This asset is not currently connected to any other assets</Typography> :
+                <Paper elevation={3} style={{
+                    div: {
+                        width: "70%",
+                        margin: "0 auto",
+                    },
+                }}>
+                    {this.props.isDecommissioned ?
                         <Graph
-                            graph={this.state.graph}
+                            graph={getGraph(this.props.decomAsset.network_neighborhood, this.props.host)}
                             options={options}
                             events={events}
                             getNetwork={network => {
                                 //  if you want access to vis.js network api you can set the state in a parent component using this property
                             }}
                         />
-                }
+                        :
+                        this.state.graph.edges.length === 0 ?
+                            <Typography>{this.props.isDecommissioned ? "This asset was not connected to any other assets" : "This asset is not currently connected to any other assets"}</Typography> :
+                            <Graph
+                                graph={this.state.graph}
+                                options={options}
+                                events={events}
+                                getNetwork={network => {
+                                    //  if you want access to vis.js network api you can set the state in a parent component using this property
+                                }}
+                            />
+                    }
+                </Paper>
             </span>
         );
     }

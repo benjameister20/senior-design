@@ -244,6 +244,7 @@ class Instance:
         json_data[Constants.VENDOR_KEY] = vendor
         json_data[Constants.MODEL_NUMBER_KEY] = model_number
         json_data[Constants.CSV_CHASSIS_NUMBER] = chassis_number
+        json_data[Constants.CSV_CHASSIS_SLOT] = json_data[Constants.CHASSIS_SLOT_KEY]
         json_data[Constants.CSV_CUSTOM_DISPLAY_COLOR] = json_data[
             Constants.DISPLAY_COLOR_KEY
         ]

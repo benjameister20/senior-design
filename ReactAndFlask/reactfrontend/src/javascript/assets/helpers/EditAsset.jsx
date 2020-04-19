@@ -1143,7 +1143,7 @@ class EditAsset extends React.Component {
                                     />
                                 </div>
 
-                                { this.state.blade_chassis.includes("BMI") ?
+                                { (this.state.blade_chassis !== undefined && this.state.blade_chassis.includes("BMI")) ?
                                 <div className={classes.buttons}>
                                     <Button
                                         variant="contained"

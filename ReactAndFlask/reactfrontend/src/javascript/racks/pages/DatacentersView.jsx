@@ -21,23 +21,23 @@ import RackDiagrams from "../helpers/RackDiagrams";
 const racksMainPath = 'racks/';
 
 function createRackElem(color, title, index, assetNum, textColor) {
-	return { color, title, index, assetNum, textColor };
+    return { color, title, index, assetNum, textColor };
 }
 
 function createRack(rackTitle, racks) {
-	return { rackTitle, racks }
+    return { rackTitle, racks }
 }
 
 function sort(a, b) {
-	if (a.rackTitle > b.rackTitle) return 1;
-	if (a.rackTitle < b.rackTitle) return -1;
-	return 0;
+    if (a.rackTitle > b.rackTitle) return 1;
+    if (a.rackTitle < b.rackTitle) return -1;
+    return 0;
 }
 
 function sortRack(a, b) {
-	if (a.index > b.index) return -1;
-	if (a.index < b.index) return 1;
-	return 0;
+    if (a.index > b.index) return -1;
+    if (a.index < b.index) return 1;
+    return 0;
 }
 
 
@@ -201,82 +201,100 @@ class DatacenterView extends React.Component {
     }
 
 
+    getChassisData = (rackTitle, rack) => {
+        axios.post(getURL(Constants.ASSETS_MAIN_PATH, "getbladesbychassis/"),
+        {
+            "blade_chassis":"",
+        }
+        ).then(response => {
+            var blades = response.data.instances;
 
+        })
+    }
 
 
     createDiagram = (startL, stopL, startN, stopN) => {
-		axios.post(getURL(Constants.RACKS_MAIN_PATH, "details/"),
-			{
-				"start_letter": startL,
-				"stop_letter": stopL,
-				"start_number": startN,
-				"stop_number": stopN,
-				"datacenter_name": this.state.selectedDatacenter,
-			}
-		).then(
-			response => {
-				var assets = response.data.racks[0][startL + startN];
-				var rack = [];
+        axios.post(getURL(Constants.RACKS_MAIN_PATH, "details/"),
+            {
+                "start_letter": startL,
+                "stop_letter": stopL,
+                "start_number": startN,
+                "stop_number": stopN,
+                "datacenter_name": this.state.selectedDatacenter,
+            }
+        ).then(
+            response => {
+                var assets = response.data.racks[0][startL + startN];
+                var rack = [];
 
-				for (let rackPos = 1; rackPos <= 42; rackPos++) {
-					if (assets.length > 0) {
-						var asset = assets[0];
-						if (asset.rack_position === rackPos) {
-							for (let assetHeight = 0; assetHeight < asset.height; assetHeight++) {
-								var title = asset.model + ",  ";
-								title += ((asset.hostname === "") ? "#" + asset.asset_number : asset.hostname);
+                var numChassis = 0;
+                for (let rackPos = 1; rackPos <= 42; rackPos++) {
+                    if (assets.length > 0) {
+                        var asset = assets[0];
+                        if (asset.rack_position === rackPos) {
+                            for (let assetHeight = 0; assetHeight < asset.height; assetHeight++) {
+                                var title = asset.model + ",  ";
+                                title += ((asset.hostname === "") ? "#" + asset.asset_number : asset.hostname);
                                 if (asset.mount_type === "chassis") {
-                                    title += "";
+                                    //numChassis++;
                                 }
-                                title = (assetHeight === Math.floor(asset.height/2)) ? title : "";
+                                title = (assetHeight === Math.floor(asset.height / 2)) ? title : "";
 
-								try {
-									var r = parseInt("0x" + asset.display_color.substring(1, 3));
-									var g = parseInt("0x" + asset.display_color.substring(3, 5));
-									var b = parseInt("0x" + asset.display_color.substring(5));
+                                try {
+                                    var r = parseInt("0x" + asset.display_color.substring(1, 3));
+                                    var g = parseInt("0x" + asset.display_color.substring(3, 5));
+                                    var b = parseInt("0x" + asset.display_color.substring(5));
 
-									var textColor = (r + g + b < 300 ? "#FFFFFF" : "#000000")
-								} catch {
-									var textColor = "#000000"
-								}
-								rack.push(createRackElem(asset.display_color, title, rackPos + assetHeight, asset.asset_number, textColor));
-							}
-							rackPos += (asset.height - 1);
-						} else {
-							rack.push(createRackElem("#FFFFFF", "", rackPos));
-						}
-					} else {
-						rack.push(createRackElem("#FFFFFF", "", rackPos));
-					}
-				}
+                                    var textColor = (r + g + b < 300 ? "#FFFFFF" : "#000000")
+                                } catch {
+                                    var textColor = "#000000"
+                                }
+                                rack.push(createRackElem(asset.display_color, title, rackPos + assetHeight, asset.asset_number, textColor));
 
-				rack.sort(sortRack);
-				var rackTitle = startL + (startN > 9 ? startN : " " + startN);
-				this.state.racks.push(createRack(rackTitle, rack));
-				this.state.racks.sort(sort)
-				this.forceUpdate();
-			});
-	}
 
-	getRacks = () => {
-		this.state.racks = [];
-		this.forceUpdate();
-		axios.post(getURL(Constants.RACKS_MAIN_PATH, "all/"),
-			{
-				"datacenter_name": this.state.selectedDatacenter,
-			}
-		).then(
-			response => {
-				var racks = [];
-				response.data.racks.map(rack => {
-					racks.push(rack.label);
-				})
-				racks.map(rack => {
-					var startL = rack.substring(0, 1);
-					var startN = parseInt(rack.substring(1));
-					this.createDiagram(startL, startL, startN, startN);
-				});
-			});
+                            }
+                            rackPos += (asset.height - 1);
+                        } else {
+                            rack.push(createRackElem("#FFFFFF", "", rackPos));
+                        }
+                    } else {
+                        rack.push(createRackElem("#FFFFFF", "", rackPos));
+                    }
+                }
+
+                var rackTitle = startL + (startN > 9 ? startN : " " + startN);
+                if (numChassis > 0) {
+                    this.getChassisData(rackTitle, rack);
+                } else {
+                    rack.sort(sortRack);
+                    this.state.racks.push(createRack(rackTitle, rack));
+                    this.state.racks.sort(sort)
+                    this.forceUpdate();
+                }
+
+
+            });
+    }
+
+    getRacks = () => {
+        this.state.racks = [];
+        this.forceUpdate();
+        axios.post(getURL(Constants.RACKS_MAIN_PATH, "all/"),
+            {
+                "datacenter_name": this.state.selectedDatacenter,
+            }
+        ).then(
+            response => {
+                var racks = [];
+                response.data.racks.map(rack => {
+                    racks.push(rack.label);
+                })
+                racks.map(rack => {
+                    var startL = rack.substring(0, 1);
+                    var startN = parseInt(rack.substring(1));
+                    this.createDiagram(startL, startL, startN, startN);
+                });
+            });
     }
 
 

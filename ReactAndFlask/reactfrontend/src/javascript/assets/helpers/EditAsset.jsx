@@ -1,20 +1,22 @@
+// React
 import React from 'react';
-
 import axios from 'axios';
 import { CompactPicker } from 'react-color';
 
+// Core
 import { TextField, Button, Tooltip, CircularProgress, Grid } from "@material-ui/core";
-import { Autocomplete, Alert } from '@material-ui/lab';
 import { withStyles } from '@material-ui/core/styles';
-import { Radio, RadioGroup, FormControl, FormControlLabel, FormHelperText } from '@material-ui/core';
-import { IconButton, Slide, InputLabel, MenuItem, Select } from '@material-ui/core';
-import CloseIcon from '@material-ui/icons/Close';
-import { Modal, Backdrop } from '@material-ui/core';
-import Paper from '@material-ui/core/Paper';
+import { Radio, RadioGroup, FormControl, FormControlLabel, FormHelperText, Paper } from '@material-ui/core';
+import { IconButton, Slide, InputLabel, MenuItem, Select, Modal, Backdrop } from '@material-ui/core';
 
+// Lab
+import { Autocomplete, Alert } from '@material-ui/lab';
+
+//Icons
 import PowerIcon from '@material-ui/icons/Power';
 import PowerOffIcon from '@material-ui/icons/PowerOff';
 import LoopIcon from '@material-ui/icons/Loop';
+import CloseIcon from '@material-ui/icons/Close';
 
 import { AssetInput } from '../enums/AssetInputs.ts';
 import { AssetCommand } from '../enums/AssetCommands.ts'
@@ -226,7 +228,6 @@ class EditAsset extends React.Component {
         } else {
             //this.setState({ updated: true, });
         }
-
     }
 
     componentDidMount() {
@@ -272,8 +273,8 @@ class EditAsset extends React.Component {
     }
 
     getChassisList = () => {
-        axios.post(
-            getURL(Constants.ASSETS_MAIN_PATH, "/getchassis")
+        axios.get(
+            getURL(Constants.ASSETS_MAIN_PATH, "getchassis")
         ).then(
             response => {
                 var instances = response.data.instances;

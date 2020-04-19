@@ -95,10 +95,11 @@ class TabViewer extends React.Component {
     }
 
     handleMenuClose = () => {
-        this.setState({ anchorEl: null, isMenuOpen:false });
+        this.setState({ anchorEl: null, isMenuOpen: false });
     }
 
     updateChangePlan = (status, id, step, name) => {
+        console.log(status, id, step, name);
         this.setState({ changePlanActive: status, changePlanID: id,  changePlanStep: step, changePlanName: name });
 
         if (status === false) {

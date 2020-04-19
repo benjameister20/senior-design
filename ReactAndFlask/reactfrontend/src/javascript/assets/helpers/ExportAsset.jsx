@@ -1,8 +1,9 @@
+// React
 import React from 'react';
-
 import axios from "axios";
 import { CSVLink } from "react-csv";
 
+// Core
 import {
 	Button,
 	Paper,
@@ -14,8 +15,12 @@ import {
     withStyles,
     TextField
 } from '@material-ui/core/';
+
+// Icons
 import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
 import TrackChangesIcon from '@material-ui/icons/TrackChanges';
+
+// Helpers
 import { AssetCommand } from '../enums/AssetCommands.ts'
 import getURL from '../../helpers/functions/GetURL';
 import * as AssetConstants from "../AssetConstants";
@@ -97,7 +102,6 @@ class ExportAsset extends React.Component {
                 'name': this.state.changePlanName,
             }
             ).then(response => {
-                console.log(response);
                 this.props.updateChangePlan(true, response.data.change_plan, 1, this.state.changePlanName);
                 this.setState({ changePlanName: "" });
         });

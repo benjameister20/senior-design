@@ -62,7 +62,7 @@ class AddAsset extends React.Component {
 		const { classes } = this.props;
 		return (
 			<React.Fragment>
-				<Paper elevation={3}>
+				<Paper elevation={3} style={{ minHeight: this.props.height }}>
 					<Grid
 						container
 						spacing={2}

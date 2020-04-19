@@ -59,8 +59,8 @@ const emptySearch = {
         "ending_rack_number": null,
         "rack": null,
         "rack_position": null,
-        "blade_chassis": null,
-        "blade_position": null,
+        "chassis_hostname": null,
+        "chassis_slot": null,
     },
     "datacenter_name": "",
 }
@@ -338,8 +338,8 @@ class CreateAsset extends React.Component {
         return (
             json.model !== "" &&
             json.datacenter_name !== "" &&
-            json.rack !== "" &&
-            json.rack_position !== -1 &&
+            (json.rack !== "" || this.state.mount_type == "blade") &&
+            (json.rack_position !== -1 || this.state.mount_type == "blade") &&
             json.asset_number >= 100000 &&
             json.asset_number <= 999999
         );
@@ -557,8 +557,8 @@ class CreateAsset extends React.Component {
             "network_connections": (this.state.network_connections === null) ? {} : this.state.network_connections,
             "power_connections": this.getPowerConnections(),
             'asset_number': this.state.asset_number,
-            "blade_chassis": this.state.blade_chassis,
-            "blade_position": this.state.blade_position,
+            "chassis_hostname": this.state.blade_chassis,
+            "chassis_slot": this.state.blade_position,
             "cpu": this.state.customCPU,
             "display_color": this.state.customColor,
             "memory": this.state.customMemory,
@@ -753,7 +753,7 @@ class CreateAsset extends React.Component {
                                         )}
                                     />
                                 </Tooltip>
-                                {(this.state.datacenterIsOffline) ? null :
+                                {(this.state.datacenterIsOffline || this.state.mount_type == "blade") ? null :
                                     <Tooltip placement="top" open={this.state.inputs.rack.Tooltip} title={this.state.inputs.rack.description}>
                                         <TextField
                                             id="input-rack"
@@ -766,7 +766,7 @@ class CreateAsset extends React.Component {
 
                                         />
                                     </Tooltip>}
-                                {(this.state.datacenterIsOffline) ? null :
+                                {(this.state.datacenterIsOffline || this.state.mount_type == "blade") ? null :
                                     <Tooltip placement="top" open={this.state.inputs.rackU.Tooltip} title={this.state.inputs.rackU.description}>
                                         <TextField
                                             id="input-rackU"

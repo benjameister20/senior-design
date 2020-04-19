@@ -1,20 +1,24 @@
+// React
 import React from 'react';
-
 import axios from 'axios';
 
+// Core
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import { Grid, Paper, Button } from '@material-ui/core';
-import TableSortLabel from '@material-ui/core/TableSortLabel';
-import { Alert, AlertTitle } from '@material-ui/lab';
-import NoteAddIcon from '@material-ui/icons/NoteAdd';
-import Checkbox from '@material-ui/core/Checkbox';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import IconButton from '@material-ui/core/IconButton';
-import Tooltip from '@material-ui/core/Tooltip';
+import { Checkbox, Toolbar, Typography, IconButton, Tooltip, TableSortLabel } from '@material-ui/core';
+
+// Lab
+import { SpeedDial, SpeedDialAction, SpeedDialIcon, Alert, AlertTitle } from '@material-ui/lab';
+
+// Icons
 import CheckIcon from '@material-ui/icons/Check';
 import ClearIcon from '@material-ui/icons/Clear';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import TrackChangesIcon from '@material-ui/icons/TrackChanges';
+import NoteAddIcon from '@material-ui/icons/NoteAdd';
+
+// Helpers
 import { AssetInput } from '../enums/AssetInputs.ts';
 import { AssetCommand } from '../enums/AssetCommands.ts';
 import getURL from '../../helpers/functions/GetURL';
@@ -28,9 +32,7 @@ import AddAsset from "./AddAsset";
 import ExportAsset from "./ExportAsset";
 import * as Constants from '../../Constants';
 import StatusDisplay from "../../helpers/StatusDisplay";
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import { SpeedDial, SpeedDialAction, SpeedDialIcon } from '@material-ui/lab';
-import TrackChangesIcon from '@material-ui/icons/TrackChanges';
+
 
 const useStyles = theme => ({
 	root: {
@@ -116,7 +118,6 @@ const decommissionHeadCells = [
 	{ id: 'timestamp', numeric: false, label: "Timestamp", align: "right" },
 ];
 
-
 class TableAsset extends React.Component {
 	constructor(props) {
 		super(props);
@@ -166,14 +167,12 @@ class TableAsset extends React.Component {
 
 	// Fetch all assets for the table
 	fetchAllAssets = () => {
-		console.log(this.props.changePlanActive);
 		if (this.props.changePlanActive) {
 			axios.post(
 				getURL(Constants.ASSETS_MAIN_PATH, AssetCommand.search), emptySearch).then(
 					response => {
 						var items = [];
 						var instances = response.data.instances;
-						console.log(instances);
 
 						axios.post(
 							getURL("changeplans/", AssetCommand.CHANGE_PLAN_GET_ACTIONS), {
@@ -181,7 +180,6 @@ class TableAsset extends React.Component {
 							'owner': this.props.username,
 						}).then(response => {
 							var actions = response.data.change_plan_actions;
-							console.log(actions);
 
 							var assetNums = [];
 							actions.forEach(action => {
@@ -189,13 +187,10 @@ class TableAsset extends React.Component {
 								assetNums.push(assetNum);
 							});
 
-							console.log(assetNums);
 
 							var newInstances = instances.filter(instance => {
 								return !assetNums.includes(instance.asset_number);
 							});
-
-							console.log(newInstances);
 
 							actions.forEach(action => {
 								if (action.action !== "decommission") {
@@ -204,7 +199,7 @@ class TableAsset extends React.Component {
 							});
 
 							newInstances.map(asset => {
-								items.push(createData(asset.model, asset.hostname, asset.datacenter_name, asset.rack + " U" + asset.rack_position, asset.owner, asset.asset_number));
+								items.push(createData(asset.model, asset.hostname, asset.datacenter_name, this.getRack(asset), asset.owner, asset.asset_number));
 							});
 							this.setState({ allAssets: newInstances, tableItems: items });
 						});
@@ -217,7 +212,7 @@ class TableAsset extends React.Component {
 						var items = [];
 
 						response.data.instances.map(asset => {
-							items.push(createData(asset.model, asset.hostname, asset.datacenter_name, asset.rack + " U" + asset.rack_position, asset.owner, asset.asset_number));
+							items.push(createData(asset.model, asset.hostname, asset.datacenter_name, this.getRack(asset), asset.owner, asset.asset_number));
 						});
 						this.setState({ allAssets: response.data.instances, tableItems: items });
 					});
@@ -258,8 +253,6 @@ class TableAsset extends React.Component {
 				responseType: 'arraybuffer',
 			}
 		).then(response => {
-			console.log(response);
-			console.log(response.data);
 			try {
 				var blob = new Blob([response.data], { type: "application/pdf" });
 				var link = document.createElement('a');
@@ -292,8 +285,6 @@ class TableAsset extends React.Component {
 	}
 
 	openDetailedView = (event, asset) => {
-		console.log("asset: ");
-		console.log(asset);
 		var dAsset = {};
 		var assets = [];
 		if (this.state.assetType === "active") {
@@ -307,8 +298,18 @@ class TableAsset extends React.Component {
 			if (currAsset.asset_number === asset.asset_number) {
 				Object.assign(dAsset, currAsset);
 			}
-		})
+		});
 		this.setState({ detailAsset: dAsset, showDetailedView: true, rowOwner: asset.owner });
+	}
+
+	getRack = (asset) => {
+		console.log(asset);
+		var result = asset.rack;
+		if (asset.mount_type !== "blade") {
+			result += " U" + asset.rack_position;
+		}
+
+		return result;
 	}
 
 	updateItems = (assets) => {
@@ -316,15 +317,15 @@ class TableAsset extends React.Component {
 
 		if (this.state.assetType === "active") {
 			assets.map(asset => {
-				items.push(createData(asset.model, asset.hostname, asset.datacenter_name, asset.rack + " U" + asset.rack_position, asset.owner, asset.asset_number));
+				items.push(createData(asset.model, asset.hostname, asset.datacenter_name, this.getRack(asset), asset.owner, asset.asset_number));
 			});
 		} else if (this.state.assetType === decomType) {
 			assets.map(asset => {
-				items.push(createDecData(asset.vendor + " " + asset.model_number, asset.hostname, asset.datacenter_name, asset.rack + " U" + asset.rack_position, asset.owner, asset.asset_number, asset.decommission_user, asset.timestamp));
+				items.push(createDecData(asset.vendor + " " + asset.model_number, asset.hostname, asset.datacenter_name, this.getRack(asset), asset.owner, asset.asset_number, asset.decommission_user, asset.timestamp));
 			});
 		} else if (this.state.assetType === "offline") {
 			assets.map(asset => {
-				items.push(createData(asset.model, asset.hostname, asset.datacenter_name, asset.rack + " U" + asset.rack_position, asset.owner, asset.asset_number));
+				items.push(createData(asset.model, asset.hostname, asset.datacenter_name, this.getRack(asset), asset.owner, asset.asset_number));
 			});
 		}
 
@@ -335,7 +336,7 @@ class TableAsset extends React.Component {
 	getAssetList = () => {
 		axios.post(
 			getURL(Constants.ASSETS_MAIN_PATH, AssetCommand.search), emptySearch).then(
-				response => { console.log("got list"); console.log(response); this.setState({ allAssets: response.data.instances }); });
+				response => { this.setState({ allAssets: response.data.instances }); });
 	}
 
 	getDecommissionedAssets = () => {
@@ -348,8 +349,6 @@ class TableAsset extends React.Component {
 			}
 		}).then(
 			response => {
-				console.log("decommissioned assets:");
-				console.log(response.data.decommissions);
 				this.setState({ decAssets: response.data.decommissions })
 			});
 	}
@@ -379,7 +378,7 @@ class TableAsset extends React.Component {
 		var newSelected = this.state.selectedItems;
 		this.state.tableItems.map(n => {
 			const selectedIndex = newSelected.indexOf(n.asset_number);
-			console.log(selectedIndex);
+
 			if (selectedIndex === 0) {
 				newSelected = newSelected.slice(1);
 			} else if (selectedIndex === newSelected - 1) {
@@ -410,7 +409,6 @@ class TableAsset extends React.Component {
 						this.state.selectedItems.slice(selectedIndex + 1),
 					);
 				}
-				console.log(newSelected);
 				this.setState({ selectedItems: newSelected });
 			}
 		}
@@ -462,6 +460,7 @@ class TableAsset extends React.Component {
 								changePlanStep={this.props.changePlanStep}
 								incrementChangePlanStep={this.props.incrementChangePlanStep}
 								fetchAllAssets={this.fetchAllAssets}
+								height="300px"
 							/> : null}
 					</Grid>
 					<Grid item xs={12} sm={6} md={4} lg={6}>
@@ -474,6 +473,7 @@ class TableAsset extends React.Component {
 							switchAssetType={this.switchAssetType}
 							assetType={this.state.assetType}
 							ref={this.filter}
+							height="300px"
 						/>
 					</Grid>
 					<Grid item xs={12} sm={6} md={4} lg={3}>
@@ -483,11 +483,12 @@ class TableAsset extends React.Component {
 							updateChangePlan={this.props.updateChangePlan}
 							privilege={this.props.privilege}
 							username={this.props.username}
+							height="300px"
 						/>
 					</Grid>
 				</Grid>
 
-				<Grid item xs={12}>
+				<Grid item xs={12} style={{ marginTop: "20px" }}>
 					<Toolbar>
 						{this.state.selectedItems.length > 0 ? (
 							<Typography className={classes.title} color="inherit" variant="subtitle1">

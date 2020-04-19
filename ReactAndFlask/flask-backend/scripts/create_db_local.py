@@ -31,6 +31,7 @@ with application.app_context():
     db.create_all()
     db.session.commit()
 
+    # Admin user
     encrypted_password = AuthManager().encrypt_pw(password="P8ssw0rd1!@")
     datacenters = ["*"]
     priv: Permission = Permission(
@@ -50,6 +51,48 @@ with application.app_context():
         datacenters=datacenters,
     )
     UserTable().add_user(user=user)
+
+    # Basic user
+    encrypted_password = AuthManager().encrypt_pw(password="Basic7#")
+    datacenters = []
+    basic_priv: Permission = Permission(
+        model=False,
+        asset=False,
+        datacenters=datacenters,
+        power=False,
+        audit=False,
+        admin=False,
+    )
+    basic_user: User = User(
+        username="basic",
+        display_name="Basic",
+        email="basic@email.com",
+        password=encrypted_password,
+        privilege=basic_priv.make_json(),
+        datacenters=datacenters,
+    )
+    UserTable().add_user(user=basic_user)
+
+    # Models user
+    encrypted_password = AuthManager().encrypt_pw(password="Models8!")
+    datacenters = []
+    models_priv: Permission = Permission(
+        model=True,
+        asset=False,
+        datacenters=datacenters,
+        power=False,
+        audit=False,
+        admin=False,
+    )
+    models_user: User = User(
+        username="models",
+        display_name="Models",
+        email="models@email.com",
+        password=encrypted_password,
+        privilege=models_priv.make_json(),
+        datacenters=datacenters,
+    )
+    UserTable().add_user(user=models_user)
 
     model: Model = Model(
         vendor="dell", model_number="1234", mount_type="rackmount", height=3

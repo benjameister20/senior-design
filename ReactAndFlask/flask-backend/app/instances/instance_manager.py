@@ -24,17 +24,13 @@ class InstanceManager:
                 new_instance = self.make_instance(instance_data)
                 if type(new_instance) is InvalidInputsError:
                     return new_instance
-                print(new_instance)
             except InvalidInputsError as e:
                 return e.message
             create_validation_result = Constants.API_SUCCESS
             try:
-                print("validating")
                 create_validation_result = self.validate.create_instance_validation(
                     new_instance
                 )
-                print("FINISHED VALIDATION")
-                print(create_validation_result)
                 if create_validation_result != Constants.API_SUCCESS:
                     raise InvalidInputsError(create_validation_result)
             except InvalidInputsError as e:
@@ -42,8 +38,6 @@ class InstanceManager:
 
             try:
                 self.table.add_instance(new_instance)
-                print("Added to table")
-
                 if new_instance.mount_type != Constants.BLADE_KEY:
                     power_result = self.add_power_connections(new_instance)
                     if power_result != Constants.API_SUCCESS:
@@ -304,7 +298,6 @@ class InstanceManager:
         if asset_number == "":
             return InvalidInputsError("Must provide an asset number")
 
-        print("about to make instance")
         return Instance(
             model_id,
             hostname,

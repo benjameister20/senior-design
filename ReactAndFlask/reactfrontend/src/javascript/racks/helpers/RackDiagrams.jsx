@@ -55,6 +55,13 @@ const useStyles = theme => ({
 		align: "center",
 		paddingLeft: "45%",
 	},
+	footer: {
+		backgroundColor: "#A9A9A9",
+		color:"#A9A9A9",
+		width: "100%",
+		align: "center",
+		paddingLeft: "45%",
+	},
 	rack: {
 		display: "inline-block",
 		width: "20%",
@@ -103,8 +110,8 @@ class RackDiagrams extends Component {
 								title = (assetHeight > 0) ? "" : title;
 
 								try {
-									var r = parseInt("0x" + asset.display_color.substring(1,3));
-									var g = parseInt("0x" + asset.display_color.substring(3,5));
+									var r = parseInt("0x" + asset.display_color.substring(1, 3));
+									var g = parseInt("0x" + asset.display_color.substring(3, 5));
 									var b = parseInt("0x" + asset.display_color.substring(5));
 
 									var textColor = (r + g + b < 300 ? "#FFFFFF" : "#000000")
@@ -152,15 +159,15 @@ class RackDiagrams extends Component {
 	}
 
 	openAssetDetails = (assetNum) => {
-		this.setState({ loadingAsset: true });
-
-		axios.post(getURL(Constants.ASSETS_MAIN_PATH, "detailView/"),
-			{
-				"asset_number": assetNum
-			}
-		).then(response => {
-			this.setState({ detailAsset: response.data.instances[0], showDetailedView: true });
-		});
+		if (assetNum > 10000) {
+			axios.post(getURL(Constants.ASSETS_MAIN_PATH, "detailView/"),
+				{
+					"asset_number": assetNum
+				}
+			).then(response => {
+				this.setState({ detailAsset: response.data.instances[0], showDetailedView: true });
+			});
+		}
 	}
 
 	closeDetailedView = () => {
@@ -199,7 +206,7 @@ class RackDiagrams extends Component {
 									</Typography>
 									{rack.title !== "" ?
 										<Typography
-											style={{ background: rack.color, display: "inline-block", width: "70%", color:rack.textColor }}
+											style={{ background: rack.color, display: "inline-block", width: "70%", color: rack.textColor }}
 										>
 											{rack.title}
 										</Typography>
@@ -218,6 +225,12 @@ class RackDiagrams extends Component {
 									</Typography>
 								</div>
 							))}
+
+							<Typography
+								className={classes.footer}
+							>
+								{"."}
+							</Typography>
 						</span>
 					))
 					: null}

@@ -139,9 +139,9 @@ class DatacenterView extends React.Component {
             showStatus: false,
             statusMessage: '',
             statusSeverity: 'info',
-            isOfflineStorage:false,
-            selectedDatacenter:"",
-            fullDatacenter:"",
+            isOfflineStorage: false,
+            selectedDatacenter: "",
+            fullDatacenter: "",
         });
     }
 
@@ -205,7 +205,7 @@ class DatacenterView extends React.Component {
     }
 
     updateDatacenter = (event) => {
-        this.setState({ selectedDatacenter: event.target.value.name, fullDatacenter: event.target.value, isOfflineStorage:event.target.value.is_offline_storage }, this.getAllRacks(event.target.value.name, true));
+        this.setState({ selectedDatacenter: event.target.value.name, fullDatacenter: event.target.value, isOfflineStorage: event.target.value.is_offline_storage }, this.getAllRacks(event.target.value.name, true));
     }
 
     render() {
@@ -273,24 +273,9 @@ class DatacenterView extends React.Component {
                     </Grid>
 
                     {this.state.isOfflineStorage ? null :
-                    <Grid
-                        container
-                        spacing={5}
-                        direction="row"
-                        justify="center"
-                        alignItems="center"
-                        style={{ margin: "0px", maxWidth: "95vw" }}
-                    >
-                        <Grid item xs={12}>
-                            <RacksView
-                                datacenter={this.state.selectedDatacenter}
-                                racks={this.state.racks}
-                            />
-                            <RackDiagrams
-                                datacenter_name={this.state.selectedDatacenter}
-                            />
-                        </Grid>
-                    </Grid>}
+                        <RackDiagrams
+                            datacenter_name={this.state.selectedDatacenter}
+                        />}
                     <StatusDisplay
                         open={this.state.showStatus}
                         severity={this.state.statusSeverity}

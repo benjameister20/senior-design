@@ -414,8 +414,8 @@ def _parse_connection_csv(csv_input) -> Tuple[int, int, int]:
         #         ][Constants.MAC_ADDRESS_KEY] = src_mac_addr
         #
         # else:
-        print("SRC CHANGES")
-        print(src_instance.network_connections)
+        # print("SRC CHANGES")
+        # print(src_instance.network_connections)
         src_net_conn[values[Constants.CSV_SRC_PORT]][
             Constants.MAC_ADDRESS_KEY
         ] = values[Constants.CSV_SRC_MAC]
@@ -425,17 +425,17 @@ def _parse_connection_csv(csv_input) -> Tuple[int, int, int]:
         src_net_conn[values[Constants.CSV_SRC_PORT]][
             Constants.CONNECTION_PORT
         ] = values[Constants.CSV_DEST_PORT]
-        print(src_instance.network_connections)
-        print("DST CHANGES")
-        print(dst_instance.network_connections)
+        # print(src_instance.network_connections)
+        # print("DST CHANGES")
+        # print(dst_instance.network_connections)
         dst_net_conn[values[Constants.CSV_DEST_PORT]][
             Constants.CONNECTION_HOSTNAME
         ] = values[Constants.CSV_SRC_HOST]
         dst_net_conn[values[Constants.CSV_DEST_PORT]][
             Constants.CONNECTION_PORT
         ] = values[Constants.CSV_SRC_PORT]
-        print(dst_instance.network_connections)
-        print("DONE")
+        # print(dst_instance.network_connections)
+        # print("DONE")
 
         snapshots[src_instance.asset_number] = src_net_conn
         snapshots[dst_instance.asset_number] = dst_net_conn
@@ -468,10 +468,10 @@ def _parse_connection_csv(csv_input) -> Tuple[int, int, int]:
         instances.append(src_instance)
         instances.append(dst_instance)
 
-    print("INSTANCEs")
-    print(instances)
-    for inst in instances:
-        print(inst.network_connections)
+    # print("INSTANCEs")
+    # print(instances)
+    # for inst in instances:
+    #     print(inst.network_connections)
 
     added, updated, ignored = 0, 0, 0
     for instance in instances:
@@ -539,11 +539,11 @@ def import_instances_csv():
 
 @import_export.route("/networkConnections/import", methods=["POST"])
 def import_network_connections_csv():
-    # try:
-    csv_input = _get_csv()
-    added, updated, ignored = _parse_connection_csv(csv_input=csv_input)
-    # except:
-    #     return {"message": "Error occured."}
+    try:
+        csv_input = _get_csv()
+        added, updated, ignored = _parse_connection_csv(csv_input=csv_input)
+    except:
+        return {"message": "Error occured."}
 
     return {
         "message": "success",
@@ -597,8 +597,69 @@ def export_instances():
 
     for instance in all_instances:
         model: Model = ModelTable().get_model(identifier=instance.model_id)
+        chassis_number = ""
+        if instance.mount_type == Constants.BLADE_KEY:
+            chassis_host = instance.chassis_hostname
+            chassis = InstanceTable().get_instance_by_hostname(chassis_host)
+            chassis_number = chassis.asset_number
+
         text += (
-            instance.to_csv(vendor=model.vendor, model_number=model.model_number) + "\n"
+            instance.to_csv(
+                vendor=model.vendor,
+                model_number=model.model_number,
+                chassis_number=chassis_number,
+            )
+            + "\n"
         )
+
+    return {"csvData": text}
+
+
+@import_export.route("/instances/exportConnections", methods=["POST"])
+def export_connections():
+    """ Export instances with given filters """
+    data: JSON = request.get_json()
+
+    print(json.dumps(data, indent=4))
+    try:
+        filter = data["filter"]
+        dc_name = data["datacenter_name"]
+    except:
+        return HTTPStatus.BAD_REQUEST
+
+    limit: int = int(data.get("limit", 1000))
+    instances_table: InstanceTable = InstanceTable()
+    instance_manager: InstanceManager = InstanceManager()
+
+    all_instances: List[Instance] = instance_manager.get_instances(
+        filter=filter, dc_name=dc_name, limit=limit
+    )
+    text: str = ",".join(
+        [
+            Constants.CSV_SRC_HOST,
+            Constants.CSV_SRC_PORT,
+            Constants.CSV_SRC_MAC,
+            Constants.CSV_DEST_HOST,
+            Constants.CSV_DEST_PORT,
+        ]
+    ) + "\n"
+
+    for instance in all_instances:
+        src_hostname = instance.hostname
+        network_connections = instance.network_connections
+        for port in network_connections.keys():
+            connection = []
+            connection.append(src_hostname)
+            connection.append(port)
+            connection.append(network_connections[port][Constants.MAC_ADDRESS_KEY])
+            connection.append(network_connections[port][Constants.CONNECTION_HOSTNAME])
+            connection.append(network_connections[port][Constants.CONNECTION_PORT])
+            if not (
+                network_connections[port][Constants.CONNECTION_HOSTNAME] == ""
+                and network_connections[port][Constants.CONNECTION_PORT] == ""
+            ):
+                text += ",".join(connection)
+                text += "\n"
+            print(connection)
 
     return {"csvData": text}

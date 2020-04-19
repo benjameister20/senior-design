@@ -68,6 +68,7 @@ class Model:
     @classmethod
     def headers(cls) -> List[str]:
         return [
+            Constants.MOUNT_TYPE_KEY,
             Constants.VENDOR_KEY,
             Constants.MODEL_NUMBER_KEY,
             Constants.HEIGHT_KEY,
@@ -228,6 +229,8 @@ class Model:
         """ Get the model as a csv row """
         json_data: JSON = self.make_json()
 
+        print(json_data)
+
         # JANK CITY FIX WHEN TIME
         key_array = []
         key_array.append(Constants.CSV_NETWORK_PORT_1)
@@ -241,17 +244,23 @@ class Model:
         else:
             json_data[Constants.CSV_ETHERNET_PORT_KEY] = ""
 
-        net_port_num = len(net_ports)
-        count = 0
-        for i in range(0, net_port_num):
-            if count >= 4:
-                break
-            json_data[key_array[i]] = net_ports[i]
-            count += 1
+        if net_ports is not None:
+            net_port_num = len(net_ports)
+            count = 0
+            for i in range(0, net_port_num):
+                if count >= 4:
+                    break
+                json_data[key_array[i]] = net_ports[i]
+                count += 1
 
-        while count < 4:
-            json_data[key_array[count]] = ""
-            count += 1
+            while count < 4:
+                json_data[key_array[count]] = ""
+                count += 1
+        else:
+            count = 0
+            while count < 4:
+                json_data[key_array[count]] = ""
+                count += 1
 
         values: List[str] = list(
             map(

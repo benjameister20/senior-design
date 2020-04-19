@@ -536,6 +536,22 @@ class InstanceManager:
                 "An error occurred while trying to retrieve blade chassis."
             )
 
+    def get_blades_in_chassis(self, asset_data):
+        try:
+            chassis_hostname = asset_data.get(Constants.CHASSIS_HOSTNAME_KEY)
+            if chassis_hostname is None or chassis_hostname == "":
+                raise InvalidInputsError("Must provide a valid blade chassis hostname.")
+            blade_list = self.table.get_blades_by_chassis_hostname(chassis_hostname)
+            if blade_list is None:
+                return []
+            return blade_list
+        except InvalidInputsError as e:
+            raise InvalidInputsError(e.message)
+        except:
+            raise InvalidInputsError(
+                "An error occurred while trying to retrieve blade chassis."
+            )
+
     def check_null(self, val):
         if val is None:
             return ""

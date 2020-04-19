@@ -24,45 +24,40 @@ class InstanceManager:
                 new_instance = self.make_instance(instance_data)
                 if type(new_instance) is InvalidInputsError:
                     return new_instance
-                print(new_instance)
             except InvalidInputsError as e:
                 return e.message
             create_validation_result = Constants.API_SUCCESS
             try:
-                print("validating")
                 create_validation_result = self.validate.create_instance_validation(
                     new_instance
                 )
-                print("FINISHED VALIDATION")
-                print(create_validation_result)
                 if create_validation_result != Constants.API_SUCCESS:
                     raise InvalidInputsError(create_validation_result)
             except InvalidInputsError as e:
                 raise InvalidInputsError(e.message)
 
             try:
-                print("Creating instance")
                 self.table.add_instance(new_instance)
+                if new_instance.mount_type != Constants.BLADE_KEY:
+                    power_result = self.add_power_connections(new_instance)
+                    if power_result != Constants.API_SUCCESS:
+                        self.table.delete_instance_by_asset_number(
+                            new_instance.asset_number
+                        )
+                        raise InvalidInputsError(
+                            "An error occurred when trying to add power connections."
+                        )
 
-                power_result = self.add_power_connections(new_instance)
-                if power_result != Constants.API_SUCCESS:
-                    self.table.delete_instance_by_asset_number(
-                        new_instance.asset_number
+                    connect_result = self.make_corresponding_connections(
+                        new_instance.network_connections, new_instance.hostname
                     )
-                    raise InvalidInputsError(
-                        "An error occurred when trying to add power connections."
-                    )
-
-                connect_result = self.make_corresponding_connections(
-                    new_instance.network_connections, new_instance.hostname
-                )
-                if connect_result != Constants.API_SUCCESS:
-                    self.table.delete_instance_by_asset_number(
-                        new_instance.asset_number
-                    )
-                    raise InvalidInputsError(connect_result)
+                    if connect_result != Constants.API_SUCCESS:
+                        self.table.delete_instance_by_asset_number(
+                            new_instance.asset_number
+                        )
+                        raise InvalidInputsError(connect_result)
             except:
-                raise InvalidInputsError("Unable to create instance")
+                raise InvalidInputsError("Unable to create asset")
         except InvalidInputsError as e:
             print(e.message)
             raise InvalidInputsError(e.message)
@@ -91,15 +86,17 @@ class InstanceManager:
                     "A blade chassis must be empty before it can be decommissioned or deleted."
                 )
 
-        delete_power_result = self.delete_power_connections(asset)
-        if delete_power_result != Constants.API_SUCCESS:
-            raise InvalidInputsError(
-                "An error occurred when trying to remove power connections."
-            )
+        if asset.mount_type != Constants.BLADE_KEY:
+            delete_power_result = self.delete_power_connections(asset)
+            print(delete_power_result)
+            if delete_power_result != Constants.API_SUCCESS:
+                raise InvalidInputsError(
+                    "An error occurred when trying to remove power connections."
+                )
 
-        delete_connection_result = self.delete_connections(asset)
-        if delete_connection_result != Constants.API_SUCCESS:
-            raise InvalidInputsError(delete_connection_result)
+            delete_connection_result = self.delete_connections(asset)
+            if delete_connection_result != Constants.API_SUCCESS:
+                raise InvalidInputsError(delete_connection_result)
 
         try:
             self.table.delete_instance_by_asset_number(asset_number)
@@ -130,13 +127,19 @@ class InstanceManager:
             if original_asset_number is None:
                 raise InvalidInputsError("Unable to find the asset to edit.")
 
+            original_asset = self.table.get_instance_by_asset_number(
+                original_asset_number
+            )
+            if original_asset is None:
+                raise InvalidInputsError("Could not find asset to update.")
+
             new_instance = self.make_instance(instance_data)
             if type(new_instance) is InvalidInputsError:
                 return new_instance
 
-            self.delete_power_connections(original_asset_number)
+            self.delete_power_connections(original_asset)
 
-            delete_connection_result = self.delete_connections(original_asset_number)
+            delete_connection_result = self.delete_connections(original_asset)
             if delete_connection_result != Constants.API_SUCCESS:
                 raise InvalidInputsError("Failed to update network connections.")
 
@@ -169,6 +172,19 @@ class InstanceManager:
             raise InvalidInputsError(edit_connection_result)
 
         self.table.edit_instance(new_instance, original_asset_number)
+
+        if new_instance.mount_type == Constants.CHASIS_KEY and (
+            original_asset.hostname != new_instance.hostname
+            or original_asset.datacenter_id != new_instance.datacenter_id
+        ):
+            blade_list = self.table.get_blades_by_chassis_hostname(
+                original_asset.hostname
+            )
+            if blade_list is not None:
+                for blade in blade_list:
+                    blade.chassis_hostname = new_instance.hostname
+                    blade.datacenter_id = new_instance.datacenter_id
+                    self.table.edit_instance(blade, blade.asset_number)
 
     def get_instances(self, filter, dc_name, limit: int):
         model_name = filter.get(Constants.MODEL_KEY)
@@ -282,7 +298,6 @@ class InstanceManager:
         if asset_number == "":
             return InvalidInputsError("Must provide an asset number")
 
-        print("about to make instance")
         return Instance(
             model_id,
             hostname,
@@ -463,8 +478,9 @@ class InstanceManager:
 
         if asset.mount_type == Constants.CHASIS_KEY:
             blade_list = self.table.get_blades_by_chassis_hostname(asset.hostname)
-            for blade in blade_list:
-                connections_dict[blade.hostname] = []
+            if blade_list is not None and len(blade_list) != 0:
+                for blade in blade_list:
+                    connections_dict[blade.hostname] = []
 
         is_blade = asset.mount_type == Constants.BLADE_KEY
         if is_blade:
@@ -490,6 +506,7 @@ class InstanceManager:
                 two_deep_list = self.make_two_deep_list(connected_asset)
                 connections_dict[hostname] = two_deep_list
 
+        print(connections_dict)
         return connections_dict
 
     def make_two_deep_list(self, connected_asset):
@@ -498,8 +515,9 @@ class InstanceManager:
             blade_list = self.table.get_blades_by_chassis_hostname(
                 connected_asset.hostname
             )
-            for blade in blade_list:
-                two_deep_list.append(blade.hostname)
+            if blade_list is not None and len(blade_list) != 0:
+                for blade in blade_list:
+                    two_deep_list.append(blade.hostname)
 
         for port2 in connected_asset.network_connections:
             host2 = connected_asset.network_connections[port2]["connection_hostname"]
@@ -513,6 +531,22 @@ class InstanceManager:
             if chassis_list is None:
                 chassis_list = []
             return chassis_list
+        except:
+            raise InvalidInputsError(
+                "An error occurred while trying to retrieve blade chassis."
+            )
+
+    def get_blades_in_chassis(self, asset_data):
+        try:
+            chassis_hostname = asset_data.get(Constants.CHASSIS_HOSTNAME_KEY)
+            if chassis_hostname is None or chassis_hostname == "":
+                raise InvalidInputsError("Must provide a valid blade chassis hostname.")
+            blade_list = self.table.get_blades_by_chassis_hostname(chassis_hostname)
+            if blade_list is None:
+                return []
+            return blade_list
+        except InvalidInputsError as e:
+            raise InvalidInputsError(e.message)
         except:
             raise InvalidInputsError(
                 "An error occurred while trying to retrieve blade chassis."

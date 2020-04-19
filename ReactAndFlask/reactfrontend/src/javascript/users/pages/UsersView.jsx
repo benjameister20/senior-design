@@ -123,7 +123,9 @@ export default class UsersView extends React.Component {
         axios.post(
             getURL(Constants.USERS_MAIN_PATH, UserCommand.delete),
             makeDeleteJSON(username)
-        ).then(response => this.processResponse(response, UserConstants.USER_DELETE_SUCCESS_MESSAGE, UserConstants.USER_DELETE_FAILURE_MESSAGE));
+        ).then(response =>
+            this.processResponse(response, UserConstants.USER_DELETE_SUCCESS_MESSAGE, UserConstants.USER_DELETE_FAILURE_MESSAGE)
+        );
     }
 
     detailViewUser = (username) => {
@@ -207,8 +209,7 @@ export default class UsersView extends React.Component {
     }
 
     processResponse = (response, successMessage, failureMessage) => {
-        console.log("message:");
-        console.log(response.data.message);
+        console.log(response);
         if (response.data.message === UserConstants.USER_SUCCESS_TOKEN) {
             this.setDisplayStatus(true, successMessage, UserConstants.USER_SUCCESS_TOKEN);
             this.searchUsers(blankSearch);

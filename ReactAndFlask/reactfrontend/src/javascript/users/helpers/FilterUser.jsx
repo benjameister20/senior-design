@@ -79,7 +79,7 @@ export default class Filters extends React.Component {
 
     render() {
         return (
-        <Card elevation={3} padding>
+        <Card elevation={3} style={{ padding: "20px" }}>
             <Typography variant="h6">Search</Typography>
             <Grid
                 container

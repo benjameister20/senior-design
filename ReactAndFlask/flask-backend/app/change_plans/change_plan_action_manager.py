@@ -163,7 +163,6 @@ class ChangePlanActionManager:
 
             return change_plan_actions
         except Exception as e:
-            print(str(e))
             raise InvalidInputsError(
                 "Unable to retrieve actions for the specified change plan."
             )

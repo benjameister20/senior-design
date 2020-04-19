@@ -95,10 +95,11 @@ class TabViewer extends React.Component {
     }
 
     handleMenuClose = () => {
-        this.setState({ anchorEl: null, isMenuOpen:false });
+        this.setState({ anchorEl: null, isMenuOpen: false });
     }
 
     updateChangePlan = (status, id, step, name) => {
+        console.log(status, id, step, name);
         this.setState({ changePlanActive: status, changePlanID: id,  changePlanStep: step, changePlanName: name });
 
         if (status === false) {
@@ -208,7 +209,7 @@ class TabViewer extends React.Component {
                 id={`simple-tabpanel-0`}
                 aria-labelledby={`simple-tab-0`}
             >
-                <Container className={classes.tab} ><DatacenterManagerView token={this.props.token} privilege={this.props.privilege} /></Container>
+                <Container className={classes.tab} ><DatacenterManagerView token={this.props.token} privilege={this.props.privilege} username={this.props.username} /></Container>
             </Typography>}
             {this.state.currentTabID !== 4 ? null :
             <Typography

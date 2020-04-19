@@ -1,20 +1,22 @@
+// React
 import React from 'react';
-
 import axios from 'axios';
 import { CompactPicker } from 'react-color';
 
+// Core
 import { TextField, Button, Tooltip, CircularProgress, Grid } from "@material-ui/core";
-import { Autocomplete, Alert } from '@material-ui/lab';
 import { withStyles } from '@material-ui/core/styles';
-import { Radio, RadioGroup, FormControl, FormControlLabel, FormHelperText } from '@material-ui/core';
-import { IconButton, Slide, InputLabel, MenuItem, Select } from '@material-ui/core';
-import CloseIcon from '@material-ui/icons/Close';
-import { Modal, Backdrop } from '@material-ui/core';
-import Paper from '@material-ui/core/Paper';
+import { Radio, RadioGroup, FormControl, FormControlLabel, FormHelperText, Paper } from '@material-ui/core';
+import { IconButton, Slide, InputLabel, MenuItem, Select, Modal, Backdrop } from '@material-ui/core';
 
+// Lab
+import { Autocomplete, Alert } from '@material-ui/lab';
+
+//Icons
 import PowerIcon from '@material-ui/icons/Power';
 import PowerOffIcon from '@material-ui/icons/PowerOff';
 import LoopIcon from '@material-ui/icons/Loop';
+import CloseIcon from '@material-ui/icons/Close';
 
 import { AssetInput } from '../enums/AssetInputs.ts';
 import { AssetCommand } from '../enums/AssetCommands.ts'
@@ -149,7 +151,7 @@ class EditAsset extends React.Component {
             network_connections: null,
             power_connections: null,
             asset_number: -1,
-            blade_chassis: "BMI",
+            blade_chassis: "",
             blade_position: null,
             mount_type: null,
 
@@ -222,11 +224,13 @@ class EditAsset extends React.Component {
                 customMemory: this.props.defaultValues.memory,
                 customStorage: this.props.defaultValues.storage,
                 leftRight: this.getPowerFromProps(this.props.defaultValues.power_connections),
+                mount_type: this.props.defaultValues.mount_type,
+                blade_chassis: this.props.defaultValues.chassis_hostname,
+                blade_position: this.props.defaultValues.chassis_slot,
             });
         } else {
             //this.setState({ updated: true, });
         }
-
     }
 
     componentDidMount() {
@@ -566,8 +570,8 @@ class EditAsset extends React.Component {
             "network_connections": ((this.state.network_connections === null) ? {} : this.state.network_connections),
             "power_connections": this.getPowerConnections(),
             'asset_number': this.state.asset_number,
-            "blade_chassis": this.state.blade_chassis,
-            "blade_position": this.state.blade_position,
+            "chassis_hostname": this.state.blade_chassis,
+            "chassis_slot": this.state.blade_position,
             "display_color": this.state.customColor,
             "cpu": this.state.customCPU,
             "memory": this.state.customMemory,
@@ -826,6 +830,7 @@ class EditAsset extends React.Component {
                                                 name={this.state.inputs.bladeChassis.name}
                                                 onChange={this.updateBladeChassis}
                                                 onBlur={this.updateBladeChassis}
+                                                value={this.state.blade_chassis}
                                                 variant="outlined"
                                                 fullWidth
                                                 required
@@ -893,7 +898,7 @@ class EditAsset extends React.Component {
                                         />}
                                 </Tooltip>
 
-                                {(this.state.datacenterIsOffline) ? null :
+                                {(this.state.datacenterIsOffline || this.state.mount_type == "blade") ? null :
                                     <Tooltip placement="top" open={this.state.inputs.rack.Tooltip} title={this.state.inputs.rack.description}>
                                         <TextField
                                             id="input-rack"
@@ -907,7 +912,7 @@ class EditAsset extends React.Component {
                                             defaultValue={this.props.defaultValues.rack}
                                         />
                                     </Tooltip>}
-                                {(this.state.datacenterIsOffline) ? null :
+                                {(this.state.datacenterIsOffline || this.state.mount_type == "blade") ? null :
                                     <Tooltip placement="top" open={this.state.inputs.rackU.Tooltip} title={this.state.inputs.rackU.description}>
                                         <TextField
                                             id="input-rackU"
@@ -1032,7 +1037,6 @@ class EditAsset extends React.Component {
                                                                         {...params}
                                                                         label={"Connection Hostname"}
                                                                         name={"Connection Hostname"}
-
                                                                         fullWidth
                                                                     />
                                                                 )}

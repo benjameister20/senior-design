@@ -70,8 +70,8 @@ class Constants:
     NETWORK_CONNECTIONS_KEY = "network_connections"
     POWER_CONNECTIONS_KEY = "power_connections"
     ASSET_NUMBER_KEY = "asset_number"
-    CHASSIS_HOSTNAME_KEY = "chassis_hostname"
-    CHASSIS_SLOT_KEY = "chassis_slot"
+    CHASSIS_HOSTNAME_KEY = "blade_chassis"
+    CHASSIS_SLOT_KEY = "blade_position"
 
     ASSET_NUMBER_ORIG_KEY = "asset_numberOriginal"
 

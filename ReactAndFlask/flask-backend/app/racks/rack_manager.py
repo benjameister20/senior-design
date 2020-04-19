@@ -6,6 +6,7 @@ from app.dal.database import DBWriteException
 from app.dal.instance_table import InstanceTable, RackDoesNotExistError
 from app.dal.model_table import ModelTable
 from app.dal.rack_table import RackTable
+from app.data_models.datacenter import Datacenter
 from app.data_models.instance import Instance
 from app.data_models.rack import Rack
 from app.main.types import JSON
@@ -57,11 +58,13 @@ def _get_rack_modifier(label: str, datacenter_id: int, datacenter_name: str) -> 
         rack_label=label, datacenter_id=datacenter_id
     )
 
+    dc = Datacenter(datacenter_name, "", False)
+
     return {
         label: list(
             map(
                 lambda x: x.make_json_with_model_and_datacenter(
-                    _get_model_from_id(x.model_id), datacenter_name
+                    _get_model_from_id(x.model_id), dc
                 ),
                 instance_entries,
             )

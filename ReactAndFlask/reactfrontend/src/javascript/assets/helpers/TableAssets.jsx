@@ -460,6 +460,7 @@ class TableAsset extends React.Component {
 								changePlanStep={this.props.changePlanStep}
 								incrementChangePlanStep={this.props.incrementChangePlanStep}
 								fetchAllAssets={this.fetchAllAssets}
+								height="300px"
 							/> : null}
 					</Grid>
 					<Grid item xs={12} sm={6} md={4} lg={6}>
@@ -472,6 +473,7 @@ class TableAsset extends React.Component {
 							switchAssetType={this.switchAssetType}
 							assetType={this.state.assetType}
 							ref={this.filter}
+							height="300px"
 						/>
 					</Grid>
 					<Grid item xs={12} sm={6} md={4} lg={3}>
@@ -481,11 +483,12 @@ class TableAsset extends React.Component {
 							updateChangePlan={this.props.updateChangePlan}
 							privilege={this.props.privilege}
 							username={this.props.username}
+							height="300px"
 						/>
 					</Grid>
 				</Grid>
 
-				<Grid item xs={12}>
+				<Grid item xs={12} style={{ marginTop: "20px" }}>
 					<Toolbar>
 						{this.state.selectedItems.length > 0 ? (
 							<Typography className={classes.title} color="inherit" variant="subtitle1">

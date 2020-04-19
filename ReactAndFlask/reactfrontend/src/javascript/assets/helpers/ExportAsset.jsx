@@ -116,7 +116,7 @@ class ExportAsset extends React.Component {
 
         return (
             <div>
-                <Paper elevation={3}>
+                <Paper elevation={3} style={{ minHeight: this.props.height }}>
                 <Grid
                     container
                     spacing={2}

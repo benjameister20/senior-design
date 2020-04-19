@@ -660,6 +660,5 @@ def export_connections():
             ):
                 text += ",".join(connection)
                 text += "\n"
-            print(connection)
 
     return {"csvData": text}

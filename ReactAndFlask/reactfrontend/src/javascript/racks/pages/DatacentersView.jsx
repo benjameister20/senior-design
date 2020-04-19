@@ -40,7 +40,11 @@ function sortRack(a, b) {
     return 0;
 }
 
-
+function sortAssets(a, b) {
+    if (a.rack_position > b.rack_position) return 1;
+    if (a.rack_position < b.rack_position) return -1;
+    return 0;
+}
 
 const useStyles = theme => ({
     root: {
@@ -228,12 +232,14 @@ class DatacenterView extends React.Component {
         ).then(
             response => {
                 var assets = response.data.racks[0][startL + startN];
+                assets.sort(sortAssets);
                 var rack = [];
 
                 var numChassis = 0;
+                var index = 0;
                 for (let rackPos = 1; rackPos <= 42; rackPos++) {
-                    if (assets.length > 0) {
-                        var asset = assets[0];
+                    if (assets.length > 0 && index < assets.length) {
+                        var asset = assets[index];
                         if (asset.rack_position === rackPos) {
                             for (let assetHeight = 0; assetHeight < asset.height; assetHeight++) {
                                 var title = asset.model + ",  ";
@@ -257,9 +263,12 @@ class DatacenterView extends React.Component {
 
                             }
                             rackPos += (asset.height - 1);
+                            index++;
                         } else {
                             rack.push(createRackElem("#FFFFFF", "", rackPos));
                         }
+
+
                     } else {
                         rack.push(createRackElem("#FFFFFF", "", rackPos));
                     }

@@ -109,7 +109,7 @@ class RackDiagrams extends Component {
 									</Typography>
 									{rack.title !== "" ?
 										<Typography
-											style={{ background: rack.color, display: "inline-block", width: "70%", color: rack.textColor }}
+											style={{ background: rack.color, display: "inline-block", width: "70%", color: rack.textColor, paddingLeft:"3%" }}
 										>
 											{rack.title}
 										</Typography>

@@ -224,8 +224,11 @@ class DatacenterView extends React.Component {
 						if (asset.rack_position === rackPos) {
 							for (let assetHeight = 0; assetHeight < asset.height; assetHeight++) {
 								var title = asset.model + ",  ";
-								title += ((asset.hostname === "") ? asset.asset_number : asset.hostname);
-								title = (assetHeight > 0) ? "" : title;
+								title += ((asset.hostname === "") ? "#" + asset.asset_number : asset.hostname);
+                                if (asset.mount_type === "chassis") {
+                                    title += "";
+                                }
+                                title = (assetHeight === Math.floor(asset.height/2)) ? title : "";
 
 								try {
 									var r = parseInt("0x" + asset.display_color.substring(1, 3));

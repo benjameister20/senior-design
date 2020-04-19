@@ -12,8 +12,8 @@ import getURL from "../../helpers/functions/GetURL";
 import * as Constants from "../../Constants";
 import DetailAsset from "../../assets/helpers/DetailsAsset";
 
-function createRackElem(color, title, index, assetNum) {
-	return { color, title, index, assetNum };
+function createRackElem(color, title, index, assetNum, textColor) {
+	return { color, title, index, assetNum, textColor };
 }
 
 function createRack(rackTitle, racks) {
@@ -97,20 +97,23 @@ class RackDiagrams extends Component {
 					if (assets.length > 0) {
 						var asset = assets[0];
 						if (asset.rack_position === rackPos) {
-							console.log(rackPos);
-							console.log("asset")
-							console.log(asset);
-							console.log(asset.height);
 							for (let assetHeight = 0; assetHeight < asset.height; assetHeight++) {
-								console.log("in inner loop");
-								var title = (asset.hostname === "") ? asset.asset_number : asset.hostname;
+								var title = asset.model + ",  ";
+								title += ((asset.hostname === "") ? asset.asset_number : asset.hostname);
 								title = (assetHeight > 0) ? "" : title;
-								rack.push(createRackElem(asset.display_color, title, rackPos + assetHeight, asset.asset_number));
-								console.log("color")
-								console.log(rack[rackPos + assetHeight - 1].color);
+
+								try {
+									var r = parseInt("0x" + asset.display_color.substring(1,3));
+									var g = parseInt("0x" + asset.display_color.substring(3,5));
+									var b = parseInt("0x" + asset.display_color.substring(5));
+
+									var textColor = (r + g + b < 300 ? "#FFFFFF" : "#000000")
+								} catch {
+									var textColor = "#000000"
+								}
+								rack.push(createRackElem(asset.display_color, title, rackPos + assetHeight, asset.asset_number, textColor));
 							}
 							rackPos += (asset.height - 1);
-							console.log(rackPos)
 						} else {
 							rack.push(createRackElem("#FFFFFF", "", rackPos));
 						}
@@ -140,7 +143,6 @@ class RackDiagrams extends Component {
 				response.data.racks.map(rack => {
 					racks.push(rack.label);
 				})
-				console.log(response);
 				racks.map(rack => {
 					var startL = rack.substring(0, 1);
 					var startN = parseInt(rack.substring(1));
@@ -197,7 +199,7 @@ class RackDiagrams extends Component {
 									</Typography>
 									{rack.title !== "" ?
 										<Typography
-											style={{ background: rack.color, display: "inline-block", width: "70%" }}
+											style={{ background: rack.color, display: "inline-block", width: "70%", color:rack.textColor }}
 										>
 											{rack.title}
 										</Typography>

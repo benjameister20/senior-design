@@ -17,7 +17,7 @@ class InstanceValidator:
         self.dc_table = DatacenterTable()
         self.rack_height = 42
 
-    def create_instance_validation(self, instance):
+    def create_instance_validation(self, instance, queue=None):
         basic_val_result = self.basic_validations(instance, -1)
         if basic_val_result != Constants.API_SUCCESS:
             return basic_val_result
@@ -26,15 +26,15 @@ class InstanceValidator:
         if model_template is None:
             return "The model does not exist."
 
-        dc_template = self.dc_table.get_datacenter_name_by_id(instance.datacenter_id)
+        dc_template = self.dc_table.get_datacenter(instance.datacenter_id)
         if dc_template is None:
             return "The datacenter does not exist."
 
-        # if dc_template.is_offline_storage:
-        #     return Constants.API_SUCCESS
+        if dc_template.is_offline_storage:
+            return Constants.API_SUCCESS
 
         if instance.mount_type == Constants.BLADE_KEY:
-            return self.blade_validation(instance, -1)
+            return self.blade_validation(instance, -1, queue)
         else:
             return self.rackmount_validation(instance, -1, model_template, dc_template)
 
@@ -47,12 +47,12 @@ class InstanceValidator:
         if model_template is None:
             return "The model does not exist."
 
-        dc_template = self.dc_table.get_datacenter_name_by_id(instance.datacenter_id)
+        dc_template = self.dc_table.get_datacenter(instance.datacenter_id)
         if dc_template is None:
             return "The datacenter does not exist."
 
-        # if dc_template.is_offline_storage:
-        #     return Constants.API_SUCCESS
+        if dc_template.is_offline_storage:
+            return Constants.API_SUCCESS
 
         if instance.mount_type == Constants.BLADE_KEY:
             return self.blade_validation(instance, original_asset_number)
@@ -166,10 +166,23 @@ class InstanceValidator:
 
         return Constants.API_SUCCESS
 
-    def blade_validation(self, instance, original_asset_number):
+    def blade_validation(self, instance, original_asset_number, queue=None):
         blade_chassis = self.instance_table.get_instance_by_hostname(
             instance.chassis_hostname
         )
+
+        print("\n\n")
+        print("CHECKING THE QUEUE")
+        #  In the case of import instance, need to check queue of instances as well as db
+        if queue is not None and blade_chassis is None:
+            for item in queue:
+                print(item)
+                if item.hostname == instance.chassis_hostname:
+                    blade_chassis = item
+
+        print("BLADE CHASSIS")
+        print(blade_chassis)
+
         if blade_chassis is None:
             return f"No blade chassis exists with hostname {instance.chassis_hostname}."
         elif blade_chassis.mount_type != Constants.CHASIS_KEY:
@@ -193,7 +206,7 @@ class InstanceValidator:
         return Constants.API_SUCCESS
 
     def validate_connections(self, network_connections, hostname):
-        print("validating connections")
+        # print("validating connections")
         result = ""
         new_connections = {}
         for my_port in network_connections:
@@ -255,7 +268,7 @@ class InstanceValidator:
                 ):
                     result += f"The port {connection_port} on asset with hostname {connection_hostname} is already connected to another asset. \n"
 
-        print("finished connection validation")
+        # print("finished connection validation")
         if result == "":
             return Constants.API_SUCCESS
         else:

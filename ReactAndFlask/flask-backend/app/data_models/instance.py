@@ -115,6 +115,7 @@ class Instance:
             and self.owner == other.owner
             and self.comment == other.comment
             and int(self.asset_number) == int(other.asset_number)
+            and self.network_connections == other.network_connections
         )
 
     @classmethod
@@ -123,14 +124,21 @@ class Instance:
             Constants.ASSET_NUMBER_KEY,
             Constants.HOSTNAME_KEY,
             Constants.CSV_DC_NAME_KEY,
+            Constants.CSV_OFFLINE_SITE_KEY,
             Constants.RACK_KEY,
             Constants.RACK_POSITION_KEY,
+            Constants.CSV_CHASSIS_NUMBER,
+            Constants.CSV_CHASSIS_SLOT,
             Constants.VENDOR_KEY,
             Constants.MODEL_NUMBER_KEY,
             Constants.OWNER_KEY,
             Constants.COMMENT_KEY,
-            "power_port_connection_1",
-            "power_port_connection_2",
+            Constants.CSV_POWER_PORT_1,
+            Constants.CSV_POWER_PORT_2,
+            Constants.CSV_CUSTOM_DISPLAY_COLOR,
+            Constants.CSV_CUSTOM_CPU,
+            Constants.CSV_CUSTOM_MEMORY,
+            Constants.CSV_CUSTOM_STORAGE,
         ]
 
     def make_json(self) -> JSON:
@@ -230,28 +238,48 @@ class Instance:
 
         return f'"{new_entry}"'
 
-    def to_csv(self, vendor: str, model_number: str) -> str:
+    def to_csv(self, vendor: str, model_number: str, chassis_number="") -> str:
         """ Get the model as a csv row """
         json_data: JSON = self.make_json()
         json_data[Constants.VENDOR_KEY] = vendor
         json_data[Constants.MODEL_NUMBER_KEY] = model_number
-        json_data[Constants.CSV_DC_NAME_KEY] = DCTABLE.get_datacenter(
-            self.datacenter_id
-        ).abbreviation
+        json_data[Constants.CSV_CHASSIS_NUMBER] = chassis_number
+        json_data[Constants.CSV_CHASSIS_SLOT] = json_data[Constants.CHASSIS_SLOT_KEY]
+        json_data[Constants.CSV_CUSTOM_DISPLAY_COLOR] = json_data[
+            Constants.DISPLAY_COLOR_KEY
+        ]
+        json_data[Constants.CSV_CUSTOM_STORAGE] = json_data[Constants.STORAGE_KEY]
+        json_data[Constants.CSV_CUSTOM_MEMORY] = json_data[Constants.MEMORY_KEY]
+        json_data[Constants.CSV_CUSTOM_CPU] = json_data[Constants.CPU_KEY]
+        site = DCTABLE.get_datacenter(self.datacenter_id)
+
+        # Adjust for extra offline storage col
+        if site.is_offline_storage:
+            json_data[Constants.CSV_OFFLINE_SITE_KEY] = site.abbreviation
+            json_data[Constants.CSV_DC_NAME_KEY] = ""
+        else:
+            json_data[Constants.CSV_OFFLINE_SITE_KEY] = ""
+            json_data[Constants.CSV_DC_NAME_KEY] = site.abbreviation
+
+        # Adjust for extra chassis_number, chassis_slot cols
+        if self.mount_type == Constants.BLADE_KEY:
+            json_data[Constants.CSV_CHASSIS_NUMBER] = chassis_number
+
+        print(json_data)
 
         if self.power_connections is None:
-            json_data["power_port_connection_1"] = ""
-            json_data["power_port_connection_2"] = ""
+            json_data[Constants.CSV_POWER_PORT_1] = ""
+            json_data[Constants.CSV_POWER_PORT_2] = ""
         else:
             if len(self.power_connections) >= 2:
-                json_data["power_port_connection_1"] = self.power_connections[0]
-                json_data["power_port_connection_2"] = self.power_connections[1]
+                json_data[Constants.CSV_POWER_PORT_1] = self.power_connections[0]
+                json_data[Constants.CSV_POWER_PORT_2] = self.power_connections[1]
             elif len(self.power_connections) == 1:
-                json_data["power_port_connection_1"] = self.power_connections[0]
-                json_data["power_port_connection_2"] = ""
+                json_data[Constants.CSV_POWER_PORT_1] = self.power_connections[0]
+                json_data[Constants.CSV_POWER_PORT_2] = ""
             else:
-                json_data["power_port_connection_1"] = ""
-                json_data["power_port_connection_2"] = ""
+                json_data[Constants.CSV_POWER_PORT_1] = ""
+                json_data[Constants.CSV_POWER_PORT_2] = ""
 
         values: List[str] = list(
             map(
@@ -260,6 +288,9 @@ class Instance:
             )
         )
         clean_values: List[str] = list(map(lambda x: "" if x == "None" else x, values))
+        for i in range(0, len(clean_values)):
+            if clean_values[i] == "-1":
+                clean_values[i] = ""
 
         return ",".join(clean_values)
 

@@ -178,7 +178,7 @@ class NetworkGraph extends React.Component {
                         />
                         :
                         this.state.graph.edges.length === 0 ?
-                            <Typography>This asset is not currently connected to any other assets</Typography> :
+                            <Typography>{this.props.isDecommissioned ? "This asset was not connected to any other assets" : "This asset is not currently connected to any other assets"}</Typography> :
                             <Graph
                                 graph={this.state.graph}
                                 options={options}

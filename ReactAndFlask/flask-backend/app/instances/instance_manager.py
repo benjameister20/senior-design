@@ -186,9 +186,10 @@ class InstanceManager:
             blade_list = self.table.get_blades_by_chassis_hostname(
                 original_asset.hostname
             )
-            for blade in blade_list:
-                blade.chassis_hostname = new_instance.hostname
-                self.table.edit_instance(blade, blade.asset_number)
+            if blade_list is not None:
+                for blade in blade_list:
+                    blade.chassis_hostname = new_instance.hostname
+                    self.table.edit_instance(blade, blade.asset_number)
 
     def get_instances(self, filter, dc_name, limit: int):
         model_name = filter.get(Constants.MODEL_KEY)
@@ -511,6 +512,7 @@ class InstanceManager:
                 two_deep_list = self.make_two_deep_list(connected_asset)
                 connections_dict[hostname] = two_deep_list
 
+        print(connections_dict)
         return connections_dict
 
     def make_two_deep_list(self, connected_asset):

@@ -184,6 +184,9 @@ class DetailModel extends React.Component {
                                             onChange={this.props.updateModelCreator}
                                             disabled={this.props.disabled}
                                             defaultValue={this.props.defaultValues[inputs.comments.name]}
+                                            rowsMax={3}
+                                            multiline={true}
+                                            style={{ width: "100%" }}
                                         />
 
                                         {this.props.disabled ? null :
@@ -195,7 +198,7 @@ class DetailModel extends React.Component {
                                                     disabled={this.state.showConfirmationBox}
                                                 >
                                                     Save
-                        </Button>
+                                                </Button>
                                                 <Button
                                                     variant="contained"
                                                     color="primary"
@@ -203,24 +206,24 @@ class DetailModel extends React.Component {
                                                     disabled={this.state.showConfirmationBox}
                                                 >
                                                     Delete
-                        </Button>
+                                                </Button>
                                             </div>}
                                         {this.state.showConfirmationBox ? <div>
                                             Are you sure you wish to delete?
-                        <Button
+                                            <Button
                                                 variant="contained"
                                                 color="primary"
                                                 onClick={this.deleteItem}
                                             >
                                                 Yes
-                        </Button>
+                                            </Button>
                                             <Button
                                                 variant="contained"
                                                 color="primary"
                                                 onClick={this.closeModal}
                                             >
                                                 No
-                        </Button>
+                                            </Button>
                                         </div> : null}
                                     </div>}
 

@@ -269,6 +269,7 @@ class CreateModel extends React.Component {
                             <Grid item xs={6}>
                                 <TextField rowsMax={3} multiline={true} style={{ width: "100%" }} id="standard-basic" variant="outlined" label={inputs.comment.label} name={inputs.comment.name} onChange={this.props.updateModelCreator}/>
                             </Grid>
+
                             <Grid item xs={6}>
                                 <Typography>Display Color</Typography>
                                 <CompactPicker

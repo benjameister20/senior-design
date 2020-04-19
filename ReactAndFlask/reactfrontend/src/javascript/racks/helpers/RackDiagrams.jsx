@@ -4,14 +4,16 @@ import axios from "axios";
 
 import {
 	withStyles,
-	Typography
+	Typography,
+	CircularProgress
 } from "@material-ui/core";
 
 import getURL from "../../helpers/functions/GetURL";
 import * as Constants from "../../Constants";
+import DetailAsset from "../../assets/helpers/DetailsAsset";
 
-function createRackElem(color, title, index) {
-	return { color, title, index };
+function createRackElem(color, title, index, assetNum) {
+	return { color, title, index, assetNum };
 }
 
 function createRack(rackTitle, racks) {
@@ -30,6 +32,8 @@ function sortRack(a, b) {
 	return 0;
 }
 
+const decomType = "decommissioned";
+
 const useStyles = theme => ({
 	root: {
 		align: "center",
@@ -39,7 +43,7 @@ const useStyles = theme => ({
 		color: "#FFFFFF",
 		width: "15%",
 		display: "inline-block",
-		paddingLeft:"5%",
+		paddingLeft: "5%",
 	},
 	asset: {
 		width: "70%",
@@ -64,8 +68,8 @@ class RackDiagrams extends Component {
 		super(props);
 
 		this.state = {
-			loadingRacks: true,
-
+			showDetailedView: false,
+			detailAsset: null,
 			racks: [],
 		};
 	}
@@ -101,7 +105,7 @@ class RackDiagrams extends Component {
 								console.log("in inner loop");
 								var title = (asset.hostname === "") ? asset.asset_number : asset.hostname;
 								title = (assetHeight > 0) ? "" : title;
-								rack.push(createRackElem(asset.display_color, title, rackPos + assetHeight));
+								rack.push(createRackElem(asset.display_color, title, rackPos + assetHeight, asset.asset_number));
 								console.log("color")
 								console.log(rack[rackPos + assetHeight - 1].color);
 							}
@@ -116,7 +120,6 @@ class RackDiagrams extends Component {
 				}
 
 				rack.sort(sortRack);
-				console.log(rack);
 				var rackTitle = startL + (startN > 9 ? startN : " " + startN);
 				this.state.racks.push(createRack(rackTitle, rack));
 				this.state.racks.sort(sort)
@@ -125,6 +128,8 @@ class RackDiagrams extends Component {
 	}
 
 	getRacks = () => {
+		this.state.racks = [];
+		this.forceUpdate();
 		axios.post(getURL(Constants.RACKS_MAIN_PATH, "all/"),
 			{
 				"datacenter_name": this.props.datacenter_name,
@@ -144,6 +149,30 @@ class RackDiagrams extends Component {
 			});
 	}
 
+	openAssetDetails = (assetNum) => {
+		this.setState({ loadingAsset: true });
+
+		axios.post(getURL(Constants.ASSETS_MAIN_PATH, "detailView/"),
+			{
+				"asset_number": assetNum
+			}
+		).then(response => {
+			this.setState({ detailAsset: response.data.instances[0], showDetailedView: true });
+		});
+	}
+
+	closeDetailedView = () => {
+		this.setState({ showDetailedView: false });
+	}
+
+	getAssetList = () => {
+
+	}
+
+	showStatusBar = (status, severity, message) => {
+		this.setState({ showStatus: status, statusSeverity: severity, statusMessage: message });
+	}
+
 
 	render() {
 		const { classes } = this.props;
@@ -160,7 +189,7 @@ class RackDiagrams extends Component {
 							</Typography>
 
 							{rack.racks.map(rack => (
-								<div>
+								<div onClick={() => this.openAssetDetails(rack.assetNum)}>
 									<Typography
 										className={classes.index}
 									>
@@ -170,7 +199,7 @@ class RackDiagrams extends Component {
 										<Typography
 											style={{ background: rack.color, display: "inline-block", width: "70%" }}
 										>
-											 {rack.title}
+											{rack.title}
 										</Typography>
 
 										:
@@ -190,6 +219,26 @@ class RackDiagrams extends Component {
 						</span>
 					))
 					: null}
+
+
+				{this.state.showDetailedView ?
+					<DetailAsset
+						close={this.closeDetailedView}
+						showStatus={this.showStatusBar}
+						search={this.getRacks}
+						fetchAllAssets={this.getRacks}
+						open={this.state.showDetailedView}
+						privilege={this.props.privilege}
+						username={this.props.username}
+						asset={this.state.detailAsset}
+						disabled={(!(this.props.privilege.admin || this.props.privilege.asset || this.props.privilege.datacenters.includes(this.state.detailAsset.datacenter_name)) || this.state.assetType === decomType)}
+						changePlanActive={false}
+						changePlanID={""}
+						changePlanStep={-1}
+						incrementChangePlanStep={null}
+						changePlanName={""}
+						showDecommissioned={false}
+					/> : null}
 			</div>
 		)
 	}

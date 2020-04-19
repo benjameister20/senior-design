@@ -275,6 +275,8 @@ class DatacenterView extends React.Component {
                     {this.state.isOfflineStorage ? null :
                         <RackDiagrams
                             datacenter_name={this.state.selectedDatacenter}
+                            privilege={this.props.privilege}
+                            username={this.props.username}
                         />}
                     <StatusDisplay
                         open={this.state.showStatus}

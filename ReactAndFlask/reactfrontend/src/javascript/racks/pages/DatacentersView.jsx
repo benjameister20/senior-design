@@ -20,6 +20,27 @@ import RackDiagrams from "../helpers/RackDiagrams";
 
 const racksMainPath = 'racks/';
 
+function createRackElem(color, title, index, assetNum, textColor) {
+    return { color, title, index, assetNum, textColor };
+}
+
+function createRack(rackTitle, racks) {
+    return { rackTitle, racks }
+}
+
+function sort(a, b) {
+    if (a.rackTitle > b.rackTitle) return 1;
+    if (a.rackTitle < b.rackTitle) return -1;
+    return 0;
+}
+
+function sortRack(a, b) {
+    if (a.index > b.index) return -1;
+    if (a.index < b.index) return 1;
+    return 0;
+}
+
+
 
 const useStyles = theme => ({
     root: {
@@ -82,8 +103,7 @@ class DatacenterView extends React.Component {
                 console.log(datacenter);
                 var name = datacenter === undefined ? "" : datacenter.name;
                 console.log(name);
-                this.setState({ datacentersList: response.data.datacenters, loadingDCList: false, selectedDatacenter: name, fullDatacenter: datacenter });
-                this.getAllRacks(name, true);
+                this.setState({ datacentersList: response.data.datacenters, loadingDCList: false, selectedDatacenter: name, fullDatacenter: datacenter }, () => this.getRacks());
             }
         );
     }
@@ -139,9 +159,11 @@ class DatacenterView extends React.Component {
             showStatus: false,
             statusMessage: '',
             statusSeverity: 'info',
-            isOfflineStorage:false,
-            selectedDatacenter:"",
-            fullDatacenter:"",
+            isOfflineStorage: false,
+            selectedDatacenter: "",
+            fullDatacenter: "",
+
+            racks: [],
         });
     }
 
@@ -161,7 +183,7 @@ class DatacenterView extends React.Component {
             }
         ).then(response => {
             if (response.data.message === 'success') {
-                this.setState({ showStatus: true, statusMessage: "Success", statusSeverity: "success", showConfirmationBox: false });
+                this.setState({ showStatus: true, statusMessage: "Success", statusSeverity: "success", showConfirmationBox: false }, () => this.getRacks());
                 if (command === RackCommand.GET_RACK_DETAILS) {
                     const win = window.open(response.data.link, '_blank');
                     if (win != null) {
@@ -171,42 +193,113 @@ class DatacenterView extends React.Component {
             } else {
                 this.setState({ showStatus: true, statusMessage: response.data.message, statusSeverity: "error" })
             }
-            this.getAllRacks(this.state.selectedDatacenter, false);
-        });
-    }
-
-    getAllRacks = (datacenter, showSnack) => {
-        axios.post(getURL(racksMainPath, RackCommand.GET_ALL_RACKS), {
-            "datacenter_name": datacenter
-        }).then(response => {
-            console.log(response.data.racks);
-            var racks = {};
-            for (var i = 0; i < response.data.racks.length; ++i) {
-                var letter = response.data.racks[i].label[0];
-                if (letter in racks) {
-                    racks[letter].push(response.data.racks[i].label);
-                } else {
-                    racks[letter] = [response.data.racks[i].label];
-                }
-
-                racks[letter].sort();
-            }
-
-            this.setState({ racks: racks });
-
-            if (response.data.message === 'success') {
-                if (showSnack) {
-                    this.setState({ showStatus: true, statusMessage: "Racks loaded", statusSeverity: "success", racksList: response.data.racks })
-                }
-            } else {
-                this.setState({ showStatus: true, statusMessage: response.data.message, statusSeverity: "error" })
-            }
         });
     }
 
     updateDatacenter = (event) => {
-        this.setState({ selectedDatacenter: event.target.value.name, fullDatacenter: event.target.value, isOfflineStorage:event.target.value.is_offline_storage }, this.getAllRacks(event.target.value.name, true));
+        this.setState({ selectedDatacenter: event.target.value.name, fullDatacenter: event.target.value, isOfflineStorage: event.target.value.is_offline_storage }, () => this.getRacks());
     }
+
+
+    getChassisData = (rackTitle, rack) => {
+        axios.post(getURL(Constants.ASSETS_MAIN_PATH, "getbladesbychassis/"),
+        {
+            "blade_chassis":"",
+        }
+        ).then(response => {
+            var blades = response.data.instances;
+
+        })
+    }
+
+
+    createDiagram = (startL, stopL, startN, stopN) => {
+        axios.post(getURL(Constants.RACKS_MAIN_PATH, "details/"),
+            {
+                "start_letter": startL,
+                "stop_letter": stopL,
+                "start_number": startN,
+                "stop_number": stopN,
+                "datacenter_name": this.state.selectedDatacenter,
+            }
+        ).then(
+            response => {
+                var assets = response.data.racks[0][startL + startN];
+                var rack = [];
+
+                var numChassis = 0;
+                for (let rackPos = 1; rackPos <= 42; rackPos++) {
+                    if (assets.length > 0) {
+                        var asset = assets[0];
+                        if (asset.rack_position === rackPos) {
+                            for (let assetHeight = 0; assetHeight < asset.height; assetHeight++) {
+                                var title = asset.model + ",  ";
+                                title += ((asset.hostname === "") ? "#" + asset.asset_number : asset.hostname);
+                                if (asset.mount_type === "chassis") {
+                                    //numChassis++;
+                                }
+                                title = (assetHeight === Math.floor(asset.height / 2)) ? title : "";
+
+                                try {
+                                    var r = parseInt("0x" + asset.display_color.substring(1, 3));
+                                    var g = parseInt("0x" + asset.display_color.substring(3, 5));
+                                    var b = parseInt("0x" + asset.display_color.substring(5));
+
+                                    var textColor = (r + g + b < 300 ? "#FFFFFF" : "#000000")
+                                } catch {
+                                    var textColor = "#000000"
+                                }
+                                rack.push(createRackElem(asset.display_color, title, rackPos + assetHeight, asset.asset_number, textColor));
+
+
+                            }
+                            rackPos += (asset.height - 1);
+                        } else {
+                            rack.push(createRackElem("#FFFFFF", "", rackPos));
+                        }
+                    } else {
+                        rack.push(createRackElem("#FFFFFF", "", rackPos));
+                    }
+                }
+
+                var rackTitle = startL + (startN > 9 ? startN : " " + startN);
+                if (numChassis > 0) {
+                    this.getChassisData(rackTitle, rack);
+                } else {
+                    rack.sort(sortRack);
+                    this.state.racks.push(createRack(rackTitle, rack));
+                    this.state.racks.sort(sort)
+                    this.forceUpdate();
+                }
+
+
+            });
+    }
+
+    getRacks = () => {
+        this.state.racks = [];
+        this.forceUpdate();
+        axios.post(getURL(Constants.RACKS_MAIN_PATH, "all/"),
+            {
+                "datacenter_name": this.state.selectedDatacenter,
+            }
+        ).then(
+            response => {
+                var racks = [];
+                response.data.racks.map(rack => {
+                    racks.push(rack.label);
+                })
+                racks.map(rack => {
+                    var startL = rack.substring(0, 1);
+                    var startN = parseInt(rack.substring(1));
+                    this.createDiagram(startL, startL, startN, startN);
+                });
+            });
+    }
+
+
+
+
 
     render() {
         const { classes } = this.props;
@@ -273,24 +366,13 @@ class DatacenterView extends React.Component {
                     </Grid>
 
                     {this.state.isOfflineStorage ? null :
-                    <Grid
-                        container
-                        spacing={5}
-                        direction="row"
-                        justify="center"
-                        alignItems="center"
-                        style={{ margin: "0px", maxWidth: "95vw" }}
-                    >
-                        <Grid item xs={12}>
-                            <RacksView
-                                datacenter={this.state.selectedDatacenter}
-                                racks={this.state.racks}
-                            />
-                            <RackDiagrams
-                                datacenter_name={this.state.selectedDatacenter}
-                            />
-                        </Grid>
-                    </Grid>}
+                        <RackDiagrams
+                            datacenter_name={this.state.selectedDatacenter}
+                            privilege={this.props.privilege}
+                            username={this.props.username}
+                            getRacks={this.getRacks}
+                            racks={this.state.racks}
+                        />}
                     <StatusDisplay
                         open={this.state.showStatus}
                         severity={this.state.statusSeverity}

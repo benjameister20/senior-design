@@ -94,6 +94,90 @@ with application.app_context():
     )
     UserTable().add_user(user=models_user)
 
+    # # Assets user
+    # encrypted_password = AuthManager().encrypt_pw(password="Models8!")
+    # datacenters = []
+    # models_priv: Permission = Permission(
+    #     model=True,
+    #     asset=False,
+    #     datacenters=datacenters,
+    #     power=False,
+    #     audit=False,
+    #     admin=False,
+    # )
+    # models_user: User = User(
+    #     username="models",
+    #     display_name="Models",
+    #     email="models@email.com",
+    #     password=encrypted_password,
+    #     privilege=models_priv.make_json(),
+    #     datacenters=datacenters,
+    # )
+    # UserTable().add_user(user=models_user)
+
+    # # DC1 user
+    # encrypted_password = AuthManager().encrypt_pw(password="Models8!")
+    # datacenters = []
+    # models_priv: Permission = Permission(
+    #     model=True,
+    #     asset=False,
+    #     datacenters=datacenters,
+    #     power=False,
+    #     audit=False,
+    #     admin=False,
+    # )
+    # models_user: User = User(
+    #     username="models",
+    #     display_name="Models",
+    #     email="models@email.com",
+    #     password=encrypted_password,
+    #     privilege=models_priv.make_json(),
+    #     datacenters=datacenters,
+    # )
+    # UserTable().add_user(user=models_user)
+
+    # # Power user
+    # encrypted_password = AuthManager().encrypt_pw(password="Models8!")
+    # datacenters = []
+    # models_priv: Permission = Permission(
+    #     model=True,
+    #     asset=False,
+    #     datacenters=datacenters,
+    #     power=False,
+    #     audit=False,
+    #     admin=False,
+    # )
+    # models_user: User = User(
+    #     username="models",
+    #     display_name="Models",
+    #     email="models@email.com",
+    #     password=encrypted_password,
+    #     privilege=models_priv.make_json(),
+    #     datacenters=datacenters,
+    # )
+    # UserTable().add_user(user=models_user)
+
+    # # Audit user
+    # encrypted_password = AuthManager().encrypt_pw(password="Models8!")
+    # datacenters = []
+    # models_priv: Permission = Permission(
+    #     model=True,
+    #     asset=False,
+    #     datacenters=datacenters,
+    #     power=False,
+    #     audit=False,
+    #     admin=False,
+    # )
+    # models_user: User = User(
+    #     username="models",
+    #     display_name="Models",
+    #     email="models@email.com",
+    #     password=encrypted_password,
+    #     privilege=models_priv.make_json(),
+    #     datacenters=datacenters,
+    # )
+    # UserTable().add_user(user=models_user)
+
     model: Model = Model(
         vendor="dell", model_number="1234", mount_type="rackmount", height=3
     )

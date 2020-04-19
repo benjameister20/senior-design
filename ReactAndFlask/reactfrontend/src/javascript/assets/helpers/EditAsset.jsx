@@ -335,7 +335,6 @@ class EditAsset extends React.Component {
         }).then(
             response => {
                 try {
-                    console.log(response);
                     var users = [];
                     response.data.users.map(user => users.push(user.username + "/" + user.display_name));
                     this.setState({ loadingOwners: false, ownerList: users });
@@ -823,6 +822,7 @@ class EditAsset extends React.Component {
                                         options={this.state.chassisList}
                                         includeInputInList
                                         style={{ display: "inline-block" }}
+                                        value={this.state.blade_chassis}
                                         renderInput={params => (
                                             <TextField
                                                 {...params}
@@ -830,7 +830,6 @@ class EditAsset extends React.Component {
                                                 name={this.state.inputs.bladeChassis.name}
                                                 onChange={this.updateBladeChassis}
                                                 onBlur={this.updateBladeChassis}
-                                                value={this.state.blade_chassis}
                                                 variant="outlined"
                                                 fullWidth
                                                 required

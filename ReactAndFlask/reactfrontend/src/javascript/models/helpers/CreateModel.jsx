@@ -84,7 +84,7 @@ class CreateModel extends React.Component {
     }
 
     closeModal = () => {
-        this.setState({ showModal: false, networkPorts: [], numPorts: 0 });
+        this.setState({ showModal: false, networkPorts: [], numPorts: 0, mountType: "rackmount" });
     }
 
     closeImportModal = () => {
@@ -96,6 +96,7 @@ class CreateModel extends React.Component {
         this.props.createModel(this.state.networkPorts, this.state.mountType, this.state.color.hex);
         this.closeModal();
         this.updateColor(blackColor);
+        this.setState({ mountType: "rackmount" });
     }
 
     uploadFile = () => {

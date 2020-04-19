@@ -40,7 +40,7 @@ class ChangePlanValidator:
         elif cp_action.action == Constants.UPDATE_KEY:
             return self._edit_action_validate(cp_action, all_cp_actions)
         elif cp_action.action == Constants.DECOMMISSION_KEY:
-            return self._decom_action_validate(cp_action)
+            return self._decom_action_validate(cp_action, all_cp_actions)
         else:
             return Constants.API_SUCCESS
 
@@ -220,13 +220,11 @@ class ChangePlanValidator:
 
         return Constants.API_SUCCESS
 
-    def _decom_action_validate(self, cp_action):
-        if (
-            self.instance_table.get_instance_by_asset_number(
-                cp_action.original_asset_number
-            )
-            is None
-        ):
+    def _decom_action_validate(self, cp_action, all_cp_actions):
+        asset = self.instance_table.get_instance_by_asset_number(
+            cp_action.original_asset_number
+        )
+        if asset is None:
             return f"Asset with asset number {cp_action.original_asset_number} does not exist."
 
         prev_update_in_plan = self.cp_action_table.get_newest_asset_record_in_plan(
@@ -239,7 +237,21 @@ class ChangePlanValidator:
         ):
             return f"This asset is already being modified in step {prev_update_in_plan.step}. Please update your desired information there."
 
-        # Add something to make sure can't decommission chassis with existing blades
+        if asset.mount_type == Constants.CHASIS_KEY:
+            no_conflict = set()
+            for a in all_cp_actions:
+                if a.new_record.get(Constants.CHASSIS_HOSTNAME_KEY) == asset.hostname:
+                    return f"A blade chassis must be empty before it can be decommissioned. A blade is placed in the chassis in step {a.step} of the change plan."
+                else:
+                    no_conflict.add(a.original_asset_number)
+
+            blade_list = self.instance_table.get_blades_by_chassis_hostname(
+                asset.hostname
+            )
+            if blade_list is not None:
+                for blade in blade_list:
+                    if not blade.asset_number in no_conflict:
+                        return f"A blade chassis must be empty before it can be decommissioned. Blade with asset number {blade.asset_number} is in the chassis."
 
         return Constants.API_SUCCESS
 
@@ -345,9 +357,17 @@ class ChangePlanValidator:
                             result = f"The asset placement conflicts with asset with asset number {prev_action.new_record.get(Constants.ASSET_NUMBER_KEY)} "
                             result += f"edited in step {prev_action.step}."
                             return result
-                elif instance.mount_type == Constants.BLADE_KEY:
-                    # Add blade location validation
-                    pass
+                elif (
+                    instance.mount_type == Constants.BLADE_KEY
+                    and prev_action.new_record.get(Constants.MOUNT_TYPE_KEY)
+                    == Constants.BLADE_KEY
+                ):
+                    if instance.chassis_hostname == prev_action.new_record.get(
+                        Constants.CHASSIS_HOSTNAME_KEY
+                    ) and instance.chassis_slot == prev_action.new_record.get(
+                        Constants.CHASSIS_SLOT_KEY
+                    ):
+                        return f"A blade is already being placed in chassis with hostname {instance.chassis_hostname} at position {instance.chassis_slot} in step {prev_action.step} of the change plan."
 
             # Power Connection Validation
             if (not datacenter.is_offline_storage) and (
@@ -408,7 +428,7 @@ class ChangePlanValidator:
                 and not duplicate_hostname.asset_number in self.cp_asset_set
                 and duplicate_hostname.asset_number != instance.asset_number
             ):
-                return f"An instance with hostname {duplicate_hostname.hostname} exists at location {duplicate_hostname.rack_label} U{duplicate_hostname.rack_position}"
+                return f"An asset with hostname {duplicate_hostname.hostname} exists at location {duplicate_hostname.rack_label} U{duplicate_hostname.rack_position}"
 
         if not datacenter.is_offline_storage:
             if instance.mount_type != Constants.BLADE_KEY:
@@ -439,8 +459,14 @@ class ChangePlanValidator:
                         ):
                             return self.return_conflict(current_instance)
             elif instance.mount_type == Constants.BLADE_KEY:
-                # Add blade validation
-                pass
+                blade_conflict = self.instance_table.get_blade_by_chassis_and_slot(
+                    instance.chassis_hostname, instance.chassis_slot
+                )
+                if (
+                    blade_conflict is not None
+                    and not blade_conflict.asset_number in self.cp_asset_set
+                ):
+                    return f"A blade with hostname {blade_conflict.hostname} is already located in position {instance.chassis_slot} of chassis with hostname {instance.chassis_hostname}."
 
         return Constants.API_SUCCESS
 

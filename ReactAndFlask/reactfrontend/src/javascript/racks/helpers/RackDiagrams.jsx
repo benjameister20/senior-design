@@ -12,26 +12,6 @@ import getURL from "../../helpers/functions/GetURL";
 import * as Constants from "../../Constants";
 import DetailAsset from "../../assets/helpers/DetailsAsset";
 
-function createRackElem(color, title, index, assetNum, textColor) {
-	return { color, title, index, assetNum, textColor };
-}
-
-function createRack(rackTitle, racks) {
-	return { rackTitle, racks }
-}
-
-function sort(a, b) {
-	if (a.rackTitle > b.rackTitle) return 1;
-	if (a.rackTitle < b.rackTitle) return -1;
-	return 0;
-}
-
-function sortRack(a, b) {
-	if (a.index > b.index) return -1;
-	if (a.index < b.index) return 1;
-	return 0;
-}
-
 const decomType = "decommissioned";
 
 const useStyles = theme => ({
@@ -77,85 +57,8 @@ class RackDiagrams extends Component {
 		this.state = {
 			showDetailedView: false,
 			detailAsset: null,
-			racks: [],
+
 		};
-	}
-
-	componentDidMount() {
-		this.getRacks();
-	}
-
-
-	createDiagram = (startL, stopL, startN, stopN) => {
-		axios.post(getURL(Constants.RACKS_MAIN_PATH, "details/"),
-			{
-				"start_letter": startL,
-				"stop_letter": stopL,
-				"start_number": startN,
-				"stop_number": stopN,
-				"datacenter_name": this.props.datacenter_name,
-			}
-		).then(
-			response => {
-				var assets = response.data.racks[0][startL + startN];
-				var rack = [];
-
-				for (let rackPos = 1; rackPos <= 42; rackPos++) {
-					if (assets.length > 0) {
-						var asset = assets[0];
-						if (asset.rack_position === rackPos) {
-							for (let assetHeight = 0; assetHeight < asset.height; assetHeight++) {
-								var title = asset.model + ",  ";
-								title += ((asset.hostname === "") ? asset.asset_number : asset.hostname);
-								title = (assetHeight > 0) ? "" : title;
-
-								try {
-									var r = parseInt("0x" + asset.display_color.substring(1, 3));
-									var g = parseInt("0x" + asset.display_color.substring(3, 5));
-									var b = parseInt("0x" + asset.display_color.substring(5));
-
-									var textColor = (r + g + b < 300 ? "#FFFFFF" : "#000000")
-								} catch {
-									var textColor = "#000000"
-								}
-								rack.push(createRackElem(asset.display_color, title, rackPos + assetHeight, asset.asset_number, textColor));
-							}
-							rackPos += (asset.height - 1);
-						} else {
-							rack.push(createRackElem("#FFFFFF", "", rackPos));
-						}
-					} else {
-						rack.push(createRackElem("#FFFFFF", "", rackPos));
-					}
-				}
-
-				rack.sort(sortRack);
-				var rackTitle = startL + (startN > 9 ? startN : " " + startN);
-				this.state.racks.push(createRack(rackTitle, rack));
-				this.state.racks.sort(sort)
-				this.forceUpdate();
-			});
-	}
-
-	getRacks = () => {
-		this.state.racks = [];
-		this.forceUpdate();
-		axios.post(getURL(Constants.RACKS_MAIN_PATH, "all/"),
-			{
-				"datacenter_name": this.props.datacenter_name,
-			}
-		).then(
-			response => {
-				var racks = [];
-				response.data.racks.map(rack => {
-					racks.push(rack.label);
-				})
-				racks.map(rack => {
-					var startL = rack.substring(0, 1);
-					var startN = parseInt(rack.substring(1));
-					this.createDiagram(startL, startL, startN, startN);
-				});
-			});
 	}
 
 	openAssetDetails = (assetNum) => {
@@ -188,8 +91,8 @@ class RackDiagrams extends Component {
 
 		return (
 			<div className={classes.root}>
-				{this.state.racks.length > 0 ?
-					this.state.racks.map((rack, index) => (
+				{this.props.racks.length > 0 ?
+					this.props.racks.map((rack, index) => (
 						<span className={classes.rack}>
 							<Typography
 								className={classes.title}
@@ -240,8 +143,8 @@ class RackDiagrams extends Component {
 					<DetailAsset
 						close={this.closeDetailedView}
 						showStatus={this.showStatusBar}
-						search={this.getRacks}
-						fetchAllAssets={this.getRacks}
+						search={this.props.getRacks}
+						fetchAllAssets={this.props.getRacks}
 						open={this.state.showDetailedView}
 						privilege={this.props.privilege}
 						username={this.props.username}

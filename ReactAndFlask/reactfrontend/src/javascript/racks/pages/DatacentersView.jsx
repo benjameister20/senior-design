@@ -2,7 +2,7 @@ import React from 'react';
 
 import axios from 'axios';
 
-import { Grid, CircularProgress, Typography, withStyles } from '@material-ui/core/';
+import { Grid, CircularProgress, Typography, withStyles, Paper } from '@material-ui/core/';
 import getURL from "../../helpers/functions/GetURL";
 import * as Constants from "../../Constants";
 import { DatacenterCommand } from "../enums/DatacenterCommands.ts";
@@ -40,7 +40,11 @@ function sortRack(a, b) {
     return 0;
 }
 
-
+function sortAssets(a, b) {
+    if (a.rack_position > b.rack_position) return 1;
+    if (a.rack_position < b.rack_position) return -1;
+    return 0;
+}
 
 const useStyles = theme => ({
     root: {
@@ -85,8 +89,10 @@ class DatacenterView extends React.Component {
             editDCName: "",
             editDCAbbr: "",
             selectedDatacenter: "",
+            abbreviation: "",
             fullDatacenter: {},
             racks: {},
+            is_offline_storage:false,
         };
     }
 
@@ -102,8 +108,9 @@ class DatacenterView extends React.Component {
                 var datacenter = response.data.datacenters[0];
                 console.log(datacenter);
                 var name = datacenter === undefined ? "" : datacenter.name;
+                var abbreviation = datacenter === undefined ? "" : datacenter.abbreviation;
                 console.log(name);
-                this.setState({ datacentersList: response.data.datacenters, loadingDCList: false, selectedDatacenter: name, fullDatacenter: datacenter }, () => this.getRacks());
+                this.setState({ datacentersList: response.data.datacenters, loadingDCList: false, selectedDatacenter: name, fullDatacenter: datacenter, abbreviation: abbreviation }, () => this.getRacks());
             }
         );
     }
@@ -197,15 +204,16 @@ class DatacenterView extends React.Component {
     }
 
     updateDatacenter = (event) => {
-        this.setState({ selectedDatacenter: event.target.value.name, fullDatacenter: event.target.value, isOfflineStorage: event.target.value.is_offline_storage }, () => this.getRacks());
+        console.log(event.target.value);
+        this.setState({is_offline_storage:event.target.value.is_offline_storage, selectedDatacenter: event.target.value.name, abbreviation:event.target.value.abbreviation, fullDatacenter: event.target.value, isOfflineStorage: event.target.value.is_offline_storage }, () => this.getRacks());
     }
 
 
     getChassisData = (rackTitle, rack) => {
         axios.post(getURL(Constants.ASSETS_MAIN_PATH, "getbladesbychassis/"),
-        {
-            "blade_chassis":"",
-        }
+            {
+                "blade_chassis": "",
+            }
         ).then(response => {
             var blades = response.data.instances;
 
@@ -225,12 +233,14 @@ class DatacenterView extends React.Component {
         ).then(
             response => {
                 var assets = response.data.racks[0][startL + startN];
+                assets.sort(sortAssets);
                 var rack = [];
 
                 var numChassis = 0;
+                var index = 0;
                 for (let rackPos = 1; rackPos <= 42; rackPos++) {
-                    if (assets.length > 0) {
-                        var asset = assets[0];
+                    if (assets.length > 0 && index < assets.length) {
+                        var asset = assets[index];
                         if (asset.rack_position === rackPos) {
                             for (let assetHeight = 0; assetHeight < asset.height; assetHeight++) {
                                 var title = asset.model + ",  ";
@@ -254,9 +264,12 @@ class DatacenterView extends React.Component {
 
                             }
                             rackPos += (asset.height - 1);
+                            index++;
                         } else {
                             rack.push(createRackElem("#FFFFFF", "", rackPos));
                         }
+
+
                     } else {
                         rack.push(createRackElem("#FFFFFF", "", rackPos));
                     }
@@ -353,6 +366,7 @@ class DatacenterView extends React.Component {
                                 dcName={this.state.editDCName}
                                 dcAbbrev={this.state.editDCAbbr}
                                 search={this.getDatacenters}
+                                is_offline_storage={this.state.is_offline_storage}
                             />
                         </Grid>
                         <Grid item xs={6}>
@@ -365,14 +379,18 @@ class DatacenterView extends React.Component {
                         </Grid>
                     </Grid>
 
+                    <Paper elevation={1}>
+                        <Typography variant="h5" style={{ padding: "1%" }}>Datacenter Name: {this.state.selectedDatacenter}</Typography>
+                        <Typography variant="h5" style={{ padding: "1%" }}>Datacenter Abbreviation: {this.state.abbreviation}</Typography>
+                    </Paper>
                     {this.state.isOfflineStorage ? null :
                         <RackDiagrams
-                            datacenter_name={this.state.selectedDatacenter}
                             privilege={this.props.privilege}
                             username={this.props.username}
                             getRacks={this.getRacks}
                             racks={this.state.racks}
-                        />}
+                        />
+                    }
                     <StatusDisplay
                         open={this.state.showStatus}
                         severity={this.state.statusSeverity}

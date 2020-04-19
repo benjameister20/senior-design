@@ -53,14 +53,14 @@ const useStyles = theme => ({
       },
 });
 
-const blackColor = {'hsl': {'h': 0, 's': 0, 'l': 0, 'a': 1}, 'hex': '#000000', 'rgb': {'r': 0, 'g': 0, 'b': 0, 'a': 1}, 'hsv': {'h': 0, 's': 0, 'v': 0, 'a': 1}, 'oldHue': 0};
+const defaultColor = "#B0BC00";
 
 class CreateModel extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            color: blackColor,
+            color: defaultColor,
             showModal: false,
             showImportModal: false,
             importedFile: null,
@@ -93,10 +93,11 @@ class CreateModel extends React.Component {
 
     create = (event) => {
         event.preventDefault();
-        this.props.createModel(this.state.networkPorts, this.state.mountType, this.state.color.hex);
+        var color = (this.state.color.hex === undefined ? this.state.color : this.state.color.hex);
+        this.props.createModel(this.state.networkPorts, this.state.mountType, color);
         this.closeModal();
-        this.updateColor(blackColor);
         this.setState({ mountType: "rackmount" });
+        this.updateColor(defaultColor);
     }
 
     uploadFile = () => {
@@ -267,9 +268,10 @@ class CreateModel extends React.Component {
                             <Grid item xs={3}>
                                 <TextField id="standard-basic" variant="outlined" label={inputs.storage.label} name={inputs.storage.name} onChange={this.props.updateModelCreator}/>
                             </Grid>
-                            <Grid item xs={3}>
-                                <TextField id="standard-basic" variant="outlined" label={inputs.comment.label} name={inputs.comment.name} onChange={this.props.updateModelCreator}/>
+                            <Grid item xs={6}>
+                                <TextField rowsMax={3} multiline={true} style={{ width: "100%" }} id="standard-basic" variant="outlined" label={inputs.comment.label} name={inputs.comment.name} onChange={this.props.updateModelCreator}/>
                             </Grid>
+
                             <Grid item xs={6}>
                                 <Typography>Display Color</Typography>
                                 <CompactPicker

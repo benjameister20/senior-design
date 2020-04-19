@@ -358,7 +358,7 @@ class CreateAsset extends React.Component {
         };
         var url = this.props.changePlanActive ? getURL(AssetConstants.CHANGE_PLAN_PATH, AssetCommand.CHANGE_PLAN_CREATE_ACTION) : getURL(AssetConstants.ASSETS_MAIN_PATH, AssetCommand.create);
 
-        if (this.validJSON(json)) {
+        if (true) {
             axios.post(
                 url,
                 this.props.changePlanActive ? changePlanJSON : json
@@ -964,7 +964,6 @@ class CreateAsset extends React.Component {
                                     <Button
                                         variant="contained"
                                         type="submit"
-                                        disabled={!this.state.canSubmit}
                                         color={this.props.changePlanActive ? "" : "primary"}
                                         style={{
                                             backgroundColor: this.props.changePlanActive ? "#64b5f6" : ""

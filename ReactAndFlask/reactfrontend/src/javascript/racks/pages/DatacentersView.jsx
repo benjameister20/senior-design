@@ -92,6 +92,7 @@ class DatacenterView extends React.Component {
             abbreviation: "",
             fullDatacenter: {},
             racks: {},
+            is_offline_storage:false,
         };
     }
 
@@ -204,7 +205,7 @@ class DatacenterView extends React.Component {
 
     updateDatacenter = (event) => {
         console.log(event.target.value);
-        this.setState({ selectedDatacenter: event.target.value.name, abbreviation:event.target.value.abbreviation, fullDatacenter: event.target.value, isOfflineStorage: event.target.value.is_offline_storage }, () => this.getRacks());
+        this.setState({is_offline_storage:event.target.value.is_offline_storage, selectedDatacenter: event.target.value.name, abbreviation:event.target.value.abbreviation, fullDatacenter: event.target.value, isOfflineStorage: event.target.value.is_offline_storage }, () => this.getRacks());
     }
 
 
@@ -365,6 +366,7 @@ class DatacenterView extends React.Component {
                                 dcName={this.state.editDCName}
                                 dcAbbrev={this.state.editDCAbbr}
                                 search={this.getDatacenters}
+                                is_offline_storage={this.state.is_offline_storage}
                             />
                         </Grid>
                         <Grid item xs={6}>

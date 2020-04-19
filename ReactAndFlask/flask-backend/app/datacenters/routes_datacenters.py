@@ -85,6 +85,7 @@ def edit():
 
     try:
         dc_data = request.get_json()
+        print(dc_data)
         error = DATACENTER_MANAGER.edit_datacenter(dc_data)
         if error is not None:
             return addMessageToJSON(returnJSON, error)

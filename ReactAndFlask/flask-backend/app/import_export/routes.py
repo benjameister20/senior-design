@@ -379,8 +379,8 @@ def _parse_connection_csv(csv_input) -> Tuple[int, int, int]:
         src_mac_addr: str = values[Constants.CSV_SRC_MAC]
         src_hostname: str = values[Constants.CSV_SRC_HOST]
         dst_hostname: str = values[Constants.CSV_DEST_HOST]
-        values[Constants.CSV_SRC_PORT]
-        values[Constants.CSV_DEST_PORT]
+        # values[Constants.CSV_SRC_PORT]
+        # values[Constants.CSV_DEST_PORT]
 
         src_instance = instance_table.get_instance_by_hostname(src_hostname)
         dst_instance = instance_table.get_instance_by_hostname(dst_hostname)

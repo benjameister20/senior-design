@@ -49,8 +49,6 @@ function getGraph(primaryHosts, host) {
     var primaryHostID = 1;
 
     try {
-        console.log("nodes and edges");
-        console.log(primaryHosts);
         Object.entries(primaryHosts).map(([primaryHost, secondaryHosts]) => {
             if (primaryHost !== "message" && primaryHost !== "" && primaryHost !== "metadata") {
                 if (hostnameMapping[primaryHost] !== undefined) {
@@ -66,7 +64,6 @@ function getGraph(primaryHosts, host) {
                     edges.push({ from: primaryHostID, to: hostID });
                     hostnameMapping[primaryHost] = primaryHostID;
                 }
-                console.log("nodes and edges");
                 var secondaryHostID = primaryHostID + 1;
                 try {
                     secondaryHosts.map(secondaryHost => {
@@ -91,19 +88,13 @@ function getGraph(primaryHosts, host) {
 
                 }
 
-                console.log("nodes and edges");
                 primaryHostID = secondaryHostID + 1;
             }
         });
 
-        console.log("nodes and edges");
-        console.log(nodes);
-        console.log(edges);
         return { nodes: nodes, edges: edges };
 
     } catch (Exception) {
-        console.log("in here")
-        console.log(Exception);
         return { nodes: [], edges: [] }
     }
 }

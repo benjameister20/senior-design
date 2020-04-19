@@ -179,9 +179,9 @@ class InstanceManager:
 
         self.table.edit_instance(new_instance, original_asset_number)
 
-        if (
-            new_instance.mount_type == Constants.CHASIS_KEY
-            and original_asset.hostname != new_instance.hostname
+        if new_instance.mount_type == Constants.CHASIS_KEY and (
+            original_asset.hostname != new_instance.hostname
+            or original_asset.datacenter_id != new_instance.datacenter_id
         ):
             blade_list = self.table.get_blades_by_chassis_hostname(
                 original_asset.hostname
@@ -189,6 +189,7 @@ class InstanceManager:
             if blade_list is not None:
                 for blade in blade_list:
                     blade.chassis_hostname = new_instance.hostname
+                    blade.datacenter_id = new_instance.datacenter_id
                     self.table.edit_instance(blade, blade.asset_number)
 
     def get_instances(self, filter, dc_name, limit: int):

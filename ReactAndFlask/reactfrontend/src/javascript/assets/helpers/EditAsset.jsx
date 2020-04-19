@@ -894,7 +894,7 @@ class EditAsset extends React.Component {
                                         />}
                                 </Tooltip>
 
-                                {(this.state.datacenterIsOffline) ? null :
+                                {(this.state.datacenterIsOffline || this.state.mount_type == "blade") ? null :
                                     <Tooltip placement="top" open={this.state.inputs.rack.Tooltip} title={this.state.inputs.rack.description}>
                                         <TextField
                                             id="input-rack"
@@ -908,7 +908,7 @@ class EditAsset extends React.Component {
                                             defaultValue={this.props.defaultValues.rack}
                                         />
                                     </Tooltip>}
-                                {(this.state.datacenterIsOffline) ? null :
+                                {(this.state.datacenterIsOffline || this.state.mount_type == "blade") ? null :
                                     <Tooltip placement="top" open={this.state.inputs.rackU.Tooltip} title={this.state.inputs.rackU.description}>
                                         <TextField
                                             id="input-rackU"

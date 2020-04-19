@@ -3,10 +3,7 @@ import React, { Component } from 'react'
 import axios from "axios";
 
 import {
-	Button,
-	CircularProgress,
 	withStyles,
-	TextField,
 	Typography
 } from "@material-ui/core";
 
@@ -27,27 +24,39 @@ function sort(a, b) {
 	return 0;
 }
 
+function sortRack(a, b) {
+	if (a.index > b.index) return -1;
+	if (a.index < b.index) return 1;
+	return 0;
+}
+
 const useStyles = theme => ({
+	root: {
+		align: "center",
+	},
 	index: {
 		backgroundColor: "#000000",
 		color: "#FFFFFF",
-		width: "3rem",
-		display: "inline-block"
+		width: "15%",
+		display: "inline-block",
+		paddingLeft:"5%",
 	},
 	asset: {
-		width: "100rem",
+		width: "70%",
 		display: "inline-block"
 	},
 	title: {
 		backgroundColor: "#A9A9A9",
-		width: "106rem",
+		width: "100%",
 		align: "center",
-		justify:"center",
-		padding: theme.spacing(1),
+		paddingLeft: "45%",
 	},
 	rack: {
-		display: "inline-block"
+		display: "inline-block",
+		width: "20%",
+		margin: "2%",
 	}
+
 });
 
 class RackDiagrams extends Component {
@@ -59,6 +68,10 @@ class RackDiagrams extends Component {
 
 			racks: [],
 		};
+	}
+
+	componentDidMount() {
+		this.getRacks();
 	}
 
 
@@ -80,12 +93,20 @@ class RackDiagrams extends Component {
 					if (assets.length > 0) {
 						var asset = assets[0];
 						if (asset.rack_position === rackPos) {
+							console.log(rackPos);
+							console.log("asset")
+							console.log(asset);
+							console.log(asset.height);
 							for (let assetHeight = 0; assetHeight < asset.height; assetHeight++) {
+								console.log("in inner loop");
 								var title = (asset.hostname === "") ? asset.asset_number : asset.hostname;
 								title = (assetHeight > 0) ? "" : title;
 								rack.push(createRackElem(asset.display_color, title, rackPos + assetHeight));
+								console.log("color")
+								console.log(rack[rackPos + assetHeight - 1].color);
 							}
 							rackPos += (asset.height - 1);
+							console.log(rackPos)
 						} else {
 							rack.push(createRackElem("#FFFFFF", "", rackPos));
 						}
@@ -94,6 +115,8 @@ class RackDiagrams extends Component {
 					}
 				}
 
+				rack.sort(sortRack);
+				console.log(rack);
 				var rackTitle = startL + (startN > 9 ? startN : " " + startN);
 				this.state.racks.push(createRack(rackTitle, rack));
 				this.state.racks.sort(sort)
@@ -102,7 +125,6 @@ class RackDiagrams extends Component {
 	}
 
 	getRacks = () => {
-
 		axios.post(getURL(Constants.RACKS_MAIN_PATH, "all/"),
 			{
 				"datacenter_name": this.props.datacenter_name,
@@ -113,7 +135,7 @@ class RackDiagrams extends Component {
 				response.data.racks.map(rack => {
 					racks.push(rack.label);
 				})
-
+				console.log(response);
 				racks.map(rack => {
 					var startL = rack.substring(0, 1);
 					var startN = parseInt(rack.substring(1));
@@ -127,23 +149,16 @@ class RackDiagrams extends Component {
 		const { classes } = this.props;
 
 		return (
-			<div>
-				<Button
-					onClick={() => this.getRacks()}
-				>
-					Get Racks
-				</Button>
-
-				{this.state.loadingRacks ? <CircularProgress /> : null}
-
+			<div className={classes.root}>
 				{this.state.racks.length > 0 ?
 					this.state.racks.map((rack, index) => (
 						<span className={classes.rack}>
-								<Typography
-									className={classes.title}
-								>
-									{rack.rackTitle}
-								</Typography>
+							<Typography
+								className={classes.title}
+							>
+								{rack.rackTitle}
+							</Typography>
+
 							{rack.racks.map(rack => (
 								<div>
 									<Typography
@@ -151,11 +166,20 @@ class RackDiagrams extends Component {
 									>
 										{rack.index + " "}
 									</Typography>
-									<Typography
-										style={{ backgroundColor: rack.color,  display: "inline-block", width: "10%",}}
-									>
-										{rack.title}
-									</Typography>
+									{rack.title !== "" ?
+										<Typography
+											style={{ background: rack.color, display: "inline-block", width: "70%" }}
+										>
+											 {rack.title}
+										</Typography>
+
+										:
+										<Typography
+											style={{ background: rack.color, display: "inline-block", width: "70%", color: rack.color, }}
+										>
+											{"."}
+										</Typography>
+									}
 									<Typography
 										className={classes.index}
 									>

@@ -567,3 +567,99 @@ def set_pdu_power_state()
   "message": "Success"
 }
 ```
+-----------------------------
+```language=python
+def get_blades_by_chassis()
+```
+- REST Type: 'post'
+- Authentication Required: yes
+- Roled required: none
+- Endpoint: /instances/getbladesbychassis
+- Arguments: 
+```language=json
+{
+    "blade_chassis": "HOSTNAME OF CHASSIS"
+}
+```
+- Returns:
+```language=json
+{
+    "instances": [
+        {
+            "model":"MODEL",
+            "hostname":"HOSTNAME",
+            "rack":"RACK",
+            "rack_position":"RACK_U",
+            "owner":"OWNER",
+            "comment":"COMMENT"
+            "datacenter_id": "DATACENTER",
+            "tags": "TAGS",
+            "mac_address": "MAC ADDRESSES,
+            "network_connections": "NETWORK CONNECTIONS",
+            "power_connections": "POWER CONNECTIONS",
+            "asset_number": "ASSET NUMBER",  
+            "display_color": "DISPLAY_COLOR",
+            "display_colorOriginal": "DISPLAY COLOR OF MODEL",
+            "cpu": "CPU",
+            "cpuOriginal": "CPU OF MODEL",
+            "memory": MEMORY,
+            "memoryOriginal": MEMORY OF MODEL,
+            "storage": "STORAGE",  
+            "storageOriginal": "STORAGE OF MODEL"
+            "mount_type": "MOUNT TYPE (blade/chassis/rackmount)",
+	    "blade_chassis": "CHASSIS HOSTNAME",
+	    "blade_position": BLADE POSITION IN CHASSIS    
+        },
+        {
+            "model":"MODEL",
+            "hostname":"HOSTNAME",
+            "rack":"RACK",
+            "rack_position":"RACK_U",
+            "owner":"OWNER",
+            "comment":"COMMENT"
+            "datacenter_id": "DATACENTER",
+            "tags": "TAGS",
+            "mac_address": "MAC ADDRESSES,
+            "network_connections": "NETWORK CONNECTIONS",
+            "power_connections": "POWER CONNECTIONS",
+            "asset_number": "ASSET NUMBER",  
+            "display_color": "DISPLAY_COLOR",
+            "display_colorOriginal": "DISPLAY COLOR OF MODEL",
+            "cpu": "CPU",
+            "cpuOriginal": "CPU OF MODEL",
+            "memory": MEMORY,
+            "memoryOriginal": MEMORY OF MODEL,
+            "storage": "STORAGE",  
+            "storageOriginal": "STORAGE OF MODEL"  
+            "mount_type": "MOUNT TYPE (blade/chassis/rackmount)",
+	    "blade_chassis": "CHASSIS HOSTNAME",
+	    "blade_position": BLADE POSITION IN CHASSIS    
+        },
+        {
+            "model":"MODEL",
+            "hostname":"HOSTNAME",
+            "rack":"RACK",
+            "rack_position":"RACK_U",
+            "owner":"OWNER",
+            "comment":"COMMENT"
+            "datacenter_id": "DATACENTER",
+            "tags": "TAGS",
+            "mac_address": "MAC ADDRESSES,
+            "network_connections": "NETWORK CONNECTIONS",
+            "power_connections": "POWER CONNECTIONS",
+            "asset_number": "ASSET NUMBER",  
+            "display_color": "DISPLAY_COLOR",
+            "display_colorOriginal": "DISPLAY COLOR OF MODEL",
+            "cpu": "CPU",
+            "cpuOriginal": "CPU OF MODEL",
+            "memory": MEMORY,
+            "memoryOriginal": MEMORY OF MODEL,
+            "storage": "STORAGE",  
+            "storageOriginal": "STORAGE OF MODEL"
+            "mount_type": "MOUNT TYPE (blade/chassis/rackmount)",
+	    "blade_chassis": "CHASSIS HOSTNAME",
+	    "blade_position": BLADE POSITION IN CHASSIS    
+        }
+    ]
+}
+```

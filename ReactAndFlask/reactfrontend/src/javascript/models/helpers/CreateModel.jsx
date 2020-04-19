@@ -136,14 +136,14 @@ class CreateModel extends React.Component {
 
         return (
         <div>
-            <Paper elevation={3}>
+            <Paper style={{ minHeight: this.props.height }} elevation={3}>
                 <Grid
                     container
                     spacing={2}
                     direction="row"
                     justify="flex-start"
                     alignItems="center"
-                    style={{"padding": "10px"}}
+                    style={{ padding: "10px" }}
                 >
                     <Grid item xs={12}>
                         <Typography
@@ -151,6 +151,9 @@ class CreateModel extends React.Component {
                         >
                             Add
                         </Typography>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <Typography>Create a new model.</Typography>
                     </Grid>
                     <Grid item xs={12}>
                         <Button

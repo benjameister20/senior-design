@@ -543,6 +543,7 @@ export default class ModelsView extends React.Component {
                                 useAutocomplete={true}
                                 updateModelColor={this.updateModelColor}
                                 sendUploadedFile={this.sendUploadedFile}
+                                height="420px"
                             />
                         </div>) : null}
                     </Grid>
@@ -553,12 +554,14 @@ export default class ModelsView extends React.Component {
                             filters={columns}
                             options={this.state.vendorsList}
                             useAutocomplete={true}
+                            height="420px"
                         />
                     </Grid>
                     <Grid item xs={12} sm={6} md={4} lg={3}>
                         <ExportModel
                             downloadTable={this.downloadTable}
                             showAll={this.searchAll}
+                            height="420px"
                         />
                         <CSVLink
                             data={this.state.csvData}

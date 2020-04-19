@@ -70,8 +70,8 @@ class Constants:
     NETWORK_CONNECTIONS_KEY = "network_connections"
     POWER_CONNECTIONS_KEY = "power_connections"
     ASSET_NUMBER_KEY = "asset_number"
-    CHASSIS_HOSTNAME_KEY = "chassis_hostname"
-    CHASSIS_SLOT_KEY = "chassis_slot"
+    CHASSIS_HOSTNAME_KEY = "blade_chassis"
+    CHASSIS_SLOT_KEY = "blade_position"
 
     ASSET_NUMBER_ORIG_KEY = "asset_numberOriginal"
 
@@ -81,6 +81,14 @@ class Constants:
     CHASSIS_KEY = "chassis"
     CHASSIS_PORT_KEY = "chassis_port_number"
     POWER_STATE_KEY = "power_state"
+
+    PDU_NET_PRO_HOST = "http://hyposoft-mgt.colab.duke.edu"
+    PDU_NET_PRO_PORT = "8000"
+    PDU_RACK_LETTER = "rack_letter"
+    PDU_RACK_NUMBER = "rack_number"
+    PDU_RACK_SIDE = "rack_side"
+    PDU_RACK_PORT = "rack_port"
+    PDU_RACK_PORT_STATE = "rack_port_state"
 
     # Rack Keys
     START_LETTER_KEY = "start_letter"

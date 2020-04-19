@@ -22,6 +22,8 @@ class DecommissionEntry(db.Model):
     network_connections = db.Column(pg.JSON, nullable=True)
     power_connections = db.Column(pg.ARRAY(db.String(50)), nullable=True)
     asset_number = db.Column(db.Integer)
+    chassis_hostname = db.Column(db.String(80), nullable=True)
+    chassis_slot = db.Column(db.Integer, nullable=True)
 
     decommission_user = db.Column(db.String(80))
     timestamp = db.Column(db.String(120))
@@ -40,6 +42,8 @@ class DecommissionEntry(db.Model):
         self.network_connections = decommission.network_connections
         self.power_connections = decommission.power_connections
         self.asset_number = decommission.asset_number
+        self.chassis_hostname = decommission.chassis_hostname
+        self.chassis_slot = decommission.chassis_slot
         self.decommission_user = decommission.decommission_user
         self.timestamp = decommission.timestamp
         self.network_neighborhood = decommission.network_neighborhood
@@ -59,6 +63,8 @@ class DecommissionEntry(db.Model):
             network_connections=self.network_connections,
             power_connections=self.power_connections,
             asset_number=self.asset_number,
+            chassis_hostname=self.chassis_hostname,
+            chassis_slot=self.chassis_slot,
             timestamp=self.timestamp,
             decommission_user=self.decommission_user,
             network_neighborhood=self.network_neighborhood,

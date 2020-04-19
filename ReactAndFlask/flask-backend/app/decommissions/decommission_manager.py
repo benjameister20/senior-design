@@ -93,6 +93,8 @@ class DecommissionManager:
             network_connections=asset.network_connections,
             power_connections=asset.power_connections,
             asset_number=asset.asset_number,
+            chassis_hostname=asset.chassis_hostname,
+            chassis_slot=asset.chassis_slot,
             timestamp=timestamp,
             decommission_user=decommission_user,
             network_neighborhood=network_neighborhood,

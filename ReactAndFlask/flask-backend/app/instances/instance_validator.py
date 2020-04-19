@@ -103,6 +103,13 @@ class InstanceValidator:
     def rackmount_validation(
         self, instance, original_asset_number, model_template, dc_template
     ):
+        if instance.mount_type == Constants.CHASIS_KEY and instance.hostname == "":
+            if (
+                self.instance_table.get_blades_by_chassis_hostname(instance.hostname)
+                is not None
+            ):
+                return "Blade chassis with blades require a hostname."
+
         rack = self.rack_table.get_rack(instance.rack_label, instance.datacenter_id)
         if rack is None:
             return f"Rack {instance.rack_label} does not exist in datacenter {dc_template}. Assets must be created on preexisting racks"

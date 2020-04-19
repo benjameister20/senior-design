@@ -78,6 +78,8 @@ def search()
             "storage": "STORAGE",  
             "storageOriginal": "STORAGE OF MODEL"
             "mount_type": "MOUNT TYPE (blade/chassis/rackmount)",
+	    "blade_chassis": "CHASSIS HOSTNAME",
+	    "blade_position": BLADE POSITION IN CHASSIS
         },
         {
             "model":"MODEL",
@@ -101,6 +103,8 @@ def search()
             "storage": "STORAGE",  
             "storageOriginal": "STORAGE OF MODEL"  
             "mount_type": "MOUNT TYPE (blade/chassis/rackmount)",
+	    "blade_chassis": "CHASSIS HOSTNAME",
+	    "blade_position": BLADE POSITION IN CHASSIS	    
         },
         {
             "model":"MODEL",
@@ -124,6 +128,8 @@ def search()
             "storage": "STORAGE",  
             "storageOriginal": "STORAGE OF MODEL"
             "mount_type": "MOUNT TYPE (blade/chassis/rackmount)",
+	    "blade_chassis": "CHASSIS HOSTNAME",
+	    "blade_position": BLADE POSITION IN CHASSIS	
         }
     ]
 }
@@ -145,7 +151,6 @@ def create()
     "owner":"OWNER",
     "comment":"COMMENT"
     "datacenter_name": "DATACENTER",
-    "tags": "TAGS",
     "network_connections": {
         PORT_NAME_1: {
             "mac_address":MAC_ADDRESS,
@@ -169,6 +174,8 @@ def create()
     "cpu": "CPU",
     "memory": MEMORY,
     "storage": "STORAGE",
+    "blade_chassis": "CHASSIS HOSTNAME",
+    "blade_position": BLADE POSITION IN CHASSIS    
 }
 ```
 - Returns:
@@ -223,6 +230,8 @@ def edit()
     "cpu": "CPU",
     "memory": MEMORY,
     "storage": "STORAGE",
+    "blade_chassis": "CHASSIS HOSTNAME",
+    "blade_position": BLADE POSITION IN CHASSIS        
 }
 ```
 - Returns:
@@ -271,6 +280,8 @@ def detail_view()
             "storage": "STORAGE",  
             "storageOriginal": "STORAGE OF MODEL"
             "mount_type": "MOUNT TYPE (blade/chassis/rackmount)",
+	    "blade_chassis": "CHASSIS HOSTNAME",
+	    "blade_position": BLADE POSITION IN CHASSIS    	    
         },
     ]
 }
@@ -346,6 +357,8 @@ def get_all_chassis()
             "storage": "STORAGE",  
             "storageOriginal": "STORAGE OF MODEL"
             "mount_type": "MOUNT TYPE (blade/chassis/rackmount)",
+	    "blade_chassis": "CHASSIS HOSTNAME",
+	    "blade_position": BLADE POSITION IN CHASSIS    
         },
         {
             "model":"MODEL",
@@ -369,6 +382,8 @@ def get_all_chassis()
             "storage": "STORAGE",  
             "storageOriginal": "STORAGE OF MODEL"  
             "mount_type": "MOUNT TYPE (blade/chassis/rackmount)",
+	    "blade_chassis": "CHASSIS HOSTNAME",
+	    "blade_position": BLADE POSITION IN CHASSIS    
         },
         {
             "model":"MODEL",
@@ -392,6 +407,8 @@ def get_all_chassis()
             "storage": "STORAGE",  
             "storageOriginal": "STORAGE OF MODEL"
             "mount_type": "MOUNT TYPE (blade/chassis/rackmount)",
+	    "blade_chassis": "CHASSIS HOSTNAME",
+	    "blade_position": BLADE POSITION IN CHASSIS    
         }
     ]
 }
@@ -476,5 +493,173 @@ def get_all_chassis_port_states()
     "8": "ON" or "OFF",
     "9": "ON" or "OFF"
   }
+}
+```
+-----------------------------
+```language=python
+def get_pdu_power_states()
+```
+- REST Type: 'get'
+- Authentication Required: yes
+- Roled required: none
+- Endpoint: /instances/getPDUPowerStates
+- Arguments:
+```language=json
+{
+    "rack_letter": CAPITAL LETTER FOR RACK A-E,
+    "rack_number": INT 1-19,
+    "rack_side": "L" or "R"
+}
+```
+- Returns:
+```language=json
+{
+  "message": "Success",
+  "states": {
+        "1": "ON" or "OFF",
+        "2": "ON" or "OFF",
+        "3": "ON" or "OFF",
+        "4": "ON" or "OFF",
+        "5": "ON" or "OFF",
+        "6": "ON" or "OFF",
+        "7": "ON" or "OFF",
+        "8": "ON" or "OFF",
+        "9": "ON" or "OFF",
+        "10": "ON" or "OFF",
+        "11": "ON" or "OFF",
+        "12": "ON" or "OFF",
+        "13": "ON" or "OFF",
+        "14": "ON" or "OFF",
+        "15": "ON" or "OFF",
+        "16": "ON" or "OFF",
+        "17": "ON" or "OFF",
+        "18": "ON" or "OFF",
+        "19": "ON" or "OFF",
+        "20": "ON" or "OFF",
+        "21": "ON" or "OFF",
+        "22": "ON" or "OFF",
+        "23": "ON" or "OFF",
+        "24": "ON" or "OFF",
+  }
+}
+```
+-----------------------------
+```language=python
+def set_pdu_power_state()
+```
+- REST Type: 'post'
+- Authentication Required: yes
+- Roled required: none
+- Endpoint: /instances/setPDUPowerState
+- Arguments:
+```language=json
+{
+    "rack_letter": CAPITAL LETTER FOR RACK A-E,
+    "rack_number": INT 1-19,
+    "rack_side": "L" or "R",
+    "rack_port": INT 1-24 ,
+    "rack_port_state": "on" or "off"
+}
+```
+- Returns:
+```language=json
+{
+  "message": "Success"
+}
+```
+-----------------------------
+```language=python
+def get_blades_by_chassis()
+```
+- REST Type: 'post'
+- Authentication Required: yes
+- Roled required: none
+- Endpoint: /instances/getbladesbychassis
+- Arguments: 
+```language=json
+{
+    "blade_chassis": "HOSTNAME OF CHASSIS"
+}
+```
+- Returns:
+```language=json
+{
+    "instances": [
+        {
+            "model":"MODEL",
+            "hostname":"HOSTNAME",
+            "rack":"RACK",
+            "rack_position":"RACK_U",
+            "owner":"OWNER",
+            "comment":"COMMENT"
+            "datacenter_id": "DATACENTER",
+            "tags": "TAGS",
+            "mac_address": "MAC ADDRESSES,
+            "network_connections": "NETWORK CONNECTIONS",
+            "power_connections": "POWER CONNECTIONS",
+            "asset_number": "ASSET NUMBER",  
+            "display_color": "DISPLAY_COLOR",
+            "display_colorOriginal": "DISPLAY COLOR OF MODEL",
+            "cpu": "CPU",
+            "cpuOriginal": "CPU OF MODEL",
+            "memory": MEMORY,
+            "memoryOriginal": MEMORY OF MODEL,
+            "storage": "STORAGE",  
+            "storageOriginal": "STORAGE OF MODEL"
+            "mount_type": "MOUNT TYPE (blade/chassis/rackmount)",
+	    "blade_chassis": "CHASSIS HOSTNAME",
+	    "blade_position": BLADE POSITION IN CHASSIS    
+        },
+        {
+            "model":"MODEL",
+            "hostname":"HOSTNAME",
+            "rack":"RACK",
+            "rack_position":"RACK_U",
+            "owner":"OWNER",
+            "comment":"COMMENT"
+            "datacenter_id": "DATACENTER",
+            "tags": "TAGS",
+            "mac_address": "MAC ADDRESSES,
+            "network_connections": "NETWORK CONNECTIONS",
+            "power_connections": "POWER CONNECTIONS",
+            "asset_number": "ASSET NUMBER",  
+            "display_color": "DISPLAY_COLOR",
+            "display_colorOriginal": "DISPLAY COLOR OF MODEL",
+            "cpu": "CPU",
+            "cpuOriginal": "CPU OF MODEL",
+            "memory": MEMORY,
+            "memoryOriginal": MEMORY OF MODEL,
+            "storage": "STORAGE",  
+            "storageOriginal": "STORAGE OF MODEL"  
+            "mount_type": "MOUNT TYPE (blade/chassis/rackmount)",
+	    "blade_chassis": "CHASSIS HOSTNAME",
+	    "blade_position": BLADE POSITION IN CHASSIS    
+        },
+        {
+            "model":"MODEL",
+            "hostname":"HOSTNAME",
+            "rack":"RACK",
+            "rack_position":"RACK_U",
+            "owner":"OWNER",
+            "comment":"COMMENT"
+            "datacenter_id": "DATACENTER",
+            "tags": "TAGS",
+            "mac_address": "MAC ADDRESSES,
+            "network_connections": "NETWORK CONNECTIONS",
+            "power_connections": "POWER CONNECTIONS",
+            "asset_number": "ASSET NUMBER",  
+            "display_color": "DISPLAY_COLOR",
+            "display_colorOriginal": "DISPLAY COLOR OF MODEL",
+            "cpu": "CPU",
+            "cpuOriginal": "CPU OF MODEL",
+            "memory": MEMORY,
+            "memoryOriginal": MEMORY OF MODEL,
+            "storage": "STORAGE",  
+            "storageOriginal": "STORAGE OF MODEL"
+            "mount_type": "MOUNT TYPE (blade/chassis/rackmount)",
+	    "blade_chassis": "CHASSIS HOSTNAME",
+	    "blade_position": BLADE POSITION IN CHASSIS    
+        }
+    ]
 }
 ```

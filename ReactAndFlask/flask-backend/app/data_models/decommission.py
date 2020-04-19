@@ -31,6 +31,8 @@ class Decommission:
         network_connections: Optional[Dict[str, Any]],
         power_connections: Optional[List[str]],
         asset_number: int,
+        chassis_hostname: Optional[str],
+        chassis_slot: Optional[int],
         timestamp: str,
         decommission_user: str,
         network_neighborhood: Optional[Dict[str, Any]],
@@ -47,6 +49,8 @@ class Decommission:
         self.network_connections: Optional[Dict[str, Any]] = network_connections
         self.power_connections: Optional[List[str]] = power_connections
         self.asset_number: int = asset_number
+        self.chassis_hostname: Optional[str] = chassis_hostname
+        self.chassis_slot: Optional[int] = chassis_slot
 
         self.timestamp: str = timestamp
         self.decommission_user: str = decommission_user
@@ -66,6 +70,8 @@ class Decommission:
             Constants.NETWORK_CONNECTIONS_KEY: self.network_connections,
             Constants.POWER_CONNECTIONS_KEY: self.power_connections,
             Constants.ASSET_NUMBER_KEY: self.asset_number,
+            Constants.CHASSIS_HOSTNAME_KEY: self.chassis_hostname,
+            Constants.CHASSIS_SLOT_KEY: self.chassis_slot,
             Constants.TIMESTAMP_KEY: self.timestamp,
             Constants.DECOM_USER_KEY: self.decommission_user,
             Constants.NETWORK_NEIGHBORHOOD_KEY: self.network_neighborhood,

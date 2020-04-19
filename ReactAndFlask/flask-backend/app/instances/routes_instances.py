@@ -10,6 +10,7 @@ from app.instances.asset_num_generator import AssetNumGenerator
 from app.instances.barcode_generator import BarcodeGenerator
 from app.instances.bmi_manager import BMIManager
 from app.instances.instance_manager import InstanceManager
+from app.instances.PDUNet98Pro import PDUNet98ProManager
 from app.logging.logger import Logger
 from flask import Blueprint, request, send_file
 
@@ -97,9 +98,9 @@ def create():
 
     try:
         instance_data = request.get_json()
+        print("REQUEST DATA")
+        print(instance_data)
         error = INSTANCE_MANAGER.create_instance(instance_data)
-        print("ERROR")
-        print(type(error))
         if error is not None:
             print(error)
             print("YEEHAW")
@@ -296,6 +297,34 @@ def get_all_chassis():
         return addMessageToJSON(returnJSON, e.message)
 
 
+@instances.route("/instances/getbladesbychassis", methods=["POST"])
+@requires_auth(request)
+def get_blades_by_chassis():
+    """ Route for getting all blades in a blade chassis """
+    global INSTANCE_MANAGER
+    global instancesArr
+    returnJSON = createJSON()
+
+    try:
+        asset_data = request.get_json()
+        blade_list = INSTANCE_MANAGER.get_blades_in_chassis(asset_data)
+        returnJSON = addInstancesTOJSON(
+            addMessageToJSON(returnJSON, "success"),
+            list(
+                map(
+                    lambda x: x.make_json_with_model_and_datacenter(
+                        INSTANCE_MANAGER.get_model_from_id(x.model_id),
+                        INSTANCE_MANAGER.get_dc_from_id(x.datacenter_id),
+                    ),
+                    blade_list,
+                )
+            ),
+        )
+        return returnJSON
+    except InvalidInputsError as e:
+        return addMessageToJSON(returnJSON, e.message)
+
+
 @instances.route("/instances/setChassisPortState", methods=["POST"])
 @requires_auth(request)
 def set_chassis_port_state():
@@ -375,6 +404,53 @@ def get_all_chassis_port_states():
 #     )
 #
 #     return addMessageToJSON(returnJSON, "Success")
+
+
+@instances.route("/instances/getPDUPowerStates", methods=["GET"])
+@requires_auth(request)
+def get_pdu_power_states():
+    response_json = {}
+    request_data = request.json
+    rack_letter = request_data.get(Constants.PDU_RACK_LETTER)
+    rack_number = request_data.get(Constants.PDU_RACK_NUMBER)
+    rack_side = request_data.get(Constants.PDU_RACK_SIDE)
+
+    states = {}
+    try:
+        states = PDUNet98ProManager().get_pdu_power_states(
+            rack_letter=rack_letter, rack_number=rack_number, side=rack_side
+        )
+    except InvalidInputsError as e:
+        return addMessageToJSON(response_json, e.message)
+
+    response_json["states"] = states
+
+    return addMessageToJSON(response_json, "Success")
+
+
+@instances.route("/instances/setPDUPowerState", methods=["POST"])
+@requires_auth(request)
+def set_pdu_power_state():
+    response_json = {}
+    request_data = request.json
+    rack_letter = request_data.get(Constants.PDU_RACK_LETTER)
+    rack_number = request_data.get(Constants.PDU_RACK_NUMBER)
+    rack_side = request_data.get(Constants.PDU_RACK_SIDE)
+    rack_port = request_data.get(Constants.PDU_RACK_PORT)
+    rack_port_state = request_data.get(Constants.PDU_RACK_PORT_STATE)
+
+    try:
+        PDUNet98ProManager().set_pdu_power(
+            rack_letter=rack_letter,
+            rack_number=rack_number,
+            side=rack_side,
+            port=rack_port,
+            state=rack_port_state,
+        )
+    except InvalidInputsError as e:
+        return addMessageToJSON(response_json, e.message)
+
+    return addMessageToJSON(response_json, "Success")
 
 
 def createJSON() -> dict:

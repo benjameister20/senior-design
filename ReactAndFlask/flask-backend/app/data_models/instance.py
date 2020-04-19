@@ -115,6 +115,7 @@ class Instance:
             and self.owner == other.owner
             and self.comment == other.comment
             and int(self.asset_number) == int(other.asset_number)
+            and self.network_connections == other.network_connections
         )
 
     @classmethod

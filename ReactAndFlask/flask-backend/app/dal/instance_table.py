@@ -178,24 +178,41 @@ class InstanceTable:
         """" Adds a model or updates it if it already exists """
         instance_entry: InstanceEntry = InstanceEntry(instance=instance)
         site = DatacenterTable().get_datacenter(instance.datacenter_id)
-        print(site)
+        # print(instance.network_connections)
 
         try:
+            # result: InstanceEntry = InstanceEntry.query.filter_by(
+            #     rack_label=instance.rack_label,
+            #     rack_position=instance.rack_position,
+            #     datacenter_id=instance.datacenter_id,
+            # ).first()
+
             result: InstanceEntry = InstanceEntry.query.filter_by(
-                rack_label=instance.rack_label,
-                rack_position=instance.rack_position,
-                datacenter_id=instance.datacenter_id,
+                asset_number=instance.asset_number
             ).first()
 
             add, update, ignore = False, False, False
             if result is not None:
+                print("SEARCH RESULT")
+                print(result.network_connections)
+                print("NEW THING")
+                print(instance.network_connections)
+                print("EQ")
+                print(result.network_connections == instance.network_connections)
+                print(result.make_instance() == instance)
                 if result.make_instance() == instance:
                     ignore = True
                 else:
+                    # InstanceEntry.query.filter_by(
+                    #     rack_label=instance.rack_label,
+                    #     rack_position=instance.rack_position,
+                    #     datacenter_id=instance.datacenter_id,
+                    # ).update(instance_entry.make_json())
+                    # update = True
+                    print("UPDATING")
+                    print(instance_entry.make_json())
                     InstanceEntry.query.filter_by(
-                        rack_label=instance.rack_label,
-                        rack_position=instance.rack_position,
-                        datacenter_id=instance.datacenter_id,
+                        asset_number=instance.asset_number
                     ).update(instance_entry.make_json())
                     update = True
             else:

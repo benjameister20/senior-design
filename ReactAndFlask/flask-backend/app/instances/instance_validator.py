@@ -199,7 +199,7 @@ class InstanceValidator:
         return Constants.API_SUCCESS
 
     def validate_connections(self, network_connections, hostname):
-        print("validating connections")
+        # print("validating connections")
         result = ""
         new_connections = {}
         for my_port in network_connections:
@@ -261,7 +261,7 @@ class InstanceValidator:
                 ):
                     result += f"The port {connection_port} on asset with hostname {connection_hostname} is already connected to another asset. \n"
 
-        print("finished connection validation")
+        # print("finished connection validation")
         if result == "":
             return Constants.API_SUCCESS
         else:

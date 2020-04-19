@@ -338,23 +338,17 @@ def _parse_instance_csv(csv_input) -> Tuple[int, int, int]:
 
         instances.append(instance)
 
-    print("\n\n\n")
-    print(instances)
-    print("\n\n\n")
-
-    print("ADDING TO DB")
     added, updated, ignored = 0, 0, 0
     for instance in instances:
-        print(instance)
         # Write to database
-        # try:
-        add, update, ignore = instance_table.add_or_update(instance=instance)
-        added += add
-        updated += update
-        ignored += ignore
-        # except (RackDoesNotExistError, DBWriteException):
-        #     print("I BROKE HERE")
-        #     raise
+        try:
+            add, update, ignore = instance_table.add_or_update(instance=instance)
+            added += add
+            updated += update
+            ignored += ignore
+        except (RackDoesNotExistError, DBWriteException):
+            print("I BROKE HERE")
+            raise
 
     return added, updated, ignored
 
@@ -363,7 +357,6 @@ def _parse_connection_csv(csv_input) -> Tuple[int, int, int]:
     instance_table: InstanceTable = InstanceTable()
     model_table: ModelTable = ModelTable()
     instance_validator: InstanceValidator = InstanceValidator()
-    InstanceManager()
 
     # Extract header row ----
     try:
@@ -371,6 +364,7 @@ def _parse_connection_csv(csv_input) -> Tuple[int, int, int]:
     except StopIteration:
         raise InvalidFormatError(message="No header row.")
 
+    snapshots: Dict[int, Dict[str, str]] = {}
     instances: List[Instance] = []
     for row in csv_input:
         # Ensure proper input length of csv row
@@ -382,12 +376,21 @@ def _parse_connection_csv(csv_input) -> Tuple[int, int, int]:
         for index, item in enumerate(row):
             values[headers[index]] = item
 
+        src_mac_addr: str = values[Constants.CSV_SRC_MAC]
         src_hostname: str = values[Constants.CSV_SRC_HOST]
         dst_hostname: str = values[Constants.CSV_DEST_HOST]
+        values[Constants.CSV_SRC_PORT]
+        values[Constants.CSV_DEST_PORT]
+
         src_instance = instance_table.get_instance_by_hostname(src_hostname)
-        print("SRC INSTANCE")
-        print(src_instance)
         dst_instance = instance_table.get_instance_by_hostname(dst_hostname)
+        src_net_conn = src_instance.network_connections
+        dst_net_conn = dst_instance.network_connections
+
+        if src_instance.asset_number in snapshots.keys():
+            src_net_conn = snapshots[src_instance.asset_number]
+        if dst_instance.asset_number in snapshots.keys():
+            dst_net_conn = snapshots[dst_instance.asset_number]
 
         # If model does not exist, throw error
         if src_instance is None:
@@ -400,23 +403,45 @@ def _parse_connection_csv(csv_input) -> Tuple[int, int, int]:
                 f"Destination instance with hostname {dst_hostname} does not exist"
             )
 
+        # # replace mac if existing is blank
+        # conn_exists = False
+        # if connection in connections:
+        #     print(f"EXISTS: {connection}")
+        #     conn_exists = True
+        #     if src_instance.network_connections[values[Constants.CSV_SRC_PORT]][Constants.MAC_ADDRESS_KEY] == "":
+        #         src_instance.network_connections[
+        #             values[Constants.CSV_SRC_PORT]
+        #         ][Constants.MAC_ADDRESS_KEY] = src_mac_addr
+        #
+        # else:
+        print("SRC CHANGES")
         print(src_instance.network_connections)
-        src_instance.network_connections[values[Constants.CSV_SRC_PORT]][
+        src_net_conn[values[Constants.CSV_SRC_PORT]][
             Constants.MAC_ADDRESS_KEY
         ] = values[Constants.CSV_SRC_MAC]
-        src_instance.network_connections[values[Constants.CSV_SRC_PORT]][
+        src_net_conn[values[Constants.CSV_SRC_PORT]][
             Constants.CONNECTION_HOSTNAME
         ] = values[Constants.CSV_DEST_HOST]
-        src_instance.network_connections[values[Constants.CSV_SRC_PORT]][
+        src_net_conn[values[Constants.CSV_SRC_PORT]][
             Constants.CONNECTION_PORT
         ] = values[Constants.CSV_DEST_PORT]
-
-        dst_instance.network_connections[values[Constants.CSV_DEST_PORT]][
+        print(src_instance.network_connections)
+        print("DST CHANGES")
+        print(dst_instance.network_connections)
+        dst_net_conn[values[Constants.CSV_DEST_PORT]][
             Constants.CONNECTION_HOSTNAME
         ] = values[Constants.CSV_SRC_HOST]
-        dst_instance.network_connections[values[Constants.CSV_DEST_PORT]][
+        dst_net_conn[values[Constants.CSV_DEST_PORT]][
             Constants.CONNECTION_PORT
         ] = values[Constants.CSV_SRC_PORT]
+        print(dst_instance.network_connections)
+        print("DONE")
+
+        snapshots[src_instance.asset_number] = src_net_conn
+        snapshots[dst_instance.asset_number] = dst_net_conn
+
+        src_instance.network_connections = src_net_conn
+        dst_instance.network_connections = dst_net_conn
 
         # src_instance_json = src_instance.make_json()
         # dst_instance_json = dst_instance.make_json()
@@ -443,6 +468,11 @@ def _parse_connection_csv(csv_input) -> Tuple[int, int, int]:
         instances.append(src_instance)
         instances.append(dst_instance)
 
+    print("INSTANCEs")
+    print(instances)
+    for inst in instances:
+        print(inst.network_connections)
+
     added, updated, ignored = 0, 0, 0
     for instance in instances:
         # Write to database
@@ -455,7 +485,7 @@ def _parse_connection_csv(csv_input) -> Tuple[int, int, int]:
             print("I BROKE HERE")
             raise
 
-    return added, updated, ignored
+    return added, updated // 2, ignored // 2
 
 
 @import_export.route("/models/import", methods=["POST"])

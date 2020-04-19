@@ -55,7 +55,7 @@ class CreateDatacenter extends React.Component {
 			showStatus: false,
 			statusSeverity: "",
 			statusMessage: "",
-			siteType:datacenterVal,
+			siteType: datacenterVal,
 		};
 	}
 
@@ -63,7 +63,7 @@ class CreateDatacenter extends React.Component {
 		return {
 			"abbreviation": this.state.datacenterAbbreviation,
 			"datacenter_name": this.state.datacenterName,
-			"is_offline_storage":this.state.siteType===offlineStorageVal,
+			"is_offline_storage": this.state.siteType === offlineStorageVal,
 		}
 	}
 
@@ -151,8 +151,9 @@ class CreateDatacenter extends React.Component {
 							onClick={() => { this.showCreate() }}
 						>
 							Create New Site
-            </Button>
-					</Grid>}
+            			</Button>
+					</Grid>
+				}
 
 
 				<Modal

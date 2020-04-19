@@ -199,7 +199,7 @@ class TableAsset extends React.Component {
 							});
 
 							newInstances.map(asset => {
-								items.push(createData(asset.model, asset.hostname, asset.datacenter_name, asset.rack + " U" + asset.rack_position, asset.owner, asset.asset_number));
+								items.push(createData(asset.model, asset.hostname, asset.datacenter_name, this.getRack(asset), asset.owner, asset.asset_number));
 							});
 							this.setState({ allAssets: newInstances, tableItems: items });
 						});
@@ -212,7 +212,7 @@ class TableAsset extends React.Component {
 						var items = [];
 
 						response.data.instances.map(asset => {
-							items.push(createData(asset.model, asset.hostname, asset.datacenter_name, asset.rack + " U" + asset.rack_position, asset.owner, asset.asset_number));
+							items.push(createData(asset.model, asset.hostname, asset.datacenter_name, this.getRack(asset), asset.owner, asset.asset_number));
 						});
 						this.setState({ allAssets: response.data.instances, tableItems: items });
 					});
@@ -298,8 +298,18 @@ class TableAsset extends React.Component {
 			if (currAsset.asset_number === asset.asset_number) {
 				Object.assign(dAsset, currAsset);
 			}
-		})
+		});
 		this.setState({ detailAsset: dAsset, showDetailedView: true, rowOwner: asset.owner });
+	}
+
+	getRack = (asset) => {
+		console.log(asset);
+		var result = asset.rack;
+		if (asset.mount_type !== "blade") {
+			result += " U" + asset.rack_position;
+		}
+
+		return result;
 	}
 
 	updateItems = (assets) => {
@@ -307,15 +317,15 @@ class TableAsset extends React.Component {
 
 		if (this.state.assetType === "active") {
 			assets.map(asset => {
-				items.push(createData(asset.model, asset.hostname, asset.datacenter_name, asset.rack + " U" + asset.rack_position, asset.owner, asset.asset_number));
+				items.push(createData(asset.model, asset.hostname, asset.datacenter_name, this.getRack(asset), asset.owner, asset.asset_number));
 			});
 		} else if (this.state.assetType === decomType) {
 			assets.map(asset => {
-				items.push(createDecData(asset.vendor + " " + asset.model_number, asset.hostname, asset.datacenter_name, asset.rack + " U" + asset.rack_position, asset.owner, asset.asset_number, asset.decommission_user, asset.timestamp));
+				items.push(createDecData(asset.vendor + " " + asset.model_number, asset.hostname, asset.datacenter_name, this.getRack(asset), asset.owner, asset.asset_number, asset.decommission_user, asset.timestamp));
 			});
 		} else if (this.state.assetType === "offline") {
 			assets.map(asset => {
-				items.push(createData(asset.model, asset.hostname, asset.datacenter_name, asset.rack + " U" + asset.rack_position, asset.owner, asset.asset_number));
+				items.push(createData(asset.model, asset.hostname, asset.datacenter_name, this.getRack(asset), asset.owner, asset.asset_number));
 			});
 		}
 

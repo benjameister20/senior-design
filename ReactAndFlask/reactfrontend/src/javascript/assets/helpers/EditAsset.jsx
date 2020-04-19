@@ -224,6 +224,9 @@ class EditAsset extends React.Component {
                 customMemory: this.props.defaultValues.memory,
                 customStorage: this.props.defaultValues.storage,
                 leftRight: this.getPowerFromProps(this.props.defaultValues.power_connections),
+                mount_type: this.props.defaultValues.mount_type,
+                blade_chassis: this.props.defaultValues.chassis_hostname,
+                blade_position: this.props.defaultValues.chassis_slot,
             });
         } else {
             //this.setState({ updated: true, });
@@ -567,8 +570,8 @@ class EditAsset extends React.Component {
             "network_connections": ((this.state.network_connections === null) ? {} : this.state.network_connections),
             "power_connections": this.getPowerConnections(),
             'asset_number': this.state.asset_number,
-            "blade_chassis": this.state.blade_chassis,
-            "blade_position": this.state.blade_position,
+            "chassis_hostname": this.state.blade_chassis,
+            "chassis_slot": this.state.blade_position,
             "display_color": this.state.customColor,
             "cpu": this.state.customCPU,
             "memory": this.state.customMemory,
@@ -827,6 +830,7 @@ class EditAsset extends React.Component {
                                                 name={this.state.inputs.bladeChassis.name}
                                                 onChange={this.updateBladeChassis}
                                                 onBlur={this.updateBladeChassis}
+                                                value={this.state.blade_chassis}
                                                 variant="outlined"
                                                 fullWidth
                                                 required
@@ -1033,7 +1037,6 @@ class EditAsset extends React.Component {
                                                                         {...params}
                                                                         label={"Connection Hostname"}
                                                                         name={"Connection Hostname"}
-
                                                                         fullWidth
                                                                     />
                                                                 )}

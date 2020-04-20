@@ -406,7 +406,7 @@ def get_all_chassis_port_states():
 #     return addMessageToJSON(returnJSON, "Success")
 
 
-@instances.route("/instances/getPDUPowerStates", methods=["GET"])
+@instances.route("/instances/getPDUPowerStates", methods=["POST"])
 @requires_auth(request)
 def get_pdu_power_states():
     response_json = {}

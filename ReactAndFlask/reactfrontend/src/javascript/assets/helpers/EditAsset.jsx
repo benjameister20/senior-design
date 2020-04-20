@@ -816,7 +816,43 @@ class EditAsset extends React.Component {
                                         />}
                                 </Tooltip>
 
+                                { this.state.mount_type == "blade" ?
+
+                                 <Tooltip placement="top" open={this.state.inputs.datacenter.Tooltip} title={this.state.inputs.datacenter.description}>
+                                    {this.props.disabled ?
+                                        <TextField
+                                            label={this.state.inputs.datacenter.label}
+                                            name={this.state.inputs.datacenter.name}
+                                            fullWidth
+                                            value={this.state.datacenter_name}
+                                            disabled
+                                            style={{ display: "inline-block" }}
+                                        /> :
+                                        <Autocomplete
+                                            id="input-datacenter"
+                                            options={this.state.datacenterList.map(dc => dc.name)}
+                                            includeInputInList
+                                            value={this.state.datacenter_name}
+                                            style={{ display: "inline-block" }}
+                                            renderInput={params => (
+                                                <TextField
+                                                    {...params}
+                                                    label={this.state.inputs.datacenter.label}
+                                                    name={this.state.inputs.datacenter.name}
+                                                    onChange={this.updateDatacenter}
+                                                    onBlur={this.updateDatacenter}
+
+                                                    fullWidth
+                                                    required
+                                                    disabled={this.props.disabled}
+
+                                                />
+                                            )}
+                                        />}
+                                </Tooltip> : null }
+
                                 {this.state.mount_type === "blade" ?
+                                <Tooltip placement="top" open={this.state.inputs.bladeChassis.Tooltip} title={this.state.inputs.bladeChassis.description}>
                                     <Autocomplete
                                         id="select-chassis"
                                         options={this.state.chassisList}
@@ -835,15 +871,16 @@ class EditAsset extends React.Component {
                                                 required
                                             />
                                         )}
-                                    /> : null}
+                                    />
+                                    </Tooltip> : null}
                                 {this.state.mount_type === "blade" ?
-                                    <span>
+                                    <span style={{ display: "inline-block" }}>
                                         <InputLabel id="select-blade-position-label">Blade Position</InputLabel>
                                         <Select
                                             labelId="select-blade-position-label"
                                             id="select-blade-position"
                                             value={this.state.blade_position}
-                                            required={true}
+                                            required
                                             onChange={this.updateBladePosition}
                                             style={{ width: "100%" }}
                                         >
@@ -864,6 +901,7 @@ class EditAsset extends React.Component {
                                         </Select>
                                     </span> : null}
 
+                                { this.state.mount_type !== "blade" ?
                                 <Tooltip placement="top" open={this.state.inputs.datacenter.Tooltip} title={this.state.inputs.datacenter.description}>
                                     {this.props.disabled ?
                                         <TextField
@@ -895,7 +933,7 @@ class EditAsset extends React.Component {
                                                 />
                                             )}
                                         />}
-                                </Tooltip>
+                                </Tooltip> : null }
 
                                 {(this.state.datacenterIsOffline || this.state.mount_type == "blade") ? null :
                                     <Tooltip placement="top" open={this.state.inputs.rack.Tooltip} title={this.state.inputs.rack.description}>

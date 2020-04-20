@@ -198,6 +198,17 @@ class EditAsset extends React.Component {
 
             // Dictionary of power states
             powerStates: {},
+
+            // Dictionary of blades to slots
+            bladeSlots: {},
+
+            // PDU Shit
+            savedDatacenter: "",
+            savedRackLetter: "",
+            savedRackNumber: null,
+            showPDU: false,
+            pduStates: {},
+            allThePowers: [],
         };
     }
 
@@ -239,7 +250,11 @@ class EditAsset extends React.Component {
                 mount_type: this.props.defaultValues.mount_type,
                 blade_chassis: this.props.defaultValues.chassis_hostname,
                 blade_position: this.props.defaultValues.chassis_slot,
-                datacenterIsOffline:this.props.isOffline
+                datacenterIsOffline:this.props.isOffline,
+                savedDatacenter: this.props.defaultValues.abbreviation,
+                savedRackLetter: this.props.defaultValues.rack[0],
+                savedRackNumber: parseInt(this.props.defaultValues.rack.substr(1)),
+                allThePowers: this.props.defaultValues.power_connections,
             });
         } else {
             //this.setState({ updated: true, });
@@ -248,7 +263,30 @@ class EditAsset extends React.Component {
 
     componentDidMount() {
         this.getLists();
-        this.fetchPowerState();
+
+        if (this.state.mount_type !== "rackmount") {
+            this.fetchPowerState();
+        }
+
+        if (this.checkForPDUShit()) {
+            this.fetchPDUState();
+        }
+    }
+
+    checkForPDUShit = () => {
+        if (
+            this.state.savedDatacenter === "RTP1" &&
+            this.state.savedRackLetter >= "A" &&
+            this.state.savedRackLetter <= "E" &&
+            this.state.savedRackNumber >= 1 &&
+            this.state.savedRackNumber <= 19
+        ) {
+            this.setState({ showPDU: true });
+            return true;
+        } else {
+            this.setState({ showPDU: false });
+            return false;
+        }
     }
 
     getPowerFromProps = (pwrCons) => {
@@ -295,12 +333,15 @@ class EditAsset extends React.Component {
             response => {
                 var instances = response.data.instances;
                 var instanceNames = [];
+                var bladeSlots = {};
 
                 instances.map(instance => {
-                    instanceNames.push(instance.hostname);
+                    var identifier = instance.asset_number;
+                    instanceNames.push(identifier);
+                    bladeSlots[identifier] = instance.chassis_slot;
                 });
 
-                this.setState({ bladeList: instanceNames });
+                this.setState({ bladeList: instanceNames, bladeSlots: bladeSlots });
             }
         )
     }
@@ -450,6 +491,8 @@ class EditAsset extends React.Component {
         ).then(
             response => {
                 if (response.data.message === AssetConstants.SUCCESS_TOKEN) {
+                    this.props.close();
+
                     this.props.incrementChangePlanStep();
                     this.setState({ statusOpen: true, statusMessage: "Successfully saved edits", statusSeverity: AssetConstants.SUCCESS_TOKEN });
                 } else {
@@ -801,6 +844,50 @@ class EditAsset extends React.Component {
         });
     }
 
+    fetchPDUState = () => {
+        axios.post(
+            getURL(Constants.ASSETS_MAIN_PATH, "getPDUPowerStates"),
+            {
+                "rack_letter": this.state.savedRackLetter,
+                "rack_number": this.state.savedRackNumber,
+                "rack_side": "L",
+            }
+        ).then(
+            response => {
+                if (response.data.message === "Success") {
+                    var states = response.data.states;
+                    var currentStates = this.state.pduStates;
+                    currentStates["L"] = states;
+
+                    this.setState({ pduStates: currentStates });
+                } else {
+                    this.setState({ statusOpen: true, statusMessage: response.data.message, statusSeverity: AssetConstants.ERROR_TOKEN });
+                }
+            }
+        );
+
+        axios.post(
+            getURL(Constants.ASSETS_MAIN_PATH, "getPDUPowerStates"),
+            {
+                "rack_letter": this.state.savedRackLetter,
+                "rack_number": this.state.savedRackNumber,
+                "rack_side": "R",
+            }
+        ).then(
+            response => {
+                if (response.data.message === "Success") {
+                    var states = response.data.states;
+                    var currentStates = this.state.pduStates;
+                    currentStates["R"] = states;
+
+                    this.setState({ pduStates: currentStates });
+                } else {
+                    this.setState({ statusOpen: true, statusMessage: response.data.message, statusSeverity: AssetConstants.ERROR_TOKEN });
+                }
+            }
+        );
+    }
+
     fetchPowerState = () => {
         axios.post(
             getURL(Constants.ASSETS_MAIN_PATH, "getAllChassisPortStates"),
@@ -818,7 +905,6 @@ class EditAsset extends React.Component {
                 }
             }
         )
-
     }
 
     bmiPowerOn = (port) => {
@@ -875,6 +961,62 @@ class EditAsset extends React.Component {
         this.bmiPowerOff(port);
         await wait(2000);
         this.bmiPowerOn(port);
+    }
+
+    pduPowerOn = (letter, number) => {
+        axios.post(
+            getURL(Constants.ASSETS_MAIN_PATH, "setPDUPowerState"),
+            {
+                "rack_letter": this.state.savedRackLetter,
+                "rack_number": this.state.savedRackNumber,
+                "rack_side": letter,
+                "rack_port": parseInt(number),
+                "rack_port_state": "on"
+            }
+        ).then(
+            response => {
+                if (response.data.message === "Success") {
+                    this.fetchPDUState();
+                    this.setState({ statusOpen: true, statusMessage: "Successfully turned on port", statusSeverity: AssetConstants.SUCCESS_TOKEN });
+                } else {
+                    this.setState({ statusOpen: true, statusMessage: response.data.message, statusSeverity: AssetConstants.ERROR_TOKEN });
+                }
+            }
+        )
+    }
+
+    pduPowerOff = (letter, number) => {
+        axios.post(
+            getURL(Constants.ASSETS_MAIN_PATH, "setPDUPowerState"),
+            {
+                "rack_letter": this.state.savedRackLetter,
+                "rack_number": this.state.savedRackNumber,
+                "rack_side": letter,
+                "rack_port": parseInt(number),
+                "rack_port_state": "off"
+            }
+        ).then(
+            response => {
+                if (response.data.message === "Success") {
+                    this.fetchPDUState();
+                    this.setState({ statusOpen: true, statusMessage: "Successfully turned off port", statusSeverity: AssetConstants.SUCCESS_TOKEN });
+                } else {
+                    this.setState({ statusOpen: true, statusMessage: response.data.message, statusSeverity: AssetConstants.ERROR_TOKEN });
+                }
+            }
+        )
+    }
+
+
+    pduPowerCycle = async (letter, number) => {
+        function wait(timeout) {
+            return new Promise(resolve => {
+                setTimeout(resolve, timeout);
+            });
+        }
+        this.pduPowerOff(letter, number);
+        await wait(2000);
+        this.pduPowerOn(letter, number);
     }
 
     render() {
@@ -1336,7 +1478,7 @@ class EditAsset extends React.Component {
 
                                         return (
                                         <ListItem key={blade} role={undefined} dense button>
-                                            <ListItemText id={labelId} primary={blade} />
+                                            <ListItemText id={labelId} primary={"Slot " + this.state.bladeSlots[blade] + ": Asset #" + blade} />
                                         </ListItem>
                                         );
                                     })}
@@ -1350,7 +1492,8 @@ class EditAsset extends React.Component {
                                         startIcon={<PowerIcon />}
                                         style={{
                                             backgroundColor: "green",
-                                            color: "white"
+                                            color: "white",
+                                            marginRight: "5px"
                                         }}
                                         onClick={this.bmiPowerOn}
                                     >
@@ -1361,7 +1504,8 @@ class EditAsset extends React.Component {
                                         startIcon={<PowerOffIcon />}
                                         style={{
                                             backgroundColor: "black",
-                                            color: "white"
+                                            color: "white",
+                                            marginRight: "5px"
                                         }}
                                         onClick={this.bmiPowerOff}
                                     >
@@ -1402,7 +1546,8 @@ class EditAsset extends React.Component {
                                                 startIcon={<PowerIcon />}
                                                 style={{
                                                     backgroundColor: "green",
-                                                    color: "white"
+                                                    color: "white",
+                                                    marginRight: "5px"
                                                 }}
                                                 onClick={() => {this.bmiPowerOn(index+1)}}
                                             >
@@ -1413,7 +1558,8 @@ class EditAsset extends React.Component {
                                                 startIcon={<PowerOffIcon />}
                                                 style={{
                                                     backgroundColor: "black",
-                                                    color: "white"
+                                                    color: "white",
+                                                    marginRight: "5px"
                                                 }}
                                                 onClick={() => {this.bmiPowerOff(index+1)}}
                                             >
@@ -1433,6 +1579,73 @@ class EditAsset extends React.Component {
                                     </List> : null
 
                                 }
+
+
+                                { this.state.showPDU ?
+                                    <List
+                                        className={classes.root}
+                                        subheader={
+                                            <ListSubheader component="div" id="nested-list-subheader-2">
+                                            PDU Ports
+                                            </ListSubheader>
+                                        }
+                                        style={{
+                                            overflow: "auto"
+                                        }}
+                                    >
+                                    {this.state.allThePowers.map(connection => {
+                                        const labelId = `list-label-${connection}`;
+
+                                        var state = "";
+                                        var letter = connection[0];
+                                        var number = connection.substr(1);
+                                        var states = this.state.pduStates[letter];
+                                        if (states !== undefined) {
+                                            state = states[number];
+                                        }
+
+                                        return (
+                                        <ListItem key={connection} role={undefined} dense button>
+                                            <ListItemText id={labelId} primary={connection + " - " + state} />
+                                            <Button
+                                                variant="contained"
+                                                startIcon={<PowerIcon />}
+                                                style={{
+                                                    backgroundColor: "green",
+                                                    color: "white",
+                                                    marginRight: "5px"
+                                                }}
+                                                onClick={() => {this.pduPowerOn(letter, number)}}
+                                            >
+                                                Power On
+                                            </Button>
+                                            <Button
+                                                variant="contained"
+                                                startIcon={<PowerOffIcon />}
+                                                style={{
+                                                    backgroundColor: "black",
+                                                    color: "white",
+                                                    marginRight: "5px"
+                                                }}
+                                                onClick={() => {this.pduPowerOff(letter, number)}}
+                                            >
+                                                Power Off
+                                            </Button>
+                                            <Button
+                                                variant="contained"
+                                                startIcon={<LoopIcon />}
+                                                color="primary"
+                                                onClick={() => {this.pduPowerCycle(letter, number)}}
+                                            >
+                                                Power Cycle
+                                            </Button>
+                                        </ListItem>
+                                        );
+                                    })}
+                                    </List> : null
+
+                                }
+
 
 
                                 <div className={classes.buttons}>

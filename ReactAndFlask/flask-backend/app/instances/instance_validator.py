@@ -114,7 +114,12 @@ class InstanceValidator:
         if rack is None:
             return f"Rack {instance.rack_label} does not exist in datacenter {dc_template}. Assets must be created on preexisting racks"
 
+        p_connection_set = set()
         for p_connection in instance.power_connections:
+            if p_connection in p_connection_set:
+                return "Cannot connect two asset power ports to the same PDU port."
+            else:
+                p_connection_set.add(p_connection)
             char1 = p_connection[0].upper()
             num = int(p_connection[1:])
             if char1 == "L":
@@ -145,7 +150,7 @@ class InstanceValidator:
                 if current_instance.asset_number == original_asset_number:
                     continue
 
-                model = self.model_table.get_model(instance.model_id)
+                model = self.model_table.get_model(current_instance.model_id)
                 current_instance_top = current_instance.rack_position + model.height - 1
                 if (
                     current_instance.rack_position >= instance_bottom

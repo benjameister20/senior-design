@@ -162,10 +162,10 @@ class NetworkGraph extends React.Component {
         return (
             <span>
                 <Paper elevation={3} style={{
-                    div: {
                         width: "70%",
                         margin: "0 auto",
-                    },
+                        marginTop:"1%",
+                        padding:"2%"
                 }}>
                     {this.props.isDecommissioned ?
                         <Graph

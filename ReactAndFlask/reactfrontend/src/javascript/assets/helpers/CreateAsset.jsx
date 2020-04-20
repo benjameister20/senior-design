@@ -326,7 +326,10 @@ class CreateAsset extends React.Component {
                     var hostnames = [];
                     var hostToModel = {};
                     instances.map(instance => {
-                        hostnames.push(instance.hostname);
+                        if (instance.hostname !== "") {
+                            hostnames.push(instance.hostname);
+                        }
+
                         hostToModel[instance.hostname] = instance.model;
                     })
 

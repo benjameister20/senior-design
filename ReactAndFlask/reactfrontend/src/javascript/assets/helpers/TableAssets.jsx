@@ -605,7 +605,7 @@ class TableAsset extends React.Component {
 												<TableCell align="left">{row.hostname}</TableCell>
 												<TableCell component="th" id={labelId} scope="row">{row.datacenter_name}</TableCell>
 												<TableCell align="left">{row.model}</TableCell>
-												<TableCell align="left">{row.rack}</TableCell>
+												<TableCell align="left">{this.state.assetType==="offline" ? "N/A" : row.rack}</TableCell>
 												<TableCell align="left">{row.owner}</TableCell>
 												<TableCell align="right">{row.asset_number}</TableCell>
 												{this.state.assetType === decomType ? <TableCell align="right">{row.decommission_user}</TableCell> : null}

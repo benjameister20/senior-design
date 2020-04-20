@@ -419,7 +419,9 @@ class InstanceManager:
             connection_hostname = asset.network_connections[port]["connection_hostname"]
             connection_port = asset.network_connections[port]["connection_port"]
 
-            if connection_hostname == "" and connection_port == "":
+            if (connection_hostname == "" or connection_hostname is None) and (
+                connection_port == "" or connection_port is None
+            ):
                 continue
 
             other_instance = self.table.get_instance_by_hostname(connection_hostname)

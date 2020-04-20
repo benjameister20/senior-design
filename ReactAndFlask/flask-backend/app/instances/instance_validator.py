@@ -142,7 +142,7 @@ class InstanceValidator:
                 return "Blade chassis with blades require a hostname."
 
         rack = self.rack_table.get_rack(instance.rack_label, instance.datacenter_id)
-        if rack is None:
+        if rack is None and not dc_template.is_offline_storage:
             return f"Rack {instance.rack_label} does not exist in datacenter {dc_template}. Assets must be created on preexisting racks"
 
         p_connection_set = set()

@@ -171,6 +171,8 @@ class CreateAsset extends React.Component {
             mount_type: null,
 
             chassisList: [],
+            allInstances: [],
+            filteredChassisList: [],
             mountTypes: null,
 
             selectedConnection: null,
@@ -240,7 +242,7 @@ class CreateAsset extends React.Component {
                     instanceNames.push(instance.hostname);
                 });
 
-                this.setState({ chassisList: instanceNames });
+                this.setState({ chassisList: instanceNames, allInstances: instances });
             }
         )
     }
@@ -384,7 +386,7 @@ class CreateAsset extends React.Component {
         if (model !== "") {
             var ports = this.state.networkList[model];
             var networkConns = {};
-            if (ports !== null) {
+            if (ports !== null && ports !== undefined) {
                 ports.map(port => {
                     var defaultNetworkPort = {
                         "mac_address": "",
@@ -467,7 +469,16 @@ class CreateAsset extends React.Component {
                 isOffline = dc.is_offline_storage;
             }
         });
-        this.setState({ datacenter_name: event.target.value, datacenterIsOffline: isOffline }, () => { this.validateForm() });
+
+        var filteredInstances = this.state.allInstances.filter(instance => {
+            return instance.datacenter_name === event.target.value;
+        });
+
+        var filteredChassisList = filteredInstances.map(instance => {
+            return instance.hostname;
+        });
+
+        this.setState({ filteredChassisList: filteredChassisList, datacenter_name: event.target.value, datacenterIsOffline: isOffline }, () => { this.validateForm() });
     }
 
     changeNetworkMacAddress = (event, port) => {
@@ -660,6 +671,7 @@ class CreateAsset extends React.Component {
                                         includeInputInList
                                         style={{ display: "inline-block" }}
                                         onSelect={this.updateModel}
+                                        onChange={this.updateModel}
                                         renderInput={params => (
                                             <TextField
                                                 {...params}
@@ -672,12 +684,32 @@ class CreateAsset extends React.Component {
                                         )}
                                     />
                                 </Tooltip>
+                                { this.state.mount_type === "blade" ?
+                                <Tooltip placement="top" open={this.state.inputs.datacenter.Tooltip} title={this.state.inputs.datacenter.description}>
+                                    <Autocomplete
+                                        id="input-datacenter"
+                                        options={this.state.datacenterList.map(datacenter => datacenter.name)}
+                                        includeInputInList
+                                        style={{ display: "inline-block" }}
+                                        renderInput={params => (
+                                            <TextField
+                                                {...params}
+                                                label={this.state.inputs.datacenter.label}
+                                                name={this.state.inputs.datacenter.name}
+                                                onChange={(event) => { this.updateDatacenter(event) }}
+                                                onBlur={this.updateDatacenter}
+                                                required
+                                            />
+                                        )}
+                                    />
+                                </Tooltip> : null }
 
                                 {this.state.mount_type === "blade" ?
                                     <div>
+                                    <Tooltip placement="top" open={this.state.inputs.bladeChassis.Tooltip} title={this.state.inputs.bladeChassis.description}>
                                     <Autocomplete
                                         id="select-chassis"
-                                        options={this.state.chassisList}
+                                        options={this.state.filteredChassisList}
                                         includeInputInList
                                         style={{ display: "inline-block" }}
                                         renderInput={params => (
@@ -687,12 +719,12 @@ class CreateAsset extends React.Component {
                                                 name={this.state.inputs.bladeChassis.name}
                                                 onChange={this.updateBladeChassis}
                                                 onBlur={this.updateBladeChassis}
-                                                variant="outlined"
                                                 required
                                             />
                                         )}
-                                    />
+                                    /></Tooltip>
                                     <InputLabel id="select-blade-position-label">Blade Position</InputLabel>
+                                        <Tooltip placement="top" open={this.state.inputs.bladePosition.Tooltip} title={this.state.inputs.bladePosition.description}>
                                         <Select
                                             labelId="select-blade-position-label"
                                             id="select-blade-position"
@@ -715,7 +747,7 @@ class CreateAsset extends React.Component {
                                             <MenuItem value={12}>12</MenuItem>
                                             <MenuItem value={13}>13</MenuItem>
                                             <MenuItem value={14}>14</MenuItem>
-                                        </Select>
+                                        </Select></Tooltip>
                                     </div>
                                     : null}
 
@@ -736,6 +768,7 @@ class CreateAsset extends React.Component {
                                         )}
                                     />
                                 </Tooltip>
+                                { this.state.mount_type !== "blade" ?
                                 <Tooltip placement="top" open={this.state.inputs.datacenter.Tooltip} title={this.state.inputs.datacenter.description}>
                                     <Autocomplete
                                         id="input-datacenter"
@@ -749,13 +782,11 @@ class CreateAsset extends React.Component {
                                                 name={this.state.inputs.datacenter.name}
                                                 onChange={(event) => { this.updateDatacenter(event) }}
                                                 onBlur={this.updateDatacenter}
-
-
                                                 required
                                             />
                                         )}
                                     />
-                                </Tooltip>
+                                </Tooltip> : null }
                                 {(this.state.datacenterIsOffline || this.state.mount_type == "blade") ? null :
                                     <Tooltip placement="top" open={this.state.inputs.rack.Tooltip} title={this.state.inputs.rack.description}>
                                         <TextField

@@ -168,7 +168,7 @@ export default class ModelsView extends React.Component {
         this.getVendorList();
     }
 
-    createModel = (networkPorts, mountType, color) => {
+    createModel = (networkPorts, mountType, color, completion) => {
         axios.post(
             getURL(modelsMainPath, ModelCommand.create),
             {
@@ -209,15 +209,19 @@ export default class ModelsView extends React.Component {
                         });
                         this.getVendorList();
                         this.searchModels();
+
+                        completion(true);
                     } else {
-                        this.setState({ createshowStatus: true, showStatus:true, statusMessage: response.data.message, statusSeverity: "error" })
+                        this.setState({ createshowStatus: true, showStatus:true, statusMessage: response.data.message, statusSeverity: "error" });
+
+                        completion(false);
                     }
                 }).catch(
                     this.setState({ createshowStatus: true, statusMessage: ModelConstants.GENERAL_MODEL_ERROR, statusSeverity: "error" })
                 );
     }
 
-    editModel = (originalVendor, originalModelNum, originalHeight, detailedValues, networkPorts) => {
+    editModel = (originalVendor, originalModelNum, originalHeight, detailedValues, networkPorts, completion) => {
         axios.post(
             getURL(modelsMainPath, ModelCommand.edit),
             {
@@ -247,11 +251,15 @@ export default class ModelsView extends React.Component {
                         });
                         this.getVendorList();
                         this.searchModels();
+
+                        completion(true);
                     } else {
-                        this.setState({ detailshowStatus: true, detailStatusMessage: response.data.message, detailStatusSeverity: "error" })
+                        this.setState({ showStatus: true, statusMessage: response.data.message, statusSeverity: "error" });
+
+                        completion(false);
                     }
                 }).catch(
-                    this.setState({ detailshowStatus: true, detailStatusMessage: ModelConstants.GENERAL_MODEL_ERROR, detailStatusSeverity: "error" })
+                    //this.setState({ showStatus: true, statusMessage: ModelConstants.GENERAL_MODEL_ERROR, statusSeverity: "error" })
                 );
     }
 

@@ -184,10 +184,15 @@ class ModelsTable extends React.Component {
         this.closeDeleteModal();
     }
 
+    onEditSuccess = (success) => {
+        if (success) {
+            this.closeDetailedView();
+        }
+    }
+
     edit = (event) => {
         event.preventDefault();
-        this.props.editModel(this.state.originalVendor, this.state.originalModelNumber, this.state.originalHeight, this.state.detailedValues, this.state.networkPorts);
-        this.closeDetailedView();
+        this.props.editModel(this.state.originalVendor, this.state.originalModelNumber, this.state.originalHeight, this.state.detailedValues, this.state.networkPorts, this.onEditSuccess);
     }
 
     clickInfo = (event, ports) => {

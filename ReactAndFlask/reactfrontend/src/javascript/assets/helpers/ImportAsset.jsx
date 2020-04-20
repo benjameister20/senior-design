@@ -61,16 +61,18 @@ class ImportAsset extends React.Component {
 	}
 
 	sendUploadedFile = (data) => {
+        var baseURL = this.props.connections ? "networkConnections/" : AssetConstants.ASSETS_MAIN_PATH;
         axios.post(
-            getURL(AssetConstants.ASSETS_MAIN_PATH, AssetCommand.UPLOAD_FILE), data
-            ).then(response => {
-                if (response.data.message === AssetConstants.SUCCESS_TOKEN) {
-					this.setState({ showStatus: true, statusMessage: response.data.summary, statusSeverity:AssetConstants.SUCCESS_TOKEN, showImport: false,})
-					this.props.close();
-                } else {
-                    this.setState({ showStatus: true, statusMessage: response.data.message, statusSeverity:AssetConstants.ERROR_TOKEN })
-                }
-            });
+            getURL(baseURL, AssetCommand.UPLOAD_FILE), data
+        ).then(response => {
+            if (response.data.message === AssetConstants.SUCCESS_TOKEN) {
+				this.setState({ showStatus: true, statusMessage: response.data.summary, statusSeverity:AssetConstants.SUCCESS_TOKEN, showImport: false,})
+				this.props.refresh();
+                this.props.close();
+            } else {
+                this.setState({ showStatus: true, statusMessage: response.data.message, statusSeverity:AssetConstants.ERROR_TOKEN })
+            }
+        });
     }
 
     closeShowStatus = () => {

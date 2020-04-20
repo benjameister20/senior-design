@@ -133,10 +133,16 @@ class Model:
             network_ports.append(str(count))
             count += 1
 
+        mount_type = (
+            csv_row[Constants.MOUNT_TYPE_KEY]
+            if csv_row[Constants.MOUNT_TYPE_KEY] != "asset"
+            else "rackmount"
+        )
+
         return Model(
             vendor=csv_row[Constants.VENDOR_KEY],
             model_number=csv_row[Constants.MODEL_NUMBER_KEY],
-            mount_type=csv_row[Constants.MOUNT_TYPE_KEY],
+            mount_type=mount_type,
             height=csv_row[Constants.HEIGHT_KEY],
             display_color=csv_row[Constants.DISPLAY_COLOR_KEY],
             ethernet_ports=network_ports,

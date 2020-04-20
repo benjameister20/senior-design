@@ -307,7 +307,6 @@ class TableAsset extends React.Component {
 	}
 
 	getRack = (asset) => {
-		console.log(asset);
 		var result = asset.rack;
 		if (asset.mount_type !== "blade") {
 			result += " U" + asset.rack_position;

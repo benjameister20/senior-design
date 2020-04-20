@@ -209,6 +209,9 @@ class EditAsset extends React.Component {
             showPDU: false,
             pduStates: {},
             allThePowers: [],
+
+            // BMI
+            chassisModel: "",
         };
     }
 
@@ -366,8 +369,14 @@ class EditAsset extends React.Component {
                 var instances = response.data.instances;
                 var instanceNames = [];
 
+                console.log(this.state.blade_chassis);
                 instances.map(instance => {
                     instanceNames.push(instance.hostname);
+
+                    if (instance.hostname === this.state.blade_chassis) {
+
+                        this.setState({ chassisModel: instance.model });
+                    }
                 });
 
                 var filteredInstances = instances.filter(instance => {
@@ -378,7 +387,7 @@ class EditAsset extends React.Component {
                     return instance.hostname;
                 });
 
-                this.setState({ filteredChassisList: filteredChassisList, chassisList: instanceNames, allInstances: instances });
+                this.setState({ ilteredChassisList: filteredChassisList, chassisList: instanceNames, allInstances: instances });
             }
         )
     }
@@ -889,10 +898,11 @@ class EditAsset extends React.Component {
     }
 
     fetchPowerState = () => {
+        var hostname = this.state.mount_type === "blade" ? this.state.blade_chassis : this.state.hostname;
         axios.post(
             getURL(Constants.ASSETS_MAIN_PATH, "getAllChassisPortStates"),
             {
-                "chassis": this.state.hostname,
+                "chassis": hostname,
             }
         ).then(
             response => {
@@ -1484,7 +1494,9 @@ class EditAsset extends React.Component {
                                     </List>
                                 : null }
 
-                                { (this.state.mount_type === "blade" && this.state.blade_chassis !== undefined && this.state.blade_chassis.includes("BMI")) ?
+                                { (this.state.mount_type === "blade" && this.state.chassisModel !== undefined && this.state.chassisModel.includes("BMI")) ?
+                                <div>
+                                <Typography>Current power state: {this.state.powerStates[this.state.blade_position]}</Typography>
                                 <div className={classes.buttons}>
                                     <Button
                                         variant="contained"
@@ -1518,11 +1530,11 @@ class EditAsset extends React.Component {
                                     >
                                         Power Cycle
                                     </Button>
-                                </div>
+                                </div></div>
                                 : null }
 
 
-                                { this.state.mount_type === "chassis" ?
+                                { (this.state.mount_type === "chassis" && this.state.model.includes("BMI")) ?
                                     <List
                                         className={classes.root}
                                         subheader={

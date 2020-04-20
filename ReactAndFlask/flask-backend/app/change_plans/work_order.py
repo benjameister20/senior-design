@@ -88,11 +88,17 @@ class WorkOrder:
 
                     for key in cp_action.diff:
                         if key == Constants.NETWORK_CONNECTIONS_KEY:
-                            temp = cp_action.diff[key][1][0]
-                            val = "Network Connections: " + str(temp)
+                            val = self.net_con_to_str(
+                                cp_action.new_record.get(
+                                    Constants.NETWORK_CONNECTIONS_KEY
+                                )
+                            )
                         elif key == Constants.POWER_CONNECTIONS_KEY:
-                            temp = cp_action.diff[key][1]
-                            val = "Power Connections: " + str(temp)
+                            val = self.pow_con_to_str(
+                                cp_action.new_record.get(
+                                    Constants.POWER_CONNECTIONS_KEY
+                                )
+                            )
                         else:
                             val = (
                                 key

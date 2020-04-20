@@ -174,8 +174,8 @@ class Validator:
     def validate_edit_user(self, user: User, original_username: str):
         old_user = self.validate_existing_username(original_username)
 
-        if old_user.password.decode("utf-8") == Constants.NETID_PASSWORD:
-            raise UserException("Cannot edit NetID user")
+        # if old_user.password.decode("utf-8") == Constants.NETID_PASSWORD:
+        #     raise UserException("Cannot edit NetID user")
 
         if old_user == user:
             raise NoEditsError("No edits made")

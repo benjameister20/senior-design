@@ -128,17 +128,21 @@ class FilterAsset extends React.Component {
                     }
                 });
             } else if (this.props.assetType == "active") {
+                console.log(this.props.allAssets);
                 this.props.allAssets.map(asset => {
+                    console.log(asset);
                     if (
                         (asset.datacenter_name.toLowerCase().includes(this.state.datacenter.toLowerCase()) || asset.abbreviation.toLowerCase().includes(this.state.datacenter.toLowerCase()))
                         && asset.model.toLowerCase().includes(this.state.model.toLowerCase())
                         && asset.hostname.toLowerCase().includes(this.state.hostname.toLowerCase())
-                        && asset.rack >= this.state.startingLetter + "" + this.state.startingNum
-                        && asset.rack <= this.state.endingLetter + "" + this.state.endingNum
+                        && ((asset.rack >= this.state.startingLetter + "" + this.state.startingNum
+                        && asset.rack <= this.state.endingLetter + "" + this.state.endingNum) || asset.mount_type === "blade")
                     ) {
+
+                        console.log("passed");
                         var offline = false;
                         this.state.datacenterList.map(dc => {
-                            if (dc.is_offline_storage && asset.datacenter_name === dc.datacenter_name) {
+                            if (dc.is_offline_storage && asset.datacenter_name === dc.name) {
                                 offline = true;
                             }
                         });

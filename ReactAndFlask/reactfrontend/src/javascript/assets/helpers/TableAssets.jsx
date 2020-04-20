@@ -163,6 +163,7 @@ class TableAsset extends React.Component {
 
 	componentDidMount() {
 		this.fetchAllAssets();
+
 	}
 
 	// Fetch all assets for the table
@@ -201,7 +202,7 @@ class TableAsset extends React.Component {
 							newInstances.map(asset => {
 								items.push(createData(asset.model, asset.hostname, asset.datacenter_name, this.getRack(asset), asset.owner, asset.asset_number));
 							});
-							this.setState({ allAssets: newInstances, tableItems: items });
+							this.setState({ allAssets: newInstances, tableItems: items }, () => this.filter.current.search());
 						});
 					});
 			this.getDecommissionedAssets();
@@ -214,7 +215,7 @@ class TableAsset extends React.Component {
 						response.data.instances.map(asset => {
 							items.push(createData(asset.model, asset.hostname, asset.datacenter_name, this.getRack(asset), asset.owner, asset.asset_number));
 						});
-						this.setState({ allAssets: response.data.instances, tableItems: items });
+						this.setState({ allAssets: response.data.instances, tableItems: items }, () => this.filter.current.search());
 					});
 			this.getDecommissionedAssets();
 		}
@@ -286,20 +287,22 @@ class TableAsset extends React.Component {
 	}
 
 	openDetailedView = (event, asset) => {
+		console.log("opening detail view");
+		console.log(asset)
 		var dAsset = {};
 		var assets = [];
-		if (this.state.assetType === "active") {
+		if (this.state.assetType === "active" || this.state.assetType === "offline") {
 			assets = this.state.allAssets;
 		} else if (this.state.assetType === decomType) {
 			assets = this.state.decAssets;
-		} else if (this.state.assetType === "offline") {
-			assets = this.state.offlineAssets;
 		}
 		assets.map(currAsset => {
 			if (currAsset.asset_number === asset.asset_number) {
 				Object.assign(dAsset, currAsset);
 			}
 		});
+
+		console.log(dAsset);
 		this.setState({ detailAsset: dAsset, showDetailedView: true, rowOwner: asset.owner });
 	}
 
@@ -640,6 +643,7 @@ class TableAsset extends React.Component {
 						changePlanName={this.props.changePlanName}
 						showDecommissioned={this.state.assetType === decomType}
 						showStatus={this.showStatusBar}
+						isOffline={this.state.assetType === "offline"}
 					/> : null}
 				<SpeedDial
 					ariaLabel="SpeedDial openIcon example"

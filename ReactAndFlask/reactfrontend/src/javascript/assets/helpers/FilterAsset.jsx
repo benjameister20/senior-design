@@ -149,15 +149,19 @@ class FilterAsset extends React.Component {
                     }
                 });
             } else if (this.props.assetType === "offline") {
+                console.log("offline storage");
                 this.props.allAssets.map(asset => {
+                    console.log(asset);
                     if (
                         (asset.datacenter_name.toLowerCase().includes(this.state.datacenter.toLowerCase()) || asset.abbreviation.toLowerCase().includes(this.state.datacenter.toLowerCase()))
                         && asset.model.toLowerCase().includes(this.state.model.toLowerCase())
                         && asset.hostname.toLowerCase().includes(this.state.hostname.toLowerCase())
                     ) {
+                        console.log("in if")
                         var offline = false;
                         this.state.datacenterList.map(dc => {
-                            if (dc.is_offline_storage && asset.datacenter_name === dc.datacenter_name) {
+                            console.log(dc);
+                            if (dc.is_offline_storage && asset.datacenter_name === dc.name) {
                                 offline = true;
                             }
                         });

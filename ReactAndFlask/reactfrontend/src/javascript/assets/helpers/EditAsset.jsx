@@ -4,7 +4,7 @@ import axios from 'axios';
 import { CompactPicker } from 'react-color';
 
 // Core
-import { TextField, Button, Tooltip, CircularProgress, Grid } from "@material-ui/core";
+import { TextField, Button, Tooltip, CircularProgress, Grid, List, ListSubheader, ListItem, ListItemText } from "@material-ui/core";
 import { withStyles } from '@material-ui/core/styles';
 import { Radio, RadioGroup, FormControl, FormControlLabel, FormHelperText, Paper } from '@material-ui/core';
 import { IconButton, Slide, InputLabel, MenuItem, Select, Modal, Backdrop } from '@material-ui/core';
@@ -156,6 +156,8 @@ class EditAsset extends React.Component {
             mount_type: null,
 
             chassisList: [],
+            allInstances: [],
+            filteredChassisList: [],
             mountTypes: null,
 
             selectedConnection: null,
@@ -190,6 +192,12 @@ class EditAsset extends React.Component {
                 "bladeChassis": createInputs(AssetInput.BLADE_CHASSIS, "Blade Chassis", false, "A reference to a blade chassis asset"),
                 "bladePosition": createInputs(AssetInput.BLADE_POSITION, "Blade Position", false, "An integer indicating the slot number of a blade"),
             },
+
+            // List of blades for a chassis
+            bladeList: [],
+
+            // Dictionary of power states
+            powerStates: {},
         };
     }
 
@@ -235,6 +243,7 @@ class EditAsset extends React.Component {
 
     componentDidMount() {
         this.getLists();
+        this.fetchPowerState();
     }
 
     getPowerFromProps = (pwrCons) => {
@@ -267,12 +276,37 @@ class EditAsset extends React.Component {
         return pwrPorts;
     }
 
+    getAllBlades = () => {
+        var hostname = this.state.mount_type === "chassis" ? this.state.hostname : this.state.blade_chassis;
+        axios.post(
+            getURL(Constants.ASSETS_MAIN_PATH, "getbladesbychassis"),
+            {
+                "chassis_hostname": hostname,
+            }
+        ).then(
+            response => {
+                var instances = response.data.instances;
+                var instanceNames = [];
+
+                instances.map(instance => {
+                    instanceNames.push(instance.hostname);
+                });
+
+                this.setState({ bladeList: instanceNames });
+            }
+        )
+    }
+
     getLists = () => {
         this.getModelList();
         this.getOwnerList();
         this.getDatacenterList();
         this.getAssetList();
         this.getChassisList();
+
+        if (this.state.mount_type !== "rackmount") {
+            this.getAllBlades();
+        }
     }
 
     getChassisList = () => {
@@ -287,7 +321,15 @@ class EditAsset extends React.Component {
                     instanceNames.push(instance.hostname);
                 });
 
-                this.setState({ chassisList: instanceNames });
+                var filteredInstances = instances.filter(instance => {
+                    return instance.datacenter_name === this.state.datacenter_name;
+                });
+
+                var filteredChassisList = filteredInstances.map(instance => {
+                    return instance.hostname;
+                });
+
+                this.setState({ filteredChassisList: filteredChassisList, chassisList: instanceNames, allInstances: instances });
             }
         )
     }
@@ -474,7 +516,15 @@ class EditAsset extends React.Component {
             }
         });
 
-        this.setState({ datacenter_name: event.target.value, datacenterIsOffline: isOffline }, () => { });
+        var filteredInstances = this.state.allInstances.filter(instance => {
+            return instance.datacenter_name === event.target.value;
+        });
+
+        var filteredChassisList = filteredInstances.map(instance => {
+            return instance.hostname;
+        });
+
+        this.setState({ filteredChassisList: filteredChassisList, datacenter_name: event.target.value, datacenterIsOffline: isOffline }, () => { });
     }
 
     updateTags = (event) => {
@@ -743,6 +793,82 @@ class EditAsset extends React.Component {
         });
     }
 
+    fetchPowerState = () => {
+        axios.post(
+            getURL(Constants.ASSETS_MAIN_PATH, "getAllChassisPortStates"),
+            {
+                "chassis": this.state.hostname,
+            }
+        ).then(
+            response => {
+                if (response.data.message === "Success") {
+                    var states = response.data.power_state;
+
+                    this.setState({ powerStates: states });
+                } else {
+                    this.setState({ statusOpen: true, statusMessage: response.data.message, statusSeverity: AssetConstants.ERROR_TOKEN });
+                }
+            }
+        )
+
+    }
+
+    bmiPowerOn = (port) => {
+        var portNum = this.state.mount_type == "blade" ? this.state.blade_position : port;
+        var hostname = this.state.mount_type == "blade" ? this.state.blade_chassis : this.state.hostname;
+        axios.post(
+            getURL(Constants.ASSETS_MAIN_PATH, "setChassisPortState"),
+            {
+                "chassis": hostname,
+                "chassis_port_number": portNum,
+                "power_state": "on",
+            }
+        ).then(
+            response => {
+                if (response.data.message === "Success") {
+                    this.fetchPowerState();
+                    this.setState({ statusOpen: true, statusMessage: "Successfully turned on port", statusSeverity: AssetConstants.SUCCESS_TOKEN });
+                } else {
+                    this.setState({ statusOpen: true, statusMessage: response.data.message, statusSeverity: AssetConstants.ERROR_TOKEN });
+                }
+            }
+        )
+    }
+
+    bmiPowerOff = (port) => {
+        var portNum = this.state.mount_type == "blade" ? this.state.blade_position : port;
+        var hostname = this.state.mount_type == "blade" ? this.state.blade_chassis : this.state.hostname;
+        axios.post(
+            getURL(Constants.ASSETS_MAIN_PATH, "setChassisPortState"),
+            {
+                "chassis": hostname,
+                "chassis_port_number": portNum,
+                "power_state": "off",
+            }
+        ).then(
+            response => {
+                if (response.data.message === "Success") {
+                    this.fetchPowerState();
+                    this.setState({ statusOpen: true, statusMessage: "Successfully turned off port", statusSeverity: AssetConstants.SUCCESS_TOKEN });
+                } else {
+                    this.setState({ statusOpen: true, statusMessage: response.data.message, statusSeverity: AssetConstants.ERROR_TOKEN });
+                }
+            }
+        )
+    }
+
+
+    bmiPowerCycle = async (port) => {
+        function wait(timeout) {
+            return new Promise(resolve => {
+                setTimeout(resolve, timeout);
+            });
+        }
+        this.bmiPowerOff(port);
+        await wait(2000);
+        this.bmiPowerOn(port);
+    }
+
     render() {
         const { classes } = this.props;
 
@@ -858,7 +984,7 @@ class EditAsset extends React.Component {
                                 <Tooltip placement="top" open={this.state.inputs.bladeChassis.Tooltip} title={this.state.inputs.bladeChassis.description}>
                                     <Autocomplete
                                         id="select-chassis"
-                                        options={this.state.chassisList}
+                                        options={this.state.filteredChassisList}
                                         includeInputInList
                                         style={{ display: "inline-block" }}
                                         value={this.state.blade_chassis}
@@ -1184,7 +1310,32 @@ class EditAsset extends React.Component {
                                     />
                                 </div>
 
-                                { (this.state.blade_chassis !== undefined && this.state.blade_chassis.includes("BMI")) ?
+                                { this.state.mount_type !== "rackmount" ?
+                                    <List
+                                        className={classes.root}
+                                        subheader={
+                                            <ListSubheader component="div" id="nested-list-subheader">
+                                            Blades
+                                            </ListSubheader>
+                                        }
+                                        style={{
+                                            maxHeight: "30vh",
+                                            overflow: "auto"
+                                        }}
+                                    >
+                                    {this.state.bladeList.map(blade => {
+                                        const labelId = `list-label-${blade}`;
+
+                                        return (
+                                        <ListItem key={blade} role={undefined} dense button>
+                                            <ListItemText id={labelId} primary={blade} />
+                                        </ListItem>
+                                        );
+                                    })}
+                                    </List>
+                                : null }
+
+                                { (this.state.mount_type === "blade" && this.state.blade_chassis !== undefined && this.state.blade_chassis.includes("BMI")) ?
                                 <div className={classes.buttons}>
                                     <Button
                                         variant="contained"
@@ -1193,6 +1344,7 @@ class EditAsset extends React.Component {
                                             backgroundColor: "green",
                                             color: "white"
                                         }}
+                                        onClick={this.bmiPowerOn}
                                     >
                                         Power On
                                     </Button>
@@ -1203,6 +1355,7 @@ class EditAsset extends React.Component {
                                             backgroundColor: "black",
                                             color: "white"
                                         }}
+                                        onClick={this.bmiPowerOff}
                                     >
                                         Power Off
                                     </Button>
@@ -1210,11 +1363,70 @@ class EditAsset extends React.Component {
                                         variant="contained"
                                         startIcon={<LoopIcon />}
                                         color="primary"
+                                        onClick={this.bmiPowerCycle}
                                     >
                                         Power Cycle
                                     </Button>
                                 </div>
                                 : null }
+
+
+                                { this.state.mount_type === "chassis" ?
+                                    <List
+                                        className={classes.root}
+                                        subheader={
+                                            <ListSubheader component="div" id="nested-list-subheader">
+                                            Blades
+                                            </ListSubheader>
+                                        }
+                                        style={{
+                                            overflow: "auto"
+                                        }}
+                                    >
+                                    {Array.from({length: 14}, (x,i) => i).map((_, index) => {
+                                        const labelId = `list-label-${index}`;
+
+                                        return (
+                                        <ListItem key={index} role={undefined} dense button>
+                                            <ListItemText id={labelId} primary={(index+1).toString() + " - " + this.state.powerStates[(index+1).toString()]} />
+                                            <Button
+                                                variant="contained"
+                                                startIcon={<PowerIcon />}
+                                                style={{
+                                                    backgroundColor: "green",
+                                                    color: "white"
+                                                }}
+                                                onClick={() => {this.bmiPowerOn(index+1)}}
+                                            >
+                                                Power On
+                                            </Button>
+                                            <Button
+                                                variant="contained"
+                                                startIcon={<PowerOffIcon />}
+                                                style={{
+                                                    backgroundColor: "black",
+                                                    color: "white"
+                                                }}
+                                                onClick={() => {this.bmiPowerOff(index+1)}}
+                                            >
+                                                Power Off
+                                            </Button>
+                                            <Button
+                                                variant="contained"
+                                                startIcon={<LoopIcon />}
+                                                color="primary"
+                                                onClick={() => {this.bmiPowerCycle(index+1)}}
+                                            >
+                                                Power Cycle
+                                            </Button>
+                                        </ListItem>
+                                        );
+                                    })}
+                                    </List> : null
+
+                                }
+
+
                                 <div className={classes.buttons}>
                                     {this.props.disabled ? null :
                                         <Button

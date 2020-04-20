@@ -159,12 +159,14 @@ class AddAsset extends React.Component {
 				<ImportAsset
 					open={this.state.showImport}
 					close={this.closeImport}
+					refresh={this.props.fetchAllAssets}
 					connections={false}
 				/>
 
 				<ImportAsset
 					open={this.state.showConnectionsImport}
 					close={this.closeConnectionsImport}
+					refresh={this.props.fetchAllAssets}
 					connections={true}
 				/>
 			</React.Fragment>

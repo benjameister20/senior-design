@@ -91,13 +91,18 @@ class CreateModel extends React.Component {
         this.setState({ showImportModal: false });
     }
 
+    onSuccess = (success) => {
+        if (success) {
+            this.closeModal();
+            this.setState({ mountType: "rackmount" });
+            this.updateColor(defaultColor);
+        }
+    }
+
     create = (event) => {
         event.preventDefault();
         var color = (this.state.color.hex === undefined ? this.state.color : this.state.color.hex);
-        this.props.createModel(this.state.networkPorts, this.state.mountType, color);
-        this.closeModal();
-        this.setState({ mountType: "rackmount" });
-        this.updateColor(defaultColor);
+        this.props.createModel(this.state.networkPorts, this.state.mountType, color, this.onSuccess);
     }
 
     uploadFile = () => {

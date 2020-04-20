@@ -361,7 +361,7 @@ def get_chassis_port_state():
     return addMessageToJSON(returnJSON, "Success")
 
 
-@instances.route("/instances/getAllChassisPortStates", methods=["GET"])
+@instances.route("/instances/getAllChassisPortStates", methods=["POST"])
 @requires_auth(request)
 def get_all_chassis_port_states():
     returnJSON = createJSON()

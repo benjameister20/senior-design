@@ -67,7 +67,8 @@ class ImportAsset extends React.Component {
         ).then(response => {
             if (response.data.message === AssetConstants.SUCCESS_TOKEN) {
 				this.setState({ showStatus: true, statusMessage: response.data.summary, statusSeverity:AssetConstants.SUCCESS_TOKEN, showImport: false,})
-				this.props.close();
+				this.props.refresh();
+                this.props.close();
             } else {
                 this.setState({ showStatus: true, statusMessage: response.data.message, statusSeverity:AssetConstants.ERROR_TOKEN })
             }

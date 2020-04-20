@@ -89,9 +89,25 @@ class FilterAsset extends React.Component {
         this.setState({ user: event.target.value }, () => this.search());
     }
 
+    clearFilters = () => {
+        this.setState({
+            datacenter: "",
+            model: "",
+            hostname: "",
+            startingLetter: "A",
+            endingLetter: "Z",
+            startingNum: 1,
+            endingNum: 1000,
+            startDate: "",
+            endDate: "",
+            user: "",
+        })
+    }
+
     search = () => {
         var items = [];
         try {
+            console.log(this.state.endingNum);
             if (this.props.assetType === "decommissioned") {
                 this.props.decAssets.map(asset => {
                     var startDate = new Date(this.state.startDate === "" || parseInt(this.state.startDate) < 2000 ? "01/01/2001" : this.state.startDate + " 00:00:00");
@@ -185,6 +201,7 @@ class FilterAsset extends React.Component {
                                 id="site"
                                 label="Site"
                                 name="site"
+                                value={this.state.datacenter}
                                 onChange={(event) => { this.updateDatacenter(event) }}
                                 style={{ width: "100%" }}
                             />
@@ -194,6 +211,7 @@ class FilterAsset extends React.Component {
                                 id="model"
                                 label="Model"
                                 name="model"
+                                value={this.state.model}
                                 onChange={(event) => { this.updateModel(event) }}
                                 style={{ width: "100%" }}
                             />
@@ -203,6 +221,7 @@ class FilterAsset extends React.Component {
                                 id="hostname"
                                 label="Hostname"
                                 name="hostname"
+                                value={this.state.hostname}
                                 onChange={(event) => this.updateHostname(event)}
                                 style={{ width: "100%" }}
                             />

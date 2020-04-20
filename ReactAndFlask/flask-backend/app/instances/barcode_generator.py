@@ -37,7 +37,7 @@ class BarcodeGenerator:
         counter = 0
         for asset_number in asset_nums_list:
             self._make_barcode(asset_number)
-            x = 0.5 + ((counter // 20) * 2.25)
+            x = 0.3 + ((counter // 20) * 2.05)
             y = 0.5 + ((counter % 20) * 0.5)
             image_path = self.barcode_path + str(asset_number) + ".png"
             pdf.image(image_path, x=x, y=y, w=1.75, h=0.5)

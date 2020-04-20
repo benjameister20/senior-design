@@ -51,6 +51,8 @@ class ModelManager:
             else:
                 print("Validation unsuccessful")
                 return InvalidInputsError(delete_validation_result)
+        except InvalidInputsError as e:
+            raise InvalidInputsError(e.message)
         except:
             print("SOMETHING BAD HAPPENED")
             return InvalidInputsError(
@@ -100,6 +102,8 @@ class ModelManager:
                 self.table.edit_model(model_id, updated_model)
             else:
                 return InvalidInputsError(edit_validation_result)
+        except InvalidInputsError as e:
+            raise InvalidInputsError(e.message)
         except:
             raise InvalidInputsError(
                 "A failure occured while trying to edit the model."

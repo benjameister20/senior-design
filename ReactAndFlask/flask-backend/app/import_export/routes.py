@@ -71,7 +71,7 @@ class DatacenterDoesNotExistError(Exception):
     """
 
     def __init__(self, name: str):
-        self.message: str = f"Site {name} does not exist."
+        self.message: str = f"{name} does not exist."
 
 
 def _get_csv():
@@ -119,8 +119,8 @@ def _make_instance_from_csv(csv_row: Dict[str, Any]) -> Instance:
     rack_label = ""
     rack_position = -1
     datacenter_id = -1
-    print(f"DATACENTER = {csv_row[Constants.CSV_DC_NAME_KEY]}")
-    print(csv_row)
+    # print(f"DATACENTER = {csv_row[Constants.CSV_DC_NAME_KEY]}")
+    # print(csv_row)
     if csv_row[Constants.CSV_DC_NAME_KEY] != "":
         datacenter_id = DCTABLE.get_datacenter_id_by_abbreviation(
             csv_row[Constants.CSV_DC_NAME_KEY]
@@ -180,7 +180,10 @@ def _make_instance_from_csv(csv_row: Dict[str, Any]) -> Instance:
         mount_type=mount_type,
         display_color=csv_row[Constants.CSV_CUSTOM_DISPLAY_COLOR],
         cpu=csv_row[Constants.CSV_CUSTOM_CPU],
-        memory=csv_row[Constants.CSV_CUSTOM_MEMORY],
+        memory=csv_row[Constants.CSV_CUSTOM_MEMORY]
+        if csv_row[Constants.CSV_CUSTOM_MEMORY] != ""
+        and csv_row[Constants.CSV_CUSTOM_MEMORY] is not None
+        else -1,
         storage=csv_row[Constants.CSV_CUSTOM_STORAGE],
         chassis_hostname=chassis_hostname,
         chassis_slot=chassis_slot,

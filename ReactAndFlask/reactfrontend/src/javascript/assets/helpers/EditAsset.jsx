@@ -202,6 +202,8 @@ class EditAsset extends React.Component {
     }
 
     componentWillMount() {
+
+        console.log(this.props.defaultValues);
         if ((this.props.defaultValues.model !== this.state.model
             || this.props.defaultValues.hostname !== this.state.hostname
             || this.props.defaultValues.rack !== this.state.rack
@@ -212,9 +214,11 @@ class EditAsset extends React.Component {
             || this.props.defaultValues.tags !== this.state.tags
             || this.props.defaultValues.network_connections !== this.state.network_connections
             || this.props.defaultValues.power_connections !== this.state.power_connections
-            || this.props.defaultValues.asset_number !== this.state.asset_number)
+            || this.props.defaultValues.asset_number !== this.state.asset_number
+            || this.props.isOffline !== this.state.datacenterIsOffline)
             && !this.state.updated
         ) {
+            console.log("in setting state");
             this.setState({
                 model: this.props.defaultValues.model,
                 hostname: this.props.defaultValues.hostname,
@@ -235,6 +239,7 @@ class EditAsset extends React.Component {
                 mount_type: this.props.defaultValues.mount_type,
                 blade_chassis: this.props.defaultValues.chassis_hostname,
                 blade_position: this.props.defaultValues.chassis_slot,
+                datacenterIsOffline:this.props.isOffline
             });
         } else {
             //this.setState({ updated: true, });
@@ -249,15 +254,18 @@ class EditAsset extends React.Component {
     getPowerFromProps = (pwrCons) => {
         var pwr = [];
 
-        pwrCons.map(pwrCon => {
-            if (pwrCon.includes("L")) {
-                pwr.push("left");
-            } else if (pwrCon.includes("R")) {
-                pwr.push("right");
-            } else {
-                pwr.push("off");
-            }
-        })
+        if (pwrCons !== undefined) {
+            pwrCons.map(pwrCon => {
+                if (pwrCon.includes("L")) {
+                    pwr.push("left");
+                } else if (pwrCon.includes("R")) {
+                    pwr.push("right");
+                } else {
+                    pwr.push("off");
+                }
+            })
+        }
+
 
         return pwr;
     }

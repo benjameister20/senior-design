@@ -19,6 +19,8 @@ class InstanceManager:
         self.asset_num_generator = AssetNumGenerator()
 
     def create_instance(self, instance_data):
+        print("INSTANCE DATA")
+        print(instance_data)
         try:
             try:
                 new_instance = self.make_instance(instance_data)
@@ -36,28 +38,38 @@ class InstanceManager:
             except InvalidInputsError as e:
                 raise InvalidInputsError(e.message)
 
-            try:
-                self.table.add_instance(new_instance)
-                if new_instance.mount_type != Constants.BLADE_KEY:
-                    power_result = self.add_power_connections(new_instance)
-                    if power_result != Constants.API_SUCCESS:
-                        self.table.delete_instance_by_asset_number(
-                            new_instance.asset_number
-                        )
-                        raise InvalidInputsError(
-                            "An error occurred when trying to add power connections."
-                        )
-
-                    connect_result = self.make_corresponding_connections(
-                        new_instance.network_connections, new_instance.hostname
+            # try:
+            is_in_offline_storage = (
+                DatacenterTable()
+                .get_datacenter_by_name(instance_data.get(Constants.DC_NAME_KEY))
+                .is_offline_storage
+            )
+            self.table.add_instance(new_instance)
+            if (
+                new_instance.mount_type != Constants.BLADE_KEY
+                and not is_in_offline_storage
+            ):
+                power_result = self.add_power_connections(new_instance)
+                print("POWER RESULT")
+                print(power_result)
+                if power_result != Constants.API_SUCCESS:
+                    self.table.delete_instance_by_asset_number(
+                        new_instance.asset_number
                     )
-                    if connect_result != Constants.API_SUCCESS:
-                        self.table.delete_instance_by_asset_number(
-                            new_instance.asset_number
-                        )
-                        raise InvalidInputsError(connect_result)
-            except:
-                raise InvalidInputsError("Unable to create asset")
+                    raise InvalidInputsError(
+                        "An error occurred when trying to add power connections."
+                    )
+
+                connect_result = self.make_corresponding_connections(
+                    new_instance.network_connections, new_instance.hostname
+                )
+                if connect_result != Constants.API_SUCCESS:
+                    self.table.delete_instance_by_asset_number(
+                        new_instance.asset_number
+                    )
+                    raise InvalidInputsError(connect_result)
+            # except:
+            #     raise InvalidInputsError("Unable to create asset")
         except InvalidInputsError as e:
             print(e.message)
             raise InvalidInputsError(e.message)
@@ -371,10 +383,12 @@ class InstanceManager:
             connection_hostname = network_connections[port]["connection_hostname"]
             connection_port = network_connections[port]["connection_port"]
 
-            if connection_hostname == "" and connection_port == "":
+            if (connection_hostname == "" or connection_hostname is None) and (
+                connection_port == "" or connection_port is None
+            ):
                 continue
 
-            print("SEARCH " + connection_hostname)
+            # print("SEARCH " + connection_hostname)
             other_instance = self.table.get_instance_by_hostname(connection_hostname)
             print("COMPLETE")
             if other_instance is None:
@@ -405,7 +419,9 @@ class InstanceManager:
             connection_hostname = asset.network_connections[port]["connection_hostname"]
             connection_port = asset.network_connections[port]["connection_port"]
 
-            if connection_hostname == "" and connection_port == "":
+            if (connection_hostname == "" or connection_hostname is None) and (
+                connection_port == "" or connection_port is None
+            ):
                 continue
 
             other_instance = self.table.get_instance_by_hostname(connection_hostname)

@@ -1,4 +1,5 @@
 import os
+import stat
 from datetime import datetime
 
 from app.constants import Constants
@@ -29,12 +30,13 @@ class BackupsManager:
     def generate_backup(self):
         # Remove all files in the backups directory
         files = os.listdir(f"{BackupsManager.FILE_PATH}/backup_zips/")
+        print(files)
         for f in files:
             os.remove(f"{BackupsManager.FILE_PATH}/backup_zips/{f}")
         # command = f"pg_dump {Constants.BACKUPS_DB} -O -F t > "
         # command = f"pg_dump -d {Constants.BACKUPS_DB} -h {Constants.BACKUP_HOST} -p {Constants.BACKUP_PORT} -U {Constants.BACKUP_USER} -W {Constants.BACKUP_PASS} -O -F t > "
         command = f"pg_dump --dbname=postgresql://{Constants.BACKUPS_USER}:{Constants.BACKUPS_PASS}@{Constants.BACKUPS_HOST}:{Constants.BACKUPS_PORT}/{Constants.BACKUPS_DB} -O -F t > "
-        utc_time = datetime.utcnow()
+        utc_time = datetime.now()
         filename = str(utc_time) + ".tar"
         date, time = filename.split(" ")
         filename = filename.replace(" ", "_")
@@ -44,19 +46,20 @@ class BackupsManager:
         # print(f"Context: {BackupsManager.FILE_PATH}")
         # print(f"full_name: {full_name}")
 
-        file_data = {}
-        file_data["file_path"] = full_name
-        file_data["filename"] = filename
-        file_data["date"] = date
-        file_data["time"] = time
-        file_data["datetime"] = utc_time
-
         try:
             os.system(command + full_name)
         except IOError:
             raise BackupError("Failed to backup Postgres database")
         except:
             raise BackupError("Failed to create backup")
+
+        file_data = {}
+        file_data["file_path"] = full_name
+        file_data["filename"] = filename
+        file_data["date"] = date
+        file_data["time"] = time
+        file_data["datetime"] = utc_time
+        file_data["size"] = os.stat(full_name)[stat.ST_SIZE]
 
         return file_data
 

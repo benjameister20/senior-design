@@ -63,16 +63,16 @@ class DecommissionManager:
         start_date = filter.get(Constants.START_DATE_KEY)
         end_date = filter.get(Constants.END_DATE_KEY)
 
-        try:
-            decommission_list = self.decommission_table.get_decommissions_with_filters(
-                user=decommission_user, start_date=start_date, end_date=end_date,
-            )
-            return decommission_list
-        except Exception as e:
-            print(str(e))
-            raise InvalidInputsError(
-                "An error occurred when retrieving decommissioned assets."
-            )
+        # try:
+        decommission_list = self.decommission_table.get_decommissions_with_filters(
+            user=decommission_user, start_date=start_date, end_date=end_date,
+        )
+        return decommission_list
+        # except Exception as e:
+        #     print(str(e))
+        #     raise InvalidInputsError(
+        #         "An error occurred when retrieving decommissioned assets."
+        #     )
 
     def make_decommission(
         self, asset: Instance, timestamp, decommission_user, network_neighborhood

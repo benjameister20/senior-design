@@ -79,8 +79,14 @@ def create_racks():
         print("range")
         start_letter: str = data[Constants.START_LETTER_KEY]
         stop_letter: str = data[Constants.STOP_LETTER_KEY]
-        start_number: int = int(data[Constants.START_NUMBER_KEY])
-        stop_number: int = int(data[Constants.STOP_NUMBER_KEY])
+        try:
+            start_number: int = int(data[Constants.START_NUMBER_KEY])
+            stop_number: int = int(data[Constants.STOP_NUMBER_KEY])
+        except:
+            return addMessageToJSON(
+                returnJSON,
+                "Rack designations contain letters preceding numbers and may only include letters and numbers",
+            )
 
         print("adding")
         add_rack_range(

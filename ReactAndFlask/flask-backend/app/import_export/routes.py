@@ -135,7 +135,7 @@ def _make_instance_from_csv(csv_row: Dict[str, Any]) -> Instance:
             csv_row[Constants.CSV_OFFLINE_SITE_KEY]
         )
         if datacenter_id is None:
-            raise DatacenterDoesNotExistError(csv_row[Constants.CSV_DC_NAME_KEY])
+            raise DatacenterDoesNotExistError(csv_row[Constants.CSV_OFFLINE_SITE_KEY])
 
     chassis_hostname = ""
     chassis_slot = -1
@@ -543,6 +543,7 @@ def import_network_connections_csv():
         csv_input = _get_csv()
         added, updated, ignored = _parse_connection_csv(csv_input=csv_input)
     except:
+        raise
         return {"message": "Error occured."}
 
     return {

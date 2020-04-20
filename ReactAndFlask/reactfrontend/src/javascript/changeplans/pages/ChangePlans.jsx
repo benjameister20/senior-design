@@ -223,6 +223,7 @@ class ChangePlansView extends React.Component {
             this.fetchAllChangePlans();
 
             if (response.data.message === "success") {
+                this.props.updateChangePlan(false, null, null, "");
                 this.setState({ statusOpen: true, statusMessage: "Success", statusSeverity: "success" });
             } else {
                 this.setState({ statusOpen: true, statusMessage: response.data.message, statusSeverity: "error" });

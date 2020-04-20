@@ -51,6 +51,7 @@ class EditDatacenter extends React.Component {
 			"nameOriginal": this.props.dcName,
             "abbreviation" : this.state.datacenterAbbreviation||this.props.dcAbbrev,
             "datacenter_name": this.state.datacenterName||this.props.dcName,
+            "is_offline_storage":this.props.is_offline_storage,
         }
     }
 

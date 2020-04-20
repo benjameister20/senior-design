@@ -1,22 +1,15 @@
 import React from 'react';
 
-import TextField from "@material-ui/core/TextField";
-import Button from '@material-ui/core/Button';
-import Autocomplete from '@material-ui/lab/Autocomplete';
-import Typography from '@material-ui/core/Typography';
-import { CompactPicker } from 'react-color';
-import Paper from '@material-ui/core/Paper';
-import '../stylesheets/ModelStyles.css';
-import Grid from '@material-ui/core/Grid';
-import Modal from '@material-ui/core/Modal';
-import Backdrop from '@material-ui/core/Backdrop';
-import Fade from '@material-ui/core/Fade';
+import { TextField, Button, Typography, Paper, Grid, Modal, Backdrop, Fade, List, ListItem, ListItemText, ListSubheader } from "@material-ui/core";
+import { InputLabel, Select, MenuItem } from "@material-ui/core";
 import { withStyles } from '@material-ui/core/styles';
+
+import Autocomplete from '@material-ui/lab/Autocomplete';
+
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import ListSubheader from '@material-ui/core/ListSubheader';
+
+import { CompactPicker } from 'react-color';
+import '../stylesheets/ModelStyles.css';
 
 function createInputs(name, label) {
     return {label, name};
@@ -33,6 +26,7 @@ const inputs = {
     "memory": createInputs('memory', "Memory"),
     "storage": createInputs('storage', "Storage"),
     "comment": createInputs('comment', "Comment"),
+    "mount_type": createInputs('mount_type', "Mount Type"),
 }
 
 const useStyles = theme => ({
@@ -59,17 +53,20 @@ const useStyles = theme => ({
       },
 });
 
+const defaultColor = "#B0BC00";
+
 class CreateModel extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            color: '#A52A2A',
+            color: defaultColor,
             showModal: false,
             showImportModal: false,
             importedFile: null,
             networkPorts: [],
             numPorts: 0,
+            mountType: "rackmount",
         };
     }
 
@@ -87,17 +84,25 @@ class CreateModel extends React.Component {
     }
 
     closeModal = () => {
-        this.setState({ showModal: false, networkPorts: [], numPorts: 0 });
+        this.setState({ showModal: false, networkPorts: [], numPorts: 0, mountType: "rackmount" });
     }
 
     closeImportModal = () => {
         this.setState({ showImportModal: false });
     }
 
+    onSuccess = (success) => {
+        if (success) {
+            this.closeModal();
+            this.setState({ mountType: "rackmount" });
+            this.updateColor(defaultColor);
+        }
+    }
+
     create = (event) => {
         event.preventDefault();
-        this.props.createModel(this.state.networkPorts);
-        this.closeModal();
+        var color = (this.state.color.hex === undefined ? this.state.color : this.state.color.hex);
+        this.props.createModel(this.state.networkPorts, this.state.mountType, color, this.onSuccess);
     }
 
     uploadFile = () => {
@@ -107,7 +112,6 @@ class CreateModel extends React.Component {
     }
 
     chooseFile = (event) => {
-        console.log(event);
         this.setState({ importedFile: event.target.files[0] })
     }
 
@@ -130,19 +134,23 @@ class CreateModel extends React.Component {
         this.setState({ networkPorts: ports });
     }
 
+    updateMountType = (event) => {
+        this.setState({ mountType: event.target.value });
+    }
+
     render() {
         const { classes } = this.props;
 
         return (
         <div>
-            <Paper elevation={3}>
+            <Paper style={{ minHeight: this.props.height }} elevation={3}>
                 <Grid
                     container
                     spacing={2}
                     direction="row"
                     justify="flex-start"
                     alignItems="center"
-                    style={{"padding": "10px"}}
+                    style={{ padding: "10px" }}
                 >
                     <Grid item xs={12}>
                         <Typography
@@ -150,6 +158,9 @@ class CreateModel extends React.Component {
                         >
                             Add
                         </Typography>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <Typography>Create a new model.</Typography>
                     </Grid>
                     <Grid item xs={12}>
                         <Button
@@ -225,14 +236,34 @@ class CreateModel extends React.Component {
                                 <TextField id="standard-basic" required={true} variant="outlined" label={inputs.modelNumber.label} name={inputs.modelNumber.name} onChange={this.props.updateModelCreator}/>
                             </Grid>
                             <Grid item xs={3}>
+                                <InputLabel id="select-mount-type-label">Mount Type</InputLabel>
+                                <Select
+                                    labelId="select-mount-type-label"
+                                    id="select-mount-type"
+                                    value={this.state.mountType}
+                                    required={true}
+                                    onChange={this.updateMountType}
+                                    style={{ width: "100%" }}
+                                >
+                                    <MenuItem value="rackmount">Rack Mounted</MenuItem>
+                                    <MenuItem value="chassis">Blade Chassis</MenuItem>
+                                    <MenuItem value="blade">Blade</MenuItem>
+                                </Select>
+                            </Grid>
+                            { this.state.mountType !== "blade" ?
+                            <Grid item xs={3}>
                                 <TextField type="number" id="standard-basic" required={true} variant="outlined" label={inputs.height.label} name={inputs.height.name} onChange={this.props.updateModelCreator} InputProps={{ inputProps: { min: 1, max: 42} }} style={{ width: "100%" }} />
                             </Grid>
+                            : null }
+                            { this.state.mountType !== "blade" ?
                             <Grid item xs={3}>
                                 <TextField type="number" id="standard-basic" variant="outlined" label={inputs.ethernetPorts.label} name={inputs.ethernetPorts.name} onChange={this.updateNetworkPorts} InputProps={{ inputProps: { min: 0} }} />
                             </Grid>
+                            : null }
+                            { this.state.mountType !== "blade" ?
                             <Grid item xs={3}>
                                 <TextField type="number" id="standard-basic" variant="outlined" label={inputs.powerPorts.label} name={inputs.powerPorts.name} onChange={this.props.updateModelCreator} InputProps={{ inputProps: { min: 0} }}/>
-                            </Grid>
+                            </Grid> : null }
                             <Grid item xs={3}>
                                 <TextField id="standard-basic" variant="outlined" label={inputs.cpu.label} name={inputs.cpu.name} onChange={this.props.updateModelCreator}/>
                             </Grid>
@@ -242,9 +273,10 @@ class CreateModel extends React.Component {
                             <Grid item xs={3}>
                                 <TextField id="standard-basic" variant="outlined" label={inputs.storage.label} name={inputs.storage.name} onChange={this.props.updateModelCreator}/>
                             </Grid>
-                            <Grid item xs={3}>
-                                <TextField id="standard-basic" variant="outlined" label={inputs.comment.label} name={inputs.comment.name} onChange={this.props.updateModelCreator}/>
+                            <Grid item xs={6}>
+                                <TextField rowsMax={3} multiline={true} style={{ width: "100%" }} id="standard-basic" variant="outlined" label={inputs.comment.label} name={inputs.comment.name} onChange={this.props.updateModelCreator}/>
                             </Grid>
+
                             <Grid item xs={6}>
                                 <Typography>Display Color</Typography>
                                 <CompactPicker
@@ -253,18 +285,19 @@ class CreateModel extends React.Component {
                                 />
                             </Grid>
                             <Grid item xs={12}>
-                            <List
-                                className={classes.root}
-                                subheader={
-                                    <ListSubheader component="div" id="nested-list-subheader">
-                                      Network Ports
-                                    </ListSubheader>
-                                  }
-                                style={{
-                                    maxHeight: "30vh",
-                                    overflow: "auto"
-                                }}
-                            >
+                            { this.state.mountType !== "blade" ?
+                                <List
+                                    className={classes.root}
+                                    subheader={
+                                        <ListSubheader component="div" id="nested-list-subheader">
+                                        Network Ports
+                                        </ListSubheader>
+                                    }
+                                    style={{
+                                        maxHeight: "30vh",
+                                        overflow: "auto"
+                                    }}
+                                >
                                 {Array.from({length: this.state.numPorts}, (x,i) => i).map((_, index) => {
                                     const labelId = `list-label-${this.state.networkPorts[index]}`;
 
@@ -278,7 +311,7 @@ class CreateModel extends React.Component {
                                 {this.state.numPorts === 0 ? <ListItem key="add-items" role={undefined} dense>
                                 <ListItemText id="add-items-label" primary="Enter the number of network ports above" />
                                 </ListItem> : null}
-                                </List>
+                                </List> : null }
                             </Grid>
                             <Grid item xs={3}>
                                 <Button

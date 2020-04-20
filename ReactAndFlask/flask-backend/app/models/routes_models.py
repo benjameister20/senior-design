@@ -42,6 +42,8 @@ def create():
 
     try:
         model_data = request.get_json()
+        print("MODEL DATA REQUEST")
+        print(model_data)
         MODEL_MANAGER.create_model(model_data)
 
         return addMessageToJSON(returnJSON, Constants.API_SUCCESS)
@@ -131,6 +133,7 @@ def edit():
             return addMessageToJSON(returnJSON, error.message)
         return addMessageToJSON(returnJSON, Constants.API_SUCCESS)
     except InvalidInputsError as e:
+        print(e.message)
         return addMessageToJSON(returnJSON, e.message)
 
 

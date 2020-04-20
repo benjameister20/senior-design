@@ -1,20 +1,24 @@
+// React
 import React from 'react';
-
 import axios from 'axios';
 
+// Core
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import { Grid, Paper, Button } from '@material-ui/core';
-import TableSortLabel from '@material-ui/core/TableSortLabel';
-import { Alert, AlertTitle } from '@material-ui/lab';
-import NoteAddIcon from '@material-ui/icons/NoteAdd';
-import Checkbox from '@material-ui/core/Checkbox';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import IconButton from '@material-ui/core/IconButton';
-import Tooltip from '@material-ui/core/Tooltip';
+import { Checkbox, Toolbar, Typography, IconButton, Tooltip, TableSortLabel } from '@material-ui/core';
+
+// Lab
+import { SpeedDial, SpeedDialAction, SpeedDialIcon, Alert, AlertTitle } from '@material-ui/lab';
+
+// Icons
 import CheckIcon from '@material-ui/icons/Check';
 import ClearIcon from '@material-ui/icons/Clear';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import TrackChangesIcon from '@material-ui/icons/TrackChanges';
+import NoteAddIcon from '@material-ui/icons/NoteAdd';
+
+// Helpers
 import { AssetInput } from '../enums/AssetInputs.ts';
 import { AssetCommand } from '../enums/AssetCommands.ts';
 import getURL from '../../helpers/functions/GetURL';
@@ -28,9 +32,7 @@ import AddAsset from "./AddAsset";
 import ExportAsset from "./ExportAsset";
 import * as Constants from '../../Constants';
 import StatusDisplay from "../../helpers/StatusDisplay";
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import { SpeedDial, SpeedDialAction, SpeedDialIcon } from '@material-ui/lab';
-import TrackChangesIcon from '@material-ui/icons/TrackChanges';
+
 
 const useStyles = theme => ({
 	root: {
@@ -67,6 +69,8 @@ const useStyles = theme => ({
 	},
 });
 
+const decomType = "decommissioned";
+
 const emptySearch = {
 	"filter": {
 		"vendor": null,
@@ -101,8 +105,8 @@ function createDecData(model, hostname, datacenter_name, rack, owner, asset_numb
 }
 
 const headCells = [
-	{ id: 'datacenter_name', numeric: false, label: "Datacenter", align: "left" },
 	{ id: 'hostname', numeric: false, label: "Hostname", align: "left" },
+	{ id: 'datacenter_name', numeric: false, label: "Datacenter", align: "left" },
 	{ id: 'model', numeric: false, label: "Model", align: "left" },
 	{ id: 'rack', numeric: false, label: "Rack", align: "left" },
 	{ id: 'owner', numeric: false, label: "Owner", align: "left" },
@@ -114,7 +118,6 @@ const decommissionHeadCells = [
 	{ id: 'timestamp', numeric: false, label: "Timestamp", align: "right" },
 ];
 
-
 class TableAsset extends React.Component {
 	constructor(props) {
 		super(props);
@@ -125,6 +128,7 @@ class TableAsset extends React.Component {
 			selectedItems: [],
 			allSelected: false,
 			decAssets: [],
+			offlineAssets: [],
 
 			detailStatusOpen: false,
 			detailStatusSeverity: '',
@@ -149,7 +153,7 @@ class TableAsset extends React.Component {
 
 			// Change plan
 			speedDialOpen: false,
-			displayDec: false,
+			assetType: "active",
 
 			rowOwner: "",
 		};
@@ -159,52 +163,47 @@ class TableAsset extends React.Component {
 
 	componentDidMount() {
 		this.fetchAllAssets();
+
 	}
 
 	// Fetch all assets for the table
 	fetchAllAssets = () => {
-		console.log(this.props.changePlanActive);
 		if (this.props.changePlanActive) {
 			axios.post(
 				getURL(Constants.ASSETS_MAIN_PATH, AssetCommand.search), emptySearch).then(
 					response => {
 						var items = [];
 						var instances = response.data.instances;
-						console.log(instances);
 
 						axios.post(
-                            getURL("changeplans/", AssetCommand.CHANGE_PLAN_GET_ACTIONS), {
-                                'change_plan_id': this.props.changePlanID,
-                                'owner': this.props.username,
-                            }).then(response => {
-                                var actions = response.data.change_plan_actions;
-								console.log(actions);
+							getURL("changeplans/", AssetCommand.CHANGE_PLAN_GET_ACTIONS), {
+							'change_plan_id': this.props.changePlanID,
+							'owner': this.props.username,
+						}).then(response => {
+							var actions = response.data.change_plan_actions;
 
-								var assetNums = [];
-								actions.forEach(action => {
-									var assetNum = action.asset_numberOriginal;
-									assetNums.push(assetNum);
-								});
+							var assetNums = [];
+							actions.forEach(action => {
+								var assetNum = action.asset_numberOriginal;
+								assetNums.push(assetNum);
+							});
 
-								console.log(assetNums);
 
-								var newInstances = instances.filter(instance => {
-									return !assetNums.includes(instance.asset_number);
-								});
+							var newInstances = instances.filter(instance => {
+								return !assetNums.includes(instance.asset_number);
+							});
 
-								console.log(newInstances);
+							actions.forEach(action => {
+								if (action.action !== "decommission") {
+									newInstances.push(action.new_record);
+								}
+							});
 
-								actions.forEach(action => {
-									if (action.action !== "decommission") {
-										newInstances.push(action.new_record);
-									}
-								});
-
-								newInstances.map(asset => {
-									items.push(createData(asset.model, asset.hostname, asset.datacenter_name, asset.rack + " U" + asset.rack_position, asset.owner, asset.asset_number));
-								});
-								this.setState({ allAssets: newInstances, tableItems: items });
-                            });
+							newInstances.map(asset => {
+								items.push(createData(asset.model, asset.hostname, asset.datacenter_name, this.getRack(asset), asset.owner, asset.asset_number));
+							});
+							this.setState({ allAssets: newInstances, tableItems: items }, () => this.filter.current.search());
+						});
 					});
 			this.getDecommissionedAssets();
 		} else {
@@ -212,11 +211,12 @@ class TableAsset extends React.Component {
 				getURL(Constants.ASSETS_MAIN_PATH, AssetCommand.search), emptySearch).then(
 					response => {
 						var items = [];
-
+						console.log("instances");
+						console.log(response.data.instances);
 						response.data.instances.map(asset => {
-							items.push(createData(asset.model, asset.hostname, asset.datacenter_name, asset.rack + " U" + asset.rack_position, asset.owner, asset.asset_number));
+							items.push(createData(asset.model, asset.hostname, asset.datacenter_name, this.getRack(asset), asset.owner, asset.asset_number));
 						});
-						this.setState({ allAssets: response.data.instances, tableItems: items });
+						this.setState({ allAssets: response.data.instances, tableItems: items }, () => this.filter.current.search());
 					});
 			this.getDecommissionedAssets();
 		}
@@ -255,8 +255,6 @@ class TableAsset extends React.Component {
 				responseType: 'arraybuffer',
 			}
 		).then(response => {
-			console.log(response);
-			console.log(response.data);
 			try {
 				var blob = new Blob([response.data], { type: "application/pdf" });
 				var link = document.createElement('a');
@@ -275,8 +273,9 @@ class TableAsset extends React.Component {
 	}
 
 	closeDetailedView = () => {
-		this.setState({ showDetailedView: false });
+		this.setState({ showDetailedView: false, assetType: "active" });
 		this.fetchAllAssets();
+		this.filter.current.clearFilters();
 	}
 
 	closeShowStatus = () => {
@@ -289,28 +288,48 @@ class TableAsset extends React.Component {
 	}
 
 	openDetailedView = (event, asset) => {
-		console.log("asset: ");
-		console.log(asset);
+		console.log("opening detail view");
+		console.log(asset)
 		var dAsset = {};
-		var assets = this.state.displayDec ? this.state.decAssets : this.state.allAssets;
+		var assets = [];
+		if (this.state.assetType === "active" || this.state.assetType === "offline") {
+			assets = this.state.allAssets;
+		} else if (this.state.assetType === decomType) {
+			assets = this.state.decAssets;
+		}
 		assets.map(currAsset => {
 			if (currAsset.asset_number === asset.asset_number) {
 				Object.assign(dAsset, currAsset);
 			}
-		})
+		});
+
+		console.log(dAsset);
 		this.setState({ detailAsset: dAsset, showDetailedView: true, rowOwner: asset.owner });
+	}
+
+	getRack = (asset) => {
+		var result = asset.rack;
+		if (asset.mount_type !== "blade") {
+			result += " U" + asset.rack_position;
+		}
+
+		return result;
 	}
 
 	updateItems = (assets) => {
 		var items = [];
 
-		if (!this.state.displayDec) {
+		if (this.state.assetType === "active") {
 			assets.map(asset => {
-				items.push(createData(asset.model, asset.hostname, asset.datacenter_name, asset.rack + " U" + asset.rack_position, asset.owner, asset.asset_number));
+				items.push(createData(asset.model, asset.hostname, asset.datacenter_name, this.getRack(asset), asset.owner, asset.asset_number));
 			});
-		} else {
+		} else if (this.state.assetType === decomType) {
 			assets.map(asset => {
-				items.push(createDecData(asset.vendor + " " + asset.model_number, asset.hostname, asset.datacenter_name, asset.rack + " U" + asset.rack_position, asset.owner, asset.asset_number, asset.decommission_user, asset.timestamp));
+				items.push(createDecData(asset.vendor + " " + asset.model_number, asset.hostname, asset.datacenter_name, this.getRack(asset), asset.owner, asset.asset_number, asset.decommission_user, asset.timestamp));
+			});
+		} else if (this.state.assetType === "offline") {
+			assets.map(asset => {
+				items.push(createData(asset.model, asset.hostname, asset.datacenter_name, this.getRack(asset), asset.owner, asset.asset_number));
 			});
 		}
 
@@ -321,7 +340,7 @@ class TableAsset extends React.Component {
 	getAssetList = () => {
 		axios.post(
 			getURL(Constants.ASSETS_MAIN_PATH, AssetCommand.search), emptySearch).then(
-				response => { console.log("got list"); console.log(response); this.setState({ allAssets: response.data.instances }); });
+				response => { console.log(response.data.instances); this.setState({ allAssets: response.data.instances }); });
 	}
 
 	getDecommissionedAssets = () => {
@@ -334,8 +353,6 @@ class TableAsset extends React.Component {
 			}
 		}).then(
 			response => {
-				console.log("decommissioned assets:");
-				console.log(response.data.decommissions);
 				this.setState({ decAssets: response.data.decommissions })
 			});
 	}
@@ -365,7 +382,7 @@ class TableAsset extends React.Component {
 		var newSelected = this.state.selectedItems;
 		this.state.tableItems.map(n => {
 			const selectedIndex = newSelected.indexOf(n.asset_number);
-			console.log(selectedIndex);
+
 			if (selectedIndex === 0) {
 				newSelected = newSelected.slice(1);
 			} else if (selectedIndex === newSelected - 1) {
@@ -379,7 +396,7 @@ class TableAsset extends React.Component {
 	}
 
 	addCheckedItem = (event, assetNum) => {
-		if (!this.state.displayDec) {
+		if (!(this.state.assetType === decomType)) {
 			if (event.target.getAttribute("class") !== "MuiButton-label") {
 				const selectedIndex = this.state.selectedItems.indexOf(assetNum);
 				let newSelected = [];
@@ -396,7 +413,6 @@ class TableAsset extends React.Component {
 						this.state.selectedItems.slice(selectedIndex + 1),
 					);
 				}
-				console.log(newSelected);
 				this.setState({ selectedItems: newSelected });
 			}
 		}
@@ -415,8 +431,8 @@ class TableAsset extends React.Component {
 		this.fetchAllAssets();
 	}
 
-	switchToDec = (switchBool) => {
-		this.setState({ displayDec: switchBool }, () => this.filter.current.search());
+	switchAssetType = (assetType) => {
+		this.setState({ assetType: assetType }, () => this.filter.current.search());
 	}
 
 	render() {
@@ -448,6 +464,7 @@ class TableAsset extends React.Component {
 								changePlanStep={this.props.changePlanStep}
 								incrementChangePlanStep={this.props.incrementChangePlanStep}
 								fetchAllAssets={this.fetchAllAssets}
+								height="300px"
 							/> : null}
 					</Grid>
 					<Grid item xs={12} sm={6} md={4} lg={6}>
@@ -456,9 +473,11 @@ class TableAsset extends React.Component {
 							getAssetList={this.getAssetList}
 							allAssets={this.state.allAssets}
 							decAssets={this.state.decAssets}
-							switchToDec={this.switchToDec}
-							showDecommissioned={this.state.displayDec}
+							offlineAssets={this.state.offlineAssets}
+							switchAssetType={this.switchAssetType}
+							assetType={this.state.assetType}
 							ref={this.filter}
+							height="300px"
 						/>
 					</Grid>
 					<Grid item xs={12} sm={6} md={4} lg={3}>
@@ -468,30 +487,35 @@ class TableAsset extends React.Component {
 							updateChangePlan={this.props.updateChangePlan}
 							privilege={this.props.privilege}
 							username={this.props.username}
+							height="300px"
 						/>
 					</Grid>
 				</Grid>
 
-				<Grid item xs={12}>
+				<Grid item xs={12} style={{ marginTop: "20px" }}>
 					<Toolbar>
 						{this.state.selectedItems.length > 0 ? (
 							<Typography className={classes.title} color="inherit" variant="subtitle1">
 								{this.state.selectedItems.length} {this.state.selectedItems.length === 1 ? "label" : "labels"} ready to be generated
 							</Typography>
-						) : null}
+						) :
+							<Typography className={classes.title} color="inherit" variant="subtitle1">
+								Click asset rows to prepare them for label generation
+							</Typography>
+						}
 
-						{this.state.selectedItems.length > 0 ? (
-							<Tooltip title="Generate Labels">
-								<Button
-									variant="contained"
-									color="primary"
-									startIcon={<NoteAddIcon />}
-									onClick={() => this.generateLabels()}
-								>
-									Generate Labels
+
+						<Tooltip title="Generate Labels">
+							<Button
+								variant="contained"
+								color="primary"
+								startIcon={<NoteAddIcon />}
+								onClick={() => this.generateLabels()}
+								disabled={this.state.selectedItems.length < 1}
+							>
+								Generate Labels
       							</Button>
-							</Tooltip>
-						) : null}
+						</Tooltip>
 					</Toolbar>
 					<TableContainer component={Paper}>
 						<Table className={classes.table} aria-label="customized table" style={{
@@ -499,7 +523,7 @@ class TableAsset extends React.Component {
 						}}>
 							<TableHead>
 								<TableRow className={classes.styledTableRow}>
-									{this.state.displayDec ? null :
+									{this.state.assetType === decomType ? null :
 										<TableCell padding="checkbox">
 											<Tooltip title="Select All">
 												<IconButton aria-label="select-all" onClick={() => this.onSelectAllClick()}>
@@ -533,7 +557,7 @@ class TableAsset extends React.Component {
 											</TableSortLabel>
 										</TableCell>
 									))}
-									{this.state.displayDec ?
+									{this.state.assetType === decomType ?
 										decommissionHeadCells.map(headCell => (
 											<TableCell
 												className={classes.tableCellHead}
@@ -572,20 +596,20 @@ class TableAsset extends React.Component {
 												key={row.assetNum}
 												role="checkbox"
 											>
-												{this.state.displayDec ? null : <TableCell padding="checkbox">
+												{this.state.assetType === decomType ? null : <TableCell padding="checkbox">
 													<Checkbox
 														checked={this.state.selectedItems.indexOf(row.asset_number) !== -1}
 														inputProps={{ 'aria-labelledby': labelId }}
 													/>
 												</TableCell>}
-												<TableCell component="th" id={labelId} scope="row">{row.datacenter_name}</TableCell>
 												<TableCell align="left">{row.hostname}</TableCell>
+												<TableCell component="th" id={labelId} scope="row">{row.datacenter_name}</TableCell>
 												<TableCell align="left">{row.model}</TableCell>
-												<TableCell align="left">{row.rack}</TableCell>
+												<TableCell align="left">{this.state.assetType==="offline" ? "N/A" : row.rack}</TableCell>
 												<TableCell align="left">{row.owner}</TableCell>
 												<TableCell align="right">{row.asset_number}</TableCell>
-												{this.state.displayDec ? <TableCell align="right">{row.decommission_user}</TableCell> : null}
-												{this.state.displayDec ? <TableCell align="right">{row.timestamp}</TableCell> : null}
+												{this.state.assetType === decomType ? <TableCell align="right">{row.decommission_user}</TableCell> : null}
+												{this.state.assetType === decomType ? <TableCell align="right">{row.timestamp}</TableCell> : null}
 												<TableCell align="center">
 													<Button
 														color="primary"
@@ -613,11 +637,13 @@ class TableAsset extends React.Component {
 						changePlanID={this.props.changePlanID}
 						changePlanStep={this.props.changePlanStep}
 						incrementChangePlanStep={this.props.incrementChangePlanStep}
-						disabled={(!(this.props.privilege.admin || this.props.privilege.asset || this.props.privilege.datacenters.includes(this.state.detailAsset.datacenter_name)) || this.state.displayDec)}
+						disabled={(!(this.props.privilege.admin || this.props.privilege.asset || this.props.privilege.datacenters.includes(this.state.detailAsset.datacenter_name)) || this.state.assetType === decomType)}
 						username={this.props.username}
 						fetchAllAssets={this.fetchAllAssets}
 						changePlanName={this.props.changePlanName}
-						showDecommissioned={this.state.displayDec}
+						showDecommissioned={this.state.assetType === decomType}
+						showStatus={this.showStatusBar}
+						isOffline={this.state.assetType === "offline"}
 					/> : null}
 				<SpeedDial
 					ariaLabel="SpeedDial openIcon example"

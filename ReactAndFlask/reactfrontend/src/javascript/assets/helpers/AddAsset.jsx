@@ -37,8 +37,9 @@ class AddAsset extends React.Component {
 		super(props);
 
 		this.state = {
-			showCreate:false,
-			showImport:false,
+			showCreate: false,
+			showImport: false,
+			showConnectionsImport: false,
 		};
 	}
 
@@ -48,6 +49,14 @@ class AddAsset extends React.Component {
 
 	closeImport = () => {
 		this.setState({ showImport: false });
+	}
+
+	openConnectionsImport = () => {
+		this.setState({ showConnectionsImport: true });
+	}
+
+	closeConnectionsImport = () => {
+		this.setState({ showConnectionsImport: false });
 	}
 
 	openCreate = () => {
@@ -62,7 +71,7 @@ class AddAsset extends React.Component {
 		const { classes } = this.props;
 		return (
 			<React.Fragment>
-				<Paper elevation={3}>
+				<Paper elevation={3} style={{ minHeight: this.props.height }}>
 					<Grid
 						container
 						spacing={2}
@@ -106,7 +115,18 @@ class AddAsset extends React.Component {
 								startIcon={<CloudUploadIcon />}
 								onClick={() => {this.openImport()} }
 							>
-								Import
+								Import Assets
+							</Button>
+						</Grid>
+						<Grid item xs={12}>
+							<Button
+								variant="contained"
+								color="primary"
+								style={{width: "100%"}}
+								startIcon={<CloudUploadIcon />}
+								onClick={() => {this.openConnectionsImport()} }
+							>
+								Import Network Connections
 							</Button>
 						</Grid>
 					</Grid>
@@ -139,6 +159,15 @@ class AddAsset extends React.Component {
 				<ImportAsset
 					open={this.state.showImport}
 					close={this.closeImport}
+					refresh={this.props.fetchAllAssets}
+					connections={false}
+				/>
+
+				<ImportAsset
+					open={this.state.showConnectionsImport}
+					close={this.closeConnectionsImport}
+					refresh={this.props.fetchAllAssets}
+					connections={true}
 				/>
 			</React.Fragment>
 		);

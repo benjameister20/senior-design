@@ -53,14 +53,14 @@ export default class FilterModel extends React.Component {
     render() {
         return (
             <div>
-                <Paper elevation={3}>
+                <Paper elevation={3} style={{ minHeight: this.props.height }}>
                 <Grid
                     container
                     spacing={2}
                     direction="row"
                     justify="flex-start"
                     alignItems="center"
-                    style={{"padding": "10px"}}
+                    style={{ padding: "10px" }}
                 >
                     <Grid item xs={12}>
                         <Typography variant="h5">Search</Typography>

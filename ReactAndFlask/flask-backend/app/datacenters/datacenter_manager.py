@@ -46,26 +46,31 @@ class DatacenterManager:
 
     def edit_datacenter(self, dc_data):
         try:
+            print("here1")
             try:
                 original_name = self.check_null(dc_data[Constants.NAME_ORIG_KEY])
-
+                print("here2")
                 updated_datacenter = self.make_datacenter(dc_data)
+                print("here3")
                 if type(updated_datacenter) is InvalidInputsError:
                     return updated_datacenter
+                print("here4")
             except InvalidInputsError as e:
                 return e.message
 
             try:
+                print("here5")
                 edit_validation_result = self.validate.edit_dc_validation(
                     updated_datacenter, original_name
                 )
             except InvalidInputsError as e:
                 return e.message
+            print("here6")
             if edit_validation_result == Constants.API_SUCCESS:
                 self.dc_table.edit_datacenter(updated_datacenter, original_name)
             else:
                 return InvalidInputsError(edit_validation_result)
-
+            print("here7")
         except:
             raise InvalidInputsError(
                 "An error occurred when attempting to edit the datacenter."
@@ -93,19 +98,31 @@ class DatacenterManager:
 
     def make_datacenter(self, dc_data):
         try:
+            print("were1")
             abbreviation = self.check_null(dc_data[Constants.DC_ABRV_KEY]).upper()
+            print("were2")
             name = self.check_null(dc_data[Constants.DC_NAME_KEY])
+            print("were3")
+            is_offline_storage = dc_data[Constants.DC_IS_OFFLINE_KEY]
+            print("were4")
         except:
             raise InvalidInputsError(
                 "Could not read data fields correctly. Client-server error occurred."
             )
 
+        print("were5")
         if abbreviation == "":
-            return InvalidInputsError("Must provide an abbreviation for the datacenter")
+            raise InvalidInputsError("Must provide an abbreviation for the datacenter")
+        print("were6")
         if name == "":
-            return InvalidInputsError("Must provide a datacenter name")
+            raise InvalidInputsError("Must provide a datacenter name")
+        print("were7")
+        if type(is_offline_storage) != bool:
+            raise InvalidInputsError(
+                "Must provide a boolean value specifying whether or not the datacenter is an offline storage location"
+            )
 
-        return Datacenter(abbreviation, name)
+        return Datacenter(abbreviation, name, is_offline_storage)
 
     def check_null(self, val):
         if val is None:

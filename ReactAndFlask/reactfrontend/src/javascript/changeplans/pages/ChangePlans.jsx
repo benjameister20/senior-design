@@ -22,6 +22,7 @@ import ReplayIcon from '@material-ui/icons/Replay';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import DoneIcon from '@material-ui/icons/Done';
 import CheckIcon from '@material-ui/icons/Check';
+import AddCircleIcon from '@material-ui/icons/AddCircle';
 
 // Path prefix for change plan routes
 const changePlanPath = "changeplans/";
@@ -103,6 +104,15 @@ class ChangePlansView extends React.Component {
 
             // Conflicts
             conflicts: null,
+
+            // Create change plan modal
+            changePlanModal: false,
+
+            // Name of change plan to create
+            changePlanName: null,
+
+            // Create plan description modal
+            descriptionModal: false,
         };
 
         // Axios network request headers
@@ -133,7 +143,6 @@ class ChangePlansView extends React.Component {
                         'owner': this.props.username,
                     }).then(response => {
                         var details = this.state.changePlanDetails;
-                        console.log(response.data.change_plan_actions);
                         details[plan.identifier] = response.data.change_plan_actions;
 
                         this.setState({ changePlanDetails: details });
@@ -214,6 +223,7 @@ class ChangePlansView extends React.Component {
             this.fetchAllChangePlans();
 
             if (response.data.message === "success") {
+                this.props.updateChangePlan(false, null, null, "");
                 this.setState({ statusOpen: true, statusMessage: "Success", statusSeverity: "success" });
             } else {
                 this.setState({ statusOpen: true, statusMessage: response.data.message, statusSeverity: "error" });
@@ -262,6 +272,11 @@ class ChangePlansView extends React.Component {
     // Close the description modal
     closeDescriptionModal = () => {
         this.setState({ changeDescriptionModal: false });
+    }
+
+    // Close the create description modal
+    closeDescription = () => {
+        this.setState({ descriptionModal: false });
     }
 
     // Concatenate network port summaries
@@ -342,6 +357,40 @@ class ChangePlansView extends React.Component {
         this.setState({ statusOpen: false });
     }
 
+    // Create a new change plan
+    createChangePlan = () => {
+        this.setState({ changePlanModal: true });
+    }
+
+    // Close new change plan modal
+    closeChangePlanModal = () => {
+        this.setState({ changePlanModal: false });
+    }
+
+    // Update new change plan name
+    updatePlanName = (event) => {
+        this.setState({ changePlanName: event.target.value });
+    }
+
+    // Start the new change plan
+    beginChangePlan = () => {
+        this.closeChangePlanModal();
+        this.setState({ descriptionModal: true });
+
+        axios.post(
+            getURL("changeplans/", "createplan"),
+            {
+                'owner': this.props.username,
+                'name': this.state.changePlanName,
+            }
+        ).then(response => {
+            this.props.updateChangePlan(true, response.data.change_plan, 1, this.state.changePlanName);
+            this.setState({ changePlanName: null });
+            this.fetchAllChangePlans();
+        });
+    }
+ß
+    // Generate the work order pdf
     generateWorkOrder = (event, id) => {
         axios.post(getURL(changePlanPath, "workorder/"), { "change_plan_id": id }, { responseType: 'arraybuffer' }).then(response => {
             try {
@@ -352,7 +401,6 @@ class ChangePlansView extends React.Component {
                 link.click();
             } catch { }
         })
-
     }
 
     render() {
@@ -382,9 +430,15 @@ class ChangePlansView extends React.Component {
                         </Grid>
                         <Grid item xs={5}></Grid>
                         <Grid item xs={2}>
-                            <Typography>
-                                {this.state.changePlans.length > 0 ? "Saved change plans" : "You have no change plans! Create one in the Asset tab."}
-                            </Typography>
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                style={{ width: "100%" }}
+                                startIcon={<AddCircleIcon />}
+                                onClick={this.createChangePlan}
+                            >
+                                Create Change Plan
+                            </Button>
                         </Grid>
                         <Grid item xs={5}></Grid>
                         <Grid item xs={2}></Grid>
@@ -760,6 +814,110 @@ class ChangePlansView extends React.Component {
                                                 variant="contained"
                                                 color="primary"
                                                 onClick={this.startEditing}
+                                                style={{ width: "100%" }}
+                                            >
+                                                Ok
+                                </Button>
+                                        </Grid>
+                                        <Grid item xs={3}>
+                                        </Grid>
+                                    </Grid>
+                                </div>
+                            </Backdrop>
+                        </Fade>
+                    </Modal>
+
+                    <Modal
+                        aria-labelledby="transition-modal-title"
+                        aria-describedby="transition-modal-description"
+                        className={classes.modal}
+                        open={this.state.changePlanModal}
+                        onClose={this.closeChangePlanModal}
+                        closeAfterTransition
+                    >
+                        <Fade in={this.state.changePlanModal}>
+                            <Backdrop
+                                open={this.state.changePlanModal}
+                            >
+                            <div className={classes.grid}>
+                                <Grid
+                                    container
+                                    spacing={1}
+                                    direction="row"
+                                    justify="flex-start"
+                                    alignItems="center"
+                                >
+                                    <Grid item xs={3}>
+                                        <Typography>
+                                            Enter plan name:
+                                        </Typography>
+                                    </Grid>
+                                    <Grid item xs={9}>
+                                        <TextField type="text" id="change-plan-name" variant="outlined" label="Change Plan Name" name="change-plan-name" onChange={this.updatePlanName} style={{ width: "100%" }} />
+                                    </Grid>
+                                    <Grid item xs={6}>
+                                        <Button
+                                            variant="contained"
+                                            color="primary"
+                                            onClick={this.beginChangePlan}
+                                            style={{width: "100%"}}
+                                        >
+                                            Begin
+                                        </Button>
+                                    </Grid>
+                                    <Grid item xs={6}>
+                                        <Button
+                                            variant="contained"
+                                            color="secondary"
+                                            onClick={this.closeChangePlanModal}
+                                            style={{width: "100%"}}
+                                        >
+                                            Cancel
+                                        </Button>
+                                    </Grid>
+
+                                </Grid>
+                                </div>
+                        </Backdrop>
+                        </Fade>
+                    </Modal>
+
+                    <Modal
+                        aria-labelledby="transition-modal-title"
+                        aria-describedby="transition-modal-description"
+                        className={classes.modal}
+                        open={this.state.descriptionModal}
+                        onClose={this.closeDescription}
+                        closeAfterTransition
+                    >
+                        <Fade in={this.state.descriptionModal}>
+                            <Backdrop
+                                open={this.state.descriptionModal}
+                            >
+                                <div className={classes.grid}>
+                                    <Grid
+                                        container
+                                        spacing={1}
+                                        direction="row"
+                                        justify="flex-start"
+                                        alignItems="center"
+                                    >
+                                        <Grid item xs={3}>
+                                        </Grid>
+                                        <Grid item xs={6}>
+                                            <Typography>
+                                                You are now in change plan mode. All changes made will be logged to the change plan and will not actually be made in the system. Use the icon in the bottom right corner to exit change plan mode!
+                                </Typography>
+                                        </Grid>
+                                        <Grid item xs={3}>
+                                        </Grid>
+                                        <Grid item xs={3}>
+                                        </Grid>
+                                        <Grid item xs={6}>
+                                            <Button
+                                                variant="contained"
+                                                color="primary"
+                                                onClick={this.closeDescription}
                                                 style={{ width: "100%" }}
                                             >
                                                 Ok

@@ -33,7 +33,7 @@ def list_all()
         {
             "abbreviation" : "DATACENTER ABBREVIATION",
             "datacenter_name": "DATACENTER_NAME"
-        }    
+        }  
     ]
 }
 ```
@@ -49,7 +49,8 @@ def create()
 ```language=json
 {
     "abbreviation" : "DATACENTER ABBREVIATION",
-    "datacenter_name": "DATACENTER_NAME"
+    "datacenter_name": "DATACENTER_NAME",
+    "is_offline_storage": BOOLEAN,
 }
 ```
 - Returns:

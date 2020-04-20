@@ -26,7 +26,8 @@ class Model:
         self,
         vendor: str,
         model_number: str,
-        height: int,
+        mount_type: str,
+        height: Optional[int] = None,
         display_color: Optional[str] = None,
         ethernet_ports: Optional[List[str]] = None,
         power_ports: Optional[int] = None,
@@ -37,7 +38,8 @@ class Model:
     ) -> None:
         self.vendor: str = vendor
         self.model_number: str = model_number
-        self.height: int = height
+        self.mount_type: str = mount_type
+        self.height: Optional[int] = height
         self.display_color: Optional[str] = display_color
         self.ethernet_ports: Optional[List[str]] = ethernet_ports
         self.power_ports: Optional[int] = power_ports
@@ -66,6 +68,7 @@ class Model:
     @classmethod
     def headers(cls) -> List[str]:
         return [
+            Constants.MOUNT_TYPE_KEY,
             Constants.VENDOR_KEY,
             Constants.MODEL_NUMBER_KEY,
             Constants.HEIGHT_KEY,
@@ -94,6 +97,7 @@ class Model:
             Constants.MEMORY_KEY: self.memory,
             Constants.STORAGE_KEY: self.storage,
             Constants.COMMENT_KEY: self.comment,
+            Constants.MOUNT_TYPE_KEY: self.mount_type,
         }
 
     @classmethod
@@ -129,9 +133,16 @@ class Model:
             network_ports.append(str(count))
             count += 1
 
+        mount_type = (
+            csv_row[Constants.MOUNT_TYPE_KEY]
+            if csv_row[Constants.MOUNT_TYPE_KEY] != "asset"
+            else "rackmount"
+        )
+
         return Model(
             vendor=csv_row[Constants.VENDOR_KEY],
             model_number=csv_row[Constants.MODEL_NUMBER_KEY],
+            mount_type=mount_type,
             height=csv_row[Constants.HEIGHT_KEY],
             display_color=csv_row[Constants.DISPLAY_COLOR_KEY],
             ethernet_ports=network_ports,
@@ -150,23 +161,29 @@ class Model:
     def from_json(cls, json: JSON) -> "Model":
         vendor: str = json[Constants.VENDOR_KEY]
         model_number: str = json[Constants.MODEL_NUMBER_KEY]
-        height: int = int(json[Constants.HEIGHT_KEY])
 
         if vendor == "":
             raise InvalidInputsError("Must provide a vendor")
         if model_number == "":
             raise InvalidInputsError("Must provide a model number")
-        if height == "":
-            raise InvalidInputsError("Must provide a height")
+
+        mount_type: str = json[Constants.MOUNT_TYPE_KEY]
+        if mount_type == Constants.BLADE_KEY:
+            height = 1
+        else:
+            height = int(json[Constants.HEIGHT_KEY])
+            if height == "":
+                raise InvalidInputsError("Must provide a height")
 
         display_color: Optional[str] = json.get(Constants.DISPLAY_COLOR_KEY, None)
         display_color = None if display_color == "" else display_color
 
         ethernet_str: Optional[List[str]] = json.get(Constants.ETHERNET_PORT_KEY, None)
         ethernet_ports = []
-        if ethernet_str is not None:
-            for name in ethernet_str:
-                ethernet_ports.append(name)
+        if mount_type != Constants.BLADE_KEY:
+            if ethernet_str is not None:
+                for name in ethernet_str:
+                    ethernet_ports.append(name)
 
         power_str: Optional[str] = json.get(Constants.POWER_PORT_KEY, None)
         power_ports: Optional[
@@ -190,6 +207,7 @@ class Model:
         return Model(
             vendor=vendor,
             model_number=model_number,
+            mount_type=mount_type,
             height=height,
             display_color=display_color,
             ethernet_ports=ethernet_ports,
@@ -217,6 +235,8 @@ class Model:
         """ Get the model as a csv row """
         json_data: JSON = self.make_json()
 
+        print(json_data)
+
         # JANK CITY FIX WHEN TIME
         key_array = []
         key_array.append(Constants.CSV_NETWORK_PORT_1)
@@ -230,17 +250,23 @@ class Model:
         else:
             json_data[Constants.CSV_ETHERNET_PORT_KEY] = ""
 
-        net_port_num = len(net_ports)
-        count = 0
-        for i in range(0, net_port_num):
-            if count >= 4:
-                break
-            json_data[key_array[i]] = net_ports[i]
-            count += 1
+        if net_ports is not None:
+            net_port_num = len(net_ports)
+            count = 0
+            for i in range(0, net_port_num):
+                if count >= 4:
+                    break
+                json_data[key_array[i]] = net_ports[i]
+                count += 1
 
-        while count < 4:
-            json_data[key_array[count]] = ""
-            count += 1
+            while count < 4:
+                json_data[key_array[count]] = ""
+                count += 1
+        else:
+            count = 0
+            while count < 4:
+                json_data[key_array[count]] = ""
+                count += 1
 
         values: List[str] = list(
             map(

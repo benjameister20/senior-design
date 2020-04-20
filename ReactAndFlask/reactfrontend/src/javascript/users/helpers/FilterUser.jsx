@@ -79,7 +79,7 @@ export default class Filters extends React.Component {
 
     render() {
         return (
-        <Card elevation={3} padding>
+        <Card elevation={3} style={{ padding: "20px" }}>
             <Typography variant="h6">Search</Typography>
             <Grid
                 container
@@ -89,13 +89,10 @@ export default class Filters extends React.Component {
                 alignItems="center"
             >
                 <Grid item xs={6}>
-                    <TextField id="standard-basic" variant="outlined" label="Username" name="username" value={this.state.username} onChange={(e) => this.setState({ username: e.target.value })}/>
+                    <TextField type="text" id="standard-basic" variant="outlined" label="Username" name="username" value={this.state.username} onChange={(e) => this.setState({ username: e.target.value })}/>
                 </Grid>
                 <Grid item xs={6}>
                     <TextField id="standard-basic" variant="outlined" label="Display Name" name="display_name" value={this.state.display_name} onChange={(e) => this.setState({ display_name: e.target.value })}/>
-                </Grid>
-                <Grid item xs={6}>
-                    <TextField id="standard-basic" variant="outlined" label="Password" name="password" type="password" value={this.state.password} onChange={(e) => this.setState({ password: e.target.value })}/>
                 </Grid>
                 <Grid item xs={6}>
                     <TextField id="standard-basic" variant="outlined" label="Email" name="email" type="email" value={this.state.email} onChange={(e) => this.setState({ email: e.target.value })}/>

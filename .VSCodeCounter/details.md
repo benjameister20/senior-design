@@ -1,10 +1,10 @@
 # Details
 
-Date : 2020-03-29 22:15:04
+Date : 2020-04-14 13:05:08
 
 Directory c:\Users\benro\Documents\workspaces\senior-design
 
-Total : 215 files,  19290 codes, 1087 comments, 3070 blanks, all 23447 lines
+Total : 216 files,  19785 codes, 979 comments, 3126 blanks, all 23890 lines
 
 [summary](results.md)
 
@@ -28,11 +28,12 @@ Total : 215 files,  19290 codes, 1087 comments, 3070 blanks, all 23447 lines
 | [ReactAndFlask/flask-backend/app/backups/routes_backups.py](/ReactAndFlask/flask-backend/app/backups/routes_backups.py) | Python | 76 | 3 | 26 | 105 |
 | [ReactAndFlask/flask-backend/app/backups/test.py](/ReactAndFlask/flask-backend/app/backups/test.py) | Python | 20 | 8 | 6 | 34 |
 | [ReactAndFlask/flask-backend/app/change_plans/ChangePlanAPI.md](/ReactAndFlask/flask-backend/app/change_plans/ChangePlanAPI.md) | Markdown | 338 | 0 | 9 | 347 |
-| [ReactAndFlask/flask-backend/app/change_plans/change_plan_action_manager.py](/ReactAndFlask/flask-backend/app/change_plans/change_plan_action_manager.py) | Python | 281 | 1 | 43 | 325 |
-| [ReactAndFlask/flask-backend/app/change_plans/change_plan_manager.py](/ReactAndFlask/flask-backend/app/change_plans/change_plan_manager.py) | Python | 158 | 3 | 22 | 183 |
-| [ReactAndFlask/flask-backend/app/change_plans/change_plan_validator.py](/ReactAndFlask/flask-backend/app/change_plans/change_plan_validator.py) | Python | 387 | 4 | 66 | 457 |
-| [ReactAndFlask/flask-backend/app/change_plans/routes_change_plans.py](/ReactAndFlask/flask-backend/app/change_plans/routes_change_plans.py) | Python | 136 | 33 | 47 | 216 |
-| [ReactAndFlask/flask-backend/app/constants.py](/ReactAndFlask/flask-backend/app/constants.py) | Python | 95 | 11 | 19 | 125 |
+| [ReactAndFlask/flask-backend/app/change_plans/change_plan_action_manager.py](/ReactAndFlask/flask-backend/app/change_plans/change_plan_action_manager.py) | Python | 308 | 1 | 48 | 357 |
+| [ReactAndFlask/flask-backend/app/change_plans/change_plan_manager.py](/ReactAndFlask/flask-backend/app/change_plans/change_plan_manager.py) | Python | 157 | 3 | 22 | 182 |
+| [ReactAndFlask/flask-backend/app/change_plans/change_plan_validator.py](/ReactAndFlask/flask-backend/app/change_plans/change_plan_validator.py) | Python | 479 | 4 | 78 | 561 |
+| [ReactAndFlask/flask-backend/app/change_plans/routes_change_plans.py](/ReactAndFlask/flask-backend/app/change_plans/routes_change_plans.py) | Python | 168 | 34 | 52 | 254 |
+| [ReactAndFlask/flask-backend/app/change_plans/work_order.py](/ReactAndFlask/flask-backend/app/change_plans/work_order.py) | Python | 43 | 2 | 10 | 55 |
+| [ReactAndFlask/flask-backend/app/constants.py](/ReactAndFlask/flask-backend/app/constants.py) | Python | 95 | 18 | 19 | 132 |
 | [ReactAndFlask/flask-backend/app/dal/__init__.py](/ReactAndFlask/flask-backend/app/dal/__init__.py) | Python | 0 | 0 | 1 | 1 |
 | [ReactAndFlask/flask-backend/app/dal/change_plan_action_table.py](/ReactAndFlask/flask-backend/app/dal/change_plan_action_table.py) | Python | 162 | 9 | 33 | 204 |
 | [ReactAndFlask/flask-backend/app/dal/change_plan_table.py](/ReactAndFlask/flask-backend/app/dal/change_plan_table.py) | Python | 75 | 4 | 22 | 101 |
@@ -122,8 +123,8 @@ Total : 215 files,  19290 codes, 1087 comments, 3070 blanks, all 23447 lines
 | [ReactAndFlask/flask-backend/scripts/user_setup.py](/ReactAndFlask/flask-backend/scripts/user_setup.py) | Python | 81 | 5 | 32 | 118 |
 | [ReactAndFlask/flask-backend/settings.py](/ReactAndFlask/flask-backend/settings.py) | Python | 4 | 0 | 5 | 9 |
 | [ReactAndFlask/flask-backend/static/css/main.e5ee5f62.chunk.css](/ReactAndFlask/flask-backend/static/css/main.e5ee5f62.chunk.css) | CSS | 1 | 1 | 1 | 3 |
-| [ReactAndFlask/flask-backend/static/js/2.c3336a9e.chunk.js](/ReactAndFlask/flask-backend/static/js/2.c3336a9e.chunk.js) | JavaScript | 1 | 2 | 1 | 4 |
-| [ReactAndFlask/flask-backend/static/js/main.6038b271.chunk.js](/ReactAndFlask/flask-backend/static/js/main.6038b271.chunk.js) | JavaScript | 1 | 1 | 1 | 3 |
+| [ReactAndFlask/flask-backend/static/js/2.cdab1af6.chunk.js](/ReactAndFlask/flask-backend/static/js/2.cdab1af6.chunk.js) | JavaScript | 1 | 2 | 1 | 4 |
+| [ReactAndFlask/flask-backend/static/js/main.33df8d9d.chunk.js](/ReactAndFlask/flask-backend/static/js/main.33df8d9d.chunk.js) | JavaScript | 1 | 1 | 1 | 3 |
 | [ReactAndFlask/flask-backend/static/js/runtime-main.b7b6d3d5.js](/ReactAndFlask/flask-backend/static/js/runtime-main.b7b6d3d5.js) | JavaScript | 1 | 1 | 1 | 3 |
 | [ReactAndFlask/flask-backend/templates/index.html](/ReactAndFlask/flask-backend/templates/index.html) | HTML | 1 | 0 | 1 | 2 |
 | [ReactAndFlask/reactfrontend/README.md](/ReactAndFlask/reactfrontend/README.md) | Markdown | 37 | 0 | 32 | 69 |
@@ -134,28 +135,28 @@ Total : 215 files,  19290 codes, 1087 comments, 3070 blanks, all 23447 lines
 | [ReactAndFlask/reactfrontend/src/javascript/Constants.jsx](/ReactAndFlask/reactfrontend/src/javascript/Constants.jsx) | JavaScript React | 38 | 3 | 11 | 52 |
 | [ReactAndFlask/reactfrontend/src/javascript/JSONKeys.jsx](/ReactAndFlask/reactfrontend/src/javascript/JSONKeys.jsx) | JavaScript React | 4 | 3 | 2 | 9 |
 | [ReactAndFlask/reactfrontend/src/javascript/Login.jsx](/ReactAndFlask/reactfrontend/src/javascript/Login.jsx) | JavaScript React | 213 | 15 | 23 | 251 |
-| [ReactAndFlask/reactfrontend/src/javascript/PageSelector.jsx](/ReactAndFlask/reactfrontend/src/javascript/PageSelector.jsx) | JavaScript React | 97 | 1 | 25 | 123 |
+| [ReactAndFlask/reactfrontend/src/javascript/PageSelector.jsx](/ReactAndFlask/reactfrontend/src/javascript/PageSelector.jsx) | JavaScript React | 100 | 1 | 25 | 126 |
 | [ReactAndFlask/reactfrontend/src/javascript/ShibLogin.jsx](/ReactAndFlask/reactfrontend/src/javascript/ShibLogin.jsx) | JavaScript React | 77 | 0 | 7 | 84 |
 | [ReactAndFlask/reactfrontend/src/javascript/Tabs.jsx](/ReactAndFlask/reactfrontend/src/javascript/Tabs.jsx) | JavaScript React | 224 | 4 | 29 | 257 |
 | [ReactAndFlask/reactfrontend/src/javascript/assets/AssetConstants.jsx](/ReactAndFlask/reactfrontend/src/javascript/assets/AssetConstants.jsx) | JavaScript React | 6 | 0 | 6 | 12 |
 | [ReactAndFlask/reactfrontend/src/javascript/assets/enums/AssetCommands.ts](/ReactAndFlask/reactfrontend/src/javascript/assets/enums/AssetCommands.ts) | TypeScript | 27 | 0 | 1 | 28 |
 | [ReactAndFlask/reactfrontend/src/javascript/assets/enums/AssetInputs.ts](/ReactAndFlask/reactfrontend/src/javascript/assets/enums/AssetInputs.ts) | TypeScript | 16 | 0 | 1 | 17 |
 | [ReactAndFlask/reactfrontend/src/javascript/assets/helpers/AddAsset.jsx](/ReactAndFlask/reactfrontend/src/javascript/assets/helpers/AddAsset.jsx) | JavaScript React | 134 | 0 | 15 | 149 |
-| [ReactAndFlask/reactfrontend/src/javascript/assets/helpers/CreateAsset.jsx](/ReactAndFlask/reactfrontend/src/javascript/assets/helpers/CreateAsset.jsx) | JavaScript React | 774 | 10 | 82 | 866 |
+| [ReactAndFlask/reactfrontend/src/javascript/assets/helpers/CreateAsset.jsx](/ReactAndFlask/reactfrontend/src/javascript/assets/helpers/CreateAsset.jsx) | JavaScript React | 784 | 10 | 83 | 877 |
 | [ReactAndFlask/reactfrontend/src/javascript/assets/helpers/DetailsAsset.jsx](/ReactAndFlask/reactfrontend/src/javascript/assets/helpers/DetailsAsset.jsx) | JavaScript React | 125 | 0 | 17 | 142 |
-| [ReactAndFlask/reactfrontend/src/javascript/assets/helpers/EditAsset.jsx](/ReactAndFlask/reactfrontend/src/javascript/assets/helpers/EditAsset.jsx) | JavaScript React | 948 | 8 | 99 | 1,055 |
+| [ReactAndFlask/reactfrontend/src/javascript/assets/helpers/EditAsset.jsx](/ReactAndFlask/reactfrontend/src/javascript/assets/helpers/EditAsset.jsx) | JavaScript React | 984 | 7 | 102 | 1,093 |
 | [ReactAndFlask/reactfrontend/src/javascript/assets/helpers/ExportAsset.jsx](/ReactAndFlask/reactfrontend/src/javascript/assets/helpers/ExportAsset.jsx) | JavaScript React | 262 | 0 | 22 | 284 |
-| [ReactAndFlask/reactfrontend/src/javascript/assets/helpers/FilterAsset.jsx](/ReactAndFlask/reactfrontend/src/javascript/assets/helpers/FilterAsset.jsx) | JavaScript React | 242 | 0 | 20 | 262 |
+| [ReactAndFlask/reactfrontend/src/javascript/assets/helpers/FilterAsset.jsx](/ReactAndFlask/reactfrontend/src/javascript/assets/helpers/FilterAsset.jsx) | JavaScript React | 291 | 0 | 26 | 317 |
 | [ReactAndFlask/reactfrontend/src/javascript/assets/helpers/ImpExpAsset.jsx](/ReactAndFlask/reactfrontend/src/javascript/assets/helpers/ImpExpAsset.jsx) | JavaScript React | 148 | 0 | 19 | 167 |
 | [ReactAndFlask/reactfrontend/src/javascript/assets/helpers/ImportAsset.jsx](/ReactAndFlask/reactfrontend/src/javascript/assets/helpers/ImportAsset.jsx) | JavaScript React | 130 | 0 | 17 | 147 |
 | [ReactAndFlask/reactfrontend/src/javascript/assets/helpers/NetworkGraph.jsx](/ReactAndFlask/reactfrontend/src/javascript/assets/helpers/NetworkGraph.jsx) | JavaScript React | 141 | 21 | 24 | 186 |
-| [ReactAndFlask/reactfrontend/src/javascript/assets/helpers/TableAssets.jsx](/ReactAndFlask/reactfrontend/src/javascript/assets/helpers/TableAssets.jsx) | JavaScript React | 548 | 2 | 52 | 602 |
+| [ReactAndFlask/reactfrontend/src/javascript/assets/helpers/TableAssets.jsx](/ReactAndFlask/reactfrontend/src/javascript/assets/helpers/TableAssets.jsx) | JavaScript React | 606 | 2 | 61 | 669 |
 | [ReactAndFlask/reactfrontend/src/javascript/assets/helpers/functions/StringToMacAddress.jsx](/ReactAndFlask/reactfrontend/src/javascript/assets/helpers/functions/StringToMacAddress.jsx) | JavaScript React | 38 | 10 | 12 | 60 |
 | [ReactAndFlask/reactfrontend/src/javascript/assets/helpers/functions/StringToRack.jsx](/ReactAndFlask/reactfrontend/src/javascript/assets/helpers/functions/StringToRack.jsx) | JavaScript React | 3 | 13 | 10 | 26 |
 | [ReactAndFlask/reactfrontend/src/javascript/assets/helpers/functions/createAssetJSON.jsx](/ReactAndFlask/reactfrontend/src/javascript/assets/helpers/functions/createAssetJSON.jsx) | JavaScript React | 15 | 0 | 1 | 16 |
 | [ReactAndFlask/reactfrontend/src/javascript/assets/pages/AssetsView.jsx](/ReactAndFlask/reactfrontend/src/javascript/assets/pages/AssetsView.jsx) | JavaScript React | 52 | 0 | 6 | 58 |
 | [ReactAndFlask/reactfrontend/src/javascript/assets/stylesheets/AssetStyles.css](/ReactAndFlask/reactfrontend/src/javascript/assets/stylesheets/AssetStyles.css) | CSS | 5 | 0 | 2 | 7 |
-| [ReactAndFlask/reactfrontend/src/javascript/changeplans/pages/ChangePlans.jsx](/ReactAndFlask/reactfrontend/src/javascript/changeplans/pages/ChangePlans.jsx) | JavaScript React | 550 | 39 | 61 | 650 |
+| [ReactAndFlask/reactfrontend/src/javascript/changeplans/pages/ChangePlans.jsx](/ReactAndFlask/reactfrontend/src/javascript/changeplans/pages/ChangePlans.jsx) | JavaScript React | 660 | 44 | 80 | 784 |
 | [ReactAndFlask/reactfrontend/src/javascript/enums/privilegeTypes.ts](/ReactAndFlask/reactfrontend/src/javascript/enums/privilegeTypes.ts) | TypeScript | 4 | 0 | 1 | 5 |
 | [ReactAndFlask/reactfrontend/src/javascript/errors/ErrorBoundry.jsx](/ReactAndFlask/reactfrontend/src/javascript/errors/ErrorBoundry.jsx) | JavaScript React | 18 | 4 | 6 | 28 |
 | [ReactAndFlask/reactfrontend/src/javascript/helpers/ConfirmationBox.jsx](/ReactAndFlask/reactfrontend/src/javascript/helpers/ConfirmationBox.jsx) | JavaScript React | 42 | 0 | 7 | 49 |
@@ -176,22 +177,22 @@ Total : 215 files,  19290 codes, 1087 comments, 3070 blanks, all 23447 lines
 | [ReactAndFlask/reactfrontend/src/javascript/models/enums/ModelCommands.ts](/ReactAndFlask/reactfrontend/src/javascript/models/enums/ModelCommands.ts) | TypeScript | 11 | 0 | 1 | 12 |
 | [ReactAndFlask/reactfrontend/src/javascript/models/enums/ModelInputs.ts](/ReactAndFlask/reactfrontend/src/javascript/models/enums/ModelInputs.ts) | TypeScript | 12 | 0 | 1 | 13 |
 | [ReactAndFlask/reactfrontend/src/javascript/models/helpers/ButtonsModel.jsx](/ReactAndFlask/reactfrontend/src/javascript/models/helpers/ButtonsModel.jsx) | JavaScript React | 33 | 0 | 5 | 38 |
-| [ReactAndFlask/reactfrontend/src/javascript/models/helpers/CreateModel.jsx](/ReactAndFlask/reactfrontend/src/javascript/models/helpers/CreateModel.jsx) | JavaScript React | 345 | 0 | 27 | 372 |
-| [ReactAndFlask/reactfrontend/src/javascript/models/helpers/DetailModel.jsx](/ReactAndFlask/reactfrontend/src/javascript/models/helpers/DetailModel.jsx) | JavaScript React | 281 | 122 | 42 | 445 |
+| [ReactAndFlask/reactfrontend/src/javascript/models/helpers/CreateModel.jsx](/ReactAndFlask/reactfrontend/src/javascript/models/helpers/CreateModel.jsx) | JavaScript React | 345 | 0 | 26 | 371 |
+| [ReactAndFlask/reactfrontend/src/javascript/models/helpers/DetailModel.jsx](/ReactAndFlask/reactfrontend/src/javascript/models/helpers/DetailModel.jsx) | JavaScript React | 279 | 0 | 22 | 301 |
 | [ReactAndFlask/reactfrontend/src/javascript/models/helpers/ExportModel.jsx](/ReactAndFlask/reactfrontend/src/javascript/models/helpers/ExportModel.jsx) | JavaScript React | 67 | 0 | 4 | 71 |
 | [ReactAndFlask/reactfrontend/src/javascript/models/helpers/FilterModel.jsx](/ReactAndFlask/reactfrontend/src/javascript/models/helpers/FilterModel.jsx) | JavaScript React | 125 | 0 | 9 | 134 |
-| [ReactAndFlask/reactfrontend/src/javascript/models/helpers/ModelsTable.jsx](/ReactAndFlask/reactfrontend/src/javascript/models/helpers/ModelsTable.jsx) | JavaScript React | 619 | 6 | 45 | 670 |
+| [ReactAndFlask/reactfrontend/src/javascript/models/helpers/ModelsTable.jsx](/ReactAndFlask/reactfrontend/src/javascript/models/helpers/ModelsTable.jsx) | JavaScript React | 629 | 6 | 46 | 681 |
 | [ReactAndFlask/reactfrontend/src/javascript/models/pages/ModelsView.jsx](/ReactAndFlask/reactfrontend/src/javascript/models/pages/ModelsView.jsx) | JavaScript React | 520 | 7 | 66 | 593 |
 | [ReactAndFlask/reactfrontend/src/javascript/models/stylesheets/ModelStyles.css](/ReactAndFlask/reactfrontend/src/javascript/models/stylesheets/ModelStyles.css) | CSS | 0 | 0 | 1 | 1 |
 | [ReactAndFlask/reactfrontend/src/javascript/racks/RacksConstants.jsx](/ReactAndFlask/reactfrontend/src/javascript/racks/RacksConstants.jsx) | JavaScript React | 1 | 0 | 3 | 4 |
 | [ReactAndFlask/reactfrontend/src/javascript/racks/enums/DatacenterCommands.ts](/ReactAndFlask/reactfrontend/src/javascript/racks/enums/DatacenterCommands.ts) | TypeScript | 6 | 0 | 1 | 7 |
 | [ReactAndFlask/reactfrontend/src/javascript/racks/enums/RackCommands.ts](/ReactAndFlask/reactfrontend/src/javascript/racks/enums/RackCommands.ts) | TypeScript | 6 | 0 | 1 | 7 |
 | [ReactAndFlask/reactfrontend/src/javascript/racks/helpers/ConfirmDeleteDC.jsx](/ReactAndFlask/reactfrontend/src/javascript/racks/helpers/ConfirmDeleteDC.jsx) | JavaScript React | 104 | 0 | 11 | 115 |
-| [ReactAndFlask/reactfrontend/src/javascript/racks/helpers/CreateDatacenter.jsx](/ReactAndFlask/reactfrontend/src/javascript/racks/helpers/CreateDatacenter.jsx) | JavaScript React | 192 | 0 | 22 | 214 |
+| [ReactAndFlask/reactfrontend/src/javascript/racks/helpers/CreateDatacenter.jsx](/ReactAndFlask/reactfrontend/src/javascript/racks/helpers/CreateDatacenter.jsx) | JavaScript React | 220 | 0 | 25 | 245 |
 | [ReactAndFlask/reactfrontend/src/javascript/racks/helpers/EditDatacenter.jsx](/ReactAndFlask/reactfrontend/src/javascript/racks/helpers/EditDatacenter.jsx) | JavaScript React | 157 | 0 | 17 | 174 |
-| [ReactAndFlask/reactfrontend/src/javascript/racks/helpers/functions/ShowDatacenters.jsx](/ReactAndFlask/reactfrontend/src/javascript/racks/helpers/functions/ShowDatacenters.jsx) | JavaScript React | 156 | 0 | 19 | 175 |
+| [ReactAndFlask/reactfrontend/src/javascript/racks/helpers/functions/ShowDatacenters.jsx](/ReactAndFlask/reactfrontend/src/javascript/racks/helpers/functions/ShowDatacenters.jsx) | JavaScript React | 157 | 0 | 19 | 176 |
 | [ReactAndFlask/reactfrontend/src/javascript/racks/pages/DatacenterManagerView.jsx](/ReactAndFlask/reactfrontend/src/javascript/racks/pages/DatacenterManagerView.jsx) | JavaScript React | 28 | 0 | 12 | 40 |
-| [ReactAndFlask/reactfrontend/src/javascript/racks/pages/DatacentersView.jsx](/ReactAndFlask/reactfrontend/src/javascript/racks/pages/DatacentersView.jsx) | JavaScript React | 267 | 0 | 31 | 298 |
+| [ReactAndFlask/reactfrontend/src/javascript/racks/pages/DatacentersView.jsx](/ReactAndFlask/reactfrontend/src/javascript/racks/pages/DatacentersView.jsx) | JavaScript React | 272 | 0 | 32 | 304 |
 | [ReactAndFlask/reactfrontend/src/javascript/racks/pages/RacksView.jsx](/ReactAndFlask/reactfrontend/src/javascript/racks/pages/RacksView.jsx) | JavaScript React | 141 | 3 | 28 | 172 |
 | [ReactAndFlask/reactfrontend/src/javascript/racks/stylesheets/RackStyles.css](/ReactAndFlask/reactfrontend/src/javascript/racks/stylesheets/RackStyles.css) | CSS | 33 | 0 | 6 | 39 |
 | [ReactAndFlask/reactfrontend/src/javascript/serviceWorker.js](/ReactAndFlask/reactfrontend/src/javascript/serviceWorker.js) | JavaScript | 94 | 31 | 13 | 138 |
@@ -202,7 +203,7 @@ Total : 215 files,  19290 codes, 1087 comments, 3070 blanks, all 23447 lines
 | [ReactAndFlask/reactfrontend/src/javascript/users/enums/UserCommands.ts](/ReactAndFlask/reactfrontend/src/javascript/users/enums/UserCommands.ts) | TypeScript | 8 | 0 | 1 | 9 |
 | [ReactAndFlask/reactfrontend/src/javascript/users/enums/UserInputs.ts](/ReactAndFlask/reactfrontend/src/javascript/users/enums/UserInputs.ts) | TypeScript | 7 | 0 | 1 | 8 |
 | [ReactAndFlask/reactfrontend/src/javascript/users/helpers/ButtonsUser.jsx](/ReactAndFlask/reactfrontend/src/javascript/users/helpers/ButtonsUser.jsx) | JavaScript React | 33 | 0 | 5 | 38 |
-| [ReactAndFlask/reactfrontend/src/javascript/users/helpers/CreateUser.jsx](/ReactAndFlask/reactfrontend/src/javascript/users/helpers/CreateUser.jsx) | JavaScript React | 125 | 0 | 12 | 137 |
+| [ReactAndFlask/reactfrontend/src/javascript/users/helpers/CreateUser.jsx](/ReactAndFlask/reactfrontend/src/javascript/users/helpers/CreateUser.jsx) | JavaScript React | 117 | 0 | 13 | 130 |
 | [ReactAndFlask/reactfrontend/src/javascript/users/helpers/DetailUser.jsx](/ReactAndFlask/reactfrontend/src/javascript/users/helpers/DetailUser.jsx) | JavaScript React | 104 | 0 | 9 | 113 |
 | [ReactAndFlask/reactfrontend/src/javascript/users/helpers/FilterUser.jsx](/ReactAndFlask/reactfrontend/src/javascript/users/helpers/FilterUser.jsx) | JavaScript React | 125 | 0 | 12 | 137 |
 | [ReactAndFlask/reactfrontend/src/javascript/users/helpers/UsersTable.jsx](/ReactAndFlask/reactfrontend/src/javascript/users/helpers/UsersTable.jsx) | JavaScript React | 229 | 0 | 22 | 251 |
@@ -210,7 +211,7 @@ Total : 215 files,  19290 codes, 1087 comments, 3070 blanks, all 23447 lines
 | [ReactAndFlask/reactfrontend/src/javascript/users/helpers/functions/MakeDeleteJSON.jsx](/ReactAndFlask/reactfrontend/src/javascript/users/helpers/functions/MakeDeleteJSON.jsx) | JavaScript React | 6 | 0 | 2 | 8 |
 | [ReactAndFlask/reactfrontend/src/javascript/users/helpers/functions/MakeDetailViewJSON.jsx](/ReactAndFlask/reactfrontend/src/javascript/users/helpers/functions/MakeDetailViewJSON.jsx) | JavaScript React | 6 | 0 | 2 | 8 |
 | [ReactAndFlask/reactfrontend/src/javascript/users/helpers/functions/MakeEditJSON.jsx](/ReactAndFlask/reactfrontend/src/javascript/users/helpers/functions/MakeEditJSON.jsx) | JavaScript React | 11 | 0 | 2 | 13 |
-| [ReactAndFlask/reactfrontend/src/javascript/users/helpers/functions/PrivilegePicker.jsx](/ReactAndFlask/reactfrontend/src/javascript/users/helpers/functions/PrivilegePicker.jsx) | JavaScript React | 76 | 0 | 8 | 84 |
+| [ReactAndFlask/reactfrontend/src/javascript/users/helpers/functions/PrivilegePicker.jsx](/ReactAndFlask/reactfrontend/src/javascript/users/helpers/functions/PrivilegePicker.jsx) | JavaScript React | 78 | 0 | 9 | 87 |
 | [ReactAndFlask/reactfrontend/src/javascript/users/pages/UsersView.jsx](/ReactAndFlask/reactfrontend/src/javascript/users/pages/UsersView.jsx) | JavaScript React | 261 | 1 | 27 | 289 |
 | [ReactAndFlask/reactfrontend/src/react-app-env.d.ts](/ReactAndFlask/reactfrontend/src/react-app-env.d.ts) | TypeScript | 0 | 1 | 1 | 2 |
 | [ReactAndFlask/reactfrontend/src/stylesheets/App.css](/ReactAndFlask/reactfrontend/src/stylesheets/App.css) | CSS | 33 | 0 | 6 | 39 |

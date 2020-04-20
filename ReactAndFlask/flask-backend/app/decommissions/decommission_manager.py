@@ -40,11 +40,11 @@ class DecommissionManager:
             )
 
             try:
-                self.decommission_table.add_decommission(decommission)
                 asset_data = {
                     Constants.ASSET_NUMBER_KEY: asset_number,
                 }
                 self.instance_manager.delete_instance(asset_data)
+                self.decommission_table.add_decommission(decommission)
             except:
                 raise InvalidInputsError(
                     "An error occurred when attempting to decommission the asset."
@@ -63,16 +63,16 @@ class DecommissionManager:
         start_date = filter.get(Constants.START_DATE_KEY)
         end_date = filter.get(Constants.END_DATE_KEY)
 
-        try:
-            decommission_list = self.decommission_table.get_decommissions_with_filters(
-                user=decommission_user, start_date=start_date, end_date=end_date,
-            )
-            return decommission_list
-        except Exception as e:
-            print(str(e))
-            raise InvalidInputsError(
-                "An error occurred when retrieving decommissioned assets."
-            )
+        # try:
+        decommission_list = self.decommission_table.get_decommissions_with_filters(
+            user=decommission_user, start_date=start_date, end_date=end_date,
+        )
+        return decommission_list
+        # except Exception as e:
+        #     print(str(e))
+        #     raise InvalidInputsError(
+        #         "An error occurred when retrieving decommissioned assets."
+        #     )
 
     def make_decommission(
         self, asset: Instance, timestamp, decommission_user, network_neighborhood
@@ -93,6 +93,8 @@ class DecommissionManager:
             network_connections=asset.network_connections,
             power_connections=asset.power_connections,
             asset_number=asset.asset_number,
+            chassis_hostname=asset.chassis_hostname,
+            chassis_slot=asset.chassis_slot,
             timestamp=timestamp,
             decommission_user=decommission_user,
             network_neighborhood=network_neighborhood,

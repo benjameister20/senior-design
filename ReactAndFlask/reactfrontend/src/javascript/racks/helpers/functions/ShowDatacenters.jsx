@@ -98,6 +98,7 @@ export default function ShowDatacenters(props) {
                     </Paper>
                 </Grid>
 
+                {props.isOfflineStorage ? null :
                 <Grid item xs={3}>
                 <Paper elevation={3}>
                     <Grid
@@ -161,7 +162,7 @@ export default function ShowDatacenters(props) {
                     </Grid>
 
                     </Paper>
-                </Grid>
+                </Grid>}
             </Grid>
             }
             </div>

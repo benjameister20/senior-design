@@ -1,18 +1,18 @@
 # Summary
 
-Date : 2020-03-29 22:15:04
+Date : 2020-04-14 13:05:08
 
 Directory c:\Users\benro\Documents\workspaces\senior-design
 
-Total : 215 files,  19290 codes, 1087 comments, 3070 blanks, all 23447 lines
+Total : 216 files,  19785 codes, 979 comments, 3126 blanks, all 23890 lines
 
 [details](details.md)
 
 ## Languages
 | language | files | code | comment | blank | total |
 | :--- | ---: | ---: | ---: | ---: | ---: |
-| JavaScript React | 67 | 9,536 | 273 | 1,114 | 10,923 |
-| Python | 88 | 6,973 | 739 | 1,736 | 9,448 |
+| JavaScript React | 67 | 9,838 | 155 | 1,138 | 11,131 |
+| Python | 89 | 7,166 | 749 | 1,768 | 9,683 |
 | Markdown | 13 | 1,655 | 0 | 105 | 1,760 |
 | JSON | 6 | 436 | 0 | 6 | 442 |
 | pip requirements | 2 | 144 | 8 | 3 | 155 |
@@ -29,13 +29,13 @@ Total : 215 files,  19290 codes, 1087 comments, 3070 blanks, all 23447 lines
 ## Directories
 | path | files | code | comment | blank | total |
 | :--- | ---: | ---: | ---: | ---: | ---: |
-| . | 215 | 19,290 | 1,087 | 3,070 | 23,447 |
+| . | 216 | 19,785 | 979 | 3,126 | 23,890 |
 | .circleci | 1 | 18 | 0 | 4 | 22 |
-| ReactAndFlask | 205 | 18,974 | 1,079 | 3,036 | 23,089 |
-| ReactAndFlask\flask-backend | 110 | 8,883 | 746 | 1,823 | 11,452 |
-| ReactAndFlask\flask-backend\app | 94 | 8,584 | 713 | 1,700 | 10,997 |
+| ReactAndFlask | 206 | 19,469 | 971 | 3,092 | 23,532 |
+| ReactAndFlask\flask-backend | 111 | 9,076 | 756 | 1,855 | 11,687 |
+| ReactAndFlask\flask-backend\app | 95 | 8,777 | 723 | 1,732 | 11,232 |
 | ReactAndFlask\flask-backend\app\backups | 8 | 307 | 48 | 113 | 468 |
-| ReactAndFlask\flask-backend\app\change_plans | 5 | 1,300 | 41 | 187 | 1,528 |
+| ReactAndFlask\flask-backend\app\change_plans | 6 | 1,493 | 44 | 219 | 1,756 |
 | ReactAndFlask\flask-backend\app\dal | 12 | 1,130 | 68 | 257 | 1,455 |
 | ReactAndFlask\flask-backend\app\dal\exceptions | 1 | 3 | 0 | 1 | 4 |
 | ReactAndFlask\flask-backend\app\data_models | 10 | 564 | 152 | 123 | 839 |
@@ -58,18 +58,18 @@ Total : 215 files,  19290 codes, 1087 comments, 3070 blanks, all 23447 lines
 | ReactAndFlask\flask-backend\static\css | 1 | 1 | 1 | 1 | 3 |
 | ReactAndFlask\flask-backend\static\js | 3 | 3 | 4 | 3 | 10 |
 | ReactAndFlask\flask-backend\templates | 1 | 1 | 0 | 1 | 2 |
-| ReactAndFlask\reactfrontend | 95 | 10,091 | 333 | 1,213 | 11,637 |
+| ReactAndFlask\reactfrontend | 95 | 10,393 | 215 | 1,237 | 11,845 |
 | ReactAndFlask\reactfrontend\public | 2 | 45 | 23 | 5 | 73 |
-| ReactAndFlask\reactfrontend\src | 90 | 9,879 | 310 | 1,174 | 11,363 |
-| ReactAndFlask\reactfrontend\src\javascript | 81 | 9,690 | 304 | 1,143 | 11,137 |
-| ReactAndFlask\reactfrontend\src\javascript\assets | 18 | 3,614 | 64 | 406 | 4,084 |
+| ReactAndFlask\reactfrontend\src | 90 | 10,181 | 192 | 1,198 | 11,571 |
+| ReactAndFlask\reactfrontend\src\javascript | 81 | 9,992 | 186 | 1,167 | 11,345 |
+| ReactAndFlask\reactfrontend\src\javascript\assets | 18 | 3,767 | 63 | 425 | 4,255 |
 | ReactAndFlask\reactfrontend\src\javascript\assets\enums | 2 | 43 | 0 | 2 | 45 |
-| ReactAndFlask\reactfrontend\src\javascript\assets\helpers | 13 | 3,508 | 64 | 390 | 3,962 |
+| ReactAndFlask\reactfrontend\src\javascript\assets\helpers | 13 | 3,661 | 63 | 409 | 4,133 |
 | ReactAndFlask\reactfrontend\src\javascript\assets\helpers\functions | 3 | 56 | 23 | 23 | 102 |
 | ReactAndFlask\reactfrontend\src\javascript\assets\pages | 1 | 52 | 0 | 6 | 58 |
 | ReactAndFlask\reactfrontend\src\javascript\assets\stylesheets | 1 | 5 | 0 | 2 | 7 |
-| ReactAndFlask\reactfrontend\src\javascript\changeplans | 1 | 550 | 39 | 61 | 650 |
-| ReactAndFlask\reactfrontend\src\javascript\changeplans\pages | 1 | 550 | 39 | 61 | 650 |
+| ReactAndFlask\reactfrontend\src\javascript\changeplans | 1 | 660 | 44 | 80 | 784 |
+| ReactAndFlask\reactfrontend\src\javascript\changeplans\pages | 1 | 660 | 44 | 80 | 784 |
 | ReactAndFlask\reactfrontend\src\javascript\enums | 1 | 4 | 0 | 1 | 5 |
 | ReactAndFlask\reactfrontend\src\javascript\errors | 1 | 18 | 4 | 6 | 28 |
 | ReactAndFlask\reactfrontend\src\javascript\helpers | 12 | 246 | 1 | 46 | 293 |
@@ -77,24 +77,24 @@ Total : 215 files,  19290 codes, 1087 comments, 3070 blanks, all 23447 lines
 | ReactAndFlask\reactfrontend\src\javascript\logs | 2 | 193 | 0 | 27 | 220 |
 | ReactAndFlask\reactfrontend\src\javascript\logs\enums | 1 | 4 | 0 | 1 | 5 |
 | ReactAndFlask\reactfrontend\src\javascript\logs\pages | 1 | 189 | 0 | 26 | 215 |
-| ReactAndFlask\reactfrontend\src\javascript\models | 11 | 2,014 | 135 | 205 | 2,354 |
+| ReactAndFlask\reactfrontend\src\javascript\models | 11 | 2,022 | 13 | 185 | 2,220 |
 | ReactAndFlask\reactfrontend\src\javascript\models\enums | 2 | 23 | 0 | 2 | 25 |
-| ReactAndFlask\reactfrontend\src\javascript\models\helpers | 6 | 1,470 | 128 | 132 | 1,730 |
+| ReactAndFlask\reactfrontend\src\javascript\models\helpers | 6 | 1,478 | 6 | 112 | 1,596 |
 | ReactAndFlask\reactfrontend\src\javascript\models\pages | 1 | 520 | 7 | 66 | 593 |
 | ReactAndFlask\reactfrontend\src\javascript\models\stylesheets | 1 | 0 | 0 | 1 | 1 |
-| ReactAndFlask\reactfrontend\src\javascript\racks | 11 | 1,091 | 3 | 151 | 1,245 |
+| ReactAndFlask\reactfrontend\src\javascript\racks | 11 | 1,125 | 3 | 155 | 1,283 |
 | ReactAndFlask\reactfrontend\src\javascript\racks\enums | 2 | 12 | 0 | 2 | 14 |
-| ReactAndFlask\reactfrontend\src\javascript\racks\helpers | 4 | 609 | 0 | 69 | 678 |
-| ReactAndFlask\reactfrontend\src\javascript\racks\helpers\functions | 1 | 156 | 0 | 19 | 175 |
-| ReactAndFlask\reactfrontend\src\javascript\racks\pages | 3 | 436 | 3 | 71 | 510 |
+| ReactAndFlask\reactfrontend\src\javascript\racks\helpers | 4 | 638 | 0 | 72 | 710 |
+| ReactAndFlask\reactfrontend\src\javascript\racks\helpers\functions | 1 | 157 | 0 | 19 | 176 |
+| ReactAndFlask\reactfrontend\src\javascript\racks\pages | 3 | 441 | 3 | 72 | 516 |
 | ReactAndFlask\reactfrontend\src\javascript\racks\stylesheets | 1 | 33 | 0 | 6 | 39 |
 | ReactAndFlask\reactfrontend\src\javascript\statistics | 2 | 200 | 0 | 17 | 217 |
 | ReactAndFlask\reactfrontend\src\javascript\statistics\enums | 1 | 4 | 0 | 1 | 5 |
 | ReactAndFlask\reactfrontend\src\javascript\statistics\pages | 1 | 196 | 0 | 16 | 212 |
-| ReactAndFlask\reactfrontend\src\javascript\users | 15 | 1,013 | 1 | 113 | 1,127 |
+| ReactAndFlask\reactfrontend\src\javascript\users | 15 | 1,007 | 1 | 115 | 1,123 |
 | ReactAndFlask\reactfrontend\src\javascript\users\enums | 3 | 18 | 0 | 3 | 21 |
-| ReactAndFlask\reactfrontend\src\javascript\users\helpers | 10 | 725 | 0 | 76 | 801 |
-| ReactAndFlask\reactfrontend\src\javascript\users\helpers\functions | 5 | 109 | 0 | 16 | 125 |
+| ReactAndFlask\reactfrontend\src\javascript\users\helpers | 10 | 719 | 0 | 78 | 797 |
+| ReactAndFlask\reactfrontend\src\javascript\users\helpers\functions | 5 | 111 | 0 | 17 | 128 |
 | ReactAndFlask\reactfrontend\src\javascript\users\pages | 1 | 261 | 1 | 27 | 289 |
 | ReactAndFlask\reactfrontend\src\stylesheets | 4 | 94 | 1 | 22 | 117 |
 | ReactAndFlask\reactfrontend\src\tests | 3 | 90 | 4 | 6 | 100 |

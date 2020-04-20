@@ -1,19 +1,11 @@
 import React from 'react';
 
-import axios from "axios";
-
 import TextField from "@material-ui/core/TextField";
 import Button from '@material-ui/core/Button';
-import ExpansionPanel from '@material-ui/core/ExpansionPanel';
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
+
 import Typography from '@material-ui/core/Typography';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Grid from '@material-ui/core/Grid';
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
-import InputLabel from '@material-ui/core/InputLabel';
-import FormControl from '@material-ui/core/FormControl';
+
 import Card from '@material-ui/core/Card';
 
 import '../../../stylesheets/Models.css';
@@ -43,7 +35,12 @@ export default class CreateModal extends React.Component {
 
     resetCreate = (success) => {
         if (success) {
-
+            this.setState({
+                username: "",
+                display_name: "",
+                password: "",
+                email: "",
+            });
         }
     }
 
@@ -72,7 +69,7 @@ export default class CreateModal extends React.Component {
 
     render() {
         return (
-        <Card elevation={3} padding>
+        <Card elevation={3} style={{ padding: "20px" }}>
             <Typography variant="h6">Create</Typography>
             <Grid
                 container

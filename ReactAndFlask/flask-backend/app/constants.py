@@ -37,6 +37,16 @@ class Constants:
     MEMORY_KEY = "memory"
     STORAGE_KEY = "storage"
 
+    ORIG_DISPLAY_COLOR_KEY = "display_colorOriginal"
+    ORIG_CPU_KEY = "cpuOriginal"
+    ORIG_MEMORY_KEY = "memoryOriginal"
+    ORIG_STORAGE_KEY = "storageOriginal"
+
+    MOUNT_TYPE_KEY = "mount_type"
+    BLADE_KEY = "blade"
+    CHASIS_KEY = "chassis"
+    RACKMOUNT_KEY = "rackmount"
+
     # Model CSV Keys
     CSV_ETHERNET_PORT_KEY = "network_ports"
     CSV_NETWORK_PORT_1 = "network_port_name_1"
@@ -60,11 +70,31 @@ class Constants:
     NETWORK_CONNECTIONS_KEY = "network_connections"
     POWER_CONNECTIONS_KEY = "power_connections"
     ASSET_NUMBER_KEY = "asset_number"
+    CHASSIS_HOSTNAME_KEY = "chassis_hostname"
+    CHASSIS_SLOT_KEY = "chassis_slot"
 
     ASSET_NUMBER_ORIG_KEY = "asset_numberOriginal"
 
     CSV_POWER_PORT_1 = "power_port_connection_1"
     CSV_POWER_PORT_2 = "power_port_connection_2"
+
+    CHASSIS_KEY = "chassis"
+    CHASSIS_PORT_KEY = "chassis_port_number"
+    POWER_STATE_KEY = "power_state"
+    CSV_CHASSIS_NUMBER = "chassis_number"
+    CSV_CHASSIS_SLOT = "slot_number"
+    CSV_CUSTOM_DISPLAY_COLOR = "custom_display_color"
+    CSV_CUSTOM_CPU = "custom_cpu"
+    CSV_CUSTOM_MEMORY = "custom_memory"
+    CSV_CUSTOM_STORAGE = "custom_storage"
+
+    PDU_NET_PRO_HOST = "http://hyposoft-mgt.colab.duke.edu"
+    PDU_NET_PRO_PORT = "8001"
+    PDU_RACK_LETTER = "rack_letter"
+    PDU_RACK_NUMBER = "rack_number"
+    PDU_RACK_SIDE = "rack_side"
+    PDU_RACK_PORT = "rack_port"
+    PDU_RACK_PORT_STATE = "rack_port_state"
 
     # Rack Keys
     START_LETTER_KEY = "start_letter"
@@ -77,10 +107,11 @@ class Constants:
     DC_ABRV_KEY = "abbreviation"
     DC_NAME_KEY = "datacenter_name"
     DC_ID_KEY = "datacenter_id"
-
+    DC_IS_OFFLINE_KEY = "is_offline_storage"
     NAME_ORIG_KEY = "nameOriginal"
 
     CSV_DC_NAME_KEY = "datacenter"
+    CSV_OFFLINE_SITE_KEY = "offline_site"
 
     # Connection CSV KEYS
     CSV_SRC_HOST = "src_hostname"

@@ -152,6 +152,8 @@ class InstanceValidator:
             else:
                 p_connection_set.add(p_connection)
             char1 = p_connection[0].upper()
+            print("PRINGINDISNFISNF")
+            print(p_connection)
             num = int(p_connection[1:])
             if char1 == "L":
                 pdu_arr = rack.pdu_left

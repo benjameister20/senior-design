@@ -73,11 +73,11 @@ class InstanceManager:
         except InvalidInputsError as e:
             print(e.message)
             raise InvalidInputsError(e.message)
-        except Exception as e:
-            print(str(e))
-            raise InvalidInputsError(
-                "An error occurred when attempting to create the asset."
-            )
+        # except Exception as e:
+        #     print(str(e))
+        #     raise InvalidInputsError(
+        #         "An error occurred when attempting to create the asset."
+        #     )
 
     def delete_instance(self, instance_data):
         asset_number = self.check_null(instance_data[Constants.ASSET_NUMBER_KEY])

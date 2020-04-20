@@ -2,8 +2,8 @@
 Staggered retention 7 daily, 4 weekly, 12 monthly
 
 Daily backups every day at 5am
-Weekly backups every Wednesday at 5am
-Monthly backups every 22nd day of the month at 5am
+Weekly backups every Saturday at 5am
+Monthly backups every 28th day of the month at 5am
 
 first Saturday is 4/18/2020
 """

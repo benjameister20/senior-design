@@ -133,6 +133,7 @@ def edit():
             return addMessageToJSON(returnJSON, error.message)
         return addMessageToJSON(returnJSON, Constants.API_SUCCESS)
     except InvalidInputsError as e:
+        print(e.message)
         return addMessageToJSON(returnJSON, e.message)
 
 

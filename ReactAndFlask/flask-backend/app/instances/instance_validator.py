@@ -6,6 +6,7 @@ from app.dal.instance_table import InstanceTable
 from app.dal.model_table import ModelTable
 from app.dal.rack_table import RackTable
 from app.dal.user_table import UserTable
+from app.exceptions.InvalidInputsException import InvalidInputsError
 
 
 class InstanceValidator:
@@ -30,6 +31,21 @@ class InstanceValidator:
         if dc_template is None:
             return "The datacenter does not exist."
 
+        # Check that connections are only within a single datacenter
+        net_cons = instance.network_connections
+        for port in net_cons.keys():
+            dest_hostname = net_cons[port][Constants.CONNECTION_HOSTNAME]
+            if dest_hostname != "" and dest_hostname is not None:
+                dc_id = (
+                    InstanceTable()
+                    .get_instance_by_hostname(dest_hostname)
+                    .datacenter_id
+                )
+                if dc_id != instance.datacenter_id:
+                    raise InvalidInputsError(
+                        "Network connections cannot span multiple datacenters"
+                    )
+
         if dc_template.is_offline_storage:
             return Constants.API_SUCCESS
 
@@ -50,6 +66,21 @@ class InstanceValidator:
         dc_template = self.dc_table.get_datacenter(instance.datacenter_id)
         if dc_template is None:
             return "The datacenter does not exist."
+
+        # Check that connections are only within a single datacenter
+        net_cons = instance.network_connections
+        for port in net_cons.keys():
+            dest_hostname = net_cons[port][Constants.CONNECTION_HOSTNAME]
+            if dest_hostname != "" and dest_hostname is not None:
+                dc_id = (
+                    InstanceTable()
+                    .get_instance_by_hostname(dest_hostname)
+                    .datacenter_id
+                )
+                if dc_id != instance.datacenter_id:
+                    raise InvalidInputsError(
+                        "Network connections cannot span multiple datacenters"
+                    )
 
         if dc_template.is_offline_storage:
             return Constants.API_SUCCESS

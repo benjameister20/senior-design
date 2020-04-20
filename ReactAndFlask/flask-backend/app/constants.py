@@ -89,7 +89,7 @@ class Constants:
     CSV_CUSTOM_STORAGE = "custom_storage"
 
     PDU_NET_PRO_HOST = "http://hyposoft-mgt.colab.duke.edu"
-    PDU_NET_PRO_PORT = "8000"
+    PDU_NET_PRO_PORT = "8001"
     PDU_RACK_LETTER = "rack_letter"
     PDU_RACK_NUMBER = "rack_number"
     PDU_RACK_SIDE = "rack_side"

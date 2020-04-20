@@ -71,7 +71,7 @@ class DatacenterDoesNotExistError(Exception):
     """
 
     def __init__(self, name: str):
-        self.message: str = f"Site {name} does not exist."
+        self.message: str = f"{name} does not exist."
 
 
 def _get_csv():

@@ -6,6 +6,7 @@ from app.dal.instance_table import InstanceTable
 from app.dal.model_table import ModelTable
 from app.dal.rack_table import RackTable
 from app.dal.user_table import UserTable
+from app.exceptions.InvalidInputsException import InvalidInputsError
 
 
 class InstanceValidator:
@@ -30,6 +31,21 @@ class InstanceValidator:
         if dc_template is None:
             return "The datacenter does not exist."
 
+        # Check that connections are only within a single datacenter
+        net_cons = instance.network_connections
+        for port in net_cons.keys():
+            dest_hostname = net_cons[port][Constants.CONNECTION_HOSTNAME]
+            if dest_hostname != "" and dest_hostname is not None:
+                dc_id = (
+                    InstanceTable()
+                    .get_instance_by_hostname(dest_hostname)
+                    .datacenter_id
+                )
+                if dc_id != instance.datacenter_id:
+                    raise InvalidInputsError(
+                        "Network connections cannot span multiple datacenters"
+                    )
+
         if dc_template.is_offline_storage:
             return Constants.API_SUCCESS
 
@@ -50,6 +66,21 @@ class InstanceValidator:
         dc_template = self.dc_table.get_datacenter(instance.datacenter_id)
         if dc_template is None:
             return "The datacenter does not exist."
+
+        # Check that connections are only within a single datacenter
+        net_cons = instance.network_connections
+        for port in net_cons.keys():
+            dest_hostname = net_cons[port][Constants.CONNECTION_HOSTNAME]
+            if dest_hostname != "" and dest_hostname is not None:
+                dc_id = (
+                    InstanceTable()
+                    .get_instance_by_hostname(dest_hostname)
+                    .datacenter_id
+                )
+                if dc_id != instance.datacenter_id:
+                    raise InvalidInputsError(
+                        "Network connections cannot span multiple datacenters"
+                    )
 
         if dc_template.is_offline_storage:
             return Constants.API_SUCCESS
@@ -114,7 +145,12 @@ class InstanceValidator:
         if rack is None:
             return f"Rack {instance.rack_label} does not exist in datacenter {dc_template}. Assets must be created on preexisting racks"
 
+        p_connection_set = set()
         for p_connection in instance.power_connections:
+            if p_connection in p_connection_set:
+                return "Cannot connect two asset power ports to the same PDU port."
+            else:
+                p_connection_set.add(p_connection)
             char1 = p_connection[0].upper()
             num = int(p_connection[1:])
             if char1 == "L":
@@ -145,7 +181,7 @@ class InstanceValidator:
                 if current_instance.asset_number == original_asset_number:
                     continue
 
-                model = self.model_table.get_model(instance.model_id)
+                model = self.model_table.get_model(current_instance.model_id)
                 current_instance_top = current_instance.rack_position + model.height - 1
                 if (
                     current_instance.rack_position >= instance_bottom

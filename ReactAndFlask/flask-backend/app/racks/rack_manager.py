@@ -22,6 +22,7 @@ class RackNotEmptyError(Exception):
 
 def _add_rack_modifier(label: str, datacenter_id: int, datacenter_name: str) -> JSON:
     """ Add a rack """
+
     rack_db: Optional[Rack] = RackTable().get_rack(
         label=label, datacenter_id=datacenter_id
     )

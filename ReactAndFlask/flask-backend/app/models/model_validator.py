@@ -4,6 +4,7 @@ from app.constants import Constants
 from app.dal.instance_table import InstanceTable
 from app.dal.model_table import ModelTable
 from app.data_models.model import Model
+from app.exceptions.InvalidInputsException import InvalidInputsError
 
 
 class ModelValidator:
@@ -17,25 +18,35 @@ class ModelValidator:
             return "The value for model height must be a positive integer."
 
         if model.ethernet_ports is not None:
+            print("VALIDATING NETWORK PORTS")
             port_pattern = re.compile("[a-zA-Z0-9]+")
             for port_name in model.ethernet_ports:
+                print(f"PORT NAME: {port_name}")
                 if port_pattern.fullmatch(port_name) is None:
-                    return "Network port names must not have spaces and only contain letters and numbers"
+                    raise InvalidInputsError(
+                        "Network port names must not have spaces and may only contain letters and numbers"
+                    )
                 if len(port_name) > 20:
-                    return "Network port names must be shorter than 20 characters."
+                    raise InvalidInputsError(
+                        "Network port names must be shorter than 20 characters."
+                    )
 
         if (
             model.power_ports != ""
             and model.power_ports != None
             and pattern.fullmatch(str(model.power_ports)) is None
         ):
-            return "The value for power ports must be a positive integer."
+            raise InvalidInputsError(
+                "The value for power ports must be a positive integer."
+            )
         if (
             model.memory != ""
             and model.memory != None
             and pattern.fullmatch(str(model.memory)) is None
         ):
-            return "The value for memory must be a positive integer in terms of GB."
+            raise InvalidInputsError(
+                "The value for memory must be a positive integer in terms of GB."
+            )
 
         return Constants.API_SUCCESS
 
@@ -45,7 +56,9 @@ class ModelValidator:
         )
 
         if result is not None:
-            return "This vendor and model number combination already exists."
+            raise InvalidInputsError(
+                "This vendor and model number combination already exists."
+            )
 
         return self._validate(model=model)
 
@@ -61,7 +74,9 @@ class ModelValidator:
             )
 
             if result is not None:
-                return "This vendor and model number combination already exists."
+                raise InvalidInputsError(
+                    "This vendor and model number combination already exists."
+                )
 
         return self._validate(model=model)
 
@@ -74,4 +89,4 @@ class ModelValidator:
         else:
             result = "There are still existing instances for this model. "
             result += "Please delete them before deleting the model."
-            return result
+            raise InvalidInputsError(result)

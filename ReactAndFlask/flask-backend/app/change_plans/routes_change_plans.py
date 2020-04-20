@@ -130,7 +130,7 @@ def get_cps():
 
 
 @changeplans.route("/changeplans/createaction", methods=["POST"])
-# @requires_auth(request)
+@requires_auth(request)
 # @requires_permission(
 #     request,
 #     Permission(
@@ -152,7 +152,7 @@ def create_cp_action():
 
 
 @changeplans.route("/changeplans/deleteaction", methods=["POST"])
-# @requires_auth(request)
+@requires_auth(request)
 def delete_cp_action():
     """ Route for deleting change plan actions """
     global CP_ACTION_MANAGER
@@ -167,7 +167,7 @@ def delete_cp_action():
 
 
 @changeplans.route("/changeplans/editaction", methods=["POST"])
-# @requires_auth(request)
+@requires_auth(request)
 # @requires_permission(
 #     request,
 #     Permission(
@@ -188,7 +188,7 @@ def edit_cp_action():
 
 
 @changeplans.route("/changeplans/getactions", methods=["POST"])
-# @requires_auth(request)
+@requires_auth(request)
 def get_cp_actions():
     """ Route for getting a change plan's actions """
     global CP_ACTION_MANAGER
@@ -211,7 +211,7 @@ def get_cp_actions():
 
 
 @changeplans.route("/changeplans/workorder", methods=["POST"])
-# @requires_auth(request)
+@requires_auth(request)
 def get_work_order():
     """ Route to get barcode labels for assets"""
     returnJSON = createJSON()

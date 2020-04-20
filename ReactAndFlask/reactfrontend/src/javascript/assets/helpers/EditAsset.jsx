@@ -1003,7 +1003,6 @@ class EditAsset extends React.Component {
                                                 name={this.state.inputs.bladeChassis.name}
                                                 onChange={this.updateBladeChassis}
                                                 onBlur={this.updateBladeChassis}
-                                                variant="outlined"
                                                 fullWidth
                                                 required
                                             />

@@ -211,7 +211,8 @@ class TableAsset extends React.Component {
 				getURL(Constants.ASSETS_MAIN_PATH, AssetCommand.search), emptySearch).then(
 					response => {
 						var items = [];
-
+						console.log("instances");
+						console.log(response.data.instances);
 						response.data.instances.map(asset => {
 							items.push(createData(asset.model, asset.hostname, asset.datacenter_name, this.getRack(asset), asset.owner, asset.asset_number));
 						});
@@ -339,7 +340,7 @@ class TableAsset extends React.Component {
 	getAssetList = () => {
 		axios.post(
 			getURL(Constants.ASSETS_MAIN_PATH, AssetCommand.search), emptySearch).then(
-				response => { this.setState({ allAssets: response.data.instances }); });
+				response => { console.log(response.data.instances); this.setState({ allAssets: response.data.instances }); });
 	}
 
 	getDecommissionedAssets = () => {

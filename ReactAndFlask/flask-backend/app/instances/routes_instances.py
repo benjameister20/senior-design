@@ -31,7 +31,7 @@ def test():
 
 
 @instances.route("/instances/search/", methods=["POST"])
-@requires_auth(request)
+# @requires_auth(request)
 def search():
     """ Route for searching instances """
 

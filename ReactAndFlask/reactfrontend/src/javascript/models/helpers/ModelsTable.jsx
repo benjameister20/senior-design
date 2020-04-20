@@ -570,8 +570,11 @@ class ModelsTable extends React.Component {
                                                 onChange={this.updateModelEdited}
                                             />
                                         </Grid>
-                                        <Grid item xs={3}>
+                                        <Grid item xs={6}>
                                             <TextField
+                                                rowsMax={3}
+                                                multiline={true}
+                                                style={{ width: "100%" }}
                                                 id="standard-basic"
                                                 variant="outlined"
                                                 label={inputs.comment.label}

@@ -5,7 +5,8 @@ import axios from "axios";
 import {
 	withStyles,
 	Typography,
-	CircularProgress
+	CircularProgress,
+	Paper,
 } from "@material-ui/core";
 
 import getURL from "../../helpers/functions/GetURL";

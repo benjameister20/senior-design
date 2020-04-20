@@ -32,6 +32,8 @@ def backup():
     response = {}
     metadata = None
 
+    print(request.headers)
+
     try:
         if not BM.authorize_backup(request.headers.get("passkey")):
             return add_message_to_JSON(response, "Unauthorized request for backup"), 403
@@ -42,15 +44,16 @@ def backup():
 
     try:
         metadata = BM.generate_backup()
+        message = f"""A backup was taken at {metadata["datetime"]}\n\nFilename:\t{metadata["filename"]}\nSize:\t\t    {metadata["size"]} bytes"""
         EM.send_message(
             receiver=Constants.ADMIN_EMAIL,
             subject=Constants.EMAIL_SUBJECT,
-            message=Constants.EMAIL_MESSAGE,
+            message=message,
         )
     except BackupError as e:
         return add_message_to_JSON(response, e.message)
-    except:
-        return add_message_to_JSON(response, "Backup failed")
+    # except:
+    #     return add_message_to_JSON(response, "Backup failed")
 
     response = make_response(
         send_file(

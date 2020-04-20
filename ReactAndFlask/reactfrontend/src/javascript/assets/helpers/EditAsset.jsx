@@ -371,7 +371,10 @@ class EditAsset extends React.Component {
                     var hostnames = [];
                     var hostToModel = {};
                     instances.map(instance => {
-                        hostnames.push(instance.hostname);
+                        if (instance.hostname !== "") {
+                            hostnames.push(instance.hostname);
+                        }
+
                         hostToModel[instance.hostname] = instance.model;
                     })
 
@@ -539,7 +542,7 @@ class EditAsset extends React.Component {
         var pwrConns = [];
         var defaultValue = 1;
         Object.entries(this.state.leftRight).map(([key, value]) => {
-            var num = this.state.power_connections === null ? defaultValue : this.state.power_connections[key];
+            var num = (this.state.power_connections === null || this.state.power_connections[key] === undefined) ? defaultValue : this.state.power_connections[key];
             switch (value) {
                 case left:
                     pwrConns.push("L" + num);

@@ -124,7 +124,7 @@ export default class StatisticsView extends React.Component {
                     },
                 })
             } catch {
-                this.setState({ showStatus: true, statusMessage: "Successfully generated Report", statusSeverity: "error" })
+                this.setState({ showStatus: true, statusMessage: "Failed to generate Report", statusSeverity: "error" })
             }
 
             this.setState({ generatingReport: false })
@@ -172,7 +172,9 @@ export default class StatisticsView extends React.Component {
                                     >
                                         <MenuItem value="All Datacenters">All Datacenters</MenuItem>
                                         {this.state.datacenterList.map(value => {
-                                            return (<MenuItem value={value}>{value["name"]}</MenuItem>);
+                                            if (!value.is_offline_storage) {
+                                                return (<MenuItem value={value}>{value["name"]}</MenuItem>);
+                                            }
                                         })}
                                     </Select>
                                 </span>

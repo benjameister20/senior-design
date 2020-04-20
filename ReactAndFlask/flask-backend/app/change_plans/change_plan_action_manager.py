@@ -20,6 +20,7 @@ class ChangePlanActionManager:
     def create_change_plan_action(self, cp_action_data):
         try:
             change_plan_action: ChangePlanAction = self.make_cp_action(cp_action_data)
+            print(change_plan_action.change_plan_id)
             all_cp_actions = self.get_change_plan_actions(
                 change_plan_action.change_plan_id
             )
@@ -117,6 +118,7 @@ class ChangePlanActionManager:
             change_plan_actions: List[
                 ChangePlanAction
             ] = self.cp_action_table.get_actions_by_change_plan_id(cp_id)
+            print(change_plan_actions)
             for cp_action in change_plan_actions:
                 if (
                     cp_action.action == Constants.CREATE_KEY
@@ -132,7 +134,12 @@ class ChangePlanActionManager:
                 # Diff records
                 diff = {}
                 for key in cp_action.old_record.keys():
-                    if key == "height" or key == "abbreviation":
+                    if (
+                        key == "height"
+                        or key == "abbreviation"
+                        or key == "mount_type"
+                        or "Original" in key
+                    ):
                         continue
 
                     if (

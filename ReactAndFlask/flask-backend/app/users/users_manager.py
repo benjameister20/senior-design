@@ -227,6 +227,19 @@ class UserManager:
         #     print("Could not edit user")
         #     print(e)
         #     raise UserException("Could not edit user")
+        # # Update map of netid to username
+        # if old_user.password.decode("utf-8") == Constants.NETID_PASSWORD:
+        #     netid = ""
+        #     with open(os.path.dirname(__file__) + "/netid_map.json", "r") as f:
+        #         map = json.load(f)
+        #         for key in map.keys():
+        #             if map[key] == old_user.username:
+        #                 netid = key
+        #                 break
+        #
+        #     with open(os.path.dirname(__file__) + "/netid_map.json", "w") as f:
+        #         map[netid] = updated_user.username
+        #         json.dump(map, f)
 
         self.USER_TABLE.delete_user(old_user)
         print("deleted old user")

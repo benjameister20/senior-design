@@ -1,10 +1,16 @@
 """
 Staggered retention 7 daily, 4 weekly, 12 monthly
 
+Daily backups every day at 5am
+Weekly backups every Wednesday at 5am
+Monthly backups every 22nd day of the month at 5am
+
+first Saturday is 4/18/2020
 """
 
 import json
 import os
+import shutil
 from datetime import datetime
 from typing import Dict, List
 
@@ -19,15 +25,21 @@ prod_server = "https://parseltongue-prod.herokuapp.com/"
 endpoint = "backups/getBackup"
 password = "B@ckUpSist3ms!@"
 
+monthly_backup_day = 22
+
 
 ##### DEFINE VARIABLES
 
-server = dev_server
+
+server = prod_server
 # context = os.path.dirname(__file__)
-context = "/home/cfg11"
+context = "/home/hyposoft"
 url = server + endpoint
 # backups_directory = f"{context}/backup_zips/"
 backups_directory = f"{context}/backups/"
+backups_daily_dir = backups_directory + "daily/"
+backups_weekly_dir = backups_directory + "weekly/"
+backups_monthly_dir = backups_directory + "monthly/"
 # log_file = f"{context}/backup_zips/log.json"
 log_file = f"{context}/log.json"
 
@@ -43,9 +55,9 @@ def filename_to_datetime(filename: str):
     )  # Don't include seconds, minutes, hours so that the timedelta granularity is days
 
 
-def remove_file(filename, path):
+def remove_file(filename):
     try:
-        os.remove(f"{path}/{filename}")
+        os.remove(f"{filename}")
     except:
         print("something went wrong")
 
@@ -93,6 +105,16 @@ def update_log_file(timestamp, message, filename):
         print("Failed to write to logfile")
 
 
+def add_and_update_backup_directory(new_file, directory, limit):
+    backup_files = os.listdir(directory)
+    backup_files.sort()
+    while len(backup_files) >= limit:
+        remove_file(directory + backup_files[0])
+        del backup_files[0]
+
+    shutil.copy(backups_directory + new_file, directory)
+
+
 ##### INITIALIZE
 
 if not os.path.exists(log_file):
@@ -106,6 +128,7 @@ if not os.path.exists(log_file):
 
 
 ##### FETCH AND STORE BACKUP
+filename = ""
 try:
     filename = fetch_and_store_backup()
 except:
@@ -123,48 +146,29 @@ except:
 
 
 ##### STAGGER RETENTION
+first_saturday = filename_to_datetime("2020-04-15")
+file_date = filename_to_datetime(filename)
 
-today_date = datetime.utcnow().date()
-today = datetime.combine(today_date, datetime.min.time())
+is_daily = True
+is_weekly = (file_date - first_saturday).days % 7 == 0
+is_monthly = file_date.day == monthly_backup_day
 
-backups = os.listdir(backups_directory)
-backups.sort(reverse=True)
-# for backup in backups:
-#     print(backup)
-daily = 0
-weekly = 0
-monthly = 0
+if is_daily:
+    # delete other same-day daily backups
+    daily_backups = os.listdir(backups_daily_dir)
+    for backup in daily_backups:
+        if filename_to_datetime(backup) == file_date:
+            remove_file(backups_daily_dir + backup)
+    # delete old backups if necessary and copy new backup to directory
+    add_and_update_backup_directory(filename, backups_daily_dir, 7)
 
-for backup in backups:
-    try:
-        backup_datetime = filename_to_datetime(backup)
-    except:
-        continue
+if is_weekly:
+    add_and_update_backup_directory(filename, backups_weekly_dir, 4)
 
-    # print(backup)
-    # print(f"today: {today}, backup: {backup_datetime}")
-    dt = today - backup_datetime
-    # print(dt)
+if is_monthly:
+    add_and_update_backup_directory(filename, backups_monthly_dir, 12)
 
-    if dt.days == 0:
-        if daily < 7:
-            daily += 1
-        else:
-            remove_file(backup, backups_directory)
+remove_file(backups_directory + filename)
 
-    if 0 < dt.days <= 7:
-        if weekly < 4:
-            weekly += 1
-        else:
-            remove_file(backup, backups_directory)
 
-    if 7 < dt.days <= 30:
-        if monthly < 12:
-            monthly += 1
-        else:
-            remove_file(backup, backups_directory)
-
-    if dt.days > 30:
-        remove_file(backup, backups_directory)
-
-    # print(f"daily: {daily}\nweekly: {weekly}\nmonthly: {monthly}")
+# print(f"daily: {daily}\nweekly: {weekly}\nmonthly: {monthly}")

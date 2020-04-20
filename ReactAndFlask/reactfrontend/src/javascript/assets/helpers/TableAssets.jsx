@@ -271,8 +271,9 @@ class TableAsset extends React.Component {
 	}
 
 	closeDetailedView = () => {
-		this.setState({ showDetailedView: false });
+		this.setState({ showDetailedView: false, assetType: "active" });
 		this.fetchAllAssets();
+		this.filter.current.clearFilters();
 	}
 
 	closeShowStatus = () => {
